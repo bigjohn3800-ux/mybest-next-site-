@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>결과 샘플 미리보기 — 마이베스트 NEXT</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<style>
+:root{--ink:#23284A;--vio:#6C5CE7;--mint:#00CEC9;--sun:#FDCB6E;--bg:#F7F6FF;--navy:#1B2A4A;--muted:#5C617C;--line:#E7E6F2}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Pretendard,-apple-system,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:20px 16px 70px}
+.top{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.logo{font-weight:800;letter-spacing:.08em;color:var(--vio)}.logo span{color:var(--mint)}
+.spacer{flex:1}
+.btn{border:0;border-radius:12px;padding:11px 17px;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;background:linear-gradient(90deg,var(--vio),#8E7CF3);color:#fff;text-decoration:none;display:inline-block}
+.btn.ghost{background:#fff;color:var(--vio);border:1.5px solid #DAD4FB}
+.btn.sm{padding:8px 13px;font-size:12.5px;border-radius:10px}
+h1{font-size:25px;margin:10px 0 4px}.sub{font-size:14px;color:var(--muted);margin-bottom:18px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.chip{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:7px 15px;font-family:inherit;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer}
+.chip.on{background:var(--vio);border-color:var(--vio);color:#fff}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.cardx{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;cursor:pointer;transition:.15s}
+.cardx:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(108,92,231,.16)}
+.emo{font-size:30px}
+.cardx h3{font-size:15.5px;margin:8px 0 3px}
+.cardx p{font-size:12.5px;color:var(--muted);line-height:1.5}
+.cat{display:inline-block;font-size:10.5px;font-weight:800;color:var(--vio);background:#F1EEFF;border-radius:999px;padding:2px 9px;margin-top:8px}
+.peek{display:inline-block;margin-top:10px;font-size:12px;font-weight:800;color:var(--mint)}
+.modal{position:fixed;inset:0;background:rgba(20,18,50,.5);display:none;align-items:flex-start;justify-content:center;padding:24px 12px;overflow:auto;z-index:50}
+.modal.open{display:flex}
+.sheet{background:#fff;border-radius:18px;max-width:680px;width:100%;padding:22px}
+.hero{background:linear-gradient(135deg,var(--vio),var(--mint));color:#fff;border-radius:16px;padding:22px;text-align:center;margin-bottom:14px}
+.hero h2{font-size:21px;margin-bottom:3px}.hero p{font-size:12.5px;opacity:.93}
+.chartwrap{height:240px;position:relative;margin:6px 0}
+.bars{margin:6px 0}
+.brow{display:flex;align-items:center;gap:10px;margin:7px 0;font-size:13px}
+.brow .lab{width:64px;font-weight:700}
+.bar{flex:1;height:10px;border-radius:5px;background:#ECEAFB;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--vio),var(--mint))}
+.lock{margin-top:14px;background:#FBF7EC;border:1px dashed #D8C38B;border-radius:12px;padding:14px}
+.lock b{color:#A8893E}
+.lockitem{font-size:12.5px;color:#6b5e3e;padding:3px 0 3px 20px;position:relative}
+.lockitem:before{content:'🔒';position:absolute;left:0;font-size:11px}
+.muted{color:var(--muted)}
+@media(max-width:760px){.grid{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.grid{grid-template-columns:1fr}}
+</style></head>
+<body>
+<div class="wrap">
+ <div class="top"><div class="logo">MY BEST <span>NEXT</span></div><div class="spacer"></div>
+  <a class="btn ghost sm" href="/">메인으로</a></div>
+ <h1>결과 샘플 미리보기 ✨</h1>
+ <div class="sub">진단을 하면 어떤 결과가 나오는지 미리 보세요. 마음에 들면 바로 시작할 수 있어요.</div>
+ <div class="chips" id="chips"></div>
+ <div class="grid" id="grid"></div>
+</div>
+<div class="modal" id="modal" onclick="if(event.target.id==='modal')close_()"><div class="sheet" id="sheet"></div></div>
+
+<script>
+const API='https://onqisdgxwuvlxehjvoto.supabase.co/functions/v1/mybest';
+const SAMP='https://onqisdgxwuvlxehjvoto.supabase.co/functions/v1/myb-admin/sample';
+const KEY='sb_publishable_z3KmGPFA4RKka5e_tDWD5A_-CUDC7t8';
+const EMO={hs_series:'🧭',ms_series:'🌱',interview:'🎤',hs_essay:'✍️',study:'📚',inquiry:'🔍',ms_study:'📝',future:'🚀',subject_rec:'🗂️',roadmap:'🗺️',ai_skill:'🤖',es_dream:'🌈',es_habit:'✏️',reading:'📖'};
+const SER=['인문','사회','자연','공학','의생명','교육','예체능'];
+const FUT=['리더십','창의성','문제해결','소통','프로젝트','전략적사고'];
+const $=s=>document.querySelector(s);
+const esc=t=>String(t==null?'':t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let TESTS={},chart=null,CAT='전체';
+
+async function init(){
+ const j=await fetch(API+'/api/tests',{headers:{apikey:KEY}}).then(r=>r.json()).catch(()=>({tests:{}}));
+ TESTS=j.tests||{};
+ const cats=['전체',...[...new Set(Object.values(TESTS).map(t=>t.cat))]];
+ $('#chips').innerHTML=cats.map(c=>`<button class="chip ${c==='전체'?'on':''}" onclick="setCat('${c}')">${esc(c)}</button>`).join('');
+ render();
+}
+function setCat(c){CAT=c;document.querySelectorAll('.chip').forEach(e=>e.classList.toggle('on',e.textContent===c));render();}
+function render(){
+ const items=Object.entries(TESTS).filter(([k,t])=>CAT==='전체'||t.cat===CAT);
+ $('#grid').innerHTML=items.map(([k,t])=>`<div class="cardx" onclick="openSample('${k}')">
+   <div class="emo">${EMO[k]||'📊'}</div><h3>${esc(t.title)}</h3><p>${esc(t.desc)}</p>
+   <div><span class="cat">${esc(t.cat)}</span></div><div class="peek">결과 샘플 보기 →</div></div>`).join('');
+}
+function radar(labels,scores,best){
+ setTimeout(()=>{const ctx=$('#chart');if(!ctx||!window.Chart)return;if(chart)chart.destroy();
+  chart=new Chart(ctx,{type:'radar',data:{labels,datasets:[{data:scores,backgroundColor:'rgba(108,92,231,.18)',borderColor:'#6C5CE7',pointBackgroundColor:labels.map((_,i)=>i===best?'#FDCB6E':'#6C5CE7'),pointRadius:labels.map((_,i)=>i===best?6:3),borderWidth:2}]},
+   options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{r:{beginAtZero:true,ticks:{display:false},pointLabels:{font:{size:12,weight:'700'}}}}}});},40);
+}
+function bars(labels,vals,max){return `<div class="bars">${labels.map((l,i)=>`<div class="brow"><span class="lab">${esc(l)}</span><span class="bar"><i style="width:${Math.round(vals[i]/max*100)}%"></i></span><b>${vals[i]}</b></div>`).join('')}</div>`;}
+
+async function openSample(slug){
+ const t=TESTS[slug]||{};
+ $('#sheet').innerHTML='<div style="padding:34px;text-align:center" class="muted">샘플 불러오는 중…</div>';
+ $('#modal').classList.add('open');
+ const j=await fetch(SAMP+'?slug='+slug,{method:'POST',headers:{apikey:KEY}}).then(r=>r.json()).catch(()=>({}));
+ const r=j.sample?j.sample.result:null;
+ let bodyHtml='';
+ if(!r){bodyHtml=`<div class="muted" style="padding:10px">이 진단의 샘플은 곧 공개됩니다. 지금 바로 체험해 보실 수 있어요!</div>`;}
+ else if(r.kind==='series'||r.kind==='future'){const labels=r.kind==='future'?FUT:(r.labels||SER);const best=labels[r.best];
+   bodyHtml=`<div class="chartwrap"><canvas id="chart"></canvas></div><div style="text-align:center;font-size:14px"><b>${esc(best)}</b> 성향이 가장 높게 나타난 샘플이에요</div>`;radar(labels,r.scores||[],r.best);}
+ else if(r.kind==='grades'){bodyHtml=bars(r.subjects||[],(r.grades||[]).map(g=>6-g),5)+`<div class="muted" style="font-size:12px">막대가 길수록 강한 과목 (등급 환산 샘플)</div>`;}
+ else if(r.kind==='bucketcheck'){const names=r.names||[];const per=r.per||[];bodyHtml=`<div style="text-align:center;font-size:30px;font-weight:800;color:var(--navy)">${r.pct}점</div><div style="text-align:center" class="muted">${r.ready}/${r.total} 항목 준비</div>`+bars(names,per.map(p=>p.ok),Math.max(1,...per.map(p=>p.total)));}
+ else if(r.kind==='checklist'){bodyHtml=`<div style="text-align:center;font-size:34px;font-weight:800;color:var(--navy)">${r.pct}점</div><div style="text-align:center" class="muted">${r.ready}/${r.total} 항목 준비 — 약점별 보완 가이드가 제공됩니다</div>`;}
+ else if(r.kind==='pick'){bodyHtml=`<div style="text-align:center;font-size:18px"><b>${esc((r.labels||SER)[(r.pick||1)-1])}</b> 계열 추천 과목 조합 샘플</div>`;}
+ else bodyHtml=`<div class="muted">샘플 결과</div>`;
+
+ $('#sheet').innerHTML=`<div class="top"><h2 style="font-size:18px">${EMO[slug]||'📊'} ${esc(t.title||slug)} · 샘플</h2><div class="spacer"></div><button class="btn ghost sm" onclick="close_()">닫기</button></div>
+  <div class="hero"><h2>${esc(t.title||'')}</h2><p>${esc(t.audience||'')} · 샘플 결과 미리보기</p></div>
+  ${bodyHtml}
+  <div class="lock"><b>🎁 정식(유료) 리포트에서는 이렇게 더 받아요</b>
+   <div class="lockitem">영역별 상세 성장 가이드 (6~8문장) + 이번 주 미션</div>
+   <div class="lockitem">계열 심층 8쪽 리포트 · 대표 학과 6 · 권장 과목</div>
+   <div class="lockitem">전국 규준 백분위(신뢰도 0.95) · 통합 성장 리포트(학부모용)</div>
+   <div class="lockitem">A4 인쇄 · 상담 자료</div></div>
+  <a class="btn" style="width:100%;text-align:center;margin-top:14px" href="/">이 진단 지금 해보기 →</a>`;
+}
+function close_(){$('#modal').classList.remove('open');if(chart){chart.destroy();chart=null;}}
+init();
+</script>
+</body></html>

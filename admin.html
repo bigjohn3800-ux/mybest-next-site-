@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>마이베스트 NEXT — 관리자 대시보드</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+:root{--ink:#23284A;--vio:#6C5CE7;--mint:#00CEC9;--sun:#FDCB6E;--bg:#F4F5FB;--navy:#1B2A4A;--muted:#5C617C;--line:#E7E6F2}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Pretendard,-apple-system,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:18px}
+.topbar{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.logo{font-weight:800;letter-spacing:.08em;color:var(--vio)}.logo span{color:var(--mint)}
+.rolebadge{font-size:12px;font-weight:800;background:#EEE9FF;color:var(--vio);border-radius:999px;padding:5px 12px}
+.spacer{flex:1}
+.btn{border:0;border-radius:11px;padding:11px 16px;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;background:linear-gradient(90deg,var(--vio),#8E7CF3);color:#fff}
+.btn.ghost{background:#fff;color:var(--vio);border:1.5px solid #DAD4FB}
+.btn.sm{padding:7px 12px;font-size:12.5px;border-radius:9px}
+.btn.navy{background:var(--navy)}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:14px}
+input,select{width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:10px;font-family:inherit;font-size:14px;background:#fff}
+input:focus,select:focus{outline:none;border-color:var(--vio)}
+label{font-size:12px;font-weight:700;color:var(--muted);display:block;margin:0 0 5px 2px}
+/* login */
+.login{max-width:380px;margin:8vh auto}
+.login h1{font-size:22px;margin-bottom:4px}.login .sub{font-size:13px;color:var(--muted);margin-bottom:18px}
+.err{background:#FFF0F0;color:#C62828;border-radius:9px;padding:9px 12px;font-size:13px;margin-bottom:10px;display:none}
+/* dashboard */
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+.stat .v{font-size:25px;font-weight:800;color:var(--navy)}
+.stat .l{font-size:11.5px;color:var(--muted);font-weight:700;margin-top:2px}
+.filters{display:grid;grid-template-columns:repeat(4,1fr) auto;gap:10px;align-items:end}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:#F3F1FD;color:var(--navy);text-align:left;padding:10px;font-size:12px;font-weight:800;position:sticky;top:0}
+td{padding:9px 10px;border-bottom:1px solid #F0EFF7}
+tr:hover td{background:#FAF9FF}
+.pbar{height:8px;border-radius:4px;background:#ECEAFB;overflow:hidden;min-width:90px;display:inline-block;vertical-align:middle}
+.pbar i{display:block;height:100%;background:linear-gradient(90deg,var(--vio),var(--mint))}
+.tag{display:inline-block;font-size:10.5px;font-weight:800;border-radius:999px;padding:2px 8px}
+.tag.paid{background:#E7F8EE;color:#1E8E4E}.tag.free{background:#FFF4DC;color:#A8893E}
+.tablewrap{max-height:60vh;overflow:auto;border:1px solid var(--line);border-radius:12px}
+.muted{color:var(--muted)}
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(20,18,50,.45);display:none;align-items:flex-start;justify-content:center;padding:30px 14px;overflow:auto;z-index:50}
+.modal.open{display:flex}
+.sheet{background:#fff;border-radius:16px;max-width:760px;width:100%;padding:22px}
+.atrow{border:1px solid var(--line);border-radius:12px;padding:13px 15px;margin-bottom:10px}
+.atrow h4{font-size:14.5px;margin-bottom:3px}
+.atrow .meta{font-size:11.5px;color:var(--muted);margin-bottom:7px}
+.kv{font-size:12.5px;line-height:1.7}
+@media(max-width:780px){.stats{grid-template-columns:repeat(2,1fr)}.filters{grid-template-columns:1fr 1fr}}
+@media print{.noprint{display:none!important}.modal{position:static;background:none;display:block;padding:0}.sheet{box-shadow:none;max-width:100%}body{background:#fff}}
+</style></head>
+<body>
+<div id="app"></div>
+
+<script>
+const EP='https://onqisdgxwuvlxehjvoto.supabase.co/functions/v1/myb-admin';
+const KEY='sb_publishable_z3KmGPFA4RKka5e_tDWD5A_-CUDC7t8';
+const TITLES={es_dream:'초등 진로 탐험',es_habit:'초등 공부습관',hs_series:'고등 계열성향',ms_series:'중학 계열성향',subject_rec:'고교학점제 과목추천',study:'대학합격 공부',ms_study:'중학 공부습관',reading:'독서역량',roadmap:'학생부 로드맵',inquiry:'과제탐구 준비도',future:'미래역량',ai_skill:'AI 활용역량',hs_essay:'고입 자기소개서',interview:'대입 면접 준비도'};
+const SER=['인문','사회','자연','공학','의생명','교육','예체능'];
+const FUT=['리더십','창의성','문제해결','소통','프로젝트','전략적사고'];
+const S={token:localStorage.getItem('myb_adm_token'),role:localStorage.getItem('myb_adm_role'),name:localStorage.getItem('myb_adm_name'),rows:[],filters:null};
+const $=s=>document.querySelector(s);
+const esc=t=>String(t==null?'':t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+async function api(path,bodyObj){const r=await fetch(EP+path,{method:'POST',headers:{'Content-Type':'application/json',apikey:KEY},body:JSON.stringify(bodyObj||{})});return r.json();}
+
+function viewLogin(msg){
+ $('#app').innerHTML=`<div class="wrap"><div class="login card">
+  <div class="logo" style="margin-bottom:14px">MY BEST <span>NEXT</span> · 관리자</div>
+  <h1>관리자 로그인 🔐</h1><div class="sub">최고관리자 · 관리자 · 선생님 전용</div>
+  <div class="err" id="err" style="${msg?'display:block':''}">${esc(msg||'')}</div>
+  <label>아이디</label><input id="u" autocomplete="username" placeholder="아이디 또는 이메일">
+  <div style="height:8px"></div>
+  <label>비밀번호</label><input id="p" type="password" autocomplete="current-password" placeholder="비밀번호">
+  <div style="height:14px"></div>
+  <button class="btn" style="width:100%" onclick="doLogin()">로그인</button>
+  <div class="muted" style="font-size:11.5px;margin-top:12px;text-align:center">학습자용 화면은 <a href="/" style="color:var(--vio)">메인 사이트</a>에서 이용하세요</div>
+ </div></div>`;
+ $('#p').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+}
+async function doLogin(){
+ const j=await api('/login',{username:$('#u').value.trim(),password:$('#p').value});
+ if(j.error){viewLogin(j.error);return;}
+ S.token=j.token;S.role=j.role;S.name=j.display_name;
+ localStorage.setItem('myb_adm_token',j.token);localStorage.setItem('myb_adm_role',j.role);localStorage.setItem('myb_adm_name',j.display_name);
+ viewDash();
+}
+function logout(){api('/logout',{token:S.token});localStorage.removeItem('myb_adm_token');localStorage.removeItem('myb_adm_role');localStorage.removeItem('myb_adm_name');S.token=null;viewLogin();}
+
+async function viewDash(){
+ $('#app').innerHTML=`<div class="wrap">
+  <div class="topbar noprint"><div class="logo">MY BEST <span>NEXT</span></div>
+   <span class="rolebadge">${esc(S.name||'관리자')}</span><div class="spacer"></div>
+   <button class="btn ghost sm" onclick="loadDash()">새로고침</button>
+   <button class="btn navy sm" onclick="logout()">로그아웃</button></div>
+  <div class="stats" id="stats"></div>
+  <div class="card noprint"><div class="filters">
+    <div><label>학교</label><select id="fSchool"><option value="">전체 학교</option></select></div>
+    <div><label>학년</label><select id="fGrade"><option value="">전체 학년</option></select></div>
+    <div><label>학급</label><select id="fClass"><option value="">전체 학급</option></select></div>
+    <div><label>학생 검색</label><input id="fName" placeholder="이름 일부"></div>
+    <div><button class="btn" onclick="loadDash()">조회</button></div>
+  </div></div>
+  <div class="tablewrap"><table><thead><tr>
+    <th>학생</th><th>학교</th><th>학급</th><th>학년</th><th>진행(완료/14)</th><th>응시</th><th>최근활동</th><th>플랜</th><th></th>
+  </tr></thead><tbody id="tbody"></tbody></table></div>
+  <div class="muted" style="font-size:12px;margin-top:8px" id="cnt"></div>
+ </div>
+ <div class="modal" id="modal" onclick="if(event.target.id==='modal')closeModal()"><div class="sheet" id="sheet"></div></div>`;
+ // load filter options
+ const f=await api('/filters',{token:S.token});
+ if(f.error){logout();return;}
+ S.filters=f;
+ $('#fSchool').innerHTML='<option value="">전체 학교</option>'+(f.schools||[]).map(s=>`<option>${esc(s)}</option>`).join('');
+ $('#fGrade').innerHTML='<option value="">전체 학년</option>'+(f.grades||[]).map(g=>`<option>${esc(g)}</option>`).join('');
+ $('#fClass').innerHTML='<option value="">전체 학급</option>'+(f.classes||[]).map(c=>`<option value="${esc(c.code)}">${esc(c.name)} (${esc(c.code)})</option>`).join('');
+ loadDash();
+}
+async function loadDash(){
+ const body={token:S.token,school:$('#fSchool')?.value||'',grade:$('#fGrade')?.value||'',code:$('#fClass')?.value||''};
+ const j=await api('/overview',body);
+ if(j.error){logout();return;}
+ const nm=($('#fName')?.value||'').trim();
+ let rows=j.students||[];if(nm)rows=rows.filter(r=>(r.name||'').includes(nm));
+ S.rows=rows;
+ const s=j.summary||{};
+ $('#stats').innerHTML=[['학생',s.students],['학급',s.classes],['총 응시',s.attempts],['5종+ 완료',s.completed],['평균 완료',s.avg_done]]
+   .map(([l,v])=>`<div class="stat"><div class="v">${v??0}</div><div class="l">${l}</div></div>`).join('');
+ $('#tbody').innerHTML=rows.length?rows.map(r=>`<tr>
+   <td><b>${esc(r.name)}</b></td><td>${esc(r.school||'-')}</td><td>${esc(r.class_name||'-')}</td><td>${esc(r.grade||'-')}</td>
+   <td><span class="pbar"><i style="width:${Math.round((r.done/r.total)*100)}%"></i></span> ${r.done}/${r.total}</td>
+   <td>${r.attempts}</td><td class="muted">${r.last_at?r.last_at.slice(0,10):'-'}</td>
+   <td><span class="tag ${r.plan==='paid'?'paid':'free'}">${r.plan==='paid'?'유료':'무료'}</span></td>
+   <td><button class="btn ghost sm" onclick="openStudent('${r.id}')">결과·상담</button></td></tr>`).join('')
+   :`<tr><td colspan="9" class="muted" style="text-align:center;padding:30px">조건에 맞는 학생이 없습니다</td></tr>`;
+ $('#cnt').textContent=`총 ${rows.length}명 표시`;
+}
+function summarize(slug,r){
+ if(!r)return '';
+ if(r.kind==='series'||r.kind==='future'){const labels=r.kind==='future'?FUT:(r.labels||SER);const best=labels[r.best],second=labels[r.second];return `대표: <b>${esc(best)}</b>${second?` · 2순위 ${esc(second)}`:''}`;}
+ if(r.kind==='grades'){return (r.subjects||[]).map((s,i)=>`${esc(s)} ${r.grades[i]}등급`).join(' · ');}
+ if(r.kind==='pick'){return `선택 계열: <b>${esc((r.labels||SER)[(r.pick||1)-1])}</b>`;}
+ if(r.kind==='checklist'||r.kind==='bucketcheck'){const weak=(r.kind==='bucketcheck'?(r.weakBuckets||[]).map(b=>(r.names||[])[b]):[]).filter(Boolean);return `준비도 <b>${r.pct}%</b> (${r.ready}/${r.total})${weak.length?` · 보완: ${weak.map(esc).join(', ')}`:''}`;}
+ return '결과 있음';
+}
+async function openStudent(id){
+ $('#sheet').innerHTML='<div style="padding:30px;text-align:center" class="muted">불러오는 중…</div>';
+ $('#modal').classList.add('open');
+ const j=await api('/student',{token:S.token,student_id:id});
+ if(j.error){$('#sheet').innerHTML=`<div class="err" style="display:block">${esc(j.error)}</div>`;return;}
+ const st=j.student||{},ats=j.attempts||[];
+ $('#sheet').innerHTML=`
+  <div class="topbar"><h2 style="font-size:19px">${esc(st.name)} · 상담 자료</h2><div class="spacer"></div>
+   <button class="btn ghost sm noprint" onclick="window.print()">🖨 인쇄</button>
+   <button class="btn navy sm noprint" onclick="closeModal()">닫기</button></div>
+  <div class="muted" style="font-size:12.5px;margin-bottom:14px">${esc(st.school||'')} ${esc(st.class_name||'')} · ${esc(st.grade||'')} · 응시 ${ats.length}건</div>
+  ${ats.length?ats.map(a=>`<div class="atrow"><h4>${esc(TITLES[a.test_slug]||a.test_slug)}</h4>
+     <div class="meta">${a.created_at.slice(0,10)}</div>
+     <div class="kv">${summarize(a.test_slug,a.result)}</div></div>`).join(''):'<div class="muted">아직 응시 기록이 없습니다.</div>'}
+  <div class="muted" style="font-size:11px;margin-top:10px">※ 상세 가이드·심층 리포트는 학생 본인 화면에서 확인/인쇄할 수 있습니다.</div>`;
+}
+function closeModal(){$('#modal').classList.remove('open');}
+
+if(S.token)viewDash();else viewLogin();
+</script>
+</body></html>

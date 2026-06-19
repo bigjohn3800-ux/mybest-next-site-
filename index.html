@@ -183,11 +183,11 @@ td{padding:7px 8px;border-bottom:1px solid #EEE}
 @media(max-width:640px){.app{padding:18px 14px 84px}h1{font-size:22px;line-height:1.3}.sub{font-size:13px}.whero3d{padding:34px 18px 30px}.whero h1,.whero3d h1{font-size:23px}.mnav{gap:13px;font-size:13px}.btn{padding:16px;font-size:16px;border-radius:13px}.card{padding:17px;border-radius:16px}.tcard .emo{flex:0 0 46px;height:46px;font-size:23px}}
 </style></head><body><div class="app">
 <div class="topbar"><div class="logo" onclick="go('home')">MY BEST <span>NEXT</span></div>
-<nav class="mnav noprint"><a onclick="go('home')">홈</a><a onclick="go(S.token?'dash':'join')">진단</a><a onclick="go('howto')">활용법</a></nav>
+<nav class="mnav noprint"><a onclick="go('home')">홈</a><a onclick="go(S.token?'dash':'join')">진단</a><a onclick="go('howto')">활용법</a><a href="/sample.html">결과샘플</a></nav>
 <div class="who" id="who"></div></div>
 <div id="view"></div>
 <div class="foot">
-<div class="flinks noprint"><a onclick="go('legal','terms')">이용약관</a> · <a onclick="go('legal','privacy')"><b>개인정보처리방침</b></a> · <a onclick="go('howto')">활용법</a> · <a onclick="toggleView()" id="viewtgl">🖥 PC 화면 보기</a></div>
+<div class="flinks noprint"><a onclick="go('legal','terms')">이용약관</a> · <a onclick="go('legal','privacy')"><b>개인정보처리방침</b></a> · <a onclick="go('howto')">활용법</a> · <a href="/sample.html">결과샘플</a> · <a onclick="toggleView()" id="viewtgl">🖥 PC 화면 보기</a></div>
 <div style="margin-top:8px;line-height:1.7">(주)가르치는사람들 · 대표 이성훈 · 사업자등록번호 115-87-03727<br>
 서울특별시 강남구 테헤란로70길 12, 402-J913호(대치동) · 문의 onlyjdw3831@gmail.com<br>
 ⓒ My Best NEXT · 살아갈 힘을 기르는 진단 플랫폼</div></div>
@@ -448,14 +448,7 @@ async function go(page,arg){
   v.innerHTML=`<h1>법적 고지 ⚖️</h1>
   <div class="chips noprint"><button class="chip ${tab==='terms'?'on':''}" onclick="go('legal','terms')">이용약관</button><button class="chip ${tab==='privacy'?'on':''}" onclick="go('legal','privacy')">개인정보처리방침</button></div>
   ${tab==='terms'?`
-  <div class="card"><div class="k">이용약관 (요약)</div><div style="font-size:13px;line-height:1.8;color:#3A4154">
-  <b>제1조(목적)</b> 본 약관은 (주)가르치는사람들(이하 "회사")이 제공하는 마이베스트 NEXT 진단 서비스의 이용 조건을 정합니다.<br>
-  <b>제2조(서비스)</b> 초·중·고 학생 대상 진로·진학·공부·미래역량·AI역량 진단과 성장 가이드, 교사용 학급 관리 기능을 제공합니다. 진단 결과는 교육적 참고 자료이며 입시 결과를 보장하지 않습니다.<br>
-  <b>제3조(이용권)</b> 학급 단위 이용권은 결제 즉시 적용되며 표시된 정원·기간 동안 유효합니다.<br>
-  <b>제4조(환불)</b> 결제 후 7일 이내 미사용 시 전액 환불, 사용 개시 후에는 잔여 기간 일할 계산 환불을 원칙으로 합니다(결제대행 수수료 제외 가능). 환불 문의: onlyjdw3831@gmail.com<br>
-  <b>제5조(금지행위)</b> 타인 정보 도용, 결과의 무단 상업적 재배포, 시스템에 대한 부정 접근을 금합니다.<br>
-  <b>제6조(면책)</b> 천재지변, 클라우드 장애 등 불가항력으로 인한 손해에 대해 회사는 책임을 지지 않습니다.<br>
-  <b>제7조(분쟁)</b> 본 약관은 대한민국 법률에 따르며, 분쟁은 회사 본점 소재지 관할 법원에 따릅니다.</div></div>`:`
+  <div class="card"><div class="k">이용약관</div><div style="font-size:13px;line-height:1.8;color:#3A4154"><b>제1조(목적)</b> 본 약관은 (주)가르치는사람들(이하 "회사")이 제공하는 마이베스트 NEXT 진단 서비스(이하 "서비스")의 이용 조건·절차 및 회사와 이용자의 권리·의무를 정합니다.<br><b>제2조(서비스 내용)</b> 초·중·고 학생 대상 진로·진학·공부·미래역량·AI역량 진단과 성장 가이드, 교사용 학급 관리 기능을 제공합니다. 진단 결과는 교육적 참고 자료이며 합격·입시 결과를 보장하지 않습니다.<br><b>제3조(이용권·결제)</b> 학급/학년 단위 이용권은 토스페이먼츠를 통해 결제되며, 결제 즉시 화면에 표시된 정원·기간 동안 적용됩니다. 가격·정원·기간은 구매 화면 표시에 따릅니다.<br><b>제4조(청약철회 및 환불)</b> ① 이용자는 결제일부터 7일 이내에 청약을 철회할 수 있습니다. ② 다만 학급 소속 학생이 진단을 1회 이상 이용(콘텐츠 이용 개시)한 경우, 콘텐츠 특성상 그 부분의 청약철회가 제한될 수 있습니다(전자상거래법 제17조 및 콘텐츠이용자보호지침). ③ 이용 개시 후 중도 해지 시 잔여 이용기간을 일할 계산하여 환불하며, 결제대행 수수료가 공제될 수 있습니다. ④ 환불은 요청 확인 후 3영업일 이내 동일 결제수단으로 처리합니다. ⑤ 미성년자가 법정대리인의 동의 없이 결제한 경우 법정대리인은 이를 취소할 수 있습니다. 환불·청약철회 문의: onlyjdw3831@gmail.com<br><b>제5조(저작권)</b> 진단 문항·콘텐츠·결과 보고서에 대한 저작권은 회사에 있으며, 무단 복제·배포·상업적 재사용을 금합니다.<br><b>제6조(금지행위)</b> 타인 정보 도용, 결과의 무단 상업적 재배포, 시스템 부정 접근·자동 수집(크롤링)을 금합니다.<br><b>제7조(면책)</b> 천재지변, 클라우드 장애 등 불가항력 및 이용자 귀책 사유로 인한 손해에 대해 회사는 책임을 지지 않습니다.<br><b>제8조(분쟁해결)</b> 본 약관은 대한민국 법률에 따르며, 「전자상거래 등에서의 소비자보호에 관한 법률」 등 관련 법령과 회사 본점 소재지 관할 법원에 따릅니다. 소비자는 한국소비자원·전자거래분쟁조정위원회에 분쟁 조정을 신청할 수 있습니다.<br><b>부칙</b> 본 약관은 2026년 6월 20일부터 시행합니다.<br><span style="color:#8489A3;font-size:11.5px">※ 통신판매업 신고번호: (신고 후 기재 예정) · 본 약관은 표준 전자상거래 약관을 참고한 초안으로, 정식 판매 개시 전 법률 전문가 검토를 권장합니다.</span></div></div>`:`
   <div class="card"><div class="k">개인정보처리방침</div><div style="font-size:13px;line-height:1.8;color:#3A4154">
   (주)가르치는사람들(이하 "회사")은 개인정보보호법을 준수하며, <b>개인정보 최소수집 원칙</b>을 서비스 설계의 기본으로 합니다.<br><br>
   <b>1. 수집 항목과 방법</b> — 학생: 이름, 학급코드, PIN(일방향 암호화 저장), 학년(선택), 진단 응답. 교사: 학교명, 학급명, 교사 PIN(암호화). 결제: 토스페이먼츠를 통해 처리되며 회사는 카드번호를 저장하지 않습니다. <b>연락처·이메일·주민등록번호·사진은 일절 수집하지 않습니다.</b><br>

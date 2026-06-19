@@ -1,0 +1,10 @@
+# 마이베스트 NEXT — Netlify 배포 설정
+[build]
+  publish = "."
+  command = ""
+
+# 단일 파일 정적 SPA — 모든 경로를 index.html로
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

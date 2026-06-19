@@ -1,0 +1,780 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" id="vp" content="width=device-width,initial-scale=1">
+<title>마이베스트 NEXT — 나의 가능성 진단</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<style>
+:root{--ink:#23284A;--vio:#6C5CE7;--mint:#00CEC9;--sun:#FDCB6E;--bg:#F7F6FF;--navy:#1B2A4A;--gold:#C8A24B;--paper:#FBFAF7;--muted:#5C617C}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Pretendard,-apple-system,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+.app{max-width:640px;margin:0 auto;padding:24px 18px 70px}
+.logo{font-weight:800;letter-spacing:.1em;font-size:14px;color:var(--vio);cursor:pointer}
+.logo span{color:var(--mint)}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.topbar .who{font-size:12px;color:#7A7E9A}
+.topbar .who b{color:var(--ink)}
+h1{font-size:25px;font-weight:800;line-height:1.32;margin:10px 0 6px}
+.sub{font-size:13.5px;color:var(--muted);margin-bottom:20px}
+.card{background:#fff;border-radius:18px;padding:20px;box-shadow:0 6px 24px rgba(108,92,231,.09);margin-bottom:14px}
+.btn{display:block;width:100%;border:0;border-radius:14px;padding:15px;font-size:15.5px;font-weight:800;font-family:inherit;cursor:pointer;background:linear-gradient(90deg,var(--vio),#8E7CF3);color:#fff;box-shadow:0 6px 16px rgba(108,92,231,.3);transition:.15s;text-align:center}
+.btn:hover{transform:translateY(-1px)}
+.btn:disabled{opacity:.4;transform:none;cursor:default}
+.btn.ghost{background:#fff;color:var(--vio);border:2px solid #E5E0FB;box-shadow:none}
+.btn.small{width:auto;display:inline-block;padding:9px 16px;font-size:13px;border-radius:10px}
+.btn.navy{background:var(--navy)}
+input,select{width:100%;padding:13px 14px;border:2px solid #ECEAFB;border-radius:12px;font-family:inherit;font-size:15px;margin-bottom:10px;background:#fff}
+input:focus{outline:none;border-color:var(--vio)}
+label{font-size:12px;font-weight:700;color:#7A7E9A;display:block;margin:4px 0 4px 2px}
+.k{font-size:11px;font-weight:800;letter-spacing:.16em;color:var(--vio);margin-bottom:10px}
+.tcard{display:flex;gap:14px;align-items:center;cursor:pointer;transition:.15s}
+.tcard:hover{transform:translateY(-2px)}
+.tcard .emo{flex:0 0 52px;height:52px;border-radius:16px;background:#F1EEFF;display:flex;align-items:center;justify-content:center;font-size:26px}
+.tcard h3{font-size:16px;margin-bottom:2px}
+.tcard p{font-size:12.5px;color:#7A7E9A}
+.tcard .aud{margin-left:auto;font-size:11px;font-weight:700;color:var(--mint);white-space:nowrap}
+.bar{height:8px;border-radius:4px;background:#ECEAFB;margin-bottom:18px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,var(--vio),var(--mint));transition:width .25s}
+.qnum{font-size:12px;font-weight:700;color:var(--vio);margin-bottom:8px}
+.qtext{font-size:17.5px;font-weight:700;line-height:1.45;margin-bottom:16px}
+.opt{display:block;width:100%;border:2px solid #ECEAFB;border-radius:13px;padding:13px 15px;font-size:14.5px;cursor:pointer;transition:.13s;background:#fff;text-align:left;font-family:inherit;margin-bottom:9px}
+.opt:hover{border-color:var(--vio)}
+.opt.sel{border-color:var(--vio);background:#F1EEFF;font-weight:700}
+.hero{background:linear-gradient(135deg,var(--vio),var(--mint));color:#fff;border-radius:20px;padding:26px;text-align:center;margin-bottom:14px}
+.hero .emoji{font-size:42px}.hero h2{font-size:23px;margin:6px 0 4px}.hero p{font-size:13px;opacity:.93}
+.chartwrap{height:260px;position:relative}
+.tag{display:inline-block;background:#F1EEFF;color:var(--vio);font-weight:700;font-size:12px;border-radius:999px;padding:5px 12px;margin:3px 2px}
+.rx{list-style:none}
+.rx li{display:flex;gap:11px;align-items:flex-start;padding:10px 0;border-bottom:1px dashed #ECEAFB;font-size:14px;line-height:1.5}
+.rx li:last-child{border:0}
+.rx .n{flex:0 0 24px;height:24px;border-radius:50%;background:var(--sun);font-weight:800;display:flex;align-items:center;justify-content:center;font-size:12px}
+.meter{height:10px;border-radius:5px;background:#ECEAFB;overflow:hidden;margin:10px 0}
+.meter i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--navy))}
+.chk{list-style:none}
+.chk li{font-size:13.5px;padding:7px 0;border-bottom:1px dashed #EEE;line-height:1.45}
+.chk .ok{color:#2E7D32}.chk .no{color:#C62828;font-weight:600}
+.block{background:#fff;border:1px solid #E7E4DA;border-radius:14px;padding:18px;margin-bottom:12px}
+.block .badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.13em;color:var(--gold);border:1px solid var(--gold);border-radius:999px;padding:2px 10px;margin-bottom:8px}
+.block h3{font-size:16px;color:var(--navy);margin-bottom:6px;line-height:1.4}
+.block p{font-size:13px;line-height:1.65}
+.tipbox{margin-top:10px;background:#F4F1E8;border-radius:10px;padding:11px 13px}
+.tipbox b{font-size:10px;letter-spacing:.14em;color:#A8893E}
+.tipbox ul{list-style:none;margin-top:5px}
+.tipbox li{font-size:12.5px;padding:3px 0 3px 18px;position:relative;line-height:1.45}
+.tipbox li:before{content:'✓';position:absolute;left:0;color:var(--gold);font-weight:800}
+table{width:100%;border-collapse:collapse;font-size:12.5px;background:#fff}
+th{background:var(--navy);color:#fff;padding:8px;text-align:left;font-weight:600;font-size:11.5px}
+td{padding:7px 8px;border-bottom:1px solid #EEE}
+.attrow{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px dashed #ECEAFB;font-size:13.5px}
+.attrow:last-child{border:0}
+.muted{color:#8489A3;font-size:12px}
+.err{background:#FFF0F0;color:#C62828;border-radius:10px;padding:10px 13px;font-size:13px;margin-bottom:10px;display:none}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.stat{background:#fff;border-radius:16px;padding:16px;text-align:center;box-shadow:0 6px 24px rgba(108,92,231,.08)}
+.stat .v{font-size:26px;font-weight:800;color:var(--navy)}
+.stat .l{font-size:11px;color:#7A7E9A;font-weight:700;letter-spacing:.08em}
+.foot{text-align:center;font-size:11px;color:#A9ACC4;margin-top:26px}
+.linkrow{text-align:center;margin-top:14px;font-size:13px}
+.linkrow a{color:var(--vio);font-weight:700;cursor:pointer;text-decoration:none}
+.whero{position:relative;overflow:hidden;background:linear-gradient(120deg,#6C5CE7,#8E7CF3,#00CEC9,#6C5CE7);background-size:300% 300%;animation:gflow 14s ease infinite;border-radius:24px;padding:34px 26px;color:#fff;text-align:center;margin-bottom:22px}
+@keyframes gflow{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.whero h1{font-size:27px;margin:0 0 10px;position:relative}
+.whero p{font-size:13.5px;opacity:.94;line-height:1.6;position:relative}
+.herobtns{display:flex;gap:10px;justify-content:center;margin:18px 0 6px;position:relative;flex-wrap:wrap}
+.whero .btn.ghost{background:rgba(255,255,255,.92);border:0}
+.stats{display:flex;justify-content:center;gap:26px;margin-top:16px;position:relative}
+.stats div{text-align:center}
+.stats b{display:block;font-size:21px}
+.stats span{font-size:10.5px;opacity:.85;letter-spacing:.06em}
+.blob{position:absolute;border-radius:50%;filter:blur(2px);opacity:.25;background:#fff;animation:float 9s ease-in-out infinite}
+.b1{width:160px;height:160px;top:-50px;right:-40px}
+.b2{width:110px;height:110px;bottom:-40px;left:-30px;animation-delay:3s}
+@keyframes float{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(16px) scale(1.06)}}
+.whero3d{background:radial-gradient(120% 160% at 80% -20%,#3A2E8C 0%,#171238 45%,#0B0A1E 100%);padding:46px 26px 40px;perspective:900px;animation:none}
+.hgrain{position:absolute;inset:0;opacity:.5;background-image:radial-gradient(rgba(255,255,255,.05) 1px,transparent 1px);background-size:3px 3px;pointer-events:none}
+.scene{position:absolute;inset:0;transform-style:preserve-3d;pointer-events:none}
+.scene>*{transition:transform .25s ease-out;will-change:transform}
+.horb{position:absolute;border-radius:50%;filter:blur(18px)}
+.o1{width:230px;height:230px;right:-60px;top:-70px;background:radial-gradient(circle at 35% 35%,rgba(108,92,231,.85),rgba(108,92,231,0) 70%)}
+.o2{width:170px;height:170px;left:-50px;bottom:-60px;background:radial-gradient(circle at 40% 40%,rgba(0,206,201,.7),rgba(0,206,201,0) 70%)}
+.o3{width:90px;height:90px;left:18%;top:12%;background:radial-gradient(circle at 40% 40%,rgba(253,203,110,.55),rgba(253,203,110,0) 70%)}
+.hring{position:absolute;width:340px;height:340px;left:50%;top:52%;margin:-170px 0 0 -170px;border-radius:50%;background:conic-gradient(from 0deg,rgba(108,92,231,0),rgba(0,206,201,.5),rgba(253,203,110,.4),rgba(108,92,231,0));-webkit-mask:radial-gradient(circle,transparent 62%,#000 63%,#000 66%,transparent 67%);mask:radial-gradient(circle,transparent 62%,#000 63%,#000 66%,transparent 67%);animation:spin 16s linear infinite;opacity:.85}
+@keyframes spin{to{rotate:360deg}}
+.gcard{position:absolute;width:62px;height:62px;border-radius:18px;background:linear-gradient(135deg,rgba(255,255,255,.16),rgba(255,255,255,.05));border:1px solid rgba(255,255,255,.28);backdrop-filter:blur(8px);box-shadow:0 18px 40px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:30px}
+.gcard span{display:block;animation:bob 5s ease-in-out infinite}
+.g1{left:7%;top:22%;animation:tilt1 9s ease-in-out infinite}
+.g2{right:8%;top:16%;animation:tilt2 11s ease-in-out infinite}
+.g3{left:13%;bottom:14%;animation:tilt2 10s ease-in-out infinite reverse}
+.g4{right:12%;bottom:18%;animation:tilt1 8s ease-in-out infinite reverse}
+@keyframes tilt1{0%,100%{rotate:-7deg;translate:0 0}50%{rotate:6deg;translate:0 -14px}}
+@keyframes tilt2{0%,100%{rotate:8deg;translate:0 0}50%{rotate:-6deg;translate:0 12px}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.hgrad{background:linear-gradient(92deg,#FFFFFF 20%,#B9AAFF 45%,#7DF3E6 75%,#FFFFFF 95%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:sheen 6s linear infinite;position:relative}
+@keyframes sheen{to{background-position:220% 0}}
+.whero3d p,.whero3d .herobtns,.whero3d .stats{position:relative}
+@media(max-width:560px){.gcard{width:46px;height:46px;font-size:22px;border-radius:13px}.hring{width:250px;height:250px;margin:-125px 0 0 -125px}}
+.wk{font-size:15px;font-weight:800;color:var(--ink);margin:20px 2px 12px}
+.wk span{font-size:11.5px;color:#A9ACC4;font-weight:600;margin-left:6px}
+.chips{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.chip{border:2px solid #ECEAFB;background:#fff;border-radius:999px;padding:7px 16px;font-family:inherit;font-size:13px;font-weight:700;color:#7A7E9A;cursor:pointer;transition:.15s}
+.chip.on,.chip:hover{background:var(--vio);border-color:var(--vio);color:#fff}
+.vgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.vcard{background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 6px 22px rgba(108,92,231,.10);cursor:pointer;transition:.18s;animation:rise .5s both}
+.vcard:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(108,92,231,.22)}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.vtop{position:relative;height:96px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.vtop:after{content:'';position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.25) 50%,transparent 70%);transform:translateX(-100%);transition:.5s}
+.vcard:hover .vtop:after{transform:translateX(100%)}
+.vtop svg{width:64px;height:64px;margin:0}
+.catb{position:absolute;top:9px;right:10px;background:rgba(255,255,255,.92);color:var(--ink);font-size:10px;font-weight:800;border-radius:999px;padding:3px 9px;letter-spacing:.06em}
+.stepb{position:absolute;top:9px;left:10px;background:var(--ink);color:#FDCB6E;font-size:10px;font-weight:800;border-radius:999px;padding:3px 10px;letter-spacing:.08em;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.lvsec{margin-bottom:6px}
+.mjd{display:none}
+.mjd.open{display:block}
+.doneb{position:absolute;bottom:8px;right:10px;background:#2E7D32;color:#fff;font-size:10px;font-weight:800;border-radius:999px;padding:3px 10px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.donecard{outline:2px solid #B7E4C7;outline-offset:-2px}
+.solpage{break-inside:avoid}
+@media print{.solpage{page-break-after:always}.solpage:last-of-type{page-break-after:auto}}
+@media(min-width:600px){
+ .lvsec{width:min(96vw,1100px);position:relative;left:50%;transform:translateX(-50%)}
+ .lvsec .vgrid{grid-template-columns:repeat(3,1fr)}
+ .lvsec .vbody p{min-height:46px}
+}
+.vbody{padding:13px 14px 14px}
+.vbody h3{font-size:14.5px;margin-bottom:3px;color:var(--ink)}
+.vbody p{font-size:11.5px;color:#7A7E9A;line-height:1.45;min-height:32px}
+.aud2{display:inline-block;margin-top:6px;font-size:10.5px;font-weight:800;color:var(--mint);letter-spacing:.04em}
+.how{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.hstep{background:#fff;border-radius:16px;padding:16px 14px;text-align:center;box-shadow:0 6px 20px rgba(108,92,231,.08)}
+.hstep b{display:inline-flex;width:30px;height:30px;border-radius:50%;background:var(--sun);align-items:center;justify-content:center;font-size:14px;margin-bottom:7px}
+.hstep h4{font-size:13.5px;margin-bottom:4px}
+.hstep p{font-size:11px;color:#7A7E9A;line-height:1.5}
+.lkrow{display:flex;gap:8px}
+.lk{flex:1;border:2px solid #ECEAFB;border-radius:14px;background:#fff;padding:12px 4px;font-family:inherit;font-size:10.5px;font-weight:700;color:#7A7E9A;cursor:pointer;transition:.13s;display:flex;flex-direction:column;align-items:center;gap:5px}
+.lk span{font-size:24px}
+.lk:hover{border-color:var(--vio);background:#F1EEFF;transform:translateY(-2px)}
+.ynrow{display:flex;gap:10px}
+.yn{flex:1;border:2px solid #ECEAFB;border-radius:16px;background:#fff;padding:20px 8px;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;transition:.15s;display:flex;flex-direction:column;align-items:center;gap:8px}
+.yn span{font-size:30px}
+.yn.yes:hover{border-color:#2E7D32;background:#F0FFF4;transform:translateY(-2px)}
+.yn.no:hover{border-color:#C8A24B;background:#FFFBEF;transform:translateY(-2px)}
+@media(max-width:560px){.vgrid{grid-template-columns:1fr}.how{grid-template-columns:1fr}.lkrow{flex-wrap:wrap}.lk{min-width:30%}}
+.mnav{display:flex;gap:14px;font-size:13px;font-weight:700}
+.mnav a{color:#5B6270;cursor:pointer;transition:.12s}
+.mnav a:hover{color:var(--vio)}
+.vtop{height:112px}
+.vph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.vshade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,16,60,.05) 30%,rgba(20,16,60,.55))}
+.vmed{position:absolute;left:8px;bottom:6px}
+.vmed svg{width:46px!important;height:46px!important;filter:drop-shadow(0 2px 6px rgba(0,0,0,.35))}
+.flinks a{color:#7A7E9A;cursor:pointer;font-weight:700}
+.flinks a:hover{color:var(--vio)}
+@media(max-width:560px){.mnav{gap:9px;font-size:11.5px}}
+.gradegrid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.gcell{text-align:center;background:#FBFAF7;border:1px solid #E7E4DA;border-radius:12px;padding:12px 4px}
+.gsub{font-size:13px;font-weight:700;color:var(--navy)}
+.gval{font-size:24px;font-weight:800;margin-top:3px}
+.gval small{font-size:11px;font-weight:600}
+@media print{
+ body{background:#fff}.app{max-width:190mm;padding:0}
+ .topbar,.btn,.noprint,.foot{display:none!important}
+ .card,.block,.hero,.stat{box-shadow:none;border:1px solid #DDD;break-inside:avoid}
+ .hero{background:var(--navy)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+@media(max-width:640px){.app{padding:18px 14px 84px}h1{font-size:22px;line-height:1.3}.sub{font-size:13px}.whero3d{padding:34px 18px 30px}.whero h1,.whero3d h1{font-size:23px}.mnav{gap:13px;font-size:13px}.btn{padding:16px;font-size:16px;border-radius:13px}.card{padding:17px;border-radius:16px}.tcard .emo{flex:0 0 46px;height:46px;font-size:23px}}
+</style></head><body><div class="app">
+<div class="topbar"><div class="logo" onclick="go('home')">MY BEST <span>NEXT</span></div>
+<nav class="mnav noprint"><a onclick="go('home')">홈</a><a onclick="go(S.token?'dash':'join')">진단</a><a onclick="go('howto')">활용법</a></nav>
+<div class="who" id="who"></div></div>
+<div id="view"></div>
+<div class="foot">
+<div class="flinks noprint"><a onclick="go('legal','terms')">이용약관</a> · <a onclick="go('legal','privacy')"><b>개인정보처리방침</b></a> · <a onclick="go('howto')">활용법</a> · <a onclick="toggleView()" id="viewtgl">🖥 PC 화면 보기</a></div>
+<div style="margin-top:8px;line-height:1.7">(주)가르치는사람들 · 대표 이성훈 · 사업자등록번호 115-87-03727<br>
+서울특별시 강남구 테헤란로70길 12, 402-J913호(대치동) · 문의 onlyjdw3831@gmail.com<br>
+ⓒ My Best NEXT · 살아갈 힘을 기르는 진단 플랫폼</div></div>
+</div>
+<script>
+const API='https://onqisdgxwuvlxehjvoto.supabase.co/functions/v1/mybest';
+const PAYAPI='https://onqisdgxwuvlxehjvoto.supabase.co/functions/v1/mybpay';
+const ADMAPI='https://onqisdgxwuvlxehjvoto.supabase.co/functions/v1/mybadm';
+/* 무단 복사 감지 비콘 (탐지 전용 — 정상 도메인엔 영향 없음) */
+(function(){try{fetch('https://onqisdgxwuvlxehjvoto.supabase.co/functions/v1/myb-guard',{method:'POST',headers:{'Content-Type':'application/json','apikey':'sb_publishable_z3KmGPFA4RKka5e_tDWD5A_-CUDC7t8'},body:JSON.stringify({host:location.hostname,ref:document.referrer,path:location.pathname})}).catch(function(){});}catch(e){}})();
+const $=s=>document.querySelector(s);
+function applyView(){var v=localStorage.getItem('myb_view'),m=document.getElementById('vp'),b=document.getElementById('viewtgl');if(v==='pc'){if(m)m.setAttribute('content','width=1100');if(b)b.textContent='📱 모바일 화면 보기';}else{if(m)m.setAttribute('content','width=device-width,initial-scale=1');if(b)b.textContent='🖥 PC 화면 보기';}}
+function toggleView(){localStorage.setItem('myb_view',localStorage.getItem('myb_view')==='pc'?'mobile':'pc');applyView();}
+try{applyView();}catch(e){}
+const S={token:localStorage.getItem('myb_token'),me:null,tests:null,quiz:null};
+const EMO={hs_series:'🧭',ms_series:'🌱',interview:'🎤',hs_essay:'✍️',study:'📚',inquiry:'🔍',ms_study:'📝',future:'🚀',subject_rec:'🗂️',roadmap:'🗺️',ai_skill:'🤖',es_dream:'🌈',es_habit:'✏️',reading:'📖'};
+const ARTC={study:['#FF8A00','#FFC163'],inquiry:['#00B894','#55EFC4'],ms_study:['#0984E3','#74B9FF'],future:['#6C5CE7','#00CEC9'],hs_series:['#6C5CE7','#A29BFE'],ms_series:['#00B894','#81ECEC'],interview:['#E84393','#FD79A8'],hs_essay:['#E1A300','#FFD36E'],subject_rec:['#00897B','#4DD0B1'],roadmap:['#5C6BC0','#9FA8DA'],ai_skill:['#222B45','#6C5CE7'],es_dream:['#FF6B9D','#FFC371'],es_habit:['#20BF6B','#A8E063'],reading:['#8E5BE8','#FFB88C']};
+const PHOTO={hs_series:'https://images.unsplash.com/photo-1619468129361-605ebea04b44',ms_series:'https://images.unsplash.com/photo-1654089669464-dcc57c490d2b',subject_rec:'https://images.unsplash.com/photo-1604866830893-c13cafa515d5',roadmap:'https://images.unsplash.com/photo-1620608964186-18a8cfc2ad44',interview:'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4',hs_essay:'https://images.unsplash.com/photo-1455390582262-044cdead277a',study:'https://images.unsplash.com/photo-1769794371055-54436b54577e',ms_study:'https://images.unsplash.com/photo-1483546416237-76fd26bbcdd1',inquiry:'https://images.unsplash.com/photo-1532094349884-543bc11b234d',future:'https://images.unsplash.com/photo-1517976487492-5750f3195933',ai_skill:'https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b',reading:'https://images.unsplash.com/photo-1553729784-e91953dec042',es_dream:'https://images.unsplash.com/photo-1630139026564-4a2bf5670879',es_habit:'https://images.unsplash.com/photo-1513542789411-b6a5d4f31634'};
+const CATS=['전체','진로','진학','공부','역량'];
+function vcardHtml(k,d,act,st,i){
+ return `<div class="vcard" data-slug="${k}" style="animation-delay:${i*60}ms" onclick="${act}('${k}')"><div class="vtop" style="background:linear-gradient(135deg,${(ARTC[k]||['#6C5CE7','#00CEC9']).join(',')})"><img class="vph" loading="lazy" src="${PHOTO[k]||''}?w=640&h=260&fit=crop&q=60&auto=format" onerror="this.remove()" alt=""><div class="vshade"></div><div class="vmed">${ART(k)}</div><span class="stepb">STEP ${st}</span><span class="catb">${d.cat||''}</span></div><div class="vbody"><h3>${esc(d.title)}</h3><p>${esc(d.desc)}</p><span class="aud2">${esc(d.audience)}</span></div></div>`;
+}
+function gridHtml(t,act){
+ const LV=[['es','초등','🌈'],['ms','중학','🌱'],['hs','고등','🎓']];
+ let h=`<div class="chips noprint">${['전체','초등','중학','고등'].map((c,i)=>`<button class="chip${i===0?' on':''}" onclick="filterLv(this,'${c}')">${c}</button>`).join('')}</div>`;
+ for(const[lv,nm,em]of LV){
+  const items=Object.entries(t).filter(([k,d])=>d.steps&&d.steps[lv]).sort((a,b)=>a[1].steps[lv]-b[1].steps[lv]);
+  if(!items.length)continue;
+  const extra = lv==='hs' ? `<div class="vcard" onclick="go('majors')"><div class="vtop" style="background:linear-gradient(135deg,#0F1530,#3E5C8A)"><div class="vmed">${ART('subject_rec')}</div><span class="stepb">탐색관</span><span class="catb">진학</span></div><div class="vbody"><h3>학과 탐색관 🏛️</h3><p>7계열 56개 학과 — 설명·인재상·권장과목·진로를 한곳에서</p><span class="aud2">중3·고등</span></div></div>` : '';
+  h+=`<div class="lvsec" data-lv="${nm}"><div class="wk">${em} ${nm} 로드맵 <span>STEP 1부터 순서대로 — 나의 성장 여정</span></div><div class="vgrid">${items.map(([k,d],i)=>vcardHtml(k,d,act,d.steps[lv],i)).join('')}${extra}</div></div>`;
+ }
+ return h;
+}
+function filterLv(el,c){
+ [...el.parentElement.children].forEach(b=>b.classList.remove('on'));el.classList.add('on');
+ document.querySelectorAll('.lvsec').forEach(sx=>{sx.style.display=(c==='전체'||sx.dataset.lv===c)?'':'none'});
+}
+function qrImg(code){const u=location.origin+location.pathname+'?code='+code;return `<img src="https://api.qrserver.com/v1/create-qr-code/?size=170x170&margin=8&data=${encodeURIComponent(u)}" width="150" height="150" style="border-radius:12px;background:#fff;padding:6px" alt="QR">`}
+function confetti(){const c=document.createElement('canvas');c.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:99';document.body.appendChild(c);c.width=innerWidth;c.height=innerHeight;const x=c.getContext('2d'),P=[...Array(110)].map(()=>({x:Math.random()*c.width,y:-20-Math.random()*c.height*.4,v:2+Math.random()*3,r:3+Math.random()*5,h:Math.random()*360,w:Math.random()*2-1}));let t=0;(function f(){x.clearRect(0,0,c.width,c.height);P.forEach(p=>{p.y+=p.v;p.x+=p.w;x.fillStyle=`hsl(${p.h},80%,60%)`;x.fillRect(p.x,p.y,p.r,p.r)});if(++t<150)requestAnimationFrame(f);else c.remove()})()}
+function countUp(){document.querySelectorAll('.cnt').forEach(el=>{const v=+el.dataset.v||0;let i=0;const step=Math.max(1,Math.round(v/30));(function tick(){i=Math.min(v,i+step);el.textContent=i;if(i<v)requestAnimationFrame(tick)})()})}
+function ART(s){const g=ARTC[s]||['#6C5CE7','#00CEC9'];
+return `<svg width="88" height="88" viewBox="0 0 88 88" style="margin-bottom:4px"><defs><linearGradient id="g${s}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${g[0]}"/><stop offset="1" stop-color="${g[1]}"/></linearGradient></defs><circle cx="44" cy="44" r="41" fill="rgba(255,255,255,.16)"/><circle cx="44" cy="44" r="34" fill="url(#g${s})"/><circle cx="44" cy="44" r="41" fill="none" stroke="rgba(255,255,255,.65)" stroke-width="2" stroke-dasharray="7 6"/><text x="44" y="56" text-anchor="middle" font-size="32">${EMO[s]||'📊'}</text></svg>`;}
+const LABELS=['인문','사회','자연','공학','의생명','교육','예체능'];
+const SER_DESC={'인문':'언어와 이야기로 세상을 깊이 읽어내는 사람','사회':'사람과 사회를 연결하고 움직이는 리더','자연':'자연의 원리를 파고드는 탐구자','공학':'아이디어를 현실로 만드는 발명가','의생명':'생명을 이해하고 돌보는 따뜻한 전문가','교육':'배움을 나누며 사람을 성장시키는 멘토','예체능':'감각과 표현으로 새로움을 만드는 크리에이터'};
+const SER_ACT={'인문':['고전·칼럼 주 1회 요약하고 내 생각 한 단락 쓰기','독서 토론 동아리에서 발제 도전하기','관심 주제 미니 에세이 포트폴리오 만들기'],'사회':['뉴스 1건을 원인·쟁점·해결책 3줄로 분석하기','학급·동아리 프로젝트 기획 맡아보기','설문 미니 조사 프로젝트 해보기'],'자연':['"왜?"를 3번 묻는 탐구노트 쓰기','과학 실험·관찰 동아리 참여하기','수학·과학 심화 문제 주 2개 도전하기'],'공학':['생활 속 불편 1개 개선 아이디어 스케치하기','코딩·메이커로 작은 작품 완성하기','수학 개념을 실생활 문제에 적용해보기'],'의생명':['생명과학 비주얼 노트 만들기','보건·생명 진로 인터뷰/탐방 시도하기','꾸준한 체력 관리 루틴 만들기'],'교육':['친구에게 한 과목 가르쳐보는 설명 스터디 하기','멘토링·봉사 활동 정기 참여하기','나만의 공부법 글로 정리해 공유하기'],'예체능':['매일 15분 창작/연습 루틴 만들기','성장 포트폴리오 기록하기','전시·공연 감상 후 비평 노트 쓰기']};
+const api=async(p,body)=>{
+ const r=await fetch(API+'/api'+p,body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:undefined);
+ const j=await r.json();
+ if(!r.ok)throw new Error(j.error||'오류가 발생했습니다');
+ return j;
+};
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function showErr(m){const e=$('#err');if(e){e.textContent=m;e.style.display='block'}else alert(m)}
+function setWho(){$('#who').innerHTML=S.me?`<b>${esc(S.me.name)}</b> · ${esc(S.me.class_name||'')} <a style="color:#C62828;cursor:pointer;margin-left:6px" onclick="logout()">나가기</a>`:''}
+function logout(){localStorage.removeItem('myb_token');S.token=null;S.me=null;go('home')}
+async function go(page,arg){
+ const v=$('#view');
+ if(page==='home'){
+  v.innerHTML=`<div class="whero whero3d" id="hero3d">
+   <div class="hgrain"></div>
+   <div class="scene" id="scene">
+    <div class="horb o1" data-z="3"></div><div class="horb o2" data-z="2"></div><div class="horb o3" data-z="4"></div>
+    <div class="hring" data-z="1"></div>
+    <div class="gcard g1" data-z="6"><span>🧭</span></div>
+    <div class="gcard g2" data-z="8"><span>🚀</span></div>
+    <div class="gcard g3" data-z="5"><span>🤖</span></div>
+    <div class="gcard g4" data-z="7"><span>📈</span></div>
+   </div>
+   <h1 class="hgrad">나의 가능성을 발견하는<br>가장 빠른 3분 ✨</h1>
+   <p>초등·중학·고등 학년별 로드맵을 따라 —<br>진로·진학·공부·미래역량·AI역량을 진단하고 성장 처방을 받아보세요.</p>
+   <div class="herobtns"><button class="btn" style="width:auto;padding:14px 26px" onclick="go('join')">학생으로 시작하기 🚀</button>
+   <button class="btn ghost" style="width:auto;padding:14px 26px" onclick="go('teacher')">선생님 공간 🏫</button></div>
+   <div class="stats"><div><b>14</b><span>진단 프로그램</span></div><div><b>78</b><span>성장 가이드</span></div><div><b>78,000+</b><span>누적 진단 데이터</span></div></div>
+  </div>
+  <div class="wk">진단 프로그램 <span>카테고리를 골라보세요</span></div>
+  <div id="tlist"></div>
+  <div class="wk">이용 방법</div>
+  <div class="how">
+   <div class="hstep"><b>1</b><h4>학급코드 입장</h4><p>선생님께 받은 코드와 이름, 나만의 PIN으로 간편하게</p></div>
+   <div class="hstep"><b>2</b><h4>3분 진단</h4><p>카드를 고르고 솔직하게 답하면 즉시 분석</p></div>
+   <div class="hstep"><b>3</b><h4>성장 솔루션</h4><p>차트 + 맞춤 가이드 + A4 한장 보고서까지</p></div>
+  </div>
+  <div class="linkrow"><a onclick="go('admin')" style="color:#A9ACC4">콘텐츠 관리자</a></div>`;
+  const t=S.tests??(S.tests=(await api('/tests')).tests);
+  $('#tlist').innerHTML=gridHtml(t, S.token?"startQuiz":"goJoin");
+  window.goJoin=()=>go('join');
+  (function(){const sc=$('#scene'),hero=$('#hero3d');if(!sc||!hero)return;
+   hero.addEventListener('pointermove',e=>{const r=hero.getBoundingClientRect();const x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+    [...sc.children].forEach(el=>{const z=+el.dataset.z||2;el.style.transform=`translate(${x*z*7}px,${y*z*7}px)`+(el.dataset.base||'')});});
+  })();
+  if(S.token){try{S.me=await api('/me?token='+S.token);setWho();go('dash');return}catch(e){localStorage.removeItem('myb_token');S.token=null}}
+ }
+ else if(page==='join'){
+  v.innerHTML=`<h1>간편하게 시작해요</h1><div class="sub">선생님께 받은 학급코드로 입장합니다. 처음이면 자동으로 가입돼요.</div>
+  <div class="card"><div class="err" id="err"></div>
+  <label>학급코드</label><input id="jc" placeholder="예: ABC123" style="text-transform:uppercase" value="${esc(new URLSearchParams(location.search).get('code')||'')}">
+  <label>이름</label><input id="jn" placeholder="실명을 입력하세요">
+  <label>나만의 PIN (4자리 숫자)</label><input id="jp" type="password" inputmode="numeric" maxlength="4" placeholder="••••">
+  <label>학년</label><select id="jg"><option>중1</option><option>중2</option><option>중3</option><option selected>고1</option><option>고2</option><option>고3</option></select>
+  <div style="background:#F4F8F1;border-radius:10px;padding:10px 12px;font-size:11.5px;color:#4C5C4C;line-height:1.6;margin-bottom:10px">🔒 <b>개인정보 최소수집</b>: 이름·학급코드·PIN·학년만 수집하며 연락처/이메일/주민번호는 받지 않습니다. PIN은 암호화 저장됩니다. 입장 시 <a style="color:var(--vio);cursor:pointer" onclick="go('legal','privacy')">개인정보처리방침</a>에 동의한 것으로 봅니다.</div>
+  <button class="btn" onclick="join()">입장하기</button></div>
+  <div class="linkrow"><a onclick="go('home')">← 처음으로</a></div>`;
+ }
+ else if(page==='dash'){
+  if(!S.me){try{S.me=await api('/me?token='+S.token)}catch(e){go('join');return}}
+  setWho();
+  const t=S.tests??(S.tests=(await api('/tests')).tests);
+  v.innerHTML=`<h1>안녕, ${esc(S.me.name)}! 👋</h1><div class="sub">${esc(S.me.school||'')} ${esc(S.me.class_name||'')} · 오늘은 어떤 가능성을 열어볼까요?</div>
+  <div class="k">진단 시작하기</div>
+  ${gridHtml(t,'startQuiz')}
+  <div style="height:10px"></div><div style="display:flex;gap:8px;margin-bottom:14px"><button class="btn ghost" style="flex:1" onclick="go('growth')">📈 성장 그래프</button><button class="btn navy" style="flex:1" onclick="go('profile')">📋 통합 성장 리포트</button></div>
+  <div class="k">내 진단 기록</div><div class="card" id="myats"><div class="muted">불러오는 중…</div></div>`;
+  const ats=S.me.attempts||[];
+  window.__done={};ats.forEach(a=>{if(!window.__done[a.test_slug])window.__done[a.test_slug]=a.result});
+  $('#tlist2')&&0; document.querySelectorAll('.vcard').forEach(()=>{});
+  setTimeout(()=>{document.querySelectorAll('.vcard[data-slug]').forEach(cd=>{const k=cd.dataset.slug;if(window.__done[k]){cd.classList.add('donecard');const m=cd.querySelector('.vtop');if(m&&!m.querySelector('.doneb')){const sp=document.createElement('span');sp.className='doneb';sp.textContent='✓ 완료';m.appendChild(sp);}}})},50);
+  const old30=d=>(Date.now()-new Date(d).getTime())>30*864e5;
+  $('#myats').innerHTML=ats.length?ats.map(a=>`<div class="attrow"><span>${EMO[a.test_slug]||'📊'} ${esc(t[a.test_slug]?.title||a.test_slug)} ${old30(a.created_at)?'<span class="tag" style="background:#FFF4DC;color:#A8893E;font-size:10px">재진단 추천</span>':''}<br><span class="muted">${a.created_at.slice(0,10)}</span></span><button class="btn small navy" onclick="openAttempt('${a.id}')">결과 보기</button></div>`).join(''):'<div class="muted">아직 기록이 없어요. 첫 진단을 시작해보세요!</div>';
+ }
+ else if(page==='solution'){
+  const d=arg, r=d.attempt.result, st=d.student;
+  const best=r.labels[r.best], sec=r.labels[r.second];
+  const lvKey=d.attempt.test_slug==='ms_series'?'ms':(d.attempt.test_slug==='hs_series'?'hs':null);
+  const nm=(lvKey&&d.norms&&d.norms[lvKey])||null;
+  const pctl=i=>{if(!nm)return null;const z=(r.scores[i]-nm.mean[i])/nm.sd[i];const p=Math.round(100*(1-(1/(1+Math.exp(-1.702*z)))));return Math.max(1,Math.min(99,p))};
+  const dt=d.attempt.created_at.slice(0,10);
+  v.innerHTML=`
+  <div class="solpage"><div class="hero" style="min-height:240px">${ART(d.attempt.test_slug)}<h2>${esc(st.name)}의 ${best}계열 심층 솔루션</h2><p>${esc(st.school||'')} ${esc(st.class_name||'')} · ${dt}<br>1순위 ${best} · 2순위 ${sec}${nm?` · 또래 중 상위 ${pctl(r.best)}% 성향 강도`:''}</p></div>
+  <div class="card"><div class="k">나의 7계열 프로파일${nm?` — 전국 ${nm.n.toLocaleString()}명 규준 비교`:''}</div><div class="chartwrap" style="height:230px"><canvas id="solr"></canvas></div>
+  ${nm?`<div style="margin-top:8px">${r.labels.map((l,i)=>`<div style="display:flex;align-items:center;gap:8px;padding:3px 0"><span style="flex:0 0 56px;font-size:11.5px;font-weight:700">${l}</span><div class="meter" style="flex:1;margin:0"><i style="width:${100-pctl(i)}%"></i></div><span class="muted" style="width:64px;text-align:right">상위 ${pctl(i)}%</span></div>`).join('')}<p class="muted" style="margin-top:6px">※ 전국 규준(N=${nm.n.toLocaleString()}, 신뢰도 α=${nm.alpha}) 기반 백분위</p></div>`:''}</div></div>
+  ${d.deep.map(b=>`<div class="solpage">${blockHtml(b,best+'계열 심층 가이드')}</div>`).join('')}
+  <div class="solpage"><div class="card"><div class="k">${best}계열 대표 학과 6</div>${d.majors.map(m=>`<div style="padding:9px 0;border-bottom:1px dashed #ECEAFB"><b style="font-size:14px;color:var(--navy)">${esc(m.name)}</b><p style="font-size:11.8px;color:#5B6270;line-height:1.55;margin-top:3px">${esc((m.talent||'').slice(0,110))}…</p></div>`).join('')}<p class="muted" style="margin-top:8px">→ 학과 탐색관에서 전체 정보(권장과목·진로) 확인</p></div></div>
+  ${d.subj.length?`<div class="solpage">${blockHtml(d.subj[0],'고교학점제 과목 전략')}</div>`:''}
+  <div class="solpage"><div class="card coach" style="background:#F4F1E8"><div class="k">마무리 — ${sec}계열과의 융합</div><p style="font-size:13px;line-height:1.75">${esc(st.name)} 학생의 2순위 <b>${sec}계열</b>은 버려야 할 차선이 아니라 ${best}계열을 특별하게 만드는 재료입니다. ${best}×${sec}이 만나는 지점(예: 융합 전공·복수전공·교양 선택)을 의식적으로 탐색해 보세요. 이 보고서의 4주 플랜을 끝내면 한 달 뒤 재진단으로 변화를 확인하고, 다음 STEP 진단으로 여정을 이어가길 권합니다.</p></div>
+  <div class="foot" style="border-top:1px solid #E7E4DA;padding-top:8px;margin-top:10px">My Best NEXT 심층 솔루션 · (주)가르치는사람들 · 전국 규준 기반 성장 진단</div></div>
+  <button class="btn navy noprint" onclick="print()">🖨️ 심층 솔루션 인쇄/PDF (7쪽)</button>
+  <div style="height:8px"></div><button class="btn ghost noprint" onclick="go('dash')">대시보드로</button>`;
+  new Chart($('#solr'),{type:'radar',data:{labels:r.labels,datasets:[{data:r.scores,fill:true,backgroundColor:'rgba(108,92,231,.16)',borderColor:'#6C5CE7',pointBackgroundColor:'#00CEC9',borderWidth:2}]},options:{plugins:{legend:{display:false}},scales:{r:{beginAtZero:true,ticks:{display:false},pointLabels:{font:{size:11,weight:'700',family:'Pretendard'}}}},animation:false}});
+  window.scrollTo(0,0);
+ }
+ else if(page==='profile'){
+  if(!S.me){try{S.me=await api('/me?token='+S.token)}catch(e){go('join');return}}
+  const t=S.tests??(S.tests=(await api('/tests')).tests);
+  const latest={},first={};
+  [...(S.me.attempts||[])].forEach(a=>{if(!latest[a.test_slug])latest[a.test_slug]=a});
+  [...(S.me.attempts||[])].reverse().forEach(a=>{if(!first[a.test_slug])first[a.test_slug]=a});
+  const metric=r=>r.pct!==undefined?r.pct:(r.scores?Math.round(r.scores[r.best]/(r.kind==='future'?15:50)*100):(r.grades?Math.round(100-(r.grades.reduce((x,y)=>x+y,0)/r.grades.length-1)*20):null));
+  const ser=latest['hs_series']||latest['ms_series']||latest['es_dream'];
+  const fut=latest['future'];
+  const bars=Object.entries(latest).map(([k,a])=>({k,title:t[k]?.title||k,v:metric(a.result)})).filter(x=>x.v!==null);
+  const done=Object.keys(latest).length;
+  const avgAll=bars.length?Math.round(bars.reduce((s,b)=>s+b.v,0)/bars.length):0;
+  const grow=Object.keys(latest).filter(k=>first[k]&&first[k].id!==latest[k].id).map(k=>({k,d:(metric(latest[k].result)??0)-(metric(first[k].result)??0)}));
+  const bestSer=ser?ser.result.labels[ser.result.best]:null;
+  const dt=new Date().toISOString().slice(0,10);
+  v.innerHTML=`<div class="hero">${ART(ser?(latest['hs_series']?'hs_series':latest['ms_series']?'ms_series':'es_dream'):'future')}<h2>${esc(S.me.name)}의 통합 성장 리포트</h2><p>${esc(S.me.school||'')} ${esc(S.me.class_name||'')} · 진단 ${done}종 완료 · ${dt}</p></div>
+  <div class="grid2"><div class="stat"><div class="v">${done}<small style="font-size:13px">/14</small></div><div class="l">완료한 진단</div></div>
+  <div class="stat"><div class="v">${bestSer||'—'}</div><div class="l">나의 계열</div></div></div>
+  <div style="height:12px"></div>
+  ${ser?`<div class="card"><div class="k">진로 프로파일 ${ser.result.second!==undefined?'— 1순위 '+ser.result.labels[ser.result.best]+' · 2순위 '+ser.result.labels[ser.result.second]:''}</div><div class="chartwrap" style="height:210px"><canvas id="pr1"></canvas></div></div>`:''}
+  ${fut?`<div class="card"><div class="k">미래역량 프로파일 — 강점 ${fut.result.labels[fut.result.best]}</div><div class="chartwrap" style="height:200px"><canvas id="pr2"></canvas></div></div>`:''}
+  ${bars.length?`<div class="card"><div class="k">영역별 준비도 (100점 환산)</div>${bars.sort((a,b)=>b.v-a.v).map(b=>`<div style="display:flex;align-items:center;gap:10px;padding:5px 0"><span style="flex:0 0 150px;font-size:12px;font-weight:700">${EMO[b.k]||''} ${esc(b.title)}</span><div class="meter" style="flex:1;margin:0"><i style="width:${b.v}%"></i></div><b style="font-size:12px;width:34px;text-align:right">${b.v}</b></div>`).join('')}</div>`:''}
+  ${grow.length?`<div class="card"><div class="k">성장 기록 (첫 진단 대비)</div>${grow.map(g=>`<span class="tag" style="${g.d>=0?'background:#E8F8EE;color:#2E7D32':'background:#FFF0F0;color:#C62828'}">${esc(t[g.k]?.title||g.k)} ${g.d>=0?'▲':'▼'}${Math.abs(g.d)}점</span>`).join(' ')}</div>`:''}
+  <div class="card coach" style="background:#F4F1E8;border-color:#E2D9BD"><div class="k">종합 코칭</div><p style="font-size:13px;line-height:1.7">${esc(S.me.name)} 학생은 ${bestSer?'<b>'+bestSer+'계열</b> 성향을 중심으로 ':''}현재 ${done}개 영역을 진단했고 평균 준비도는 <b>${avgAll}점</b>입니다. ${bars.length?'가장 강한 영역은 <b>'+esc(bars[0].title)+'</b>('+bars[0].v+'점)'+(bars.length>1?', 우선 보완 영역은 <b>'+esc(bars[bars.length-1].title)+'</b>('+bars[bars.length-1].v+'점)입니다.':'.'):''} 보완 영역의 맞춤 가이드를 이번 주 실천 목표로 삼고, 한 달 뒤 재진단으로 성장을 확인해 보세요.</p></div>
+  <button class="btn navy noprint" onclick="print()">🖨️ A4 한장 리포트 인쇄/PDF</button>
+  <div style="height:8px"></div><button class="btn ghost noprint" onclick="go('dash')">대시보드로</button>`;
+  if(ser)new Chart($('#pr1'),{type:'radar',data:{labels:ser.result.labels,datasets:[{data:ser.result.scores,fill:true,backgroundColor:'rgba(108,92,231,.16)',borderColor:'#6C5CE7',pointBackgroundColor:'#00CEC9',borderWidth:2}]},options:{plugins:{legend:{display:false}},scales:{r:{beginAtZero:true,ticks:{display:false},pointLabels:{font:{size:11,weight:'700',family:'Pretendard'}}}},animation:false}});
+  if(fut)new Chart($('#pr2'),{type:'radar',data:{labels:fut.result.labels,datasets:[{data:fut.result.scores,fill:true,backgroundColor:'rgba(0,206,201,.15)',borderColor:'#00B894',pointBackgroundColor:'#6C5CE7',borderWidth:2}]},options:{plugins:{legend:{display:false}},scales:{r:{beginAtZero:true,max:15,ticks:{display:false},pointLabels:{font:{size:11,weight:'700',family:'Pretendard'}}}},animation:false}});
+  window.scrollTo(0,0);
+ }
+ else if(page==='growth'){
+  if(!S.me){try{S.me=await api('/me?token='+S.token)}catch(e){go('join');return}}
+  const t=S.tests??(S.tests=(await api('/tests')).tests);
+  const by={};
+  [...(S.me.attempts||[])].reverse().forEach(a=>{(by[a.test_slug]=by[a.test_slug]||[]).push(a)});
+  const metric=r=>r.pct!==undefined?r.pct:(r.scores?Math.round(r.scores[r.best]/(r.kind==='future'?15:50)*100):(r.grades?Math.round(100-(r.grades.reduce((x,y)=>x+y,0)/r.grades.length-1)*20):null));
+  let html=`<h1>나의 성장 그래프 📈</h1><div class="sub">재진단할 때마다 변화가 기록됩니다. 점수는 진단별 100점 환산 기준.</div>`;
+  let gi=0; const charts=[];
+  Object.entries(by).forEach(([slug,ats])=>{
+   const ms=ats.map(a=>({d:a.created_at.slice(5,10),v:metric(a.result)})).filter(x=>x.v!==null);
+   if(!ms.length)return;
+   const last=ms[ms.length-1].v, first=ms[0].v, dlt=last-first;
+   const badge=ms.length<2?'<span class="tag">첫 진단 완료</span>':`<span class="tag" style="${dlt>=0?'background:#E8F8EE;color:#2E7D32':'background:#FFF0F0;color:#C62828'}">${dlt>=0?'▲':'▼'} ${Math.abs(dlt)}점 ${dlt>=0?'성장':'변화'}</span>`;
+   html+=`<div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><div class="k" style="margin:0">${EMO[slug]||''} ${esc(t[slug]?.title||slug)}</div>${badge}</div>`;
+   if(ms.length>=2){html+=`<div style="height:140px;position:relative;margin-top:10px"><canvas id="gw${gi}"></canvas></div>`;charts.push([gi,ms]);gi++;}
+   else html+=`<p class="muted" style="margin-top:8px">현재 ${last}점 · 재진단하면 성장 그래프가 열려요!</p>`;
+   html+=`</div>`;
+  });
+  if(!gi&&!Object.keys(by).length)html+='<div class="card"><p class="muted">아직 진단 기록이 없어요.</p></div>';
+  html+=`<button class="btn ghost noprint" onclick="go('dash')">대시보드로</button>`;
+  v.innerHTML=html;
+  charts.forEach(([i,ms])=>{new Chart($('#gw'+i),{type:'line',data:{labels:ms.map(x=>x.d),datasets:[{data:ms.map(x=>x.v),borderColor:'#6C5CE7',backgroundColor:'rgba(108,92,231,.12)',fill:true,tension:.35,pointBackgroundColor:'#00CEC9',pointRadius:4}]},options:{plugins:{legend:{display:false}},scales:{y:{min:0,max:100,grid:{color:'#F0EEF9'}},x:{grid:{display:false}}},animation:false}})});
+ }
+ else if(page==='quiz'){renderQuiz()}
+ else if(page==='result'){renderResult(arg)}
+ else if(page==='teacher'){
+  v.innerHTML=`<h1>선생님 공간 🏫</h1><div class="sub">학급을 만들어 코드를 나눠주고, 우리 반 결과를 한눈에 보세요.</div>
+  <div class="card"><div class="k">학급 현황 보기</div><div class="err" id="err"></div>
+  <label>학급코드</label><input id="tc" style="text-transform:uppercase" placeholder="예: ABC123">
+  <label>교사 PIN</label><input id="tp" type="password" placeholder="학급 생성 시 정한 PIN">
+  <button class="btn navy" onclick="teacherView()">학급 대시보드 열기</button></div>
+  <div class="card"><div class="k">새 학급 만들기</div>
+  <label>학교명</label><input id="ns" placeholder="예: 마이베스트고등학교">
+  <label>학급명</label><input id="nn" placeholder="예: 3학년 1반">
+  <label>교사 PIN 설정</label><input id="np" type="password" placeholder="4자리 이상">
+  <div class="grid2"><div><label>정원(명)</label><input id="nm" type="number" value="40" min="5" max="200"></div>
+  <div><label>이용 기간(개월)</label><input id="nmo" type="number" value="12" min="1" max="24"></div></div>
+  <button class="btn" onclick="makeClass()">학급 코드 발급받기</button><div id="newcode" style="margin-top:10px"></div></div>
+  <div class="card" style="text-align:center"><div class="k">이용권 구매</div>
+  <p style="font-size:13px;color:#7A7E9A;line-height:1.6;margin-bottom:10px">학급 정원·기간을 늘리고 모든 진단과 학급 보고서를 이용하세요.</p>
+  <button class="btn navy" style="width:auto;display:inline-block;padding:12px 24px" onclick="go('pay')">💎 요금제 보기</button></div>
+  <div class="linkrow"><a onclick="go('home')">← 처음으로</a></div>`;
+ }
+ else if(page==='tdash'){renderTeacherDash(arg)}
+ else if(page==='howto'){
+  v.innerHTML=`<h1>활용법 📖</h1><div class="sub">학생·선생님·기관별 30초 안내</div>
+  <div class="card"><div class="k">🎒 학생</div><ul class="rx">
+  <li><span class="n">1</span>선생님께 받은 <b>학급코드</b>(또는 칠판 QR)로 입장 — 이름과 나만의 PIN 4자리만 있으면 끝</li>
+  <li><span class="n">2</span>카테고리(진로·진학·공부·역량)에서 진단 선택 — 솔직하게 답할수록 정확해요</li>
+  <li><span class="n">3</span>결과에서 <b>맞춤 성장 가이드</b> 확인 → 인쇄 버튼으로 A4 한장 보고서 저장</li>
+  <li><span class="n">4</span>한 달 뒤 재진단하면 <b>성장 그래프</b>가 열려요</li></ul></div>
+  <div class="card"><div class="k">🏫 선생님</div><ul class="rx">
+  <li><span class="n">1</span>선생님 공간 → 학급 만들기 (정원·기간 설정, 코드+QR 발급)</li>
+  <li><span class="n">2</span>학생들에게 코드 공유 → 자율 진단 진행</li>
+  <li><span class="n">3</span>학급 대시보드에서 계열 분포·면접/AI/로드맵 평균 확인 → <b>학급 한장 보고서</b> 인쇄</li>
+  <li><span class="n">4</span>진로 수업·상담 자료로 활용 (학생별 결과는 본인+담임만 열람)</li></ul></div>
+  <div class="card"><div class="k">🏢 학교·기관</div><ul class="rx">
+  <li><span class="n">1</span>학년·학교 단위 도입은 구독안내의 플랜으로 즉시 시작</li>
+  <li><span class="n">2</span>다학급·세금계산서·맞춤 콘텐츠는 별도 견적 문의</li>
+  <li><span class="n">3</span>문의: onlyjdw3831@gmail.com</li></ul></div>
+  <button class="btn" onclick="go(S.token?'dash':'join')">바로 시작하기 ✨</button>
+  <div class="linkrow"><a onclick="go('home')">← 처음으로</a></div>`;
+ }
+ else if(page==='majors'){
+  const sr=arg||1;
+  const d=await fetch(ADMAPI+'/majors?series='+sr).then(r=>r.json());
+  v.innerHTML=`<h1>학과 탐색관 🏛️</h1><div class="sub">계열을 고르면 대표 학과의 설명·인재상·고교 권장과목·진로가 펼쳐집니다.</div>
+  <div class="chips noprint">${LABELS.map((l,i)=>`<button class="chip ${i+1==sr?'on':''}" onclick="go('majors',${i+1})">${l}</button>`).join('')}</div>
+  ${(d.majors||[]).map(m=>`<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="this.parentElement.querySelector('.mjd').classList.toggle('open')"><h3 style="font-size:16px;color:var(--navy)">${esc(m.name)}</h3><span class="tag">${LABELS[m.series-1]}계열</span></div>
+  <div class="mjd"><p style="font-size:12.8px;line-height:1.7;margin-top:8px">${esc(m.explain)}</p>
+  <div class="tipbox" style="margin-top:8px"><b>이런 학생에게 어울려요</b><p style="font-size:12px;line-height:1.6;margin-top:4px">${esc(m.talent)}</p></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+  <div style="background:#F1EEFF;border-radius:10px;padding:10px"><b style="font-size:10px;letter-spacing:.1em;color:var(--vio)">일반선택 권장</b><p style="font-size:11.5px;line-height:1.5;margin-top:3px">${esc(m.subj_normal)}</p></div>
+  <div style="background:#E8FFF8;border-radius:10px;padding:10px"><b style="font-size:10px;letter-spacing:.1em;color:#00997B">진로선택 권장</b><p style="font-size:11.5px;line-height:1.5;margin-top:3px">${esc(m.subj_career)}</p></div></div>
+  ${m.jobs?`<p style="font-size:11.5px;color:#5B6270;line-height:1.6;margin-top:8px">🧑‍💼 <b>진출 분야</b> · ${esc(m.jobs)}</p>`:''}</div></div>`).join('')}
+  <button class="btn navy noprint" onclick="print()">🖨️ 학과 자료 인쇄/PDF</button>
+  <div class="linkrow"><a onclick="go(S.token?'dash':'home')">← 돌아가기</a></div>`;
+  window.scrollTo(0,0);
+ }
+ else if(page==='school'){
+  v.innerHTML=`<h1>학교 대시보드 🏫</h1><div class="sub">학교 이름으로 모든 학급을 한눈에 — 관리자 전용</div>
+  <div class="card"><div class="err" id="err"></div><div class="grid2"><div><label>학교명</label><input id="sc" placeholder="예: 마이베스트고등학교"></div><div><label>관리자 PIN</label><input id="sp" type="password"></div></div>
+  <button class="btn navy" onclick="schoolView()">학교 통계 보기</button></div><div id="sres"></div>
+  <div class="linkrow"><a onclick="go('home')">← 처음으로</a></div>`;
+ }
+ else if(page==='legal'){
+  const tab=arg||'privacy';
+  v.innerHTML=`<h1>법적 고지 ⚖️</h1>
+  <div class="chips noprint"><button class="chip ${tab==='terms'?'on':''}" onclick="go('legal','terms')">이용약관</button><button class="chip ${tab==='privacy'?'on':''}" onclick="go('legal','privacy')">개인정보처리방침</button></div>
+  ${tab==='terms'?`
+  <div class="card"><div class="k">이용약관 (요약)</div><div style="font-size:13px;line-height:1.8;color:#3A4154">
+  <b>제1조(목적)</b> 본 약관은 (주)가르치는사람들(이하 "회사")이 제공하는 마이베스트 NEXT 진단 서비스의 이용 조건을 정합니다.<br>
+  <b>제2조(서비스)</b> 초·중·고 학생 대상 진로·진학·공부·미래역량·AI역량 진단과 성장 가이드, 교사용 학급 관리 기능을 제공합니다. 진단 결과는 교육적 참고 자료이며 입시 결과를 보장하지 않습니다.<br>
+  <b>제3조(이용권)</b> 학급 단위 이용권은 결제 즉시 적용되며 표시된 정원·기간 동안 유효합니다.<br>
+  <b>제4조(환불)</b> 결제 후 7일 이내 미사용 시 전액 환불, 사용 개시 후에는 잔여 기간 일할 계산 환불을 원칙으로 합니다(결제대행 수수료 제외 가능). 환불 문의: onlyjdw3831@gmail.com<br>
+  <b>제5조(금지행위)</b> 타인 정보 도용, 결과의 무단 상업적 재배포, 시스템에 대한 부정 접근을 금합니다.<br>
+  <b>제6조(면책)</b> 천재지변, 클라우드 장애 등 불가항력으로 인한 손해에 대해 회사는 책임을 지지 않습니다.<br>
+  <b>제7조(분쟁)</b> 본 약관은 대한민국 법률에 따르며, 분쟁은 회사 본점 소재지 관할 법원에 따릅니다.</div></div>`:`
+  <div class="card"><div class="k">개인정보처리방침</div><div style="font-size:13px;line-height:1.8;color:#3A4154">
+  (주)가르치는사람들(이하 "회사")은 개인정보보호법을 준수하며, <b>개인정보 최소수집 원칙</b>을 서비스 설계의 기본으로 합니다.<br><br>
+  <b>1. 수집 항목과 방법</b> — 학생: 이름, 학급코드, PIN(일방향 암호화 저장), 학년(선택), 진단 응답. 교사: 학교명, 학급명, 교사 PIN(암호화). 결제: 토스페이먼츠를 통해 처리되며 회사는 카드번호를 저장하지 않습니다. <b>연락처·이메일·주민등록번호·사진은 일절 수집하지 않습니다.</b><br>
+  <b>2. 이용 목적</b> — 진단 결과 산출·성장 그래프 제공, 담임 교사의 학급 지도 자료 제공, 이용권 관리.<br>
+  <b>3. 보유·파기</b> — 학급 이용기간 종료 후 1년 경과 시 또는 교사·본인의 삭제 요청 즉시 지체 없이 파기합니다. 결제 기록은 전자상거래법에 따라 5년 보관합니다.<br>
+  <b>4. 제3자 제공</b> — 하지 않습니다. 법령에 의한 경우만 예외입니다.<br>
+  <b>5. 처리 위탁</b> — 클라우드 보관: Supabase(데이터 암호화·접근통제), 결제 처리: 토스페이먼츠.<br>
+  <b>6. 아동 보호</b> — 만 14세 미만 아동의 진단은 학교(교사)가 교육 목적으로 개설한 학급 내에서 이루어지며, 법정대리인 동의가 필요한 경우 학교의 동의 절차를 따릅니다.<br>
+  <b>7. 정보주체의 권리</b> — 본인 또는 담임 교사를 통해 열람·정정·삭제를 요청할 수 있으며 지체 없이 조치합니다.<br>
+  <b>8. 안전성 확보</b> — 전 구간 TLS 암호화, PIN 일방향 해시 저장, 데이터베이스 접근통제(RLS), 결과 열람 권한 분리(본인·담임 한정).<br>
+  <b>9. 보호책임자</b> — 이성훈 (대표) · onlyjdw3831@gmail.com<br>
+  본 방침은 2026년 6월 11일부터 적용됩니다.</div></div>`}
+  <div class="linkrow"><a onclick="go('home')">← 처음으로</a></div>`;
+ }
+ else if(page==='pay'){
+  const cfg=await fetch(PAYAPI+'/config').then(r=>r.json());window._paycfg=cfg;
+  v.innerHTML=`<h1>구독 안내 💎</h1><div class="sub">①학급 만들기(무료) → ②플랜 결제 → ③정원·기간 자동 적용. 결제 즉시 학급코드에 반영됩니다.${cfg.ready?'':' <b style="color:#C8A24B">지금은 결제 준비 모드예요 (상점 키 등록 후 활성화)</b>'}</div>
+  <div class="card"><div class="grid2"><div><label>학급코드</label><input id="pc" style="text-transform:uppercase" placeholder="예: ABC123"></div>
+  <div><label>교사 PIN</label><input id="pp" type="password"></div></div></div>
+  <div class="grid2">${Object.entries(cfg.plans).map(([k,p])=>`<div class="card" style="text-align:center;margin-bottom:0"><div class="k">${esc(p.name)}</div><div style="font-size:24px;font-weight:800;color:var(--navy)">${p.amount.toLocaleString()}<small style="font-size:13px">원/년</small></div><p class="muted" style="margin:6px 0 12px">${esc(p.desc)}</p><button class="btn small ${cfg.ready?'navy':'ghost'}" onclick="buyPlan('${k}')">${cfg.ready?'이 플랜 결제':'준비 중'}</button></div>`).join('')}</div>
+  <div style="height:12px"></div><div class="card noprint" id="paywrap" style="display:none"><div class="k">결제 수단</div><div id="pm"></div><div id="agr"></div><div id="paybtn" style="margin-top:10px"></div></div>
+  <div class="card"><p style="font-size:12px;color:#7A7E9A;line-height:1.6">학교·교육청 단위 도입(다학급·세금계산서)은 별도 견적으로 진행됩니다. 결제는 토스페이먼츠를 통해 안전하게 처리됩니다.</p></div>
+  <div class="linkrow"><a onclick="go('teacher')">← 교사 공간</a></div>`;
+ }
+ else if(page==='admin'){
+  v.innerHTML=`<h1>전체 관리 대시보드 🔧</h1><div class="sub">운영 통계와 콘텐츠 블록 관리 · <a style="color:var(--vio);cursor:pointer" onclick="go('school')">학교 대시보드 →</a></div>
+  <div class="card"><div class="err" id="err"></div><label>관리자 PIN</label><input id="ap" type="password"><button class="btn navy" onclick="adminLoad()">관리 대시보드 열기</button></div><div id="astats"></div><div id="ablocks"></div>
+  <div class="linkrow"><a onclick="go('home')">← 처음으로</a></div>`;
+ }
+}
+async function join(){
+ try{
+  const j=await api('/student/join',{class_code:$('#jc').value.trim(),name:$('#jn').value.trim(),pin:$('#jp').value.trim(),grade:$('#jg').value});
+  S.token=j.token;localStorage.setItem('myb_token',j.token);S.me=null;go('dash');
+ }catch(e){showErr(e.message)}
+}
+async function startQuiz(slug){
+ const q=await api('/questions?slug='+slug);
+ S.quiz={slug,scale:q.scale,questions:q.questions,answers:[],i:0,t:S.tests[slug]};
+ try{
+  const sv=JSON.parse(localStorage.getItem('myb_q_'+slug)||'null');
+  if(sv&&sv.i>0&&sv.i<q.questions.length&&confirm(`이전에 ${sv.i}번까지 답한 기록이 있어요.\n이어서 할까요? (취소=처음부터)`)){S.quiz.answers=sv.answers;S.quiz.i=sv.i;}
+  else localStorage.removeItem('myb_q_'+slug);
+ }catch(e){}
+ go('quiz');
+}
+function quizPrev(){const z=S.quiz;if(z&&z.i>0){z.i--;renderQuiz();}}
+function renderQuiz(){
+ const z=S.quiz,v=$('#view'),q=z.questions[z.i],total=z.questions.length;
+ let opts;
+ if(z.slug==='hs_essay'&&z.i===0){
+  opts=['외고·국제고','자사고','영재학교·과학고','특성화고·마이스터고'].map((o,k)=>`<button class="opt" onclick="answer(${k+1})">${o}</button>`).join('');
+ }else if(z.scale==='grade'){
+  opts=['1등급 (상위 10%)','2등급','3등급','4등급','5등급'].map((o,k)=>`<button class="opt" onclick="answer(${k+1})">${o}</button>`).join('');
+ }else if(z.scale==='likert'){
+  opts='<div class="lkrow">'+['😴|전혀 아니다','🙁|아닌 편','😐|보통','🙂|그런 편','🤩|매우 그렇다'].map((o,k)=>{const[e,l]=o.split('|');return `<button class="lk" onclick="answer(${k+1})"><span>${e}</span>${l}</button>`}).join('')+'</div>';
+ }else{
+  opts=`<div class="ynrow"><button class="yn yes" onclick="answer(1)"><span>✅</span>네, 준비됐어요</button><button class="yn no" onclick="answer(0)"><span>🙏</span>아직이에요</button></div>`;
+ }
+ v.innerHTML=`<div class="qnum">${esc(z.t.title)}</div><div class="bar"><i style="width:${z.i/total*100}%"></i></div>
+ <div class="card"><div class="qnum">Q${z.i+1} / ${total}</div><div class="qtext">${esc(q.q_text)}</div>${opts}</div>
+ <div class="linkrow noprint">${z.i>0?'<a onclick="quizPrev()">← 이전 문항</a> · ':''}<a onclick="go('dash')">중단하고 돌아가기 (진행 자동저장)</a></div>`;
+}
+async function answer(val){
+ const z=S.quiz;z.answers[z.i]=val;z.i++;
+ try{localStorage.setItem('myb_q_'+z.slug,JSON.stringify({i:z.i,answers:z.answers}))}catch(e){}
+ if(z.i<z.questions.length){renderQuiz();return}
+ try{localStorage.removeItem('myb_q_'+z.slug)}catch(e){}
+ $('#view').innerHTML='<div class="card" style="text-align:center;padding:50px">분석 중… 🔮</div>';
+ try{
+  const r=await api('/submit',{token:S.token,slug:z.slug,answers:z.answers});
+  S.me=null;openAttempt(r.attempt_id);
+ }catch(e){alert(e.message);go('dash')}
+}
+async function openSolution(id){
+ try{
+  const r=await fetch(ADMAPI+'/solution',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:S.token,attempt_id:id})});
+  const d=await r.json();
+  if(r.status===402){if(confirm('📚 심층 솔루션 보고서(7쪽)는 유료 플랜 전용이에요.\n학급 플랜을 보러 갈까요?'))go('pay');return}
+  if(d.error){alert(d.error);return}
+  go('solution',d);
+ }catch(e){alert(e.message)}
+}
+async function openAttempt(id){
+ const d=await api(`/attempt?id=${id}&token=${S.token}`);
+ go('result',d);
+}
+function blockHtml(b,badge){
+ const tips=(b.tips||[]);
+ return `<div class="block"><div class="badge">${esc(badge||'성장 가이드')}</div><h3>${esc(b.title)}</h3><p>${esc(b.body)}</p>
+ ${tips.length?`<div class="tipbox"><b>실천 체크리스트</b><ul>${tips.map(t=>`<li>${esc(t)}</li>`).join('')}</ul></div>`:''}</div>`;
+}
+function renderResult(d){
+ const v=$('#view'),r=d.attempt.result,slug=d.attempt.test_slug,t=S.tests[slug],st=d.student;
+ const dt=d.attempt.created_at.slice(0,10);
+ if(r.kind==='series'){
+  const best=LABELS[r.best],sec=LABELS[r.second];
+  v.innerHTML=`<div class="hero">${ART(slug)}<h2>${best}계열 성향이 빛나요!</h2><p>${esc(SER_DESC[best])}<br>${esc(st.name)} · ${esc(st.school||'')} · ${dt}</p></div>
+  <div class="card"><div class="k">나의 7계열 프로파일</div><div class="chartwrap"><canvas id="radar"></canvas></div>
+  <div style="text-align:center;margin-top:6px"><span class="tag">1순위 ${best}</span><span class="tag">2순위 ${sec}</span><span class="tag">융합 ${best}×${sec}</span></div></div>
+  <div class="card"><div class="k">성장 처방 — 이번 주에 시작해요</div><ul class="rx">${SER_ACT[best].map((a,i)=>`<li><span class="n">${i+1}</span>${esc(a)}</li>`).join('')}</ul></div>
+  <div class="card"><div class="k">컨설턴트 코칭</div><p style="font-size:13.5px;line-height:1.7">${esc(st.name)} 학생은 <b>${best}계열</b> 성향이 가장 뚜렷하고, <b>${sec}계열</b>의 가능성도 함께 지니고 있습니다. 두 계열이 만나는 융합 영역에서 자신만의 강점이 만들어집니다. 위 처방을 한 달만 실천하면 학교생활기록부에 남길 '나만의 이야기'가 시작됩니다.</p></div>
+  <button class="btn noprint" onclick="openSolution('${d.attempt.id}')">📚 심층 솔루션 보고서 열기 (7쪽 · 학과/과목/4주플랜)</button>
+  <div style="height:8px"></div><button class="btn navy noprint" onclick="print()">🖨️ 한장 요약 보고서 인쇄/PDF</button>
+  <div style="height:8px"></div><button class="btn ghost noprint" onclick="go('dash')">대시보드로</button>`;
+  new Chart($('#radar'),{type:'radar',data:{labels:LABELS,datasets:[{data:r.scores,fill:true,backgroundColor:'rgba(108,92,231,.16)',borderColor:'#6C5CE7',pointBackgroundColor:'#00CEC9',borderWidth:2}]},options:{plugins:{legend:{display:false}},scales:{r:{beginAtZero:true,ticks:{display:false},pointLabels:{font:{size:12,weight:'700',family:'Pretendard'}}}},animation:false}});
+ }else if(r.kind==='grades'){
+  const blocks=d.blocks||[];
+  const COLS=['#2E7D32','#388E3C','#F9A825','#EF6C00','#C62828'];
+  v.innerHTML=`<div class="hero">${ART(slug)}<h2>과목별 맞춤 공부 전략</h2><p>내신 5등급제 기준 · ${esc(st.name)} · ${esc(st.school||'')} · ${dt}</p></div>
+  <div class="card"><div class="k">과목별 현재 위치</div><div class="gradegrid">${r.subjects.map((sj,i)=>`<div class="gcell"><div class="gsub">${sj}</div><div class="gval" style="color:${COLS[r.grades[i]-1]}">${r.grades[i]}<small>등급</small></div></div>`).join('')}</div></div>
+  <div class="k" style="margin:14px 0 8px">과목별 전략 + 2026 입시 환경</div>
+  ${blocks.map(b=>blockHtml(b)).join('')}
+  <button class="btn navy noprint" onclick="print()">🖨️ 한장 보고서로 인쇄/PDF 저장</button>
+  <div style="height:8px"></div><button class="btn ghost noprint" onclick="go('dash')">대시보드로</button>`;
+ }else if(r.kind==='pick'){
+  const blocks=d.blocks||[];
+  const pk=r.labels[r.pick-1];
+  v.innerHTML=`<div class="hero">${ART(slug)}<h2>${pk}계열 추천 과목 조합</h2><p>2022 개정 교육과정 · 고교학점제 기준 · ${esc(st.name)} · ${dt}</p></div>
+  ${blocks.map(b=>blockHtml(b,'추천 과목 가이드')).join('')}
+  <div class="card coachnote"><p style="font-size:12.5px;line-height:1.6;color:#5B6270">※ 학교별 개설 과목이 다를 수 있습니다. 최종 선택 전 학교 교육과정 편제표와 담임·진로 선생님 상담을 꼭 거치세요.</p></div>
+  <button class="btn navy noprint" onclick="print()">🖨️ 한장 보고서로 인쇄/PDF 저장</button>
+  <div style="height:8px"></div><button class="btn ghost noprint" onclick="go('dash')">대시보드로</button>`;
+ }else if(r.kind==='bucketcheck'){
+  const blocks=d.blocks||[];
+  v.innerHTML=`<div class="hero">${ART(slug)}<h2>${esc(t.title)} <span class="cnt" data-v="${r.pct}">0</span>점</h2><p>${r.ready} / ${r.total} 항목 준비 · ${esc(st.name)} · ${dt}</p><div class="meter" style="background:rgba(255,255,255,.25)"><i style="width:${r.pct}%;background:#FDCB6E"></i></div></div>
+  <div class="card"><div class="k">영역별 진단</div>${r.names.map((nm,b)=>`<div style="display:flex;align-items:center;gap:10px;padding:6px 0"><span style="flex:0 0 92px;font-size:13px;font-weight:700">${nm}</span><div class="meter" style="flex:1;margin:0"><i style="width:${r.per[b].ok/Math.max(1,r.per[b].total)*100}%"></i></div><span class="muted">${r.per[b].ok}/${r.per[b].total}</span></div>`).join('')}</div>
+  <div class="k" style="margin:14px 0 8px">보완 영역 가이드</div>
+  ${blocks.map(b=>blockHtml(b)).join('')||'<div class="muted">모든 영역이 탄탄해요! 🎉</div>'}
+  ${blocks.length?`<div class="card"><div class="k">4주 실천 플랜 — 보완 영역을 주차별로</div>${blocks.slice(0,4).map((b,i)=>{const tp=(b.tips||[])[0]||'';return `<div style="display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px dashed #ECEAFB"><span class="n" style="flex:0 0 46px;height:24px;border-radius:8px;background:var(--sun);font-weight:800;font-size:11px;display:flex;align-items:center;justify-content:center">${i+1}주차</span><div style="font-size:12.5px;line-height:1.5"><b>${esc(b.title.split(' — ')[0])}</b> · ${esc(tp)}</div></div>`}).join('')}</div>`:''}
+  <button class="btn navy noprint" onclick="print()">🖨️ 한장 보고서로 인쇄/PDF 저장</button>
+  <div style="height:8px"></div><button class="btn ghost noprint" onclick="go('dash')">대시보드로</button>`;
+ }else if(r.kind==='future'){
+  const blocks=d.blocks||[];
+  const fb=r.labels[r.best],fw=r.labels[r.worst];
+  v.innerHTML=`<div class="hero">${ART(slug)}<h2>나의 대표 역량은 ${fb}!</h2><p>성장 포인트는 ${fw} · ${esc(st.name)} · ${dt}</p></div>
+  <div class="card"><div class="k">6대 미래역량 프로파일</div><div class="chartwrap"><canvas id="radar6"></canvas></div>
+  <div style="text-align:center;margin-top:6px"><span class="tag">강점 ${fb}</span><span class="tag">성장 ${fw}</span></div></div>
+  <div class="k" style="margin:14px 0 8px">역량 가이드 — 강점 살리고 약점 보완하기</div>
+  ${blocks.map(b=>blockHtml(b)).join('')}
+  <button class="btn navy noprint" onclick="print()">🖨️ 한장 보고서로 인쇄/PDF 저장</button>
+  <div style="height:8px"></div><button class="btn ghost noprint" onclick="go('dash')">대시보드로</button>`;
+  new Chart($('#radar6'),{type:'radar',data:{labels:r.labels,datasets:[{data:r.scores,fill:true,backgroundColor:'rgba(108,92,231,.16)',borderColor:'#6C5CE7',pointBackgroundColor:'#00CEC9',borderWidth:2}]},options:{plugins:{legend:{display:false}},scales:{r:{beginAtZero:true,max:15,ticks:{display:false},pointLabels:{font:{size:11,weight:'700',family:'Pretendard'}}}},animation:false}});
+ }else{
+  const blocks=d.blocks||[];
+  v.innerHTML=`<div class="hero">${ART(slug)}<h2>${esc(t.title)} <span class="cnt" data-v="${r.pct}">0</span>점</h2><p>${r.ready} / ${r.total} 항목 준비 완료 · ${esc(st.name)} · ${dt}</p><div class="meter" style="background:rgba(255,255,255,.25)"><i style="width:${r.pct}%;background:#FDCB6E"></i></div></div>
+  <div class="card"><div class="k">체크리스트 결과</div><ul class="chk">${r.qtexts.slice(slug==='hs_essay'?1:0).map((q,i)=>`<li class="${r.flags[i]?'ok':'no'}">${r.flags[i]?'✓':'✗'} ${esc(q)}</li>`).join('')}</ul></div>
+  <div class="k" style="margin:14px 0 8px">${esc(st.name)}님을 위한 맞춤 가이드</div>
+  ${blocks.map(b=>blockHtml(b)).join('')||'<div class="muted">모든 항목이 준비되었습니다! 🎉</div>'}
+  <button class="btn navy noprint" onclick="print()">🖨️ 한장 보고서로 인쇄/PDF 저장</button>
+  <div style="height:8px"></div><button class="btn ghost noprint" onclick="go('dash')">대시보드로</button>`;
+ }
+ window.scrollTo(0,0);
+ countUp();confetti();
+}
+async function makeClass(){
+ try{
+  const j=await api('/teacher/class',{school:$('#ns').value.trim(),name:$('#nn').value.trim(),teacher_pin:$('#np').value.trim(),max_students:+$('#nm').value,months:+$('#nmo').value});
+  $('#newcode').innerHTML=`<div class="hero" style="padding:18px"><p>학급코드가 발급되었습니다</p><h2 style="letter-spacing:.2em">${j.code}</h2><div style="margin:10px 0">${qrImg(j.code)}</div><p>정원 ${j.max_students}명 · ${j.expires_at}까지<br>QR을 칠판에 띄우면 학생들이 바로 입장해요</p></div>`;
+ }catch(e){showErr(e.message)}
+}
+async function teacherView(){
+ try{
+  const code=$('#tc').value.trim().toUpperCase(),pin=$('#tp').value.trim();
+  const d=await api('/teacher/overview',{code,teacher_pin:pin});
+  window._tauth={code,pin};
+  go('tdash',d);
+ }catch(e){showErr(e.message)}
+}
+function renderTeacherDash(d){
+ const v=$('#view');
+ const latest={};
+ d.attempts.forEach(a=>{const k=a.student_id+'|'+a.test_slug;if(!latest[k])latest[k]=a});
+ const series=Object.values(latest).filter(a=>a.result.kind==='series');
+ const ivs=Object.values(latest).filter(a=>a.test_slug==='interview');
+ const ais=Object.values(latest).filter(a=>a.test_slug==='ai_skill');
+ const rms=Object.values(latest).filter(a=>a.test_slug==='roadmap');
+ const futs=Object.values(latest).filter(a=>a.test_slug==='future');
+ const avg=arr=>arr.length?Math.round(arr.reduce((s,a)=>s+a.result.pct,0)/arr.length):null;
+ const avgAi=avg(ais), avgRm=avg(rms);
+ const fdist=new Array(6).fill(0);futs.forEach(a=>fdist[a.result.best]++);
+ const FUTL=['리더십','창의성','문제해결','소통','프로젝트','전략적사고'];
+ const dist=new Array(7).fill(0);series.forEach(a=>dist[a.result.best]++);
+ const avgIv=ivs.length?Math.round(ivs.reduce((s,a)=>s+a.result.pct,0)/ivs.length):null;
+ const sname=Object.fromEntries(d.students.map(s=>[s.id,s.name]));
+ const rows=d.students.map(s=>{
+  const se=series.find(a=>a.student_id===s.id),iv=ivs.find(a=>a.student_id===s.id);
+  const ai=ais.find(a=>a.student_id===s.id),rm=rms.find(a=>a.student_id===s.id);
+  const pc=x=>x?`<b style="color:${x.result.pct>=70?'#2E7D32':'#C8A24B'}">${x.result.pct}</b>`:'—';
+  const doneN=new Set(d.attempts.filter(a=>a.student_id===s.id).map(a=>a.test_slug)).size;
+  return `<tr><td>${esc(s.name)}</td><td><b style="color:${doneN>=5?'#2E7D32':'#7A7E9A'}">${doneN}</b>/14</td><td>${se?'<b>'+LABELS[se.result.best]+'</b> / '+LABELS[se.result.second]:'—'}</td><td>${pc(iv)}</td><td>${pc(ai)}</td><td>${pc(rm)}</td></tr>`;
+ }).join('');
+ v.innerHTML=`<h1>${esc(d.class.school)} ${esc(d.class.name)}</h1><div class="sub">학급코드 <b>${d.class.code}</b> · 학생 ${d.students.length}명 · 발급일 ${new Date().toISOString().slice(0,10)}</div>
+ <div class="grid2"><div class="stat"><div class="v">${d.students.length}</div><div class="l">참여 학생${d.class.max_students?' / 정원 '+d.class.max_students:''}</div></div>
+ <div class="stat"><div class="v">${series.length?LABELS[dist.indexOf(Math.max(...dist))]:'—'}</div><div class="l">최다 계열</div></div></div>
+ <div style="height:12px"></div>
+ <div class="grid2"><div class="stat"><div class="v" style="color:${avgAi===null?'#A9ACC4':(avgAi>=70?'#2E7D32':'#C8A24B')}">${avgAi===null?'—':avgAi+'점'}</div><div class="l">AI역량 평균 (${ais.length}명)</div></div>
+ <div class="stat"><div class="v" style="color:${avgRm===null?'#A9ACC4':(avgRm>=70?'#2E7D32':'#C8A24B')}">${avgRm===null?'—':avgRm+'점'}</div><div class="l">학생부 로드맵 평균 (${rms.length}명)</div></div></div>
+ <div style="height:12px"></div>
+ ${futs.length?`<div class="card"><div class="k">미래역량 분포 — 최다 강점: ${FUTL[fdist.indexOf(Math.max(...fdist))]}</div><div class="chartwrap" style="height:170px"><canvas id="fdist"></canvas></div></div>`:''}
+ ${series.length?`<div class="card"><div class="k">계열성향 분포 (${series.length}명)</div><div class="chartwrap" style="height:210px"><canvas id="dist"></canvas></div></div>`:''}
+ ${avgIv!==null?`<div class="card"><div class="k">면접 준비도 평균 (${ivs.length}명)</div><div style="font-size:30px;font-weight:800;color:var(--navy)">${avgIv}점</div><div class="meter"><i style="width:${avgIv}%"></i></div></div>`:''}
+ <div class="card"><div class="k">학생별 결과 · 진행 현황</div><table><tr><th>이름</th><th>진행</th><th>계열 1/2순위</th><th>면접</th><th>AI역량</th><th>로드맵</th></tr>${rows}</table></div>
+ <div class="card noprint"><div class="k">학생 관리 — PIN 초기화 · 삭제</div>
+ <div class="grid2"><div><label>학생 이름</label><input id="mn" placeholder="명단의 이름 그대로"></div><div><label>새 PIN (초기화용, 4자리)</label><input id="mp" inputmode="numeric" maxlength="4" placeholder="예: 0000"></div></div>
+ <div style="display:flex;gap:8px"><button class="btn small navy" onclick="tReset()">PIN 초기화</button><button class="btn small ghost" style="color:#C62828;border-color:#F3D6D6" onclick="tDelete()">학생 삭제 (기록 포함)</button></div>
+ <p class="muted" style="margin-top:6px" id="mres">PIN을 잊은 학생은 초기화 후 새 PIN으로 입장하면 기록이 그대로 유지됩니다.</p></div>
+ <div class="card noprint"><div class="k">명단 일괄 등록</div>
+ <label>학생 이름 (한 줄에 한 명, 엑셀에서 복사·붙여넣기 가능)</label>
+ <textarea id="bnames" style="width:100%;min-height:90px;padding:12px;border:2px solid #ECEAFB;border-radius:12px;font-family:inherit;font-size:14px" placeholder="김하늘&#10;이서준&#10;박지우"></textarea>
+ <div class="grid2"><div><label>기본 PIN (전원 동일, 4자리)</label><input id="bpin" inputmode="numeric" maxlength="4" value="0000"></div>
+ <div><label>학년</label><select id="bgrade"><option>중1</option><option>중2</option><option>중3</option><option selected>고1</option><option>고2</option><option>고3</option><option>초등</option></select></div></div>
+ <button class="btn small navy" onclick="bulkAdd()">일괄 등록 실행</button> <span class="muted" id="bres"></span></div>
+ <div class="card" style="text-align:center"><div class="k">학생 입장 QR — 칠판에 띄워주세요</div>${qrImg(d.class.code)}<p class="muted" style="margin-top:6px">코드 ${d.class.code} 자동 입력 입장</p></div>
+ <div class="card"><div class="k">지도 포인트</div><ul class="rx">
+ <li><span class="n">1</span>최다 계열 중심의 탐구 모둠을 편성하면 수업 몰입도가 높아집니다.</li>
+ <li><span class="n">2</span>소수 계열 학생은 진로 상담 우선순위에 두세요. 다른 성향은 강점이 됩니다.</li>
+ <li><span class="n">3</span>면접 준비도 70점 미만 학생부터 모의면접을 배정하세요.</li></ul></div>
+ <button class="btn navy noprint" onclick="print()">🖨️ 학급 한장 보고서 인쇄/PDF</button>
+ <div style="height:8px"></div><button class="btn ghost noprint" onclick="go('teacher')">← 교사 화면</button>`;
+ if(futs.length)new Chart($('#fdist'),{type:'bar',data:{labels:FUTL,datasets:[{data:fdist,backgroundColor:'#6C5CE7',borderRadius:5}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{precision:0}}},animation:false}});
+ if(series.length)new Chart($('#dist'),{type:'bar',data:{labels:LABELS,datasets:[{data:dist,backgroundColor:['#1B2A4A','#27406B','#C8A24B','#7A8BA8','#3E5C8A','#A8893E','#54688C'],borderRadius:6}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{precision:0}}},animation:false}});
+ window.scrollTo(0,0);
+}
+async function buyPlan(plan){
+ try{
+  const cfg=window._paycfg;
+  if(!cfg.ready){alert('아직 결제 준비 모드입니다.\n관리자가 토스페이먼츠 상점 키를 등록하면 활성화됩니다.');return}
+  const code=$('#pc').value.trim().toUpperCase(), pin=$('#pp').value.trim();
+  if(!code||!pin){alert('학급코드와 교사 PIN을 입력하세요');return}
+  const ord=await fetch(PAYAPI+'/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code,teacher_pin:pin,plan})}).then(r=>r.json());
+  if(ord.error){alert(ord.error);return}
+  if(!window.TossPayments){await new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='https://js.tosspayments.com/v2/standard';sc.onload=ok;sc.onerror=no;document.head.appendChild(sc)})}
+  $('#paywrap').style.display='';
+  const widgets=TossPayments(cfg.client_key).widgets({customerKey:TossPayments.ANONYMOUS});
+  await widgets.setAmount({currency:'KRW',value:ord.amount});
+  await widgets.renderPaymentMethods({selector:'#pm'});
+  await widgets.renderAgreement({selector:'#agr'});
+  window._reqPay=()=>widgets.requestPayment({orderId:ord.order_id,orderName:ord.order_name,successUrl:location.origin+location.pathname+'?pay=ok',failUrl:location.origin+location.pathname+'?pay=fail'});
+  $('#paybtn').innerHTML=`<button class="btn" onclick="window._reqPay()">${ord.amount.toLocaleString()}원 결제하기</button>`;
+  $('#paywrap').scrollIntoView({behavior:'smooth'});
+ }catch(e){alert('결제 위젯 오류: '+e.message)}
+}
+async function bulkAdd(){
+ const a=window._tauth;if(!a){alert('교사 인증이 필요합니다');return}
+ const names=[...new Set($('#bnames').value.split(/\n/).map(x=>x.trim()).filter(Boolean))];
+ const pin=$('#bpin').value.trim(), gr=$('#bgrade').value;
+ if(!names.length){alert('이름을 입력하세요');return}
+ if(!/^\d{4}$/.test(pin)){alert('기본 PIN은 숫자 4자리여야 합니다');return}
+ let ok=0,dup=0,fail=0;
+ for(const nm of names){
+  try{const j=await api('/student/join',{class_code:a.code,name:nm,pin,grade:gr});j.created?ok++:dup++;}
+  catch(e){fail++}
+  $('#bres').textContent=`진행 ${ok+dup+fail}/${names.length}…`;
+ }
+ $('#bres').textContent=`✅ 신규 ${ok}명 등록 · 기존 ${dup}명 · 실패 ${fail}명 — 학생들은 이름+기본 PIN(${pin})으로 입장 후 사용`;
+}
+async function tReset(){
+ try{
+  const a=window._tauth;if(!a){alert('교사 인증이 필요합니다');return}
+  const r=await fetch(ADMAPI+'/teacher/reset_pin',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:a.code,teacher_pin:a.pin,student_name:$('#mn').value.trim(),new_pin:$('#mp').value.trim()})}).then(x=>x.json());
+  $('#mres').textContent=r.ok?('✅ '+r.name+' 학생의 PIN이 초기화되었습니다. 새 PIN으로 입장하면 기록이 유지됩니다.'):('⚠️ '+(r.error||'실패'));
+ }catch(e){alert(e.message)}
+}
+async function tDelete(){
+ try{
+  const a=window._tauth;if(!a){alert('교사 인증이 필요합니다');return}
+  const nm=$('#mn').value.trim();
+  if(!nm||!confirm(nm+' 학생과 모든 진단 기록을 영구 삭제할까요?\n(개인정보 삭제 요청 처리용 — 되돌릴 수 없습니다)'))return;
+  const r=await fetch(ADMAPI+'/teacher/delete_student',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:a.code,teacher_pin:a.pin,student_name:nm})}).then(x=>x.json());
+  $('#mres').textContent=r.ok?('🗑️ '+r.deleted+' 학생이 삭제되었습니다. 새로고침 시 명단에서 사라집니다.'):('⚠️ '+(r.error||'실패'));
+ }catch(e){alert(e.message)}
+}
+async function schoolView(){
+ try{
+  const d=await fetch(ADMAPI+'/school',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({school:$('#sc').value.trim(),pin:$('#sp').value.trim()})}).then(r=>r.json());
+  if(d.error){showErr(d.error);return}
+  $('#sres').innerHTML=`<div class="grid2"><div class="stat"><div class="v">${d.classes.length}</div><div class="l">학급</div></div><div class="stat"><div class="v">${d.total_students}</div><div class="l">학생</div></div></div>
+  <div style="height:12px"></div><div class="grid2"><div class="stat"><div class="v">${d.total_attempts}</div><div class="l">누적 진단</div></div><div class="stat"><div class="v">${d.series_dist&&d.total_attempts?LABELS[d.series_dist.indexOf(Math.max(...d.series_dist))]:'—'}</div><div class="l">최다 계열</div></div></div>
+  <div style="height:12px"></div>
+  <div class="card"><div class="k">학급별 현황</div><table><tr><th>학급</th><th>코드</th><th>학생/정원</th><th>진단 수</th><th>만료일</th></tr>${d.classes.map(c=>`<tr><td>${esc(c.name)}</td><td>${c.code}</td><td>${c.students}/${c.max}</td><td>${c.attempts}</td><td>${c.expires||'—'}</td></tr>`).join('')}</table></div>
+  <div class="card"><div class="k">학교 계열 분포</div><div class="chartwrap" style="height:180px"><canvas id="sdist"></canvas></div></div>`;
+  new Chart($('#sdist'),{type:'bar',data:{labels:LABELS,datasets:[{data:d.series_dist,backgroundColor:'#1B2A4A',borderRadius:5}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{precision:0}}},animation:false}});
+ }catch(e){showErr(e.message)}
+}
+async function adminLoad(){
+ try{
+  const d=await api('/admin/blocks',{pin:$('#ap').value.trim()});
+  window._apin=$('#ap').value.trim();
+  try{
+   const st=await fetch(ADMAPI+'/stats',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pin:window._apin})}).then(r=>r.json());
+   if(!st.error){
+    $('#astats').innerHTML=`<div class="grid2"><div class="stat"><div class="v">${st.schools}</div><div class="l">학교</div></div><div class="stat"><div class="v">${st.classes}</div><div class="l">학급</div></div></div>
+    <div style="height:12px"></div><div class="grid2"><div class="stat"><div class="v">${st.students}</div><div class="l">학생</div></div><div class="stat"><div class="v">${st.attempts}</div><div class="l">누적 진단</div></div></div>
+    <div style="height:12px"></div><div class="card"><div class="k">진단별 이용량 (최근 2000건)</div>${Object.entries(st.by_slug).sort((a,b)=>b[1]-a[1]).map(([k,v2])=>`<div style="display:flex;align-items:center;gap:10px;padding:4px 0"><span style="flex:0 0 150px;font-size:12px;font-weight:700">${EMO[k]||''} ${esc((S.tests&&S.tests[k])?S.tests[k].title:k)}</span><div class="meter" style="flex:1;margin:0"><i style="width:${Math.min(100,v2/Math.max(...Object.values(st.by_slug))*100)}%"></i></div><span class="muted">${v2}</span></div>`).join('')}</div>
+    <div class="card"><div class="k">최근 주문</div>${st.recent_orders.length?`<table><tr><th>주문번호</th><th>플랜</th><th>금액</th><th>상태</th></tr>${st.recent_orders.map(o=>`<tr><td style="font-size:10.5px">${o.order_id}</td><td>${o.plan}</td><td>${o.amount.toLocaleString()}원</td><td>${o.status}</td></tr>`).join('')}</table>`:'<p class="muted">주문 없음</p>'}</div>`;
+   }
+  }catch(e){}
+  $('#ablocks').innerHTML=d.blocks.map(b=>`<div class="card"><div class="k">#${b.id} · gu${b.gu_no} · ${esc(b.section)} · ${esc(b.cond_key)}</div>
+  <input id="bt${b.id}" value="${esc(b.title)}">
+  <textarea id="bb${b.id}" style="width:100%;min-height:90px;padding:12px;border:2px solid #ECEAFB;border-radius:12px;font-family:inherit;font-size:13.5px">${esc(b.body)}</textarea>
+  <button class="btn small navy" style="margin-top:8px" onclick="saveBlock(${b.id})">저장</button> <span class="muted" id="bs${b.id}"></span></div>`).join('');
+ }catch(e){showErr(e.message)}
+}
+async function saveBlock(id){
+ try{
+  await api('/admin/block_update',{pin:window._apin,id,title:$('#bt'+id).value,body:$('#bb'+id).value,tips:undefined});
+  $('#bs'+id).textContent='저장됨 ✓';
+ }catch(e){alert(e.message)}
+}
+(async()=>{
+ const q=new URLSearchParams(location.search);
+ if(q.get('pay')==='ok'&&q.get('paymentKey')){
+  try{
+   const r=await fetch(PAYAPI+'/confirm',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentKey:q.get('paymentKey'),orderId:q.get('orderId'),amount:+q.get('amount')})}).then(x=>x.json());
+   alert(r.ok?('결제 완료! '+(r.plan||'')+' 적용 · '+(r.expires_at||'')+'까지 이용 가능'):('결제 승인 실패: '+(r.error||'')));
+  }catch(e){alert('승인 처리 오류: '+e.message)}
+  history.replaceState(null,'',location.pathname);
+ }else if(q.get('pay')==='fail'){alert('결제가 취소되었거나 실패했습니다.');history.replaceState(null,'',location.pathname);}
+ go('home');
+})();
+</script></body></html>

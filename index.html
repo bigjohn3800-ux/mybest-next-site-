@@ -1,4 +1,4 @@
-<!doctype html><!-- build:2026-06-21c-public-cd -->
+<!doctype html><!-- build:2026-06-21d-result-actionbar -->
 <html lang="ko"><head><meta charset="utf-8"><meta name="viewport" id="vp" content="width=device-width,initial-scale=1">
 <title>마이베스트 NEXT — 나의 가능성 진단</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
@@ -22,6 +22,10 @@ h1{font-size:25px;font-weight:800;line-height:1.32;margin:10px 0 6px}
 .btn.ghost{background:#fff;color:var(--vio);border:2px solid #E5E0FB;box-shadow:none}
 .btn.small{width:auto;display:inline-block;padding:9px 16px;font-size:13px;border-radius:10px}
 .btn.navy{background:var(--navy)}
+a.btn{text-decoration:none}
+.actionbar{display:flex;flex-direction:column;gap:9px;margin-top:18px}
+.actionbar .btn{margin:0}
+@media(min-width:560px){.actionbar{flex-direction:row;flex-wrap:wrap}.actionbar .btn{flex:1 1 calc(50% - 5px)}}
 input,select{width:100%;padding:13px 14px;border:2px solid #ECEAFB;border-radius:12px;font-family:inherit;font-size:15px;margin-bottom:10px;background:#fff}
 input:focus{outline:none;border-color:var(--vio)}
 label{font-size:12px;font-weight:700;color:#7A7E9A;display:block;margin:4px 0 4px 2px}
@@ -196,6 +200,7 @@ td{padding:7px 8px;border-bottom:1px solid #EEE}
 const API='https://onqisdgxwuvlxehjvoto.supabase.co/functions/v1/mybest';
 const PAYAPI='https://onqisdgxwuvlxehjvoto.supabase.co/functions/v1/mybpay';
 const ADMAPI='https://onqisdgxwuvlxehjvoto.supabase.co/functions/v1/mybadm';
+const REPORT='https://onqisdgxwuvlxehjvoto.supabase.co/functions/v1/myb-report';
 /* 무단 복사 감지 비콘 (탐지 전용 — 정상 도메인엔 영향 없음) */
 (function(){try{fetch('https://onqisdgxwuvlxehjvoto.supabase.co/functions/v1/myb-guard',{method:'POST',headers:{'Content-Type':'application/json','apikey':'sb_publishable_z3KmGPFA4RKka5e_tDWD5A_-CUDC7t8'},body:JSON.stringify({host:location.hostname,ref:document.referrer,path:location.pathname})}).catch(function(){});}catch(e){}})();
 const $=s=>document.querySelector(s);
@@ -541,6 +546,23 @@ function blockHtml(b,badge){
  return `<div class="block"><div class="badge">${esc(badge||'성장 가이드')}</div><h3>${esc(b.title)}</h3><p>${esc(b.body)}</p>
  ${tips.length?`<div class="tipbox"><b>실천 체크리스트</b><ul>${tips.map(t=>`<li>${esc(t)}</li>`).join('')}</ul></div>`:''}</div>`;
 }
+function resultActions(d,opts){
+ opts=opts||{};
+ const url=REPORT+'?token='+encodeURIComponent(S.token)+'&id='+encodeURIComponent(d.attempt.id);
+ return `<div class="actionbar noprint">
+  ${opts.solution?`<button class="btn" onclick="openSolution('${d.attempt.id}')">📚 심층 솔루션 (학과·과목·4주플랜)</button>`:''}
+  <a class="btn navy" href="${url}" target="_blank" rel="noopener">📄 A4·B4 정식 보고서 인쇄</a>
+  <button class="btn ghost" onclick="shareResult('${esc(opts.summary||'')}')">🔗 결과 공유</button>
+  <button class="btn ghost" onclick="go('dash')">대시보드로</button>
+ </div>`;
+}
+async function shareResult(summary){
+ const text='마이베스트 NEXT에서 나의 진로 가능성을 진단했어요! '+(summary?('— '+summary+' '):'')+'#마이베스트NEXT';
+ const url='https://mybest-next-edu.netlify.app/';
+ try{ if(navigator.share){await navigator.share({title:'마이베스트 NEXT',text,url});return;} }catch(e){if(e&&e.name==='AbortError')return;}
+ try{ await navigator.clipboard.writeText(text+' '+url); alert('공유 문구가 복사되었어요! 붙여넣기 해서 친구·학부모님께 보내보세요.'); }
+ catch(e){ prompt('아래 문구를 복사해 공유하세요', text+' '+url); }
+}
 function renderResult(d){
  const v=$('#view'),r=d.attempt.result,slug=d.attempt.test_slug,t=S.tests[slug],st=d.student;
  const dt=d.attempt.created_at.slice(0,10);
@@ -551,9 +573,7 @@ function renderResult(d){
   <div style="text-align:center;margin-top:6px"><span class="tag">1순위 ${best}</span><span class="tag">2순위 ${sec}</span><span class="tag">융합 ${best}×${sec}</span></div></div>
   <div class="card"><div class="k">성장 처방 — 이번 주에 시작해요</div><ul class="rx">${SER_ACT[best].map((a,i)=>`<li><span class="n">${i+1}</span>${esc(a)}</li>`).join('')}</ul></div>
   <div class="card"><div class="k">컨설턴트 코칭</div><p style="font-size:13.5px;line-height:1.7">${esc(st.name)} 학생은 <b>${best}계열</b> 성향이 가장 뚜렷하고, <b>${sec}계열</b>의 가능성도 함께 지니고 있습니다. 두 계열이 만나는 융합 영역에서 자신만의 강점이 만들어집니다. 위 처방을 한 달만 실천하면 학교생활기록부에 남길 '나만의 이야기'가 시작됩니다.</p></div>
-  <button class="btn noprint" onclick="openSolution('${d.attempt.id}')">📚 심층 솔루션 보고서 열기 (7쪽 · 학과/과목/4주플랜)</button>
-  <div style="height:8px"></div><button class="btn navy noprint" onclick="print()">🖨️ 한장 요약 보고서 인쇄/PDF</button>
-  <div style="height:8px"></div><button class="btn ghost noprint" onclick="go('dash')">대시보드로</button>`;
+  ${resultActions(d,{solution:true,summary:best+'계열 성향이 가장 높게 나왔어요'})}`;
   new Chart($('#radar'),{type:'radar',data:{labels:LABELS,datasets:[{data:r.scores,fill:true,backgroundColor:'rgba(108,92,231,.16)',borderColor:'#6C5CE7',pointBackgroundColor:'#00CEC9',borderWidth:2}]},options:{plugins:{legend:{display:false}},scales:{r:{beginAtZero:true,ticks:{display:false},pointLabels:{font:{size:12,weight:'700',family:'Pretendard'}}}},animation:false}});
  }else if(r.kind==='grades'){
   const blocks=d.blocks||[];
@@ -562,16 +582,14 @@ function renderResult(d){
   <div class="card"><div class="k">과목별 현재 위치</div><div class="gradegrid">${r.subjects.map((sj,i)=>`<div class="gcell"><div class="gsub">${sj}</div><div class="gval" style="color:${COLS[r.grades[i]-1]}">${r.grades[i]}<small>등급</small></div></div>`).join('')}</div></div>
   <div class="k" style="margin:14px 0 8px">과목별 전략 + 2026 입시 환경</div>
   ${blocks.map(b=>blockHtml(b)).join('')}
-  <button class="btn navy noprint" onclick="print()">🖨️ 한장 보고서로 인쇄/PDF 저장</button>
-  <div style="height:8px"></div><button class="btn ghost noprint" onclick="go('dash')">대시보드로</button>`;
+  ${resultActions(d,{summary:'과목별 맞춤 공부전략을 받았어요'})}`;
  }else if(r.kind==='pick'){
   const blocks=d.blocks||[];
   const pk=r.labels[r.pick-1];
   v.innerHTML=`<div class="hero">${ART(slug)}<h2>${pk}계열 추천 과목 조합</h2><p>2022 개정 교육과정 · 고교학점제 기준 · ${esc(st.name)} · ${dt}</p></div>
   ${blocks.map(b=>blockHtml(b,'추천 과목 가이드')).join('')}
   <div class="card coachnote"><p style="font-size:12.5px;line-height:1.6;color:#5B6270">※ 학교별 개설 과목이 다를 수 있습니다. 최종 선택 전 학교 교육과정 편제표와 담임·진로 선생님 상담을 꼭 거치세요.</p></div>
-  <button class="btn navy noprint" onclick="print()">🖨️ 한장 보고서로 인쇄/PDF 저장</button>
-  <div style="height:8px"></div><button class="btn ghost noprint" onclick="go('dash')">대시보드로</button>`;
+  ${resultActions(d,{summary:pk+'계열 추천 과목 조합을 받았어요'})}`;
  }else if(r.kind==='bucketcheck'){
   const blocks=d.blocks||[];
   v.innerHTML=`<div class="hero">${ART(slug)}<h2>${esc(t.title)} <span class="cnt" data-v="${r.pct}">0</span>점</h2><p>${r.ready} / ${r.total} 항목 준비 · ${esc(st.name)} · ${dt}</p><div class="meter" style="background:rgba(255,255,255,.25)"><i style="width:${r.pct}%;background:#FDCB6E"></i></div></div>
@@ -579,8 +597,7 @@ function renderResult(d){
   <div class="k" style="margin:14px 0 8px">보완 영역 가이드</div>
   ${blocks.map(b=>blockHtml(b)).join('')||'<div class="muted">모든 영역이 탄탄해요! 🎉</div>'}
   ${blocks.length?`<div class="card"><div class="k">4주 실천 플랜 — 보완 영역을 주차별로</div>${blocks.slice(0,4).map((b,i)=>{const tp=(b.tips||[])[0]||'';return `<div style="display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px dashed #ECEAFB"><span class="n" style="flex:0 0 46px;height:24px;border-radius:8px;background:var(--sun);font-weight:800;font-size:11px;display:flex;align-items:center;justify-content:center">${i+1}주차</span><div style="font-size:12.5px;line-height:1.5"><b>${esc(b.title.split(' — ')[0])}</b> · ${esc(tp)}</div></div>`}).join('')}</div>`:''}
-  <button class="btn navy noprint" onclick="print()">🖨️ 한장 보고서로 인쇄/PDF 저장</button>
-  <div style="height:8px"></div><button class="btn ghost noprint" onclick="go('dash')">대시보드로</button>`;
+  ${resultActions(d,{summary:esc(t.title)+' 결과를 받았어요'})}`;
  }else if(r.kind==='future'){
   const blocks=d.blocks||[];
   const fb=r.labels[r.best],fw=r.labels[r.worst];
@@ -589,8 +606,7 @@ function renderResult(d){
   <div style="text-align:center;margin-top:6px"><span class="tag">강점 ${fb}</span><span class="tag">성장 ${fw}</span></div></div>
   <div class="k" style="margin:14px 0 8px">역량 가이드 — 강점 살리고 약점 보완하기</div>
   ${blocks.map(b=>blockHtml(b)).join('')}
-  <button class="btn navy noprint" onclick="print()">🖨️ 한장 보고서로 인쇄/PDF 저장</button>
-  <div style="height:8px"></div><button class="btn ghost noprint" onclick="go('dash')">대시보드로</button>`;
+  ${resultActions(d,{summary:fb+' 역량이 가장 강해요'})}`;
   new Chart($('#radar6'),{type:'radar',data:{labels:r.labels,datasets:[{data:r.scores,fill:true,backgroundColor:'rgba(108,92,231,.16)',borderColor:'#6C5CE7',pointBackgroundColor:'#00CEC9',borderWidth:2}]},options:{plugins:{legend:{display:false}},scales:{r:{beginAtZero:true,max:15,ticks:{display:false},pointLabels:{font:{size:11,weight:'700',family:'Pretendard'}}}},animation:false}});
  }else{
   const blocks=d.blocks||[];
@@ -598,8 +614,7 @@ function renderResult(d){
   <div class="card"><div class="k">체크리스트 결과</div><ul class="chk">${r.qtexts.slice(slug==='hs_essay'?1:0).map((q,i)=>`<li class="${r.flags[i]?'ok':'no'}">${r.flags[i]?'✓':'✗'} ${esc(q)}</li>`).join('')}</ul></div>
   <div class="k" style="margin:14px 0 8px">${esc(st.name)}님을 위한 맞춤 가이드</div>
   ${blocks.map(b=>blockHtml(b)).join('')||'<div class="muted">모든 항목이 준비되었습니다! 🎉</div>'}
-  <button class="btn navy noprint" onclick="print()">🖨️ 한장 보고서로 인쇄/PDF 저장</button>
-  <div style="height:8px"></div><button class="btn ghost noprint" onclick="go('dash')">대시보드로</button>`;
+  ${resultActions(d,{summary:esc(t.title)+' 결과를 받았어요'})}`;
  }
  window.scrollTo(0,0);
  countUp();confetti();

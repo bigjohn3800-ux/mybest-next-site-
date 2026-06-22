@@ -1,4 +1,4 @@
-<!doctype html><!-- build:2026-06-21d-result-actionbar -->
+<!doctype html><!-- build:2026-06-21e-tabbar -->
 <html lang="ko"><head><meta charset="utf-8"><meta name="viewport" id="vp" content="width=device-width,initial-scale=1">
 <title>마이베스트 NEXT — 나의 가능성 진단</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
@@ -185,11 +185,14 @@ td{padding:7px 8px;border-bottom:1px solid #EEE}
  .hero{background:var(--navy)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 @media(max-width:640px){.app{padding:18px 14px 84px}h1{font-size:22px;line-height:1.3}.sub{font-size:13px}.whero3d{padding:34px 18px 30px}.whero h1,.whero3d h1{font-size:23px}.mnav{gap:13px;font-size:13px}.btn{padding:16px;font-size:16px;border-radius:13px}.card{padding:17px;border-radius:16px}.tcard .emo{flex:0 0 46px;height:46px;font-size:23px}}
+.tabbar{display:none}
+@media(max-width:640px){.tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #E7E6F2;z-index:40;padding:6px 2px;box-shadow:0 -4px 16px rgba(20,18,50,.06)}.tabbar a{flex:1;text-align:center;font-size:10.5px;font-weight:700;color:#5C617C;cursor:pointer;display:flex;flex-direction:column;gap:2px;padding:4px 0;text-decoration:none}.tabbar a span{font-size:18px}.app{padding-bottom:76px!important}}
 </style></head><body><div class="app">
 <div class="topbar"><div class="logo" onclick="go('home')">MY BEST <span>NEXT</span></div>
 <nav class="mnav noprint"><a onclick="go('home')">홈</a><a onclick="go(S.token?'dash':'join')">진단</a><a onclick="go('howto')">활용법</a><a href="/sample.html">결과샘플</a></nav>
 <div class="who" id="who"></div></div>
 <div id="view"></div>
+<div class="tabbar noprint" id="tabbar"></div>
 <div class="foot">
 <div class="flinks noprint"><a onclick="go('legal','terms')">이용약관</a> · <a onclick="go('legal','privacy')"><b>개인정보처리방침</b></a> · <a onclick="go('howto')">활용법</a> · <a href="/sample.html">결과샘플</a> · <a onclick="toggleView()" id="viewtgl">🖥 PC 화면 보기</a></div>
 <div style="margin-top:8px;line-height:1.7">(주)가르치는사람들 · 대표 이성훈 · 사업자등록번호 115-87-03727<br>
@@ -248,8 +251,10 @@ const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&g
 function showErr(m){const e=$('#err');if(e){e.textContent=m;e.style.display='block'}else alert(m)}
 function setWho(){$('#who').innerHTML=S.me?`<b>${esc(S.me.name)}</b> · ${esc(S.me.class_name||'')} <a style="color:#C62828;cursor:pointer;margin-left:6px" onclick="logout()">나가기</a>`:''}
 function logout(){localStorage.removeItem('myb_token');S.token=null;S.me=null;go('home')}
+function renderTabs(){var el=document.getElementById("tabbar");if(!el)return;var t=S.token?[["🏠","홈","dash0"],["🧭","진단","dash"],["📈","성장","growth"],["📋","리포트","profile"],["🚪","나가기","*logout"]]:[["🏠","홈","home"],["🚀","시작","join"],["💡","활용법","howto"],["✨","샘플","*sample"]];el.innerHTML=t.map(function(x){var a=x[2]==="*logout"?"logout()":(x[2]==="*sample"?"location.href='/sample.html'":(x[2]==="dash0"?"go('home')":"go('"+x[2]+"')"));return "<a onclick=\""+a+"\"><span>"+x[0]+"</span>"+x[1]+"</a>";}).join("");}
 async function go(page,arg){
  const v=$('#view');
+ try{renderTabs()}catch(e){}
  if(page==='home'){
   v.innerHTML=`<div class="whero whero3d" id="hero3d">
    <div class="hgrain"></div>

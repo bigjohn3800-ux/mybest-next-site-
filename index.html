@@ -394,16 +394,16 @@ const CATS=['전체','진로','진학','공부','역량'];
 const SLUG_CAT={hs_series:'진로',ms_series:'진로',es_dream:'진로',future:'역량',ai_skill:'역량',roadmap:'진학',subject_rec:'진학',interview:'진학',hs_essay:'진학',study:'공부',ms_study:'공부',inquiry:'공부',reading:'공부',es_habit:'공부'};
 /* 학년대 내 진단 카드 넘버링(슬러그→고정 번호). 신규·공통 그룹은 미부여 */
 const STAGE_NO={
- 초등:{es_dream:1,es_habit:2,study_manage:3,gifted_ready:4,story_writer:5,ai_inquiry:6},
- 중등:{ms_series:1,ms_study:2,ms_hsfit:3,hs_essay:4,future:5,value_work:6,study_manage:7,gifted_ready:8,story_writer:9,ai_inquiry:10},
- 고등:{hs_series:1,subject_rec:2,study:3,roadmap:4,inquiry:5,reading:6,interview:7,track_fit:10,study_manage:11,story_writer:12,ai_inquiry:13}
+ 초등:{es_dream:1,es_habit:2,value_work:3,gifted_ready:4,story_writer:5,ai_inquiry:6},
+ 중등:{ms_series:1,ms_study:2,ms_hsfit:3,hs_essay:4,value_work:5,story_writer:6,ai_inquiry:7},
+ 고등:{hs_series:1,subject_rec:2,study:3,roadmap:4,inquiry:5,hs_essay:6,interview:7,future:9,track_fit:10}
 };
 const DISPLAY_TITLE={
  ms_study:'중학 공부습관 진단',
  ms_hsfit:'고교 유형 적합도 진단',
  hs_essay:'고입&대입(과기원) 소개서 준비도',
- future:'미래역량 진단',
- value_work:'진로직업 진단',
+ future:'미래·AI 활용역량 진단',
+ value_work:'직업&능력 진단',
  subject_rec:'고교학점제 과목추천',
  study:'대학합격 공부진단',
  interview:'대입 면접 준비도 진단',
@@ -413,12 +413,12 @@ const DISPLAY_TITLE={
  ai_inquiry:'AI 과제탐구'
 };
 const DISPLAY_STEP={
- es:{es_dream:1,es_habit:2,study_manage:3,gifted_ready:4,story_writer:5,ai_inquiry:6},
- ms:{ms_series:1,ms_study:2,ms_hsfit:3,hs_essay:4,future:5,value_work:6,study_manage:7,gifted_ready:8,story_writer:9,ai_inquiry:10},
- hs:{hs_series:1,subject_rec:2,study:3,roadmap:4,inquiry:5,reading:6,interview:7,track_fit:10,study_manage:11,story_writer:12,ai_inquiry:13}
+ es:{es_dream:1,es_habit:2,value_work:3,gifted_ready:4,story_writer:5,ai_inquiry:6},
+ ms:{ms_series:1,ms_study:2,ms_hsfit:3,hs_essay:4,value_work:5,story_writer:6,ai_inquiry:7},
+ hs:{hs_series:1,subject_rec:2,study:3,roadmap:4,inquiry:5,hs_essay:6,interview:7,future:9,track_fit:10}
 };
-const DISPLAY_HIDDEN=new Set(['ai_skill','career_mature','multi_iq','study_emotion','mock_exam','admission_nav']);
-const DISPLAY_OVERRIDE_ONLY=new Set(['future','value_work','hs_essay','study_manage','gifted_ready','story_writer','ai_inquiry']);
+const DISPLAY_HIDDEN=new Set(['ai_skill','career_mature','multi_iq','study_emotion','mock_exam','admission_nav','study_manage','reading']);
+const DISPLAY_OVERRIDE_ONLY=new Set(['future','value_work','hs_essay','gifted_ready','story_writer','ai_inquiry']);
 function displayStep(k,d,lv){
  const ov=DISPLAY_STEP[lv]&&DISPLAY_STEP[lv][k];
  if(ov)return ov;

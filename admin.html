@@ -115,6 +115,7 @@ tr:hover td{background:#FAF9FF}
 
 <script>
 const EP='https://onqisdgxwuvlxehjvoto.supabase.co/functions/v1/myb-admin';
+const APP='https://onqisdgxwuvlxehjvoto.supabase.co/functions/v1/mybest';
 const REP='report.html';
 const KEY='sb_publishable_z3KmGPFA4RKka5e_tDWD5A_-CUDC7t8';
 const TITLES={es_dream:'초등1. 계열·직업 탐색',es_habit:'초등2. 공부습관',value_work:'직업&능력 진단',gifted_ready:'초등 영재진단&준비',story_writer:'AI 동화작가',ai_inquiry:'AI 과제탐구',hs_series:'고등1. 계열·학과·직업',ms_series:'중등1. 계열·직업·학과',subject_rec:'고등2. 고교학점제 과목추천',study:'고등3. 대학합격 공부진단',ms_study:'중등2. 중학 공부습관',roadmap:'고등4. 학생부 로드맵',inquiry:'고등5. 과제탐구',future:'고등9. 미래·AI 활용역량',hs_essay:'중등4·고등6. 소개서 준비도',interview:'고등7. 대입 면접 준비도',track_fit:'고등10. 전형적합도',ms_hsfit:'중등3. 고교 유형 적합도'};
@@ -154,6 +155,7 @@ async function viewDash(){
   <div class="topbar noprint"><div class="logo">MY BEST <span>NEXT</span></div>
    <span class="rolebadge">${esc(S.name||'관리자')}</span><div class="spacer"></div>
    <button class="btn ghost sm" onclick="loadDash()">새로고침</button>
+    <button class="btn ghost sm" onclick="openCreateClass()">🏫 새 학급 발급</button>
     <button class="btn ghost sm" onclick="openBulk()">➕ 학생 일괄 등록</button>
     <button class="btn ghost sm" onclick="openReport()">🏫 학급 종합 리포트</button>
     <button class="btn ghost sm" onclick="exportCsv()">📥 명단 CSV</button>
@@ -456,6 +458,40 @@ function exportReportCsv(){
  document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
 }
 // ── 학생 일괄 등록 (B4) ──
+function openCreateClass(){
+ $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">🏫 새 학급 발급</h2><div class="spacer"></div><button class="btn navy sm" onclick="closeModal()">닫기</button></div>
+ <div class="notice"><b>관리자 권한 확인</b><br>학급코드는 관리자 세션이 있는 경우에만 발급됩니다. 발급 후 학생은 학급코드와 PIN으로 입장합니다.</div>
+ <div class="grid2">
+  <div><label>학교·기관명</label><input id="ccSchool" placeholder="예: 마이베스트고등학교"></div>
+  <div><label>학급·교실명</label><input id="ccName" placeholder="예: 3학년 1반"></div>
+ </div>
+ <label>학급 관리자 PIN</label><input id="ccPin" type="password" placeholder="교사·강사용 4자리 이상 PIN">
+ <div class="grid2">
+  <div><label>정원(명)</label><input id="ccMax" type="number" value="40" min="5" max="200"></div>
+  <div><label>이용 기간(개월)</label><input id="ccMonths" type="number" value="12" min="1" max="24"></div>
+ </div>
+ <div class="grid2">
+  <div><label>1인 이용 횟수</label><input id="ccUses" type="number" placeholder="비우면 제한 없음" min="1" max="50"></div>
+  <div><label>이용 시작일</label><input id="ccStart" type="date"></div>
+ </div>
+ <button class="btn" style="width:100%" onclick="doCreateClass()">학급 코드 발급</button>
+ <div id="ccResult" style="margin-top:10px"></div>`;
+ $('#modal').classList.add('open');
+}
+async function doCreateClass(){
+ const body={admin_token:S.token,school:$('#ccSchool').value.trim(),name:$('#ccName').value.trim(),teacher_pin:$('#ccPin').value.trim(),max_students:+$('#ccMax').value,months:+$('#ccMonths').value,max_uses:$('#ccUses').value?+$('#ccUses').value:null,starts_at:$('#ccStart').value||null};
+ if(!body.name||!body.teacher_pin){$('#ccResult').innerHTML='<div class="err" style="display:block">학급명과 관리자 PIN을 입력하세요.</div>';return}
+ $('#ccResult').innerHTML='<div class="muted" style="font-size:12.5px">발급 중…</div>';
+ const r=await fetch(APP+'/api/teacher/class',{method:'POST',headers:{'Content-Type':'application/json',apikey:KEY},body:JSON.stringify(body)});
+ const j=await r.json();
+ if(j.error){$('#ccResult').innerHTML=`<div class="err" style="display:block">${esc(j.error)}</div>`;return}
+ const link=location.origin+'/?code='+encodeURIComponent(j.code);
+ $('#ccResult').innerHTML=`<div class="notice" style="background:#F2FBF5;border-color:#CDEBD7"><b>발급 완료</b><br>
+  <div style="font-size:30px;font-weight:900;letter-spacing:.18em;color:var(--navy);margin:8px 0">${esc(j.code)}</div>
+  ${esc(j.name||'')} · 정원 ${esc(j.max_students||'')}명 · ${esc(j.expires_at||'')}까지<br>
+  <a href="${esc(link)}" target="_blank" rel="noopener" style="color:var(--vio);word-break:break-all">${esc(link)}</a>
+  <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost sm" onclick="navigator.clipboard&&navigator.clipboard.writeText('${esc(link)}')">링크 복사</button><button class="btn ghost sm" onclick="loadDash();closeModal()">대시보드 새로고침</button></div></div>`;
+}
 async function openBulk(){
  $('#sheet').innerHTML='<div style="padding:30px;text-align:center" class="muted">학급 목록을 불러오는 중…</div>';
  $('#modal').classList.add('open');

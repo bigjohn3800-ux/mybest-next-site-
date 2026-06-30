@@ -390,9 +390,42 @@ td{padding:7px 8px;border-bottom:1px solid #EEE}
  .how,.cstep{grid-template-columns:repeat(3,1fr)}
  .tabbar{display:none}
 }
+@media(min-width:1025px){
+ .app{max-width:min(1280px,calc(100vw - 96px));padding:34px 36px 86px}
+ .topbar{display:grid;grid-template-columns:auto minmax(560px,1fr) auto;align-items:center;gap:24px;margin-bottom:28px}
+ .topbar .who{white-space:nowrap;min-width:170px}
+ .mnav{justify-content:center;align-items:center;gap:24px;white-space:nowrap}
+ .mnav a{white-space:nowrap;line-height:1.15}
+ .loginpill{padding:9px 18px;font-size:13px}
+ h1{font-size:31px}
+ .sub{font-size:15px}
+ .lp-hero{padding:58px 48px 46px;border-radius:28px}
+ .lp-hero h1{font-size:42px;max-width:760px}
+ .lp-hero .lp-lead{font-size:17px;max-width:760px}
+ .lp-cta{max-width:720px}
+ .lp-stats{gap:42px}
+ .lp-stats b{font-size:26px}
+ .lp-vals,.proofgrid,.qualitygrid{grid-template-columns:repeat(4,1fr)}
+ .lp-report{padding:26px;gap:24px}
+ .lp-report .lp-shot{flex-basis:148px;height:188px}
+ .lp-report-b h3{font-size:21px}
+ .lp-report-b p{font-size:14px}
+ .lp-dualcta{grid-template-columns:repeat(2,minmax(280px,1fr))}
+ .vgrid{grid-template-columns:repeat(3,1fr)}
+ .lvsec{width:min(92vw,1280px)}
+ .card{border-radius:18px}
+ .dashgrid,.qualitygrid,.proofgrid{gap:14px}
+}
+@media(min-width:1440px){
+ .app{max-width:1440px}
+ .lvsec{width:min(92vw,1380px)}
+ .topbar{grid-template-columns:auto minmax(680px,1fr) auto}
+ .mnav{gap:30px}
+ .lp-hero h1{font-size:48px}
+}
 </style></head><body><div class="app">
 <div class="topbar"><div class="logo" onclick="go('home')">MY BEST <span>NEXT</span></div>
-<nav class="mnav noprint"><a onclick="go('home')">홈</a><a onclick="go('consult')">컨설팅 진단</a><a href="/sample.html">결과 샘플</a><a onclick="go('coaching')">선생님 코칭</a><a onclick="go('pricing')">요금·도입</a><a class="loginpill" onclick="go(S.token?'dash':'teacher')">로그인</a></nav>
+<nav class="mnav noprint"><a onclick="go('home')">홈</a><a onclick="go('consult')">컨설팅 진단</a><a href="/sample.html">결과 샘플</a><a onclick="go('coaching')">선생님 코칭</a><a onclick="go('pricing')">요금·도입</a><a class="loginpill" onclick="go(S.token?'dash':'login')">로그인</a></nav>
 <div class="who" id="who"></div></div>
 <div id="view"></div>
 <div class="tabbar noprint" id="tabbar"></div>
@@ -703,6 +736,33 @@ async function go(page,arg){
   window.goJoin=()=>go('join');
   window.scrollTo(0,0);
  }
+  else if(page==='login'){
+   v.innerHTML=`<h1>로그인 선택</h1><div class="sub">학생은 학급코드로 입장하고, 관리자·교사는 별도 대시보드에서 운영합니다.</div>
+   <div class="grid2">
+    <div class="card" style="border-top:5px solid var(--mint)">
+     <div class="k">학생 회원</div>
+     <h3 style="font-size:18px;color:var(--navy);margin-bottom:8px">학생으로 입장</h3>
+     <p style="font-size:13px;line-height:1.65;color:#5C617C;margin-bottom:14px">선생님께 받은 학급코드와 이름, 나만의 PIN으로 들어갑니다. 진단 기록과 결과지가 누적됩니다.</p>
+     <button class="btn navy" onclick="go('join')">학생 로그인</button>
+    </div>
+    <div class="card" style="border-top:5px solid var(--vio)">
+     <div class="k">관리자·교사</div>
+     <h3 style="font-size:18px;color:var(--navy);margin-bottom:8px">관리자 대시보드</h3>
+     <p style="font-size:13px;line-height:1.65;color:#5C617C;margin-bottom:14px">최고관리자, 내부관리자, 기관관리자, 학급관리자는 전용 대시보드에서 학급·학생·결과를 운영합니다.</p>
+     <a class="btn" href="/admin.html">관리자 로그인</a>
+    </div>
+   </div>
+   <div class="card"><div class="k">권한 구조</div>
+    <div class="qualitygrid" style="margin:0">
+     <div class="quality"><span class="qbadge ready">SUPER</span><h3>최고 관리자</h3><p>관리자 권한 부여, 전체 운영과 소스 관리 기준을 총괄합니다.</p></div>
+     <div class="quality"><span class="qbadge build">INTERNAL</span><h3>내부 관리자</h3><p>학교·기관 생성, 운영 현황 점검, 콘텐츠/대시보드 관리를 담당합니다.</p></div>
+     <div class="quality"><span class="qbadge ready">SCHOOL</span><h3>학교·기관 관리자</h3><p>구독 기관 단위에서 학급관리자와 학급을 생성하고 결과를 관리합니다.</p></div>
+     <div class="quality"><span class="qbadge ready">TEACHER</span><h3>학급 관리자</h3><p>학생 소통, 진단 배정, 진행률·결과 확인과 상담 자료 활용을 담당합니다.</p></div>
+    </div>
+   </div>
+   <div class="linkrow"><a onclick="go('home')">← 처음으로</a> · <a onclick="go('consult')">진단 보기</a></div>`;
+   window.scrollTo(0,0);
+  }
   else if(page==='join'){
    v.innerHTML=`<h1>간편하게 시작해요</h1><div class="sub">선생님께 받은 학급코드로 입장합니다. 처음이면 자동으로 가입돼요.</div>
    <div class="saleshold"><p><b>학생 입장 안내</b><br>학급코드와 이름, 나만의 PIN으로 입장하면 진단 기록과 결과지가 누적됩니다. 다음 방문 때 같은 PIN으로 들어오면 이전 결과를 이어서 볼 수 있습니다.</p></div>
@@ -885,8 +945,8 @@ async function go(page,arg){
     <div class="hstep"><b>2</b><h4>코드 공유</h4><p>학생들에게 코드·QR 공유 → 자율 진단</p></div>
     <div class="hstep"><b>3</b><h4>결과 활용</h4><p>학급 대시보드로 수업·상담 자료 만들기</p></div>
    </div>
-   ${window._tauth?`<div class="card" style="background:#F2FBF5;border-color:#CDEBD7"><div class="k" style="margin-top:0">✅ 교사 로그인됨</div><div class="actionbar noprint" style="margin-top:6px"><button class="btn navy" onclick="go('teacher')">📋 학급 관리 / 대시보드</button></div></div>`
-    :`<div class="card" style="text-align:center"><div class="k">교사 전용 기능</div><p style="font-size:13px;color:#7A7E9A;line-height:1.6;margin-bottom:12px">학급 만들기·코드 발급·학급 관리·진단 배정은 <b>교사 로그인 후</b> 이용할 수 있어요.</p><button class="btn navy" style="width:auto;display:inline-block;padding:13px 26px" onclick="go('teacher')">교사 로그인 / 학급 관리 🔑</button></div>`}
+   ${window._tauth?`<div class="card" style="background:#F2FBF5;border-color:#CDEBD7"><div class="k" style="margin-top:0">✅ 교사 로그인됨</div><div class="actionbar noprint" style="margin-top:6px"><a class="btn navy" href="/admin.html">📋 관리자 대시보드</a></div></div>`
+    :`<div class="card" style="text-align:center"><div class="k">교사 전용 기능</div><p style="font-size:13px;color:#7A7E9A;line-height:1.6;margin-bottom:12px">학급 만들기·코드 발급·학급 관리·진단 배정은 <b>관리자 대시보드 로그인 후</b> 이용할 수 있어요.</p><a class="btn navy" style="width:auto;display:inline-block;padding:13px 26px" href="/admin.html">관리자 로그인 / 학급 관리 🔑</a></div>`}
    <div class="card" style="text-align:center"><div class="k">학교·기관 도입 문의</div>
    <p style="font-size:13px;color:#7A7E9A;line-height:1.6;margin-bottom:10px">다학급 운영, 연수, 기관별 맞춤 콘텐츠는 별도로 준비합니다.</p>
    <a class="btn ghost" style="width:auto;display:inline-block;padding:12px 24px" href="mailto:onlyjdw3831@gmail.com?subject=마이베스트%20NEXT%20학교%20도입%20문의">학교 도입 문의하기</a></div>
@@ -905,6 +965,16 @@ async function go(page,arg){
    window.scrollTo(0,0);
   }
   else if(page==='teacher'){
+   v.innerHTML=`<h1>관리자 전용 입장</h1><div class="sub">학급 발급과 운영은 공개 화면이 아니라 관리자 대시보드에서만 진행합니다.</div>
+   <div class="card" style="border-top:5px solid var(--vio)">
+    <div class="k">보안 전환 완료</div>
+    <h3 style="font-size:18px;color:var(--navy);margin-bottom:8px">학급코드 발급은 관리자 권한이 필요합니다</h3>
+    <p style="font-size:13px;line-height:1.7;color:#5C617C;margin-bottom:14px">학생은 학급코드로 바로 입장하고, 최고관리자·기관관리자·교사는 관리자 대시보드에서 학급 생성, 학생 등록, 결과 확인을 진행합니다.</p>
+    <a class="btn" href="/admin.html">관리자 대시보드 열기</a>
+    <button class="btn ghost" style="margin-top:10px" onclick="go('login')">학생/관리자 선택으로</button>
+   </div>
+   <div class="linkrow"><a onclick="go('home')">← 처음으로</a></div>`;
+   window.scrollTo(0,0);return;
    v.innerHTML=`<h1>선생님 공간 🏫</h1><div class="sub">학급을 만들어 코드를 나눠주고, 우리 반 결과를 한눈에 보세요.</div>
    <div class="saleshold"><p><b>교사용 권한</b><br>학급관리자는 우리 반 진행 현황과 학생별 핵심 결과를 확인하고, 학교장·기관관리자는 여러 학급을 함께 관리하는 구조로 확장됩니다.</p></div>
    <div class="card"><div class="k">학급 현황 보기</div><div class="err" id="err"></div>
@@ -1045,7 +1115,7 @@ async function go(page,arg){
     <div class="qualitygrid"><div class="quality"><span class="qbadge ready">READY</span><h3>학급코드 운영</h3><p>학생들이 코드와 PIN으로 입장해 결과를 확인할 수 있습니다.</p></div>
     <div class="quality"><span class="qbadge build">EXPAND</span><h3>권한 구조</h3><p>기관관리자와 학급관리자 역할을 나누어 여러 학급을 안정적으로 운영합니다.</p></div></div>
     <a class="btn ghost" href="mailto:onlyjdw3831@gmail.com">학교 도입 문의하기</a>
-    <div class="linkrow"><a onclick="go('teacher')">← 교사 공간</a></div>`;
+    <div class="linkrow"><a onclick="go('login')">← 로그인 선택</a></div>`;
     return;
    }
    const cfg=await fetch(PAYAPI+'/config').then(r=>r.json());window._paycfg=cfg;
@@ -1055,7 +1125,7 @@ async function go(page,arg){
   <div class="grid2">${Object.entries(cfg.plans).map(([k,p])=>`<div class="card" style="text-align:center;margin-bottom:0"><div class="k">${esc(p.name)}</div><div style="font-size:24px;font-weight:800;color:var(--navy)">${p.amount.toLocaleString()}<small style="font-size:13px">원/년</small></div><p class="muted" style="margin:6px 0 12px">${esc(p.desc)}</p><button class="btn small ${cfg.ready?'navy':'ghost'}" onclick="buyPlan('${k}')">${cfg.ready?'이 플랜 결제':'준비 중'}</button></div>`).join('')}</div>
   <div style="height:12px"></div><div class="card noprint" id="paywrap" style="display:none"><div class="k">결제 수단</div><div id="pm"></div><div id="agr"></div><div id="paybtn" style="margin-top:10px"></div></div>
   <div class="card"><p style="font-size:12px;color:#7A7E9A;line-height:1.6">학교·교육청 단위 도입(다학급·세금계산서)은 별도 견적으로 진행됩니다. 결제는 토스페이먼츠를 통해 안전하게 처리됩니다.</p></div>
-  <div class="linkrow"><a onclick="go('teacher')">← 교사 공간</a></div>`;
+  <div class="linkrow"><a onclick="go('login')">← 로그인 선택</a></div>`;
  }
  else if(page==='admin'){
   v.innerHTML=`<h1>전체 관리 대시보드 🔧</h1><div class="sub">운영 통계와 콘텐츠 블록 관리 · <a style="color:var(--vio);cursor:pointer" onclick="go('school')">학교 대시보드 →</a></div>

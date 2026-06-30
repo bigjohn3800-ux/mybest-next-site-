@@ -1069,9 +1069,18 @@ async function join(){
  }catch(e){showErr(e.message)}
 }
 async function startQuiz(slug){
- const q=await api('/questions?slug='+slug);
+ let q=await api('/questions?slug='+slug);
  if(!S.tests||!S.tests[slug])S.tests=(await api('/tests')).tests;
- S.quiz={slug,scale:q.scale,questions:q.questions,answers:[],i:0,t:S.tests[slug]};
+ let majors=null, questions=q.questions;
+ if(slug==='subject_rec'){
+  majors=await loadMajors();
+  questions=[
+   {q_text:'1단계. 관심 계열을 선택하세요. 아직 확정이 아니어도 가장 끌리는 방향을 고르면 됩니다.'},
+   {q_text:'2단계. 관심 학과를 하나 선택하세요. 보고서에서 이 학과의 인재상과 권장 과목을 먼저 보여줍니다.'},
+   {q_text:'3단계. 우리 학교 교육과정표 확인 상태를 선택하세요. 최종 과목 선택은 학교 개설 과목 기준으로 조정됩니다.'}
+  ];
+ }
+ S.quiz={slug,scale:q.scale,questions,answers:[],i:0,t:S.tests[slug],majors};
  try{
   const sv=JSON.parse(localStorage.getItem('myb_q_'+slug)||'null');
   if(sv&&sv.i>0&&sv.i<q.questions.length&&confirm(`이전에 ${sv.i}번까지 답한 기록이 있어요.\n이어서 할까요? (취소=처음부터)`)){S.quiz.answers=sv.answers;S.quiz.i=sv.i;}
@@ -1086,10 +1095,31 @@ function startQuizFx(slug){
  setTimeout(()=>startQuiz(slug),260);
 }
 function quizPrev(){const z=S.quiz;if(z&&z.i>0){z.i--;renderQuiz();}}
+function subjectRecQText(z,q){
+ if(z.i===1&&z.answers[0])return `${LABELS[z.answers[0]-1]}계열에서 관심 학과를 고르세요. 학과를 고르면 보고서가 더 구체적으로 생성됩니다.`;
+ if(z.i===2){
+  const m=(z.majors||[]).find(x=>+x.id===+z.answers[1]);
+  return `${m?m.name+' ':''}과목 선택을 위해 학교 교육과정 편제표 확인 상태를 선택하세요.`;
+ }
+ return q.q_text;
+}
+function subjectRecOpts(z){
+ if(z.i===0){
+  return `<div class="lkrow">${LABELS.map((l,i)=>`<button class="lk" onclick="answer(${i+1})"><span>${SER_EMO[i]||'🗂️'}</span>${l}계열<small style="display:block;font-size:11px;color:#667;margin-top:4px">${esc(SER_DESC[l]||'')}</small></button>`).join('')}</div>`;
+ }
+ if(z.i===1){
+  const series=+z.answers[0]||1;
+  const majors=(z.majors||[]).filter(m=>+m.series===series);
+  return `<div class="ynrow" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr))">${majors.map(m=>`<button class="yn yes" style="text-align:left;align-items:flex-start" onclick="answer(${+m.id})"><span>🏛️</span><b>${esc(m.name)}</b><small style="display:block;font-size:11px;color:#566;line-height:1.45;margin-top:5px">일반 ${esc((m.subj_normal||'-').slice(0,42))}<br>진로 ${esc((m.subj_career||'-').slice(0,42))}</small></button>`).join('')}</div>`;
+ }
+ return `<div class="ynrow"><button class="yn yes" onclick="answer(1)"><span>✅</span>확인 완료</button><button class="yn yes" onclick="answer(2)"><span>📝</span>일부 확인</button><button class="yn no" onclick="answer(3)"><span>🔎</span>아직 확인 전</button></div>`;
+}
 function renderQuiz(){
  const z=S.quiz,v=$('#view'),q=z.questions[z.i],total=z.questions.length;
  let opts;
- if(z.slug==='hs_essay'&&z.i===0){
+ if(z.slug==='subject_rec'){
+  opts=subjectRecOpts(z);
+ }else if(z.slug==='hs_essay'&&z.i===0){
   opts=['외고·국제고','자사고','영재학교·과학고','특성화고·마이스터고'].map((o,k)=>`<button class="opt" onclick="answer(${k+1})">${o}</button>`).join('');
  }else if(z.scale==='grade'){
   opts=['1등급 (상위 10%)','2등급','3등급','4등급','5등급'].map((o,k)=>`<button class="opt" onclick="answer(${k+1})">${o}</button>`).join('');
@@ -1102,7 +1132,7 @@ function renderQuiz(){
  v.innerHTML=`<div class="qnum">${esc(z.t.title)}</div>
  <div class="qprog noprint"><span>${z.i+1} / ${total} 문항</span><span>${pct}% 진행</span></div>
  <div class="bar"><i style="width:${pct}%"></i></div>
- <div class="card"><div class="qnum">Q${z.i+1} / ${total}</div><div class="qtext">${esc(q.q_text)}</div>${opts}</div>
+  <div class="card"><div class="qnum">Q${z.i+1} / ${total}</div><div class="qtext">${esc(subjectRecQText(z,q))}</div>${opts}</div>
  <div class="linkrow noprint">${z.i>0?'<a onclick="quizPrev()">← 이전 문항</a> · ':''}<a onclick="go('dash')">중단하고 돌아가기 (진행 자동저장)</a></div>`;
 }
 async function answer(val){

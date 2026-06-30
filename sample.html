@@ -130,50 +130,42 @@ const $=s=>document.querySelector(s);
 const esc=t=>String(t==null?'':t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 Object.assign(EMO,{study_manage:'🧩',gifted_ready:'💡',mock_exam:'📊',admission_nav:'🎯',story_writer:'🪄',ai_inquiry:'🔬'});
 
-// 2단 분류: 1차=학년대(초등/중등/고등/공통), 2차=목적(진로/진학/공부/역량), num=학년대 내 번호
-const GRADES=['초등','중등','고등','공통'];
+// 2단 분류: 1차=학년대(초등/중등/고등), 2차=목적(진로/진학/공부/역량)
+// 공통 진단은 공개 샘플 목록에서 빼고, 통합된 학년별 진단 안에 배치한다.
+const GRADES=['초등','중등','고등'];
 const PURPOSES=['진로','진학','공부','역량'];
-const CLASSIFY={
- // 초등
- es_dream:{grade:'초등',purpose:'진로',num:1},
- es_habit:{grade:'초등',purpose:'공부',num:2},
- // 중등
- ms_series:{grade:'중등',purpose:'진로',num:1},
- ms_study:{grade:'중등',purpose:'공부',num:2},
- ms_hsfit:{grade:'중등',purpose:'진학',num:3},
- // 고등
- hs_series:{grade:'고등',purpose:'진로',num:1},
- subject_rec:{grade:'고등',purpose:'진학',num:2},
- study:{grade:'고등',purpose:'공부',num:3},
- roadmap:{grade:'고등',purpose:'진학',num:4},
- inquiry:{grade:'고등',purpose:'진학',num:5},
- hs_essay:{grade:'고등',purpose:'진학',num:6},
- interview:{grade:'고등',purpose:'진학',num:7},
- reading:{grade:'고등',purpose:'공부',num:8},
- ai_skill:{grade:'고등',purpose:'역량',num:9},
- track_fit:{grade:'고등',purpose:'진학',num:10},
- // 공통
- future:{grade:'공통',purpose:'진로',num:1},
- value_work:{grade:'공통',purpose:'진로',num:2},
- career_mature:{grade:'공통',purpose:'진로',num:3},
- multi_iq:{grade:'공통',purpose:'역량',num:4},
- study_emotion:{grade:'공통',purpose:'공부',num:5},
- study_manage:{grade:'공통',purpose:'공부',num:6},
- gifted_ready:{grade:'공통',purpose:'역량',num:7},
- mock_exam:{grade:'공통',purpose:'공부',num:8},
- admission_nav:{grade:'공통',purpose:'진학',num:9},
- story_writer:{grade:'공통',purpose:'역량',num:10},
- ai_inquiry:{grade:'공통',purpose:'역량',num:11}
-};
-const GTAG={'초등':'#00B894','중등':'#6C5CE7','고등':'#0984E3','공통':'#636E72'};
-function clf(slug){return CLASSIFY[slug]||{grade:'공통',purpose:(TESTS[slug]&&TESTS[slug].cat)||'역량',num:99};}
+const PLACEMENTS=[
+ {slug:'es_dream',grade:'초등',purpose:'진로',num:1},
+ {slug:'es_habit',grade:'초등',purpose:'공부',num:2},
+ {slug:'value_work',grade:'초등',purpose:'진로',num:3},
+ {slug:'gifted_ready',grade:'초등',purpose:'역량',num:4},
+ {slug:'story_writer',grade:'초등',purpose:'역량',num:5},
+ {slug:'ai_inquiry',grade:'초등',purpose:'역량',num:6},
+ {slug:'ms_series',grade:'중등',purpose:'진로',num:1},
+ {slug:'ms_study',grade:'중등',purpose:'공부',num:2},
+ {slug:'ms_hsfit',grade:'중등',purpose:'진학',num:3},
+ {slug:'hs_essay',grade:'중등',purpose:'진학',num:4},
+ {slug:'value_work',grade:'중등',purpose:'진로',num:5},
+ {slug:'story_writer',grade:'중등',purpose:'역량',num:6},
+ {slug:'ai_inquiry',grade:'중등',purpose:'역량',num:7},
+ {slug:'hs_series',grade:'고등',purpose:'진로',num:1},
+ {slug:'subject_rec',grade:'고등',purpose:'진학',num:2},
+ {slug:'study',grade:'고등',purpose:'공부',num:3},
+ {slug:'roadmap',grade:'고등',purpose:'진학',num:4},
+ {slug:'inquiry',grade:'고등',purpose:'진학',num:5},
+ {slug:'hs_essay',grade:'고등',purpose:'진학',num:6},
+ {slug:'interview',grade:'고등',purpose:'진학',num:7},
+ {slug:'future',grade:'고등',purpose:'역량',num:9},
+ {slug:'track_fit',grade:'고등',purpose:'진학',num:10}
+];
+const GTAG={'초등':'#00B894','중등':'#6C5CE7','고등':'#0984E3'};
 
 let TESTS={},chart=null,GRADE='전체',PURPOSE='전체';
 
 async function init(){
  const j=await fetch(API+'/api/tests',{headers:{apikey:KEY}}).then(r=>r.json()).catch(()=>({tests:{}}));
  TESTS=j.tests||{};
- const usedG=GRADES.filter(g=>Object.keys(TESTS).some(k=>clf(k).grade===g));
+ const usedG=GRADES.filter(g=>PLACEMENTS.some(p=>p.grade===g&&TESTS[p.slug]));
  const g=['전체',...usedG];
  $('#chips').innerHTML='<span class="chiplabel">학년</span>'+g.map(c=>`<button class="chip ${c===GRADE?'on':''}" onclick="setGrade('${c}')">${esc(c)}</button>`).join('');
  const p=['전체',...PURPOSES];
@@ -186,16 +178,16 @@ function cardHtml(k,t,label){return `<div class="cardx" onclick="openSample('${k
    <div class="emo">${EMO[k]||'📊'}</div><h3>${label?'<span class="numbadge">'+esc(label)+'</span>':''}${esc(t.title)}</h3><p>${esc(t.desc)}</p>
    <div><span class="cat">${esc(t.cat)}</span></div><div class="sampleActions"><button class="btn ghost" onclick="event.stopPropagation();openSample('${k}')">📊 결과 샘플</button><a class="btn" onclick="event.stopPropagation()" href="/">지금 해보기 →</a></div>${DEMO_RPT[k]?`<a class="btn rpt" target="_blank" rel="noopener" onclick="event.stopPropagation()" href="${rptHref(k)}">📄 세부 보고서 (정식 A4)</a>`:''}</div>`;}
 function render(){
- const groups=(GRADE==='전체'?GRADES:[GRADE]).filter(g=>Object.keys(TESTS).some(k=>clf(k).grade===g));
+ const groups=(GRADE==='전체'?GRADES:[GRADE]).filter(g=>PLACEMENTS.some(p=>p.grade===g&&TESTS[p.slug]));
  let html='';
  groups.forEach(g=>{
-  const items=Object.entries(TESTS)
-   .filter(([k])=>clf(k).grade===g)
-   .filter(([k])=>PURPOSE==='전체'||clf(k).purpose===PURPOSE)
-   .sort((a,b)=>clf(a[0]).num-clf(b[0]).num);
+  const items=PLACEMENTS
+   .filter(p=>p.grade===g&&TESTS[p.slug])
+   .filter(p=>PURPOSE==='전체'||p.purpose===PURPOSE)
+   .sort((a,b)=>a.num-b.num);
   if(!items.length)return;
   html+=`<div class="gsec"><span class="gtag" style="background:${GTAG[g]||'var(--vio)'}">${esc(g)}</span><h2>${esc(g)} 진단</h2><span class="gcount">${items.length}종</span></div>`;
-  html+=`<div class="grid">${items.map(([k,t])=>{const c=clf(k);return cardHtml(k,t,g+' '+c.num);}).join('')}</div>`;
+  html+=`<div class="grid">${items.map(p=>cardHtml(p.slug,TESTS[p.slug],g+' '+p.num)).join('')}</div>`;
  });
  if(!html)html='<div class="empty">해당 분류의 진단이 없습니다. 다른 학년/목적을 선택해 보세요.</div>';
  $('#sections').innerHTML=html;

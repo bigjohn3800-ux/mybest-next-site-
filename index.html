@@ -500,8 +500,8 @@ function methodNote(slug){
 }
 function nextStepHtml(t,ats){
  const done=new Set((ats||[]).map(a=>a.test_slug));
- const order=['hs_series','ms_series','future','roadmap','study','subject_rec','interview','ai_skill','reading'];
- const pick=order.find(k=>t[k]&&!done.has(k))||Object.keys(t).find(k=>!done.has(k));
+ const order=['hs_series','ms_series','es_dream','subject_rec','roadmap','study','ms_study','interview','future','value_work','track_fit'];
+ const pick=order.find(k=>t[k]&&!DISPLAY_HIDDEN.has(k)&&!done.has(k))||Object.keys(t).find(k=>!DISPLAY_HIDDEN.has(k)&&!done.has(k));
  if(!pick)return `<div class="card nextcard"><div class="k">오늘의 다음 STEP</div><p style="font-size:13px;line-height:1.65;color:#4C5C4C">20종 진단을 모두 경험했어요. 한 달 뒤 재진단하면 성장 그래프가 더 선명해집니다.</p><button class="btn small ghost" onclick="go('growth')">성장 변화 보기</button></div>`;
  return `<div class="card nextcard"><div class="k">오늘의 다음 STEP</div><p style="font-size:13px;line-height:1.65;color:#4C5C4C"><b>${esc(t[pick].title)}</b>부터 이어가면 진로·진학 리포트가 더 촘촘해집니다.</p><button class="btn small navy" onclick="startQuizFx('${pick}')">추천 진단 시작</button></div>`;
 }
@@ -530,24 +530,24 @@ const WIZ_WORRIES=[
 ];
 /* 관심 → 선호 슬러그 (우선순위 순). S.tests에 실제 존재하는 것만 사용 */
 const WIZ_INTEREST_SLUGS={
- career:['hs_series','ms_series','es_dream','career_mature','value_work','future'],
- study:['study','ms_study','study_manage','mock_exam','study_emotion','es_habit'],
+ career:['hs_series','ms_series','es_dream','value_work','future','gifted_ready'],
+ study:['study','ms_study','es_habit','story_writer'],
  track:['subject_rec','track_fit','ms_hsfit','hs_series','ms_series'],
- admission:['admission_nav','roadmap','interview','hs_essay','subject_rec'],
- ai:['ai_skill','ai_inquiry','story_writer','multi_iq','future'],
- inquiry:['reading','inquiry','ai_inquiry','gifted_ready','multi_iq']
+ admission:['roadmap','interview','hs_essay','subject_rec','track_fit'],
+ ai:['future','ai_inquiry','story_writer','gifted_ready'],
+ inquiry:['inquiry','ai_inquiry','gifted_ready','roadmap']
 };
 /* 고민 → 보조 가중 슬러그 */
 const WIZ_WORRY_SLUGS={
- direction:['hs_series','ms_series','es_dream','value_work','multi_iq','future'],
- method:['study','ms_study','study_manage','mock_exam','study_emotion'],
- choice:['subject_rec','track_fit','ms_hsfit','career_mature'],
- plan:['admission_nav','roadmap','interview','hs_essay'],
- future:['ai_skill','ai_inquiry','future','story_writer'],
- depth:['inquiry','reading','ai_inquiry','gifted_ready']
+ direction:['hs_series','ms_series','es_dream','value_work','future'],
+ method:['study','ms_study','es_habit','story_writer'],
+ choice:['subject_rec','track_fit','ms_hsfit','value_work'],
+ plan:['roadmap','interview','hs_essay','subject_rec'],
+ future:['future','ai_inquiry','story_writer','gifted_ready'],
+ depth:['inquiry','ai_inquiry','gifted_ready','roadmap']
 };
 /* 보충 일반 추천 (3개 미만일 때) */
-const WIZ_FALLBACK={es:['es_dream','es_habit','future'],ms:['ms_series','ms_study','future'],hs:['future','value_work','career_mature','hs_series']};
+const WIZ_FALLBACK={es:['es_dream','es_habit','value_work'],ms:['ms_series','ms_study','value_work'],hs:['future','value_work','hs_series']};
 /* 슬러그가 해당 학년대(레벨키)에 제공되는지 — steps 객체 기준, audience 보조 */
 function wizFitsLevel(d,lvKey){
  if(!d)return false;
@@ -559,14 +559,14 @@ function wizRecommend(){
  const t=S.tests||{};
  const lvKey=wizLevelKey(WIZ.grade);
  const score={};const reason={};
- const add=(arr,base,why)=>{(arr||[]).forEach((sl,i)=>{if(!t[sl])return;if(!wizFitsLevel(t[sl],lvKey))return;const pts=base-i;score[sl]=(score[sl]||0)+pts;if(!reason[sl])reason[sl]=why;});};
+ const add=(arr,base,why)=>{(arr||[]).forEach((sl,i)=>{if(DISPLAY_HIDDEN.has(sl)||!t[sl])return;if(!wizFitsLevel(t[sl],lvKey))return;const pts=base-i;score[sl]=(score[sl]||0)+pts;if(!reason[sl])reason[sl]=why;});};
  add(WIZ_INTEREST_SLUGS[WIZ.interest],100,'interest');
  add(WIZ_WORRY_SLUGS[WIZ.worry],40,'worry');
  /* 고3는 입시·진학 진단에 보너스 */
- if(WIZ.grade==='hs3'){['admission_nav','roadmap','interview','hs_essay','subject_rec'].forEach(sl=>{if(t[sl]&&wizFitsLevel(t[sl],'hs')&&score[sl]!=null)score[sl]+=15;});}
+ if(WIZ.grade==='hs3'){['roadmap','interview','hs_essay','subject_rec','track_fit'].forEach(sl=>{if(t[sl]&&wizFitsLevel(t[sl],'hs')&&score[sl]!=null)score[sl]+=15;});}
  let picks=Object.keys(score).sort((a,b)=>score[b]-score[a]);
  /* 3개 미만이면 일반 추천으로 보충 */
- if(picks.length<3){(WIZ_FALLBACK[lvKey]||WIZ_FALLBACK.hs).forEach(sl=>{if(picks.length>=3)return;if(t[sl]&&wizFitsLevel(t[sl],lvKey)&&!picks.includes(sl)){picks.push(sl);reason[sl]=reason[sl]||'fallback';}});}
+ if(picks.length<3){(WIZ_FALLBACK[lvKey]||WIZ_FALLBACK.hs).forEach(sl=>{if(picks.length>=3)return;if(!DISPLAY_HIDDEN.has(sl)&&t[sl]&&wizFitsLevel(t[sl],lvKey)&&!picks.includes(sl)){picks.push(sl);reason[sl]=reason[sl]||'fallback';}});}
  picks=picks.slice(0,3);
  return picks.map(sl=>({slug:sl,d:t[sl],why:wizWhy(sl,reason[sl])}));
 }
@@ -1216,35 +1216,35 @@ function retakeQuiz(slug){
  if(confirm('기존 결과는 기록에 남기고, 새 응시 결과를 추가로 만들까요?'))startQuizFx(slug);
 }
 const RELATED_TESTS={
- es_dream:['es_habit','ms_series','future'],
- es_habit:['es_dream','study_manage','future'],
+ es_dream:['es_habit','value_work','gifted_ready'],
+ es_habit:['es_dream','value_work','gifted_ready'],
  ms_series:['ms_hsfit','ms_study','value_work'],
- ms_study:['study_manage','study_emotion','ms_hsfit'],
+ ms_study:['value_work','ms_hsfit','story_writer'],
  ms_hsfit:['ms_series','ms_study','hs_series'],
- value_work:['career_mature','multi_iq','ms_series'],
- career_mature:['value_work','multi_iq','ms_series'],
- multi_iq:['value_work','career_mature','future'],
- future:['ai_skill','value_work','career_mature'],
+ value_work:['ms_series','future','gifted_ready'],
+ career_mature:['value_work','future','ms_series'],
+ multi_iq:['value_work','future','ms_series'],
+ future:['value_work','track_fit','hs_series'],
  ai_skill:['future','ai_inquiry','roadmap'],
  hs_series:['subject_rec','roadmap','track_fit'],
  subject_rec:['hs_series','roadmap','inquiry'],
- study:['subject_rec','roadmap','mock_exam'],
+ study:['subject_rec','roadmap','track_fit'],
  roadmap:['hs_series','subject_rec','inquiry'],
  inquiry:['roadmap','subject_rec','ai_inquiry'],
  reading:['roadmap','interview','hs_series'],
- interview:['roadmap','reading','hs_series'],
+ interview:['roadmap','hs_essay','hs_series'],
  hs_essay:['ms_hsfit','roadmap','interview'],
- track_fit:['admission_nav','mock_exam','study'],
- admission_nav:['track_fit','mock_exam','study'],
- mock_exam:['study','track_fit','admission_nav'],
- study_manage:['ms_study','study_emotion','es_habit'],
+ track_fit:['subject_rec','study','roadmap'],
+ admission_nav:['track_fit','study','roadmap'],
+ mock_exam:['study','track_fit','subject_rec'],
+ study_manage:['ms_study','es_habit','study'],
  gifted_ready:['es_dream','future','ai_inquiry'],
- story_writer:['reading','future','ai_skill'],
- ai_inquiry:['inquiry','ai_skill','future']
+ story_writer:['value_work','future','ai_inquiry'],
+ ai_inquiry:['inquiry','future','story_writer']
 };
 function relatedTestsHtml(slug){
  const t=S.tests||{};
- const keys=(RELATED_TESTS[slug]||['hs_series','ms_series','future']).filter(k=>t[k]&&k!==slug).slice(0,3);
+ const keys=(RELATED_TESTS[slug]||['hs_series','ms_series','future']).filter(k=>!DISPLAY_HIDDEN.has(k)&&t[k]&&k!==slug).slice(0,3);
  if(!keys.length)return '';
  return `<div class="card noprint" style="border:1px solid #E5E0FB;background:#FCFBFF"><div class="k">다른 진단으로 나를 더 깊이 알아보기</div><p class="muted" style="font-size:12.5px;line-height:1.65;margin-bottom:10px">이번 결과와 연결되는 진단을 이어서 하면 학습·진로·활동 방향을 더 입체적으로 볼 수 있습니다. 정식 상담 보고서와 학급 운영은 학교·기관 도입으로 확장됩니다.</p><div class="actionbar" style="margin-top:0">${keys.map(k=>`<button class="btn ghost" onclick="startQuizFx('${k}')">${EMO[k]||EXTRA_EMO[k]||'📊'} ${esc(t[k].title||k)}</button>`).join('')}<button class="btn navy" onclick="go('premium')">학교·기관 도입 안내</button></div></div>`;
 }

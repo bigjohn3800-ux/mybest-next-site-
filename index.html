@@ -995,7 +995,7 @@ async function go(page,arg){
     return;
    }
    const cfg=await fetch(PAYAPI+'/config').then(r=>r.json());window._paycfg=cfg;
-  v.innerHTML=`<h1>구독 안내 💎</h1><div class="sub">①학급 만들기(무료) → ②플랜 결제 → ③정원·기간 자동 적용. 결제 즉시 학급코드에 반영됩니다.${cfg.ready?'':' <b style="color:#C8A24B">지금은 결제 준비 모드예요 (상점 키 등록 후 활성화)</b>'}</div>
+  v.innerHTML=`<h1>학교·기관 운영 안내 💎</h1><div class="sub">학급·학년 단위 운영, 정원·기간 설정, 상담 보고서 활용 범위는 운영자 문의로 안내합니다.</div>
   <div class="card"><div class="grid2"><div><label>학급코드</label><input id="pc" style="text-transform:uppercase" placeholder="예: ABC123"></div>
   <div><label>교사 PIN</label><input id="pp" type="password"></div></div></div>
   <div class="grid2">${Object.entries(cfg.plans).map(([k,p])=>`<div class="card" style="text-align:center;margin-bottom:0"><div class="k">${esc(p.name)}</div><div style="font-size:24px;font-weight:800;color:var(--navy)">${p.amount.toLocaleString()}<small style="font-size:13px">원/년</small></div><p class="muted" style="margin:6px 0 12px">${esc(p.desc)}</p><button class="btn small ${cfg.ready?'navy':'ghost'}" onclick="buyPlan('${k}')">${cfg.ready?'이 플랜 결제':'준비 중'}</button></div>`).join('')}</div>
@@ -1161,6 +1161,39 @@ function retakeQuiz(slug){
  try{localStorage.removeItem('myb_q_'+slug)}catch(e){}
  if(confirm('기존 결과는 기록에 남기고, 새 응시 결과를 추가로 만들까요?'))startQuizFx(slug);
 }
+const RELATED_TESTS={
+ es_dream:['es_habit','ms_series','future'],
+ es_habit:['es_dream','study_manage','future'],
+ ms_series:['ms_hsfit','ms_study','value_work'],
+ ms_study:['study_manage','study_emotion','ms_hsfit'],
+ ms_hsfit:['ms_series','ms_study','hs_series'],
+ value_work:['career_mature','multi_iq','ms_series'],
+ career_mature:['value_work','multi_iq','ms_series'],
+ multi_iq:['value_work','career_mature','future'],
+ future:['ai_skill','value_work','career_mature'],
+ ai_skill:['future','ai_inquiry','roadmap'],
+ hs_series:['subject_rec','roadmap','track_fit'],
+ subject_rec:['hs_series','roadmap','inquiry'],
+ study:['subject_rec','roadmap','mock_exam'],
+ roadmap:['hs_series','subject_rec','inquiry'],
+ inquiry:['roadmap','subject_rec','ai_inquiry'],
+ reading:['roadmap','interview','hs_series'],
+ interview:['roadmap','reading','hs_series'],
+ hs_essay:['ms_hsfit','roadmap','interview'],
+ track_fit:['admission_nav','mock_exam','study'],
+ admission_nav:['track_fit','mock_exam','study'],
+ mock_exam:['study','track_fit','admission_nav'],
+ study_manage:['ms_study','study_emotion','es_habit'],
+ gifted_ready:['es_dream','future','ai_inquiry'],
+ story_writer:['reading','future','ai_skill'],
+ ai_inquiry:['inquiry','ai_skill','future']
+};
+function relatedTestsHtml(slug){
+ const t=S.tests||{};
+ const keys=(RELATED_TESTS[slug]||['hs_series','ms_series','future']).filter(k=>t[k]&&k!==slug).slice(0,3);
+ if(!keys.length)return '';
+ return `<div class="card noprint" style="border:1px solid #E5E0FB;background:#FCFBFF"><div class="k">다른 진단으로 나를 더 깊이 알아보기</div><p class="muted" style="font-size:12.5px;line-height:1.65;margin-bottom:10px">이번 결과와 연결되는 진단을 이어서 하면 학습·진로·활동 방향을 더 입체적으로 볼 수 있습니다. 정식 상담 보고서와 학급 운영은 학교·기관 도입으로 확장됩니다.</p><div class="actionbar" style="margin-top:0">${keys.map(k=>`<button class="btn ghost" onclick="startQuizFx('${k}')">${EMO[k]||EXTRA_EMO[k]||'📊'} ${esc(t[k].title||k)}</button>`).join('')}<button class="btn navy" onclick="go('premium')">학교·기관 도입 안내</button></div></div>`;
+}
 /* ===== 유료화 동선(B5) — 무료 vs 프리미엄 비교. PAID_LIVE=false면 결제·금액 미노출 ===== */
 function payPremiumHtml(){
  const rows=[
@@ -1177,8 +1210,8 @@ function payPremiumHtml(){
    ? `<button class="btn" onclick="go('pay')">💎 프리미엄·플랜 보기</button>`
    : `<button class="btn" onclick="payNotify()">🔔 출시되면 알림 받기</button>
       <a class="btn ghost" href="mailto:onlyjdw3831@gmail.com?subject=마이베스트%20NEXT%20기관%20도입%20문의">🏫 기관 도입 문의</a>`;
- return `<h1>프리미엄 안내 💎</h1>
-  <div class="sub">모든 진단과 기본 결과는 <b>계속 무료</b>예요. 프리미엄은 상담·입시에 바로 쓰는 정식 보고서와 성장 추적을 더해 줍니다.${PAID_LIVE?'':' <b style="color:var(--gold)">현재는 준비 중</b>이라 금액·결제는 표시되지 않습니다.'}</div>
+ return `<h1>학교·기관 도입 안내 💎</h1>
+  <div class="sub">마이베스트 NEXT는 진단, 정식 보고서, 학급 관리, 성장 추적을 학교·기관 운영에 맞게 확장할 수 있습니다.</div>
   <div class="card">
    <span class="planpill">무료 vs 프리미엄</span>
    <table class="cmp"><thead><tr><th>기능</th><th class="f">무료</th><th class="p pcol">프리미엄</th></tr></thead>
@@ -1189,7 +1222,7 @@ function payPremiumHtml(){
 }
 function payNotify(){
  // PAID_LIVE=false 단계: 실제 결제/토스 호출 없음. 사전 알림 수요만 안내(추후 알림톡·메일 수집 연결 자리).
- alert('프리미엄은 준비 중이에요. 출시되면 학급/마이페이지 공지로 안내드릴게요. 기관 도입이 급하시면 도입 문의 메일을 보내주세요. 🙌');
+ alert('학교·기관 도입은 운영자 문의로 안내드리고 있습니다. 학급/학년 단위 운영이 필요하면 도입 문의 메일을 보내주세요.');
  // TODO(PAID_LIVE): 사전 알림 신청 수집 엔드포인트 배선 위치.
 }
 function resultActions(d,opts){
@@ -1203,9 +1236,9 @@ function resultActions(d,opts){
   <button class="btn ghost" onclick="shareResult('${d.attempt.id}','${esc(opts.summary||'')}')">🔗 결과 공유</button>
   <button class="btn ghost" onclick="shareCardMake('${d.attempt.id}')">🎨 결과 공유 카드</button>
   <button class="btn ghost" onclick="sendResultMessage('${d.attempt.id}','${esc(opts.summary||'')}')">💬 문자·카톡 문구</button>
-  <button class="btn ghost" onclick="go('premium')">💎 프리미엄 안내</button>
+  <button class="btn ghost" onclick="go('premium')">🏫 학교·기관 도입 안내</button>
   <button class="btn ghost" onclick="go('dash')">대시보드로</button>
- </div>`;
+ </div>${relatedTestsHtml(d.attempt.test_slug)}`;
 }
 function resultLink(id){
  const url=new URL(location.origin+location.pathname);

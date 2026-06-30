@@ -427,7 +427,7 @@ function displayStep(k,d,lv){
 }
 function stageTitle(lvname,k,title){const m=STAGE_NO[lvname];const n=m&&m[k];return n?`${lvname} ${n}. ${DISPLAY_TITLE[k]||title}`:(DISPLAY_TITLE[k]||title);}
 function catOf(slug){return SLUG_CAT[slug]||'기타';}
-/* 백엔드 26종 정본화: 진단 문항·채점·결과 저장은 mybest API만 사용한다. */
+/* 진단 문항·채점·결과 저장은 mybest API를 정본으로 사용한다. */
 const EXTRA_EMO={study_manage:'🧩',gifted_ready:'💡',mock_exam:'📊',admission_nav:'🎯',story_writer:'🪄',ai_inquiry:'🔬'};
 Object.assign(EMO,EXTRA_EMO);
 Object.assign(ARTC,{study_manage:['#2D9CDB','#56CCF2'],gifted_ready:['#F2994A','#F2C94C'],mock_exam:['#EB5757','#F2994A'],admission_nav:['#1B2A4A','#6C5CE7'],story_writer:['#BB6BD9','#F299C2'],ai_inquiry:['#00A884','#2D9CDB']});
@@ -609,12 +609,12 @@ async function go(page,arg){
    <div class="lp-horb lp-o1"></div><div class="lp-horb lp-o2"></div><div class="lp-horb lp-o3"></div>
    <div class="lp-eyebrow">진로·진학 연구하는 현직 교사가 설계</div>
    <h1><span class="lp-grad">학년·결과별 초개별화</span><br>진로·진학 성장 보고서</h1>
-   <p class="lp-lead">초등·중학·고등 학생의 자기이해를 26종 진단으로 진단하고,<br>학년과 결과에 맞춰 한 명 한 명 다른 맞춤 성장 보고서를 만듭니다.</p>
+   <p class="lp-lead">초등·중학·고등 학생의 자기이해를 학년별 진단으로 돕고,<br>학년과 결과에 맞춰 한 명 한 명 다른 맞춤 성장 보고서를 만듭니다.</p>
    <div class="lp-cta">
     <button class="btn ghost" onclick="go('join')">무료로 진단 시작 🚀</button>
     <a class="btn" style="background:rgba(255,255,255,.16);box-shadow:none" href="/sample.html">결과 샘플 보기</a>
    </div>
-   <div class="lp-stats"><div><b>45,000+</b><span>누적 활용</span></div><div><b>26</b><span>진단 프로그램</span></div><div><b>A4·B4·10쪽</b><span>맞춤 보고서</span></div></div>
+   <div class="lp-stats"><div><b>45,000+</b><span>누적 활용</span></div><div><b>초·중·고</b><span>학년별 진단</span></div><div><b>A4·B4·10쪽</b><span>맞춤 보고서</span></div></div>
   </div>
 
   <!-- 소개 영상 슬롯: 추후 아래 lp-video 내부를 <iframe ...> 또는 <video ...>로 교체하세요 -->
@@ -625,7 +625,7 @@ async function go(page,arg){
 
   <div class="lp-sectk">왜 마이베스트 NEXT인가</div>
   <div class="lp-vals">
-   <div class="lp-val"><div class="vi">🧭</div><h3>26종 진단</h3><p>진로·진학·공부·미래역량을 학년대(초·중·고)별로 폭넓게 진단합니다.</p></div>
+   <div class="lp-val"><div class="vi">🧭</div><h3>학년별 진단</h3><p>진로·진학·공부·미래역량을 학년대(초·중·고)별로 폭넓게 진단합니다.</p></div>
    <div class="lp-val"><div class="vi">🎯</div><h3>초개별화 보고서</h3><p>학년과 진단 결과(상·중·하)를 조합해 학생마다 다른 맞춤 성장 가이드를 제공합니다.</p></div>
    <div class="lp-val"><div class="vi">🏫</div><h3>학교 도입형</h3><p>학급코드·PIN·교사 대시보드로 도입 부담 없이 한 반을 바로 운영할 수 있습니다.</p></div>
    <div class="lp-val"><div class="vi">✅</div><h3>현직 교사·검증</h3><p>교실에서 직접 연구하고 확인한 문항. 계열성향은 전국 규준으로 신뢰도를 공개합니다.</p></div>
@@ -1456,7 +1456,7 @@ function renderResult(d){
   v.innerHTML=`<div class="hero">${ART(slug)}<h2>과목별 맞춤 공부 전략</h2><p>내신 5등급제 기준 · ${esc(st.name)} · ${esc(st.school||'')} · ${dt}</p></div>
    <div class="card"><div class="k">과목별 현재 위치</div><div class="gradegrid">${r.subjects.map((sj,i)=>`<div class="gcell"><div class="gsub">${sj}</div><div class="gval" style="color:${COLS[r.grades[i]-1]}">${r.grades[i]}<small>등급</small></div></div>`).join('')}</div></div>
    ${methodNote(slug)}
-   <div class="k" style="margin:14px 0 8px">과목별 전략 + 2026 입시 환경</div>
+   <div class="k" style="margin:14px 0 8px">과목별 전략 + 최신 입시 환경</div>
   ${blocks.map(b=>blockHtml(b)).join('')}
   ${resultActions(d,{summary:'과목별 맞춤 공부전략을 받았어요'})}`;
  }else if(r.kind==='pick'){

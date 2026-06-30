@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>결과 보고서 — MY BEST NEXT</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  *{box-sizing:border-box}
+  body{font-family:Pretendard,system-ui,sans-serif;background:#EEF0F7;color:#23284A;margin:0}
+  #ld{min-height:100vh;padding:24px 16px 48px}
+  /* 스켈레톤 래퍼 */
+  .skel-wrap{max-width:680px;margin:0 auto}
+  .skel-status{display:flex;align-items:center;justify-content:center;gap:12px;flex-direction:column;text-align:center;margin-bottom:22px}
+  .sp{width:34px;height:34px;border:4px solid #DAD4FB;border-top-color:#6C5CE7;border-radius:50%;animation:spin 1s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .msg{font-size:14px;line-height:1.7;color:#5C617C;max-width:440px}
+  .msg b{color:#1B2A4A}
+  .sub{font-size:12px;color:#8A8FA8;margin-top:2px}
+  /* 진행 바 (불확정 진행감) */
+  .bar{position:relative;height:6px;width:200px;max-width:60%;border-radius:99px;background:#DDE1EF;overflow:hidden;margin:4px auto 0}
+  .bar>i{position:absolute;left:-40%;top:0;bottom:0;width:40%;border-radius:99px;background:linear-gradient(90deg,#6C5CE7,#00CEC9);animation:slide 1.25s ease-in-out infinite}
+  @keyframes slide{0%{left:-40%}100%{left:100%}}
+  /* 펄스/시머 블록 공통 */
+  .sk{position:relative;overflow:hidden;background:#E2E6F2;border-radius:10px}
+  .sk::after{content:"";position:absolute;inset:0;transform:translateX(-100%);
+    background:linear-gradient(90deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.65) 50%,rgba(255,255,255,0) 100%);
+    animation:shimmer 1.4s infinite}
+  @keyframes shimmer{100%{transform:translateX(100%)}}
+  /* 표지 카드 */
+  .skel-cover{background:#fff;border-radius:18px;padding:26px 24px;box-shadow:0 8px 28px rgba(40,48,90,.08);margin-bottom:18px}
+  .skel-cover .badge{width:96px;height:24px;border-radius:99px;margin-bottom:18px}
+  .skel-cover .title{width:78%;height:30px;margin-bottom:12px}
+  .skel-cover .title2{width:54%;height:30px;margin-bottom:22px}
+  .skel-cover .meta{width:42%;height:14px}
+  /* 본문 카드들 */
+  .skel-card{background:#fff;border-radius:16px;padding:22px 20px;box-shadow:0 6px 20px rgba(40,48,90,.06);margin-bottom:16px}
+  .skel-card .h{width:38%;height:18px;margin-bottom:16px}
+  .skel-line{height:12px;border-radius:8px;margin-bottom:10px}
+  .skel-line.l1{width:96%}.skel-line.l2{width:88%}.skel-line.l3{width:70%}
+  .skel-chart{height:120px;border-radius:12px;margin-top:6px}
+  .skel-radar{width:140px;height:140px;border-radius:50%;margin:8px auto 0}
+  .skel-bars{display:flex;align-items:flex-end;gap:12px;height:120px;margin-top:8px;padding:0 6px}
+  .skel-bars>span{flex:1;border-radius:8px 8px 0 0}
+  .skel-bars>span:nth-child(1){height:55%}
+  .skel-bars>span:nth-child(2){height:82%}
+  .skel-bars>span:nth-child(3){height:40%}
+  .skel-bars>span:nth-child(4){height:68%}
+  .skel-bars>span:nth-child(5){height:92%}
+  a.home{display:inline-block;margin-top:14px;background:linear-gradient(90deg,#6C5CE7,#00CEC9);color:#fff;text-decoration:none;font-weight:800;border-radius:12px;padding:11px 22px}
+  .errbox{max-width:440px;margin:0 auto;text-align:center;padding-top:8vh}
+  @media (prefers-reduced-motion: reduce){
+    .sp{animation:none}
+    .bar>i{animation:none;left:0;width:100%}
+    .sk::after{animation:none;display:none}
+    .sk{opacity:.85}
+  }
+</style>
+</head>
+<body>
+<div id="ld">
+  <div class="skel-wrap" aria-live="polite" aria-busy="true">
+    <div class="skel-status">
+      <div class="sp"></div>
+      <div class="msg"><b>결과 보고서를 불러오는 중…</b><br><span class="sub">분량이 커서 잠시 걸릴 수 있어요</span></div>
+      <div class="bar"><i></i></div>
+    </div>
+    <!-- 표지 카드 -->
+    <div class="skel-cover">
+      <div class="sk badge"></div>
+      <div class="sk title"></div>
+      <div class="sk title2"></div>
+      <div class="sk meta"></div>
+    </div>
+    <!-- 요약 카드 -->
+    <div class="skel-card">
+      <div class="sk h"></div>
+      <div class="sk skel-line l1"></div>
+      <div class="sk skel-line l2"></div>
+      <div class="sk skel-line l3"></div>
+    </div>
+    <!-- 레이더(계열성향) 카드 -->
+    <div class="skel-card">
+      <div class="sk h"></div>
+      <div class="sk skel-radar"></div>
+    </div>
+    <!-- 막대(또래/전국 비교) 카드 -->
+    <div class="skel-card">
+      <div class="sk h"></div>
+      <div class="skel-bars">
+        <span class="sk"></span><span class="sk"></span><span class="sk"></span><span class="sk"></span><span class="sk"></span>
+      </div>
+    </div>
+    <!-- 상세 카드 -->
+    <div class="skel-card">
+      <div class="sk h"></div>
+      <div class="sk skel-line l1"></div>
+      <div class="sk skel-line l2"></div>
+      <div class="sk skel-chart"></div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var FN='https://onqisdgxwuvlxehjvoto.supabase.co/functions/v1/myb-report';
+  function fail(html){
+    document.getElementById('ld').innerHTML='<div class="errbox"><div class="msg">'+html+'<a class="home" href="/">MY BEST NEXT 앱으로 가기</a></div></div>';
+  }
+  try{
+    var q=new URLSearchParams(location.search);
+    if(q.get('demo') && !q.get('id')){ location.replace('/sample.html'); return; }
+    var token=q.get('token')||'', atoken=q.get('atoken')||'', id=q.get('id')||'';
+    if(!id || (!token && !atoken)){
+      fail('결과 정보(토큰·ID)가 없어 보고서를 열 수 없습니다.<br>MY BEST NEXT 앱의 결과 화면에서 <b>[정식 보고서] · [B4 한장]</b> 버튼으로 열어주세요.<br><br>');
+      return;
+    }
+    var p=new URLSearchParams();
+    p.set('token',token); p.set('atoken',atoken); p.set('id',id);
+    if(q.get('mode')) p.set('mode',q.get('mode'));
+    if(q.get('for'))  p.set('for', q.get('for'));
+    fetch(FN+'?'+p.toString(),{cache:'no-store'})
+      .then(function(r){ return r.text().then(function(t){ return {ok:r.ok,t:t}; }); })
+      .then(function(res){
+        if(!res.ok){ fail((res.t||'보고서를 불러오지 못했습니다.')+'<br><br>'); return; }
+        document.open(); document.write(res.t); document.close();
+      })
+      .catch(function(e){ fail('보고서를 불러오지 못했습니다.<br><span style="font-size:12px">'+(e&&e.message?e.message:e)+'</span><br><br>'); });
+  }catch(e){
+    fail('보고서를 여는 중 오류가 발생했습니다.<br><br>');
+  }
+})();
+</script>
+</body>
+</html>

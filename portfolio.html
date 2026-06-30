@@ -1,0 +1,292 @@
+<!doctype html><!-- build:2026-06-26a-portfolio -->
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>진로·학습 포트폴리오 — 마이베스트 NEXT</title>
+<meta name="description" content="진로·학습 포트폴리오 — 나의 진단 종합 한 장. 마이베스트 NEXT의 진단 결과를 한 장으로 모아보는 진로·학습 포트폴리오.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="마이베스트 NEXT">
+<meta property="og:title" content="진로·학습 포트폴리오 — 나의 진단 종합 한 장">
+<meta property="og:description" content="마이베스트 NEXT의 진단 결과를 한 장으로 모아보는 진로·학습 포트폴리오.">
+<meta property="og:url" content="https://mybest-next-edu.netlify.app/portfolio.html">
+<meta property="og:image" content="https://mybest-next-edu.netlify.app/og-default.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="진로·학습 포트폴리오 — 나의 진단 종합 한 장">
+<meta name="twitter:description" content="마이베스트 NEXT의 진단 결과를 한 장으로 모아보는 진로·학습 포트폴리오.">
+<meta name="twitter:image" content="https://mybest-next-edu.netlify.app/og-default.png">
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="dns-prefetch" href="https://onqisdgxwuvlxehjvoto.supabase.co">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+:root{--ink:#23284A;--vio:#6C5CE7;--mint:#00CEC9;--sun:#FDCB6E;--bg:#F7F6FF;--navy:#1B2A4A;--muted:#5C617C;--line:#E7E6F2}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Pretendard,-apple-system,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+.wrap{max-width:1000px;margin:0 auto;padding:18px 16px 70px}
+.top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.logo{font-weight:800;letter-spacing:.08em;color:var(--vio)}.logo span{color:var(--mint)}
+.spacer{flex:1}
+.btn{border:0;border-radius:12px;padding:11px 17px;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;background:linear-gradient(90deg,var(--vio),#8E7CF3);color:#fff;text-decoration:none;display:inline-block}
+.btn.ghost{background:#fff;color:var(--vio);border:1.5px solid #DAD4FB}
+.btn.sm{padding:8px 13px;font-size:12.5px;border-radius:10px}
+/* 표지 */
+.cover{background:linear-gradient(135deg,var(--vio),var(--mint));color:#fff;border-radius:20px;padding:30px 26px;margin-bottom:18px;box-shadow:0 14px 36px rgba(108,92,231,.22)}
+.cover .kick{font-size:13px;font-weight:800;letter-spacing:.16em;opacity:.92;text-transform:uppercase}
+.cover h1{font-size:30px;margin:8px 0 12px;line-height:1.25}
+.cover .meta{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:14px;opacity:.97}
+.cover .meta b{font-weight:800}
+.cover .stamp{display:inline-block;margin-top:14px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:6px 14px;font-size:12.5px;font-weight:700}
+/* 종합 단락 */
+.summary{background:#fff;border:1px solid var(--line);border-left:5px solid var(--vio);border-radius:16px;padding:20px 22px;margin-bottom:20px;box-shadow:0 6px 20px rgba(27,42,74,.05)}
+.summary h2{font-size:17px;margin-bottom:8px;color:var(--navy)}
+.summary p{font-size:14px;line-height:1.7;color:#3a3f5e}
+.summary .hi{color:var(--vio);font-weight:800}
+/* 그룹 */
+.group{margin-bottom:22px}
+.ghdr{display:flex;align-items:center;gap:9px;margin:0 2px 12px}
+.ghdr .ic{font-size:20px}
+.ghdr h2{font-size:18px;color:var(--navy)}
+.ghdr .cnt{font-size:12px;font-weight:700;color:var(--muted);background:#F1EEFF;border-radius:999px;padding:3px 11px}
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:17px 18px;box-shadow:0 6px 18px rgba(27,42,74,.05);break-inside:avoid;display:flex;flex-direction:column}
+.card .ch{display:flex;align-items:center;gap:9px;margin-bottom:4px}
+.card .emo{font-size:24px}
+.card h3{font-size:15.5px;color:var(--ink);flex:1}
+.card .date{font-size:11px;color:var(--muted)}
+.card .head{font-size:13px;font-weight:800;color:var(--vio);margin:6px 0 8px}
+.kv{font-size:13px;color:#3a3f5e;line-height:1.55;margin:2px 0}
+.kv b{color:var(--ink)}
+.tag{display:inline-block;font-size:12px;font-weight:800;color:#fff;background:linear-gradient(90deg,var(--vio),var(--mint));border-radius:999px;padding:3px 12px;margin:3px 4px 3px 0}
+.tag.weak{background:#FBF0E0;color:#A8773E}
+.bars{margin:8px 0 4px}
+.brow{display:flex;align-items:center;gap:9px;margin:5px 0;font-size:12.5px}
+.brow .lab{width:62px;font-weight:700;color:#3a3f5e}
+.bar{flex:1;height:9px;border-radius:5px;background:#ECEAFB;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--vio),var(--mint))}
+.brow .pv{width:34px;text-align:right;font-weight:700;color:var(--muted)}
+.gauge{height:11px;border-radius:6px;background:#ECEAFB;overflow:hidden;margin:8px 0 4px}
+.gauge i{display:block;height:100%;background:linear-gradient(90deg,var(--vio),var(--mint))}
+.gnum{font-size:13px;font-weight:800;color:var(--vio);margin-bottom:2px}
+.rpt{margin-top:auto;display:block;text-align:center;padding:9px 10px;font-size:12.5px;border-radius:10px;background:linear-gradient(90deg,#1E8E4E,#00B5B0);color:#fff;text-decoration:none;font-weight:800}
+.rpt:hover{filter:brightness(1.05)}
+.foot{font-size:11.5px;color:var(--muted);text-align:center;margin-top:26px;line-height:1.6}
+.state{background:#fff;border:1px solid var(--line);border-radius:18px;padding:40px 24px;text-align:center;margin-top:24px}
+.state .big{font-size:46px;margin-bottom:10px}
+.state h2{font-size:20px;margin-bottom:8px}
+.state p{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:18px}
+.noprint{}
+@media(max-width:680px){.cards{grid-template-columns:1fr}.cover h1{font-size:24px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* 인쇄 (A4) */
+@page{size:A4;margin:13mm}
+@media print{
+ body{background:#fff}
+ .wrap{max-width:none;padding:0}
+ .noprint{display:none!important}
+ .cover{box-shadow:none;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ .card,.summary,.cover{box-shadow:none}
+ .card,.summary,.group{break-inside:avoid}
+ .cover{-webkit-print-color-adjust:exact}
+ *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ .rpt{display:none}
+}
+</style></head>
+<body>
+<div class="wrap" id="root">
+ <div class="top noprint"><div class="logo">MY BEST <span>NEXT</span></div><div class="spacer"></div>
+  <a class="btn ghost sm" href="/">메인으로</a>
+  <button class="btn sm" id="printBtn" onclick="window.print()" style="display:none">🖨 인쇄 / PDF 저장</button></div>
+ <div id="body"><div class="state"><div class="big">⏳</div><h2>포트폴리오 불러오는 중…</h2></div></div>
+</div>
+
+<script>
+const API='https://onqisdgxwuvlxehjvoto.supabase.co/functions/v1/mybest';
+const KEY='sb_publishable_z3KmGPFA4RKka5e_tDWD5A_-CUDC7t8';
+const EMO={hs_series:'🧭',ms_series:'🌱',interview:'🎤',hs_essay:'✍️',study:'📚',inquiry:'🔍',ms_study:'📝',future:'🚀',subject_rec:'🗂️',roadmap:'🗺️',ai_skill:'🤖',es_dream:'🌈',es_habit:'✏️',reading:'📖',career_mature:'🌟',value_work:'💎',multi_iq:'🧠',study_emotion:'🫧',ms_hsfit:'🏫',track_fit:'🎯',study_manage:'🧩',gifted_ready:'💡',mock_exam:'📊',admission_nav:'🧭',story_writer:'🪄',ai_inquiry:'🔬'};
+// 카테고리(cat) → 표시 그룹 매핑 (진로/공부/진학/역량)
+const GROUPS=[
+ {key:'진로',ic:'🌟',name:'진로 탐색'},
+ {key:'공부',ic:'📚',name:'공부·학습'},
+ {key:'진학',ic:'🎯',name:'진학·입시'},
+ {key:'역량',ic:'🚀',name:'역량·태도'}
+];
+const $=s=>document.querySelector(s);
+const esc=t=>String(t==null?'':t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const qp=new URLSearchParams(location.search);
+const token=qp.get('token'), atoken=qp.get('atoken');
+function fmtDate(s){if(!s)return'';try{const d=new Date(s);return d.getFullYear()+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+String(d.getDate()).padStart(2,'0');}catch(e){return'';}}
+function pct(n){return Math.max(0,Math.min(100,Math.round(n)));}
+
+// ── 진단별 핵심결과 카드 본문 (kind별) ──
+function coreCard(slug,result,labels){
+ if(!result)return'<div class="kv">결과 데이터를 표시할 수 없습니다.</div>';
+ const k=result.kind;
+ const L=result.labels||labels||[];
+ if(k==='series'||k==='future'){
+   const sc=result.scores||[];
+   const max=Math.max(1,...sc);
+   const best=result.best, sec=(result.second!=null?result.second:result.sec);
+   let h='<div class="head">'+(k==='future'?'대표 역량':'대표 계열')+'</div>';
+   if(best!=null&&L[best])h+='<span class="tag">'+esc(L[best])+'</span>';
+   if(sec!=null&&L[sec])h+='<span class="tag">'+esc(L[sec])+'</span>';
+   h+='<div class="bars">';
+   // 상위 4개만 막대
+   const idx=sc.map((v,i)=>[v,i]).sort((a,b)=>b[0]-a[0]).slice(0,4);
+   idx.forEach(([v,i])=>{h+='<div class="brow"><span class="lab">'+esc(L[i]||('항목'+(i+1)))+'</span><span class="bar"><i style="width:'+pct(v/max*100)+'%"></i></span><span class="pv">'+v+'</span></div>';});
+   h+='</div>';
+   return h;
+ }
+ if(k==='bucketcheck'){
+   const p=result.pct!=null?result.pct:Math.round((result.ready||0)/(result.total||1)*100);
+   let h='<div class="head">준비도</div><div class="gnum">'+pct(p)+'점 · 준비 '+(result.ready||0)+'/'+(result.total||0)+'</div><div class="gauge"><i style="width:'+pct(p)+'%"></i></div>';
+   const names=result.names||[]; const per=result.per||[];
+   if(names.length){
+     const strong=[],weak=[];
+     names.forEach((nm,i)=>{const pr=per[i]; if(pr&&pr.total){const r=pr.ok/pr.total; if(r>=0.67)strong.push(nm); else if(r<0.5)weak.push(nm);}});
+     if(strong.length)h+='<div class="kv" style="margin-top:6px"><b>강점</b> '+strong.slice(0,3).map(esc).join(' · ')+'</div>';
+     if(weak.length)h+='<div class="kv"><b style="color:#A8773E">보강</b> '+weak.slice(0,3).map(esc).join(' · ')+'</div>';
+   }
+   return h;
+ }
+ if(k==='checklist'){
+   const p=result.pct!=null?result.pct:Math.round((result.ready||0)/(result.total||1)*100);
+   let h='<div class="head">준비도</div><div class="gnum">'+pct(p)+'점 · 충족 '+(result.ready||0)+'/'+(result.total||0)+'</div><div class="gauge"><i style="width:'+pct(p)+'%"></i></div>';
+   const weak=result.weak||[];
+   if(weak.length)h+='<div class="kv" style="margin-top:6px"><b style="color:#A8773E">보강 필요</b> '+weak.length+'개 항목</div>';
+   return h;
+ }
+ if(k==='grades'){
+   const g=result.grades||[], sub=result.subjects||[];
+   const avg=g.length?(g.reduce((a,b)=>a+b,0)/g.length):0;
+   let h='<div class="head">교과 등급</div><div class="gnum">평균 '+avg.toFixed(1)+'등급</div><div class="bars" style="margin-top:6px">';
+   sub.forEach((s,i)=>{const gr=g[i]||0; h+='<div class="brow"><span class="lab">'+esc(s)+'</span><span class="bar"><i style="width:'+pct((9-gr)/8*100)+'%"></i></span><span class="pv">'+gr+'</span></div>';});
+   h+='</div>';
+   return h;
+ }
+ if(k==='pick'){
+   const L2=result.labels||L; const p=result.pick;
+   let h='<div class="head">추천 선택</div>';
+   if(p!=null&&L2[p])h+='<span class="tag">'+esc(L2[p])+'</span>';
+   return h;
+ }
+ // 알 수 없는 kind: 점수/대표값이 있으면 보여주기
+ if(result.pct!=null){
+   return '<div class="head">결과</div><div class="gnum">'+pct(result.pct)+'점</div><div class="gauge"><i style="width:'+pct(result.pct)+'%"></i></div>';
+ }
+ return '<div class="kv">정식 보고서에서 상세 결과를 확인하세요.</div>';
+}
+
+// 강점 한 문장 추출(종합 단락용)
+function strengthOf(slug,result,title){
+ if(!result)return null;
+ const k=result.kind, L=result.labels||[];
+ if((k==='series'||k==='future')&&result.best!=null&&L[result.best])
+   return (k==='future'?'대표 역량 ':'대표 계열 ')+L[result.best];
+ if(k==='pick'&&result.pick!=null&&(result.labels||[])[result.pick])
+   return '추천 '+result.labels[result.pick];
+ if((k==='bucketcheck'||k==='checklist')){
+   const p=result.pct!=null?result.pct:Math.round((result.ready||0)/(result.total||1)*100);
+   if(p>=70)return title+' 준비도 '+p+'점(우수)';
+ }
+ return null;
+}
+
+function render(me){
+ const tests=me._tests||{};
+ const attempts=(me.attempts||[]).slice();
+ // 슬러그별 최신 attempt만 (created_at 내림차순 가정 — 안전하게 정렬)
+ attempts.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+ const latest={}; attempts.forEach(a=>{if(!latest[a.test_slug])latest[a.test_slug]=a;});
+ const list=Object.values(latest);
+ if(!list.length){
+   $('#body').innerHTML='<div class="state"><div class="big">📭</div><h2>아직 완료한 진단이 없어요</h2><p>진단을 1개 이상 마치면 여러 결과가 한 장의 포트폴리오로 모입니다.</p><a class="btn" href="/">진단 시작하기 →</a></div>';
+   return;
+ }
+ const dates=list.map(a=>a.created_at).filter(Boolean).sort();
+ const period=dates.length? fmtDate(dates[0])+(dates.length>1?' ~ '+fmtDate(dates[dates.length-1]):'') : '';
+ const today=fmtDate(new Date().toISOString());
+ // 표지
+ let html='<div class="cover"><div class="kick">진로·학습 포트폴리오</div>'+
+  '<h1>'+esc(me.name||'학생')+' 님의<br>가능성 종합 한 장</h1>'+
+  '<div class="meta">'+
+   (me.school?'<span><b>학교</b> '+esc(me.school)+'</span>':'')+
+   (me.grade?'<span><b>학년</b> '+esc(me.grade)+'학년</span>':'')+
+   (me.class_name?'<span><b>학급</b> '+esc(me.class_name)+'</span>':'')+
+   (period?'<span><b>진단 기간</b> '+esc(period)+'</span>':'')+
+   '<span><b>생성일</b> '+esc(today)+'</span>'+
+  '</div>'+
+  '<div class="stamp">📊 완료 진단 '+list.length+'종 · 마이베스트 NEXT</div></div>';
+
+ // 종합 단락
+ const strengths=list.map(a=>strengthOf(a.test_slug,a.result,(tests[a.test_slug]||{}).title)).filter(Boolean);
+ let summaryTxt='';
+ if(strengths.length){
+   summaryTxt='지금까지 완료한 '+list.length+'개의 진단을 모아 보면, '+
+     '<span class="hi">'+strengths.slice(0,3).map(esc).join('</span>, <span class="hi">')+'</span>'+
+     (strengths.length>3?' 등':'')+'에서 뚜렷한 강점이 나타납니다. '+
+     '각 진단의 정식 보고서를 함께 보면 강점을 살리고 보강할 영역을 학생·담임이 한눈에 상담할 수 있습니다.';
+ }else{
+   summaryTxt='완료한 '+list.length+'개 진단의 핵심 결과를 한 장에 모았습니다. 카테고리별 카드와 정식 보고서를 함께 보며 다음 학습·진로 계획을 세워 보세요.';
+ }
+ html+='<div class="summary"><h2>🧩 종합 한눈에</h2><p>'+summaryTxt+'</p></div>';
+
+ // 그룹별 카드
+ const used=new Set();
+ GROUPS.forEach(g=>{
+   const items=list.filter(a=>((tests[a.test_slug]||{}).cat)===g.key);
+   if(!items.length)return;
+   items.forEach(a=>used.add(a.test_slug));
+   html+='<div class="group"><div class="ghdr"><span class="ic">'+g.ic+'</span><h2>'+esc(g.name)+'</h2><span class="cnt">'+items.length+'종</span></div><div class="cards">';
+   items.forEach(a=>{ html+=cardHTML(a,tests); });
+   html+='</div></div>';
+ });
+ // 미분류(카테고리 없는 슬러그)
+ const rest=list.filter(a=>!used.has(a.test_slug));
+ if(rest.length){
+   html+='<div class="group"><div class="ghdr"><span class="ic">🗂️</span><h2>기타 진단</h2><span class="cnt">'+rest.length+'종</span></div><div class="cards">';
+   rest.forEach(a=>{ html+=cardHTML(a,tests); });
+   html+='</div></div>';
+ }
+
+ html+='<div class="foot">본 포트폴리오는 학생 본인의 진단 응답을 바탕으로 자동 생성된 요약입니다. 계열성향 등 신뢰도가 검증된 진단은 정식 보고서에서 전국 규준과 신뢰도 값을 함께 제공합니다.<br>© 오늘과내일의학교 연구소 · (주)가르치는사람들 — 마이베스트 NEXT</div>';
+ $('#body').innerHTML=html;
+ $('#printBtn').style.display='inline-block';
+}
+
+function cardHTML(a,tests){
+ const t=tests[a.test_slug]||{};
+ const title=t.title||a.test_slug;
+ const emo=EMO[a.test_slug]||'📊';
+ const linkTok = token||''; // 학생 토큰일 때만 정식 보고서 직링크
+ let rpt='';
+ if(token){
+   rpt='<a class="rpt" target="_blank" rel="noopener" href="/report.html?token='+encodeURIComponent(token)+'&id='+encodeURIComponent(a.id)+'">📄 정식 보고서 열기</a>';
+ }else if(atoken){
+   rpt='<a class="rpt" target="_blank" rel="noopener" href="/report.html?atoken='+encodeURIComponent(atoken)+'&id='+encodeURIComponent(a.id)+'">📄 정식 보고서 열기</a>';
+ }
+ return '<div class="card"><div class="ch"><span class="emo">'+emo+'</span><h3>'+esc(title)+'</h3></div>'+
+   '<div class="date">'+esc(fmtDate(a.created_at))+' 응시</div>'+
+   coreCard(a.test_slug,a.result)+
+   rpt+'</div>';
+}
+
+async function init(){
+ if(!token&&!atoken){
+   $('#body').innerHTML='<div class="state"><div class="big">🔑</div><h2>학생 토큰이 필요합니다</h2><p>portfolio.html?token=<b>학생토큰</b> 형식으로 접속하면 본인의 진로·학습 포트폴리오를 볼 수 있습니다.</p><a class="btn" href="/">메인으로</a></div>';
+   return;
+ }
+ try{
+   const q=token?('token='+encodeURIComponent(token)):('atoken='+encodeURIComponent(atoken));
+   const [meR,tR]=await Promise.all([
+     fetch(API+'/api/me?'+q,{headers:{apikey:KEY}}),
+     fetch(API+'/api/tests',{headers:{apikey:KEY}})
+   ]);
+   if(!meR.ok)throw new Error('me '+meR.status);
+   const me=await meR.json();
+   const tj=await tR.json().catch(()=>({tests:{}}));
+   me._tests=tj.tests||{};
+   render(me);
+ }catch(e){
+   $('#body').innerHTML='<div class="state"><div class="big">⚠️</div><h2>불러오지 못했습니다</h2><p>토큰이 올바른지 확인해 주세요. 잠시 후 다시 시도할 수 있습니다.</p><a class="btn" href="/">메인으로</a></div>';
+ }
+}
+init();
+</script>
+</body></html>

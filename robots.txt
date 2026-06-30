@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mybest-next-edu.netlify.app/sitemap.xml

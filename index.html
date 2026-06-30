@@ -1,6 +1,21 @@
 <!doctype html><!-- build:2026-06-23a-fullreport -->
 <html lang="ko"><head><meta charset="utf-8"><meta name="viewport" id="vp" content="width=device-width,initial-scale=1">
 <title>마이베스트 NEXT — 나의 가능성 진단</title>
+<meta name="description" content="초·중·고 학생을 위한 진로·진학·공부·미래역량 진단 20종 + 맞춤 성장 가이드와 A4·B4 상담 보고서. 45,000명이 활용한 마이베스트의 다음 진단.">
+<!-- og:* (B7) 카카오톡·페이스북·스레드 링크 미리보기 -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="마이베스트 NEXT">
+<meta property="og:title" content="마이베스트 NEXT — 나의 가능성 진단">
+<meta property="og:description" content="초·중·고 학생을 위한 진로·진학·공부·미래역량 진단 20종 + 맞춤 성장 가이드와 상담 보고서. 무료로 시작하세요.">
+<meta property="og:url" content="https://mybest-next-edu.netlify.app/">
+<meta property="og:image" content="https://mybest-next-edu.netlify.app/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="ko_KR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="마이베스트 NEXT — 나의 가능성 진단">
+<meta name="twitter:description" content="초·중·고 진로·진학·공부·미래역량 진단 20종 + 맞춤 성장 가이드. 무료로 시작하세요.">
+<meta name="twitter:image" content="https://mybest-next-edu.netlify.app/og.png">
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link rel="preconnect" href="https://images.unsplash.com">
 <link rel="dns-prefetch" href="https://onqisdgxwuvlxehjvoto.supabase.co">
@@ -9,11 +24,14 @@
 <style>
 :root{--ink:#23284A;--vio:#6C5CE7;--mint:#00CEC9;--sun:#FDCB6E;--bg:#F7F6FF;--navy:#1B2A4A;--gold:#C8A24B;--paper:#FBFAF7;--muted:#5C617C}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:Pretendard,-apple-system,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+html,body{overflow-x:hidden;max-width:100%}
+img{max-width:100%}
+body{font-family:Pretendard,-apple-system,sans-serif;background:radial-gradient(circle at 12% -10%,rgba(0,206,201,.18),transparent 30%),radial-gradient(circle at 90% 8%,rgba(108,92,231,.16),transparent 34%),linear-gradient(180deg,#F6F8FF 0%,#F7F6FF 42%,#F3FBFA 100%);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;background-attachment:fixed}
 .app{max-width:640px;margin:0 auto;padding:24px 18px 70px}
 .logo{font-weight:800;letter-spacing:.1em;font-size:14px;color:var(--vio);cursor:pointer}
 .logo span{color:var(--mint)}
-.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:18px}
+.topbar .who{text-align:right}
 .topbar .who{font-size:12px;color:#7A7E9A}
 .topbar .who b{color:var(--ink)}
 h1{font-size:25px;font-weight:800;line-height:1.32;margin:10px 0 6px}
@@ -40,6 +58,7 @@ label{font-size:12px;font-weight:700;color:#7A7E9A;display:block;margin:4px 0 4p
 .tcard p{font-size:12.5px;color:#7A7E9A}
 .tcard .aud{margin-left:auto;font-size:11px;font-weight:700;color:var(--mint);white-space:nowrap}
 .bar{height:8px;border-radius:4px;background:#ECEAFB;margin-bottom:18px;overflow:hidden}
+.qprog{display:flex;justify-content:space-between;font-size:12.5px;font-weight:800;color:var(--vio);margin:2px 2px 6px}
 .bar i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,var(--vio),var(--mint));transition:width .25s}
 .qnum{font-size:12px;font-weight:700;color:var(--vio);margin-bottom:8px}
 .qtext{font-size:17.5px;font-weight:700;line-height:1.45;margin-bottom:16px}
@@ -48,7 +67,8 @@ label{font-size:12px;font-weight:700;color:#7A7E9A;display:block;margin:4px 0 4p
 .opt.sel{border-color:var(--vio);background:#F1EEFF;font-weight:700}
 .hero{background:linear-gradient(135deg,var(--vio),var(--mint));color:#fff;border-radius:20px;padding:26px;text-align:center;margin-bottom:14px}
 .hero .emoji{font-size:42px}.hero h2{font-size:23px;margin:6px 0 4px}.hero p{font-size:13px;opacity:.93}
-.chartwrap{height:260px;position:relative}
+.chartwrap{height:260px;position:relative;display:flex;align-items:center;justify-content:center}
+.chartwrap canvas{display:block;margin:auto;max-width:100%}
 .tag{display:inline-block;background:#F1EEFF;color:var(--vio);font-weight:700;font-size:12px;border-radius:999px;padding:5px 12px;margin:3px 2px}
 .rx{list-style:none}
 .rx li{display:flex;gap:11px;align-items:flex-start;padding:10px 0;border-bottom:1px dashed #ECEAFB;font-size:14px;line-height:1.5}
@@ -60,6 +80,8 @@ label{font-size:12px;font-weight:700;color:#7A7E9A;display:block;margin:4px 0 4p
 .chk li{font-size:13.5px;padding:7px 0;border-bottom:1px dashed #EEE;line-height:1.45}
 .chk .ok{color:#2E7D32}.chk .no{color:#C62828;font-weight:600}
 .block{background:#fff;border:1px solid #E7E4DA;border-radius:14px;padding:18px;margin-bottom:12px}
+.blockpic{height:126px;border-radius:12px;overflow:hidden;margin:-4px 0 13px;background:#EEF2F7}
+.blockpic img{width:100%;height:100%;object-fit:cover;display:block}
 .block .badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.13em;color:var(--gold);border:1px solid var(--gold);border-radius:999px;padding:2px 10px;margin-bottom:8px}
 .block h3{font-size:16px;color:var(--navy);margin-bottom:6px;line-height:1.4}
 .block p{font-size:13px;line-height:1.65}
@@ -107,6 +129,23 @@ td{padding:7px 8px;border-bottom:1px solid #EEE}
 .methodnote b{color:var(--navy)}
 .saleshold{background:#F4F8F1;border:1px solid #DDEBD8;border-radius:16px;padding:16px;margin-bottom:14px}
 .saleshold p{font-size:12.5px;line-height:1.65;color:#4C5C4C}
+.cmp{width:100%;border-collapse:collapse;font-size:12.8px;margin:4px 0 6px}
+.cmp th,.cmp td{padding:10px 8px;border-bottom:1px solid #ECEAFB;text-align:center;vertical-align:middle}
+.cmp th{font-size:12px;font-weight:800}
+.cmp th.f{color:#7A7E9A}.cmp th.p{color:var(--vio)}
+.cmp td:first-child,.cmp th:first-child{text-align:left;font-weight:700;color:var(--navy);width:46%;word-break:keep-all}
+.cmp .pcol{background:#F7F5FF}
+.cmp .yes{color:#2E7D32;font-weight:800}.cmp .no{color:#C0392B;font-weight:700}
+.cmp .lim{color:#8489A3;font-size:11.5px}
+.planpill{display:inline-block;background:#F1EEFF;color:var(--vio);font-weight:800;font-size:11px;border-radius:999px;padding:4px 11px;margin-bottom:6px}
+.ogsheet{position:fixed;inset:0;background:rgba(27,42,74,.42);display:flex;align-items:flex-end;justify-content:center;z-index:9999;padding:14px}
+.ogcard{background:#fff;border-radius:18px;padding:16px;width:100%;max-width:420px;box-shadow:0 -8px 30px rgba(27,42,74,.25)}
+.oghd{font-size:14px;font-weight:800;color:var(--navy);margin-bottom:12px;text-align:center}
+.oggrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:8px}
+.ogbtn{border:2px solid #ECEAFB;border-radius:13px;background:#fff;padding:12px 4px;font-size:22px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;font-family:inherit;min-height:64px}
+.ogbtn span{font-size:11px;font-weight:700;color:#5C617C}
+.ogbtn:hover{border-color:var(--vio)}
+@media(min-width:480px){.ogsheet{align-items:center}}
 .nextcard{border-left:5px solid var(--mint)}
 .blob{position:absolute;border-radius:50%;filter:blur(2px);opacity:.25;background:#fff;animation:float 9s ease-in-out infinite}
 .b1{width:160px;height:160px;top:-50px;right:-40px}
@@ -140,9 +179,57 @@ td{padding:7px 8px;border-bottom:1px solid #EEE}
 .chips{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
 .chip{border:2px solid #ECEAFB;background:#fff;border-radius:999px;padding:7px 16px;font-family:inherit;font-size:13px;font-weight:700;color:#7A7E9A;cursor:pointer;transition:.15s}
 .chip.on,.chip:hover{background:var(--vio);border-color:var(--vio);color:#fff}
+.sxgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:6px}
+@media(min-width:520px){.sxgrid{grid-template-columns:repeat(3,1fr)}}
+.sxcard{border:0;border-radius:16px;padding:14px 12px 13px;cursor:pointer;color:#fff;text-align:left;font-family:inherit;box-shadow:0 6px 18px rgba(108,92,231,.16);transition:.16s;position:relative;overflow:hidden}
+.sxcard:hover{transform:translateY(-3px);box-shadow:0 12px 26px rgba(108,92,231,.26)}
+.sxcard .sxemo{font-size:26px;line-height:1}
+.sxcard .sxnm{font-size:15px;font-weight:800;margin-top:8px}
+.sxcard .sxds{font-size:10.8px;line-height:1.45;opacity:.92;margin-top:3px}
+.mjchip{display:inline-flex;align-items:center;gap:5px;border:2px solid #ECEAFB;background:#fff;border-radius:999px;padding:8px 13px;font-family:inherit;font-size:12.8px;font-weight:700;color:#5B6270;cursor:pointer;transition:.14s}
+.mjchip:hover{border-color:var(--vio);color:var(--vio)}
+.mjchip.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.mjchip.on::before{content:'✓ '}
+.subjcol{background:#fff;border-radius:14px;padding:13px 14px;box-shadow:0 4px 14px rgba(108,92,231,.08);margin-bottom:10px}
+.subjcol .sct{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:800;margin-bottom:9px}
+.subjcol .sct .dot{width:10px;height:10px;border-radius:3px}
+.subjtag{display:inline-block;background:#F4F2FF;border-radius:8px;padding:5px 9px;font-size:11.5px;font-weight:600;color:#3B3F5C;margin:0 5px 5px 0;line-height:1.3}
+.subjtag.c{background:#E8FFF8;color:#0A7A66}
+.subjtag.f{background:#FFF4E6;color:#9A6400}
+.wizentry{display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;background:linear-gradient(120deg,#F3F0FF,#EAFBF6);border:1.5px solid #E0DAFB;transition:.15s}
+.wizentry:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(108,92,231,.16)}
+.wizentry-l{display:flex;align-items:center;gap:12px}
+.wizentry-emo{font-size:30px;line-height:1}
+.wizentry b{display:block;font-size:15px;color:var(--ink);margin-bottom:2px}
+.wizentry span{font-size:12px;color:#6B708A;line-height:1.4}
+.wizentry-go{flex:0 0 auto;font-size:13px;font-weight:800;color:var(--vio);white-space:nowrap}
+.wizchips{display:flex;flex-wrap:wrap;gap:9px;margin-top:4px}
+.wizchip{border:2px solid #ECEAFB;background:#fff;border-radius:14px;padding:12px 16px;font-family:inherit;font-size:14px;font-weight:700;color:#5B6079;cursor:pointer;transition:.15s;flex:1 1 calc(50% - 9px);text-align:center}
+.wizchip:hover{border-color:var(--vio);color:var(--vio)}
+.wizchip.on{background:var(--vio);border-color:var(--vio);color:#fff;box-shadow:0 6px 16px rgba(108,92,231,.25)}
+.wizsummary{display:flex;flex-wrap:wrap;gap:6px;padding:12px 14px;background:#F6F4FF;border:1px solid #E5E0FB}
+.wizsummary span{background:#fff;border-radius:999px;padding:5px 12px;font-size:12px;font-weight:700;color:var(--vio);border:1px solid #E5E0FB}
+.wizrec{border:1.5px solid #ECEAFB}
+.wizrec-top{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.wizrec-rank{flex:0 0 26px;height:26px;border-radius:50%;background:var(--vio);color:#fff;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center}
+.wizrec-emo{font-size:26px;line-height:1}
+.wizrec-tt{flex:1;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.wizrec-tt b{font-size:15px;color:var(--ink)}
+.catb2{font-size:10.5px;font-weight:700;color:var(--vio);background:#F1EEFF;border-radius:999px;padding:2px 8px}
+.wizrec-desc{font-size:12.8px;line-height:1.6;color:#4C5263;margin-bottom:8px}
+.wizrec-why{font-size:12px;line-height:1.5;color:#1E8E4E;background:#F1FBF4;border-radius:10px;padding:8px 10px;margin-bottom:10px}
+@media(max-width:560px){.wizchip{flex:1 1 100%}}
 .vgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .vcard{background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 6px 22px rgba(108,92,231,.10);cursor:pointer;transition:.18s;animation:rise .5s both}
 .vcard:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(108,92,231,.22)}
+.vcard.locked{cursor:default;filter:grayscale(1);opacity:.54;box-shadow:0 5px 16px rgba(27,42,74,.06)}
+.vcard.locked:hover{transform:none;box-shadow:0 5px 16px rgba(27,42,74,.06)}
+.vcard.locked .vtop:after{display:none}
+.vcard.coming{cursor:pointer;opacity:.62}
+.vcard.coming:hover{opacity:.78}
+.vcard.coming .lockb{background:#7A6FF0}
+.vcard.launch{animation:launchPop .34s ease both;box-shadow:0 18px 40px rgba(0,206,201,.24)}
+@keyframes launchPop{0%{transform:scale(1)}45%{transform:scale(1.035) rotate(.4deg)}100%{transform:scale(.98);opacity:.92}}
 @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 .vtop{position:relative;height:96px;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .vtop:after{content:'';position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.25) 50%,transparent 70%);transform:translateX(-100%);transition:.5s}
@@ -154,7 +241,11 @@ td{padding:7px 8px;border-bottom:1px solid #EEE}
 .mjd{display:none}
 .mjd.open{display:block}
 .doneb{position:absolute;bottom:8px;right:10px;background:#2E7D32;color:#fff;font-size:10px;font-weight:800;border-radius:999px;padding:3px 10px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.lockb{position:absolute;bottom:8px;right:10px;background:rgba(20,24,42,.88);color:#fff;font-size:10px;font-weight:800;border-radius:999px;padding:3px 10px}
 .donecard{outline:2px solid #B7E4C7;outline-offset:-2px}
+.loginpill{border:1px solid #E5E0FB;border-radius:999px;padding:6px 11px;color:var(--vio)!important;background:#fff;font-size:12px;box-shadow:0 4px 14px rgba(108,92,231,.08)}
+.teacher-student-modal{position:fixed;inset:0;background:rgba(12,14,30,.48);z-index:100;display:flex;align-items:flex-start;justify-content:center;padding:24px 14px;overflow:auto}
+.teacher-student-sheet{max-width:720px;width:100%;background:#fff;border-radius:18px;padding:20px;box-shadow:0 24px 80px rgba(0,0,0,.28)}
 .solpage{break-inside:avoid}
 @media print{.solpage{page-break-after:always}.solpage:last-of-type{page-break-after:auto}}
 @media(min-width:600px){
@@ -191,7 +282,7 @@ td{padding:7px 8px;border-bottom:1px solid #EEE}
 .vmed svg{width:46px!important;height:46px!important;filter:drop-shadow(0 2px 6px rgba(0,0,0,.35))}
 .flinks a{color:#7A7E9A;cursor:pointer;font-weight:700}
 .flinks a:hover{color:var(--vio)}
-@media(max-width:560px){.mnav{gap:9px;font-size:11.5px}}
+@media(max-width:560px){.mnav{display:none}}
 .gradegrid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
 .gcell{text-align:center;background:#FBFAF7;border:1px solid #E7E4DA;border-radius:12px;padding:12px 4px}
 .gsub{font-size:13px;font-weight:700;color:var(--navy)}
@@ -203,7 +294,7 @@ td{padding:7px 8px;border-bottom:1px solid #EEE}
  .card,.block,.hero,.stat{box-shadow:none;border:1px solid #DDD;break-inside:avoid}
  .hero{background:var(--navy)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
-@media(max-width:640px){.app{padding:18px 14px 84px}h1{font-size:22px;line-height:1.3}.sub{font-size:13px}.whero3d{padding:34px 18px 30px}.whero h1,.whero3d h1{font-size:23px}.mnav{gap:13px;font-size:13px}.btn{padding:16px;font-size:16px;border-radius:13px}.card{padding:17px;border-radius:16px}.tcard .emo{flex:0 0 46px;height:46px;font-size:23px}}
+@media(max-width:640px){.app{padding:18px 14px 84px}h1{font-size:22px;line-height:1.3}.sub{font-size:13px}.whero3d{padding:34px 18px 30px}.whero h1,.whero3d h1{font-size:23px}.mnav{display:none}.btn{padding:16px;font-size:16px;border-radius:13px}.card{padding:17px;border-radius:16px}.tcard .emo{flex:0 0 46px;height:46px;font-size:23px}}
 .tabbar{display:none}
 @media(max-width:640px){.tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #E7E6F2;z-index:40;padding:6px 2px;box-shadow:0 -4px 16px rgba(20,18,50,.06)}.tabbar a{flex:1;text-align:center;font-size:10.5px;font-weight:700;color:#5C617C;cursor:pointer;display:flex;flex-direction:column;gap:2px;padding:4px 0;text-decoration:none}.tabbar a span{font-size:18px}.app{padding-bottom:76px!important}}
 /* result/quiz refinement (paid polish) */
@@ -220,9 +311,58 @@ td{padding:7px 8px;border-bottom:1px solid #EEE}
 .block h3{font-size:16.5px}
 .rx li{font-size:14.5px}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.scene,.hring{transform:none!important}}
+/* ===== 랜딩 페이지 전용 (lp- 접두) ===== */
+.lp-hero{position:relative;overflow:hidden;border-radius:26px;padding:42px 26px 34px;margin-bottom:18px;color:#fff;background:radial-gradient(130% 150% at 82% -16%,#4536A8 0%,#221A52 46%,#0C0A22 100%)}
+.lp-hero .hgrain{position:absolute;inset:0;opacity:.5;background-image:radial-gradient(rgba(255,255,255,.05) 1px,transparent 1px);background-size:3px 3px;pointer-events:none}
+.lp-horb{position:absolute;border-radius:50%;filter:blur(20px);pointer-events:none}
+.lp-o1{width:220px;height:220px;right:-60px;top:-70px;background:radial-gradient(circle at 35% 35%,rgba(108,92,231,.85),rgba(108,92,231,0) 70%)}
+.lp-o2{width:170px;height:170px;left:-50px;bottom:-50px;background:radial-gradient(circle at 40% 40%,rgba(0,206,201,.7),rgba(0,206,201,0) 70%)}
+.lp-o3{width:90px;height:90px;left:16%;top:14%;background:radial-gradient(circle at 40% 40%,rgba(253,203,110,.5),rgba(253,203,110,0) 70%)}
+.lp-hero>*{position:relative}
+.lp-eyebrow{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:7px 13px;margin-bottom:14px;font-size:11px;font-weight:800;letter-spacing:.06em}
+.lp-hero h1{font-size:29px;line-height:1.3;margin:0 0 12px;color:#fff}
+.lp-grad{background:linear-gradient(92deg,#FFFFFF 18%,#B9AAFF 46%,#7DF3E6 76%,#FFFFFF 96%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:sheen 6s linear infinite}
+.lp-hero .lp-lead{font-size:14px;line-height:1.68;opacity:.94;margin-bottom:20px}
+.lp-cta{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.lp-cta .btn{width:auto;flex:1 1 calc(50% - 5px);min-width:160px}
+.lp-cta .btn.ghost{background:rgba(255,255,255,.95);border:0;color:var(--vio)}
+.lp-stats{display:flex;gap:22px;margin-top:18px;flex-wrap:wrap}
+.lp-stats div{text-align:left}
+.lp-stats b{display:block;font-size:20px}
+.lp-stats span{font-size:10.5px;opacity:.85;letter-spacing:.04em}
+.lp-video{position:relative;width:100%;aspect-ratio:16/9;border-radius:18px;overflow:hidden;background:linear-gradient(135deg,#1B1540,#2A2160);margin-bottom:16px;box-shadow:0 12px 34px rgba(27,42,74,.18);display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.08)}
+.lp-video .lp-play{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;font-size:26px;color:var(--vio);box-shadow:0 8px 22px rgba(0,0,0,.3)}
+.lp-video .lp-vlabel{position:absolute;bottom:12px;left:0;right:0;text-align:center;color:rgba(255,255,255,.85);font-size:12px;font-weight:700;letter-spacing:.04em}
+.lp-video iframe,.lp-video video{width:100%;height:100%;border:0;display:block}
+.lp-sectk{font-size:11px;font-weight:800;letter-spacing:.14em;color:var(--vio);margin:24px 2px 12px}
+.lp-vals{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:8px}
+.lp-val{background:#fff;border:1px solid #E7E6F2;border-radius:18px;padding:18px 16px;box-shadow:0 6px 20px rgba(27,42,74,.06)}
+.lp-val .vi{font-size:28px;line-height:1}
+.lp-val h3{font-size:14.5px;color:var(--navy);margin:9px 0 5px}
+.lp-val p{font-size:12px;line-height:1.55;color:#5C617C}
+.lp-report{display:flex;gap:14px;align-items:center;background:linear-gradient(120deg,#F3F0FF,#EAFBF6);border:1px solid #E0DAFB;border-radius:20px;padding:18px;margin-bottom:8px}
+.lp-report .lp-shot{flex:0 0 96px;height:128px;border-radius:12px;background:#fff;border:1px solid #E5E0FB;box-shadow:0 6px 16px rgba(108,92,231,.14);display:flex;flex-direction:column;gap:5px;padding:11px 9px;overflow:hidden}
+.lp-report .lp-shot i{display:block;border-radius:3px;background:#ECE9FB;height:7px}
+.lp-report .lp-shot i.t{height:13px;width:70%;background:linear-gradient(90deg,var(--vio),var(--mint))}
+.lp-report .lp-shot i.s{width:90%}.lp-report .lp-shot i.s2{width:60%}
+.lp-report .lp-shot .lp-don{margin-top:auto;height:24px;border-radius:6px;background:radial-gradient(circle at 50% 40%,#DCD6FA,#fff)}
+.lp-report-b h3{font-size:15px;color:var(--navy);margin-bottom:5px}
+.lp-report-b p{font-size:12.3px;line-height:1.6;color:#4C5263;margin-bottom:9px}
+.lp-dualcta{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:8px 0 4px}
+.lp-dc{border-radius:18px;padding:18px 16px;text-align:center}
+.lp-dc.b2b{background:var(--navy);color:#fff}
+.lp-dc.b2c{background:#fff;border:1.5px solid #E0DAFB}
+.lp-dc .dch{font-size:14.5px;font-weight:800;margin-bottom:5px}
+.lp-dc.b2b .dch{color:#fff}.lp-dc.b2c .dch{color:var(--navy)}
+.lp-dc p{font-size:11.5px;line-height:1.5;margin-bottom:11px}
+.lp-dc.b2b p{color:rgba(255,255,255,.85)}.lp-dc.b2c p{color:#6B708A}
+@media(max-width:560px){.lp-vals{grid-template-columns:1fr}.lp-dualcta{grid-template-columns:1fr}.lp-hero h1{font-size:24px}}
+.cstep{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:8px}
+.cstep .hstep h4{font-size:13px}
+@media(max-width:560px){.cstep{grid-template-columns:1fr}}
 </style></head><body><div class="app">
 <div class="topbar"><div class="logo" onclick="go('home')">MY BEST <span>NEXT</span></div>
-<nav class="mnav noprint"><a onclick="go('home')">홈</a><a onclick="go(S.token?'dash':'join')">진단</a><a onclick="go('howto')">활용법</a><a onclick="go('quality')">신뢰도</a><a href="/sample.html">결과샘플</a></nav>
+<nav class="mnav noprint"><a onclick="go('home')">홈</a><a onclick="go('consult')">컨설팅 진단</a><a href="/sample.html">결과 샘플</a><a onclick="go('coaching')">선생님 코칭</a><a onclick="go('pricing')">요금·도입</a><a class="loginpill" onclick="go(S.token?'dash':'teacher')">로그인</a></nav>
 <div class="who" id="who"></div></div>
 <div id="view"></div>
 <div class="tabbar noprint" id="tabbar"></div>
@@ -236,8 +376,9 @@ td{padding:7px 8px;border-bottom:1px solid #EEE}
 const API='https://onqisdgxwuvlxehjvoto.supabase.co/functions/v1/mybest';
 const PAYAPI='https://onqisdgxwuvlxehjvoto.supabase.co/functions/v1/mybpay';
 const ADMAPI='https://onqisdgxwuvlxehjvoto.supabase.co/functions/v1/mybadm';
-const REPORT='https://onqisdgxwuvlxehjvoto.supabase.co/functions/v1/myb-report';
 const SALES_ENABLED=false;
+/* 유료화 동선 노출 스위치 — false면 결제 버튼·금액 미노출(사전 알림/도입 문의로 대체). 토스 실키 준비 시에만 true. */
+const PAID_LIVE=false;
 /* 무단 복사 감지 비콘 (탐지 전용 — 정상 도메인엔 영향 없음) */
 (function(){try{fetch('https://onqisdgxwuvlxehjvoto.supabase.co/functions/v1/myb-guard',{method:'POST',headers:{'Content-Type':'application/json','apikey':'sb_publishable_z3KmGPFA4RKka5e_tDWD5A_-CUDC7t8'},body:JSON.stringify({host:location.hostname,ref:document.referrer,path:location.pathname})}).catch(function(){});}catch(e){}})();
 const $=s=>document.querySelector(s);
@@ -249,18 +390,42 @@ const EMO={hs_series:'🧭',ms_series:'🌱',interview:'🎤',hs_essay:'✍️',
 const ARTC={study:['#FF8A00','#FFC163'],inquiry:['#00B894','#55EFC4'],ms_study:['#0984E3','#74B9FF'],future:['#6C5CE7','#00CEC9'],hs_series:['#6C5CE7','#A29BFE'],ms_series:['#00B894','#81ECEC'],interview:['#E84393','#FD79A8'],hs_essay:['#E1A300','#FFD36E'],subject_rec:['#00897B','#4DD0B1'],roadmap:['#5C6BC0','#9FA8DA'],ai_skill:['#222B45','#6C5CE7'],es_dream:['#FF6B9D','#FFC371'],es_habit:['#20BF6B','#A8E063'],reading:['#8E5BE8','#FFB88C']};
 const PHOTO={hs_series:'https://images.unsplash.com/photo-1619468129361-605ebea04b44',ms_series:'https://images.unsplash.com/photo-1654089669464-dcc57c490d2b',subject_rec:'https://images.unsplash.com/photo-1604866830893-c13cafa515d5',roadmap:'https://images.unsplash.com/photo-1620608964186-18a8cfc2ad44',interview:'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4',hs_essay:'https://images.unsplash.com/photo-1455390582262-044cdead277a',study:'https://images.unsplash.com/photo-1769794371055-54436b54577e',ms_study:'https://images.unsplash.com/photo-1483546416237-76fd26bbcdd1',inquiry:'https://images.unsplash.com/photo-1532094349884-543bc11b234d',future:'https://images.unsplash.com/photo-1517976487492-5750f3195933',ai_skill:'https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b',reading:'https://images.unsplash.com/photo-1553729784-e91953dec042',es_dream:'https://images.unsplash.com/photo-1630139026564-4a2bf5670879',es_habit:'https://images.unsplash.com/photo-1513542789411-b6a5d4f31634'};
 const CATS=['전체','진로','진학','공부','역량'];
-function vcardHtml(k,d,act,st,i){
- return `<div class="vcard" data-slug="${k}" style="animation-delay:${i*60}ms" onclick="${act}('${k}')"><div class="vtop" style="background:linear-gradient(135deg,${(ARTC[k]||['#6C5CE7','#00CEC9']).join(',')})"><img class="vph" loading="lazy" decoding="async" src="${PHOTO[k]||''}?w=640&h=260&fit=crop&q=60&auto=format" onerror="this.remove()" alt=""><div class="vshade"></div><div class="vmed">${ART(k)}</div><span class="stepb">STEP ${st}</span><span class="catb">${d.cat||''}</span></div><div class="vbody"><h3>${esc(d.title)}</h3><p>${esc(d.desc)}</p><span class="aud2">${esc(d.audience)}</span></div></div>`;
+/* 진단 슬러그 → 카테고리(통합 성장 리포트 그룹화용) */
+const SLUG_CAT={hs_series:'진로',ms_series:'진로',es_dream:'진로',future:'역량',ai_skill:'역량',roadmap:'진학',subject_rec:'진학',interview:'진학',hs_essay:'진학',study:'공부',ms_study:'공부',inquiry:'공부',reading:'공부',es_habit:'공부'};
+/* 학년대 내 진단 카드 넘버링(슬러그→고정 번호). 신규·공통 그룹은 미부여 */
+const STAGE_NO={
+ 초등:{es_dream:1,es_habit:2},
+ 중등:{ms_series:1,ms_study:2,ms_hsfit:3},
+ 고등:{hs_series:1,subject_rec:2,study:3,roadmap:4,inquiry:5,hs_essay:6,interview:7,reading:8,ai_skill:9,track_fit:10}
+};
+function stageTitle(lvname,k,title){const m=STAGE_NO[lvname];const n=m&&m[k];return n?`${lvname} ${n}. ${title}`:title;}
+function catOf(slug){return SLUG_CAT[slug]||'기타';}
+/* 백엔드 26종 정본화: 진단 문항·채점·결과 저장은 mybest API만 사용한다. */
+const EXTRA_EMO={study_manage:'🧩',gifted_ready:'💡',mock_exam:'📊',admission_nav:'🎯',story_writer:'🪄',ai_inquiry:'🔬'};
+Object.assign(EMO,EXTRA_EMO);
+Object.assign(ARTC,{study_manage:['#2D9CDB','#56CCF2'],gifted_ready:['#F2994A','#F2C94C'],mock_exam:['#EB5757','#F2994A'],admission_nav:['#1B2A4A','#6C5CE7'],story_writer:['#BB6BD9','#F299C2'],ai_inquiry:['#00A884','#2D9CDB']});
+Object.assign(PHOTO,{study_manage:'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4',gifted_ready:'https://images.unsplash.com/photo-1531482615713-2afd69097998',mock_exam:'https://images.unsplash.com/photo-1434030216411-0b793f4b4173',admission_nav:'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40',story_writer:'https://images.unsplash.com/photo-1455390582262-044cdead277a',ai_inquiry:'https://images.unsplash.com/photo-1532094349884-543bc11b234d'});
+function gradeLv(g){g=String(g||'');if(g.includes('초'))return'es';if(g.includes('중'))return'ms';if(g.includes('고'))return'hs';return''}
+function vcardHtml(k,d,act,st,i,enabled=true,reason='',lvname=''){
+ const onclick=enabled?` onclick="${act}('${k}')"`:' aria-disabled="true"';
+ const cls=enabled?'vcard':'vcard locked';
+ const badge=lvname?esc(lvname)+st:'STEP '+st;
+ return `<div class="${cls}" data-slug="${k}" style="animation-delay:${i*60}ms"${onclick}><div class="vtop" style="background:linear-gradient(135deg,${(ARTC[k]||['#6C5CE7','#00CEC9']).join(',')})"><img class="vph" loading="lazy" decoding="async" src="${PHOTO[k]||''}?w=640&h=260&fit=crop&q=60&auto=format" onerror="this.remove()" alt=""><div class="vshade"></div><div class="vmed">${ART(k)}</div><span class="stepb">${badge}</span><span class="catb">${d.cat||''}</span>${enabled?'':`<span class="lockb">${esc(reason||'다른 학년')}</span>`}</div><div class="vbody"><h3>${esc(stageTitle(lvname,k,d.title))}</h3><p>${esc(d.desc)}</p><span class="aud2">${esc(d.audience)}</span></div></div>`;
 }
-function gridHtml(t,act){
+function gridHtml(t,act,grade){
  const LV=[['es','초등','🌈'],['ms','중학','🌱'],['hs','고등','🎓']];
+ const NEW_SLUGS=new Set(['value_work','career_mature','study_emotion','multi_iq','track_fit','ms_hsfit','study_manage','gifted_ready','mock_exam','admission_nav','story_writer','ai_inquiry']);
  let h=`<div class="chips noprint">${['전체','초등','중학','고등'].map((c,i)=>`<button class="chip${i===0?' on':''}" onclick="filterLv(this,'${c}')">${c}</button>`).join('')}</div>`;
+ const target=gradeLv(grade);
  for(const[lv,nm,em]of LV){
-  const items=Object.entries(t).filter(([k,d])=>d.steps&&d.steps[lv]).sort((a,b)=>a[1].steps[lv]-b[1].steps[lv]);
+  const items=Object.entries(t).filter(([k,d])=>d.steps&&d.steps[lv]&&!NEW_SLUGS.has(k)).sort((a,b)=>a[1].steps[lv]-b[1].steps[lv]);
   if(!items.length)continue;
-  const extra = lv==='hs' ? `<div class="vcard" onclick="go('majors')"><div class="vtop" style="background:linear-gradient(135deg,#0F1530,#3E5C8A)"><div class="vmed">${ART('subject_rec')}</div><span class="stepb">탐색관</span><span class="catb">진학</span></div><div class="vbody"><h3>학과 탐색관 🏛️</h3><p>7계열 56개 학과 — 설명·인재상·권장과목·진로를 한곳에서</p><span class="aud2">중3·고등</span></div></div>` : '';
-  h+=`<div class="lvsec" data-lv="${nm}"><div class="wk">${em} ${nm} 로드맵 <span>STEP 1부터 순서대로 — 나의 성장 여정</span></div><div class="vgrid">${items.map(([k,d],i)=>vcardHtml(k,d,act,d.steps[lv],i)).join('')}${extra}</div></div>`;
+  const active=!target||target===lv;
+  const extra = lv==='hs' ? `<div class="${active?'vcard':'vcard locked'}" ${active?`onclick="go('majors')"`:'aria-disabled="true"'}><div class="vtop" style="background:linear-gradient(135deg,#0F1530,#3E5C8A)"><div class="vmed">${ART('subject_rec')}</div><span class="stepb">탐색관</span><span class="catb">진학</span>${active?'':'<span class="lockb">다른 학년</span>'}</div><div class="vbody"><h3>학과 탐색관 🏛️</h3><p>7계열 56개 학과 — 설명·인재상·권장과목·진로를 한곳에서</p><span class="aud2">중3·고등</span></div></div><div class="${active?'vcard':'vcard locked'}" ${active?`onclick="go('subjexp')"`:'aria-disabled="true"'}><div class="vtop" style="background:linear-gradient(135deg,#1B2A4A,#00997B)"><div class="vmed">${ART('subject_rec')}</div><span class="stepb">탐색관</span><span class="catb">진학</span>${active?'':'<span class="lockb">다른 학년</span>'}</div><div class="vbody"><h3>2022 과목 탐색 🗂</h3><p>계열 → 학과 선택 → 일반·진로·융합선택 과목 비교</p><span class="aud2">중3·고등</span></div></div>` : '';
+  h+=`<div class="lvsec" data-lv="${nm}"><div class="wk">${em} ${nm} 로드맵 <span>${active?'나의 학년에 맞는 프로그램':'다른 학년 프로그램은 참고용으로 잠겨 있어요'}</span></div><div class="vgrid">${items.map(([k,d],i)=>vcardHtml(k,d,act,d.steps[lv],i,active,'다른 학년',nm==='중학'?'중등':nm)).join('')}${extra}</div></div>`;
  }
+ const newItems=Object.entries(t).filter(([k,d])=>NEW_SLUGS.has(k));
+ if(newItems.length){h+=`<div class="lvsec" data-lv="신규"><div class="wk">🆕 신규 프로그램 <span>새로 추가·보강 중인 진단이에요</span></div><div class="vgrid">${newItems.map(([k,d],i)=>vcardHtml(k,d,act,i+1,i,true,'','신규')).join('')}</div></div>`;}
  return h;
 }
 function filterLv(el,c){
@@ -275,6 +440,12 @@ return `<svg width="88" height="88" viewBox="0 0 88 88" style="margin-bottom:4px
 const LABELS=['인문','사회','자연','공학','의생명','교육','예체능'];
 const SER_DESC={'인문':'언어와 이야기로 세상을 깊이 읽어내는 사람','사회':'사람과 사회를 연결하고 움직이는 리더','자연':'자연의 원리를 파고드는 탐구자','공학':'아이디어를 현실로 만드는 발명가','의생명':'생명을 이해하고 돌보는 따뜻한 전문가','교육':'배움을 나누며 사람을 성장시키는 멘토','예체능':'감각과 표현으로 새로움을 만드는 크리에이터'};
 const SER_ACT={'인문':['고전·칼럼 주 1회 요약하고 내 생각 한 단락 쓰기','독서 토론 동아리에서 발제 도전하기','관심 주제 미니 에세이 포트폴리오 만들기'],'사회':['뉴스 1건을 원인·쟁점·해결책 3줄로 분석하기','학급·동아리 프로젝트 기획 맡아보기','설문 미니 조사 프로젝트 해보기'],'자연':['"왜?"를 3번 묻는 탐구노트 쓰기','과학 실험·관찰 동아리 참여하기','수학·과학 심화 문제 주 2개 도전하기'],'공학':['생활 속 불편 1개 개선 아이디어 스케치하기','코딩·메이커로 작은 작품 완성하기','수학 개념을 실생활 문제에 적용해보기'],'의생명':['생명과학 비주얼 노트 만들기','보건·생명 진로 인터뷰/탐방 시도하기','꾸준한 체력 관리 루틴 만들기'],'교육':['친구에게 한 과목 가르쳐보는 설명 스터디 하기','멘토링·봉사 활동 정기 참여하기','나만의 공부법 글로 정리해 공유하기'],'예체능':['매일 15분 창작/연습 루틴 만들기','성장 포트폴리오 기록하기','전시·공연 감상 후 비평 노트 쓰기']};
+const SER_GRAD=['#6C5CE7','#0984E3','#00B894','#222B45','#E84393','#5C6BC0','#8E5BE8'];
+const SER_EMO=['📖','⚖️','🔬','⚙️','🩺','🎓','🎨'];
+const SEXP={majors:null,series:null,picked:[]};
+async function loadMajors(){if(SEXP.majors)return SEXP.majors;const d=await fetch(API+'/api/majors').then(r=>r.json());SEXP.majors=d.majors||[];return SEXP.majors;}
+function subjTags(str,cls){return String(str||'').split(',').map(s=>s.trim()).filter(Boolean).map(s=>`<span class="subjtag ${cls}">${esc(s)}</span>`).join('');}
+function sexpToggle(id){id=+id;const i=SEXP.picked.indexOf(id);if(i>=0)SEXP.picked.splice(i,1);else SEXP.picked.push(id);go('subjexp',SEXP.series);}
 const api=async(p,body)=>{
  const r=await fetch(API+'/api'+p,body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:undefined);
  const j=await r.json();
@@ -285,17 +456,17 @@ const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&g
 function showErr(m){const e=$('#err');if(e){e.textContent=m;e.style.display='block'}else alert(m)}
 function setWho(){$('#who').innerHTML=S.me?`<b>${esc(S.me.name)}</b> · ${esc(S.me.class_name||'')} <a style="color:#C62828;cursor:pointer;margin-left:6px" onclick="logout()">나가기</a>`:''}
 function logout(){localStorage.removeItem('myb_token');S.token=null;S.me=null;go('home')}
-function renderTabs(){var el=document.getElementById("tabbar");if(!el)return;var t=S.token?[["🏠","홈","dash0"],["🧭","진단","dash"],["📈","성장","growth"],["📋","리포트","profile"],["🚪","나가기","*logout"]]:[["🏠","홈","home"],["🚀","시작","join"],["💡","활용법","howto"],["✨","샘플","*sample"]];el.innerHTML=t.map(function(x){var a=x[2]==="*logout"?"logout()":(x[2]==="*sample"?"location.href='/sample.html'":(x[2]==="dash0"?"go('home')":"go('"+x[2]+"')"));return "<a onclick=\""+a+"\"><span>"+x[0]+"</span>"+x[1]+"</a>";}).join("");}
+function renderTabs(){var el=document.getElementById("tabbar");if(!el)return;var t=S.token?[["🏠","홈","dash0"],["🧭","진단","dash"],["🏅","마이","mypage"],["📋","리포트","profile"],["🚪","나가기","*logout"]]:[["🏠","홈","home"],["🧭","진단","consult"],["🏫","코칭","coaching"],["💎","요금","pricing"],["✨","샘플","*sample"]];el.innerHTML=t.map(function(x){var a=x[2]==="*logout"?"logout()":(x[2]==="*sample"?"location.href='/sample.html'":(x[2]==="dash0"?"go('home')":"go('"+x[2]+"')"));return "<a onclick=\""+a+"\"><span>"+x[0]+"</span>"+x[1]+"</a>";}).join("");}
 function proofHtml(){return `<div class="proofgrid">
  <div class="proof"><b>45,000명 활용 기반</b><span>기존 마이베스트 운영 경험을 NEXT 흐름으로 재설계</span></div>
  <div class="proof"><b>검증 규준 공개</b><span>고등 N=8,575 α0.951 · 중학 N=4,069 α0.930</span></div>
  <div class="proof"><b>학교용 경량 운영</b><span>학급코드·PIN·교사용 대시보드로 도입 부담 최소화</span></div>
  </div>`}
-function qualityHtml(){return `<div class="wk">품질 고도화 현황 <span>판매 전 무료 확산 단계</span></div><div class="qualitygrid">
+function qualityHtml(){return `<div class="wk">품질 고도화 현황 <span>학교 현장에서 바로 쓰는 진로진학 도구</span></div><div class="qualitygrid">
  <div class="quality"><span class="qbadge ready">READY</span><h3>A4·B4 보고서</h3><p>학생·관리자 토큰으로 정식 보고서를 열고 상담 자료로 인쇄할 수 있습니다.</p></div>
  <div class="quality"><span class="qbadge ready">READY</span><h3>교사용 운영 화면</h3><p>학급 생성, QR 입장, 진행 현황, 학급 통계, CSV 백업 흐름을 갖췄습니다.</p></div>
  <div class="quality"><span class="qbadge build">IMPROVING</span><h3>콘텐츠 신뢰도</h3><p>계열성향은 전국 규준으로, 체크형은 자가점검+또래비교로 구분해 표시합니다.</p></div>
- <div class="quality"><span class="qbadge lock">LATER</span><h3>유료 전환</h3><p>사용자와 트래픽이 충분히 쌓인 뒤 결제·구독을 노출합니다. 지금은 결제를 열지 않습니다.</p></div>
+ <div class="quality"><span class="qbadge lock">NEXT</span><h3>기관 확장</h3><p>학교장·기관관리자와 담임·학급관리자 권한을 나누어 더 안정적인 운영 구조로 확장합니다.</p></div>
  </div>`}
 function methodNote(slug){
  const series=slug==='hs_series'||slug==='ms_series';
@@ -307,32 +478,162 @@ function nextStepHtml(t,ats){
  const done=new Set((ats||[]).map(a=>a.test_slug));
  const order=['hs_series','ms_series','future','roadmap','study','subject_rec','interview','ai_skill','reading'];
  const pick=order.find(k=>t[k]&&!done.has(k))||Object.keys(t).find(k=>!done.has(k));
- if(!pick)return `<div class="card nextcard"><div class="k">오늘의 다음 STEP</div><p style="font-size:13px;line-height:1.65;color:#4C5C4C">14종 진단을 모두 경험했어요. 한 달 뒤 재진단하면 성장 그래프가 더 선명해집니다.</p><button class="btn small ghost" onclick="go('growth')">성장 변화 보기</button></div>`;
- return `<div class="card nextcard"><div class="k">오늘의 다음 STEP</div><p style="font-size:13px;line-height:1.65;color:#4C5C4C"><b>${esc(t[pick].title)}</b>부터 이어가면 진로·진학 리포트가 더 촘촘해집니다.</p><button class="btn small navy" onclick="startQuiz('${pick}')">추천 진단 시작</button></div>`;
+ if(!pick)return `<div class="card nextcard"><div class="k">오늘의 다음 STEP</div><p style="font-size:13px;line-height:1.65;color:#4C5C4C">20종 진단을 모두 경험했어요. 한 달 뒤 재진단하면 성장 그래프가 더 선명해집니다.</p><button class="btn small ghost" onclick="go('growth')">성장 변화 보기</button></div>`;
+ return `<div class="card nextcard"><div class="k">오늘의 다음 STEP</div><p style="font-size:13px;line-height:1.65;color:#4C5C4C"><b>${esc(t[pick].title)}</b>부터 이어가면 진로·진학 리포트가 더 촘촘해집니다.</p><button class="btn small navy" onclick="startQuizFx('${pick}')">추천 진단 시작</button></div>`;
+}
+/* ===== 🎯 진단 추천 마법사 (프런트 전용 · 규칙기반) ===== */
+const WIZ={grade:null,interest:null,worry:null};
+const WIZ_GRADES=[['es','초등','🌈'],['ms','중등','🌱'],['hs2','고1·2','🎓'],['hs3','고3','🎯']];
+/* 학년대 → 진단 steps 레벨키 */
+function wizLevelKey(g){return g==='es'?'es':(g==='ms'?'ms':'hs');}
+/* 관심/목적 옵션 (value = 매핑 키) */
+const WIZ_INTERESTS=[
+ {v:'career',label:'진로 탐색',emo:'🧭'},
+ {v:'study',label:'공부법·습관',emo:'📚'},
+ {v:'track',label:'계열·과목 선택',emo:'🗂️'},
+ {v:'admission',label:'입시·진학 전략',emo:'🎯'},
+ {v:'ai',label:'AI·미래 역량',emo:'🤖'},
+ {v:'inquiry',label:'독서·탐구',emo:'🔍'}
+];
+/* 지금 고민 한 가지 (관심과 별개의 가벼운 선택 — 보조 가중치) */
+const WIZ_WORRIES=[
+ {v:'direction',label:'내가 뭘 좋아하는지 모르겠어요'},
+ {v:'method',label:'공부를 해도 성적이 안 올라요'},
+ {v:'choice',label:'계열·과목을 못 정하겠어요'},
+ {v:'plan',label:'입시를 어떻게 준비할지 막막해요'},
+ {v:'future',label:'AI 시대에 뭘 준비해야 할지 모르겠어요'},
+ {v:'depth',label:'생기부·탐구를 더 깊게 채우고 싶어요'}
+];
+/* 관심 → 선호 슬러그 (우선순위 순). S.tests에 실제 존재하는 것만 사용 */
+const WIZ_INTEREST_SLUGS={
+ career:['hs_series','ms_series','es_dream','career_mature','value_work','future'],
+ study:['study','ms_study','study_manage','mock_exam','study_emotion','es_habit'],
+ track:['subject_rec','track_fit','ms_hsfit','hs_series','ms_series'],
+ admission:['admission_nav','roadmap','interview','hs_essay','subject_rec'],
+ ai:['ai_skill','ai_inquiry','story_writer','multi_iq','future'],
+ inquiry:['reading','inquiry','ai_inquiry','gifted_ready','multi_iq']
+};
+/* 고민 → 보조 가중 슬러그 */
+const WIZ_WORRY_SLUGS={
+ direction:['hs_series','ms_series','es_dream','value_work','multi_iq','future'],
+ method:['study','ms_study','study_manage','mock_exam','study_emotion'],
+ choice:['subject_rec','track_fit','ms_hsfit','career_mature'],
+ plan:['admission_nav','roadmap','interview','hs_essay'],
+ future:['ai_skill','ai_inquiry','future','story_writer'],
+ depth:['inquiry','reading','ai_inquiry','gifted_ready']
+};
+/* 보충 일반 추천 (3개 미만일 때) */
+const WIZ_FALLBACK={es:['es_dream','es_habit','future'],ms:['ms_series','ms_study','future'],hs:['future','value_work','career_mature','hs_series']};
+/* 슬러그가 해당 학년대(레벨키)에 제공되는지 — steps 객체 기준, audience 보조 */
+function wizFitsLevel(d,lvKey){
+ if(!d)return false;
+ if(d.steps&&typeof d.steps==='object')return !!d.steps[lvKey];
+ return true; /* steps 없으면 보수적으로 허용 */
+}
+/* 핵심: 추천 3종 산출 */
+function wizRecommend(){
+ const t=S.tests||{};
+ const lvKey=wizLevelKey(WIZ.grade);
+ const score={};const reason={};
+ const add=(arr,base,why)=>{(arr||[]).forEach((sl,i)=>{if(!t[sl])return;if(!wizFitsLevel(t[sl],lvKey))return;const pts=base-i;score[sl]=(score[sl]||0)+pts;if(!reason[sl])reason[sl]=why;});};
+ add(WIZ_INTEREST_SLUGS[WIZ.interest],100,'interest');
+ add(WIZ_WORRY_SLUGS[WIZ.worry],40,'worry');
+ /* 고3는 입시·진학 진단에 보너스 */
+ if(WIZ.grade==='hs3'){['admission_nav','roadmap','interview','hs_essay','subject_rec'].forEach(sl=>{if(t[sl]&&wizFitsLevel(t[sl],'hs')&&score[sl]!=null)score[sl]+=15;});}
+ let picks=Object.keys(score).sort((a,b)=>score[b]-score[a]);
+ /* 3개 미만이면 일반 추천으로 보충 */
+ if(picks.length<3){(WIZ_FALLBACK[lvKey]||WIZ_FALLBACK.hs).forEach(sl=>{if(picks.length>=3)return;if(t[sl]&&wizFitsLevel(t[sl],lvKey)&&!picks.includes(sl)){picks.push(sl);reason[sl]=reason[sl]||'fallback';}});}
+ picks=picks.slice(0,3);
+ return picks.map(sl=>({slug:sl,d:t[sl],why:wizWhy(sl,reason[sl])}));
+}
+function wizWhy(slug,kind){
+ const il=(WIZ_INTERESTS.find(x=>x.v===WIZ.interest)||{}).label||'관심';
+ const gl=(WIZ_GRADES.find(x=>x[0]===WIZ.grade)||[])[1]||'';
+ if(kind==='interest')return `${gl} · '${il}' 목표에 가장 잘 맞는 진단이에요`;
+ if(kind==='worry')return `지금 고민하는 부분을 바로 점검할 수 있어요`;
+ if(kind==='fallback')return `${gl} 학생이 시작점으로 삼기 좋은 기본 진단이에요`;
+ return `${gl} 맞춤 추천 진단이에요`;
+}
+function wizReset(){WIZ.grade=null;WIZ.interest=null;WIZ.worry=null;}
+function wizStep(){
+ if(!WIZ.grade)return 1;
+ if(!WIZ.interest)return 2;
+ if(!WIZ.worry)return 3;
+ return 4;
+}
+function wizPick(field,val){WIZ[field]=val;go('wizard');}
+function wizBack(){
+ if(WIZ.worry){WIZ.worry=null;}
+ else if(WIZ.interest){WIZ.interest=null;}
+ else if(WIZ.grade){WIZ.grade=null;}
+ go('wizard');
+}
+function wizChipRow(opts,field){
+ return `<div class="wizchips">${opts.map(o=>{const v=o.v??o[0];const lb=(o.label!=null?o.label:o[1]);const em=(o.emo!=null?o.emo:(o[2]||''));return `<button class="wizchip${WIZ[field]===v?' on':''}" onclick="wizPick('${field}','${v}')">${em?em+' ':''}${esc(lb)}</button>`;}).join('')}</div>`;
+}
+function wizEntryCard(){
+ return `<div class="card wizentry" onclick="go('wizard')"><div class="wizentry-l"><div class="wizentry-emo">🎯</div><div><b>나에게 맞는 진단 찾기</b><span>3가지만 고르면 딱 맞는 진단 3종을 추천해 드려요</span></div></div><span class="wizentry-go">시작 →</span></div>`;
 }
 async function go(page,arg){
  const v=$('#view');
  try{renderTabs()}catch(e){}
  if(page==='home'){
-  v.innerHTML=`<div class="whero whero3d" id="hero3d">
+  /* 로그인 토큰이 있으면 기존처럼 바로 대시보드로 (소개 랜딩은 비로그인 유입용) */
+  if(S.token){try{S.me=await api('/me?token='+S.token);setWho();go('dash');return}catch(e){localStorage.removeItem('myb_token');S.token=null}}
+  v.innerHTML=`<div class="lp-hero">
    <div class="hgrain"></div>
-   <div class="scene" id="scene">
-    <div class="horb o1" data-z="3"></div><div class="horb o2" data-z="2"></div><div class="horb o3" data-z="4"></div>
-    <div class="hring" data-z="1"></div>
-    <div class="gcard g1" data-z="6"><span>🧭</span></div>
-    <div class="gcard g2" data-z="8"><span>🚀</span></div>
-    <div class="gcard g3" data-z="5"><span>🤖</span></div>
-    <div class="gcard g4" data-z="7"><span>📈</span></div>
+   <div class="lp-horb lp-o1"></div><div class="lp-horb lp-o2"></div><div class="lp-horb lp-o3"></div>
+   <div class="lp-eyebrow">진로·진학 연구하는 현직 교사가 설계</div>
+   <h1><span class="lp-grad">학년·결과별 초개별화</span><br>진로·진학 성장 보고서</h1>
+   <p class="lp-lead">초등·중학·고등 학생의 자기이해를 26종 진단으로 진단하고,<br>학년과 결과에 맞춰 한 명 한 명 다른 맞춤 성장 보고서를 만듭니다.</p>
+   <div class="lp-cta">
+    <button class="btn ghost" onclick="go('join')">무료로 진단 시작 🚀</button>
+    <a class="btn" style="background:rgba(255,255,255,.16);box-shadow:none" href="/sample.html">결과 샘플 보기</a>
    </div>
-   <div class="phase">무료 확산 운영 중 · 결제는 아직 열지 않음</div>
-   <h1 class="hgrad">45,000명이 활용한 마이베스트의<br>다음 진로진학 진단</h1>
-   <p>초등·중학·고등의 자기알기를 더 다양한 방식으로 진단하고<br>하루의 방향, 진로의 방향성, 입시·취업 준비도를 높입니다.</p>
-   <div class="herobtns"><button class="btn" style="width:auto;padding:14px 26px" onclick="go('join')">학생으로 시작하기 🚀</button>
-   <button class="btn ghost" style="width:auto;padding:14px 26px" onclick="go('teacher')">선생님 공간 🏫</button></div>
-   <div class="stats"><div><b>45,000+</b><span>기존 활용자</span></div><div><b>14</b><span>진단 프로그램</span></div><div><b>A4·B4</b><span>상담 보고서</span></div></div>
-   </div>
-   ${proofHtml()}
-   <div class="wk">진단 프로그램 <span>카테고리를 골라보세요</span></div>
+   <div class="lp-stats"><div><b>45,000+</b><span>누적 활용</span></div><div><b>26</b><span>진단 프로그램</span></div><div><b>A4·B4·10쪽</b><span>맞춤 보고서</span></div></div>
+  </div>
+
+  <!-- 소개 영상 슬롯: 추후 아래 lp-video 내부를 <iframe ...> 또는 <video ...>로 교체하세요 -->
+  <div class="lp-video" onclick="alert('소개 영상은 준비 중입니다. 곧 공개됩니다! 🎬')">
+   <div class="lp-play">▶</div>
+   <div class="lp-vlabel">소개 영상 (준비 중)</div>
+  </div>
+
+  <div class="lp-sectk">왜 마이베스트 NEXT인가</div>
+  <div class="lp-vals">
+   <div class="lp-val"><div class="vi">🧭</div><h3>26종 진단</h3><p>진로·진학·공부·미래역량을 학년대(초·중·고)별로 폭넓게 진단합니다.</p></div>
+   <div class="lp-val"><div class="vi">🎯</div><h3>초개별화 보고서</h3><p>학년과 진단 결과(상·중·하)를 조합해 학생마다 다른 맞춤 성장 가이드를 제공합니다.</p></div>
+   <div class="lp-val"><div class="vi">🏫</div><h3>학교 도입형</h3><p>학급코드·PIN·교사 대시보드로 도입 부담 없이 한 반을 바로 운영할 수 있습니다.</p></div>
+   <div class="lp-val"><div class="vi">✅</div><h3>현직 교사·검증</h3><p>교실에서 직접 연구하고 확인한 문항. 계열성향은 전국 규준으로 신뢰도를 공개합니다.</p></div>
+  </div>
+
+  <div class="lp-sectk">보고서 미리보기</div>
+  <div class="lp-report">
+   <div class="lp-shot"><i class="t"></i><i class="s"></i><i></i><i class="s2"></i><i class="s"></i><div class="lp-don"></div></div>
+   <div class="lp-report-b"><h3>A4·B4·10쪽 상담 보고서</h3><p>레이더·막대·게이지 차트와 또래/전국 비교, 영역별 강점·보완, 4주 실천 플랜까지 — 상담·생기부에 바로 쓰는 정식 보고서.</p><a class="btn small navy" style="display:inline-block;width:auto" href="/sample.html">실제 결과 샘플 열기 →</a></div>
+  </div>
+
+  ${proofHtml()}
+
+  <div class="lp-sectk">시작은 이렇게</div>
+  <div class="cstep">
+   <div class="hstep"><b>1</b><h4>입장</h4><p>학급코드·이름·PIN으로 간편하게</p></div>
+   <div class="hstep"><b>2</b><h4>3분 진단</h4><p>카드를 고르고 솔직하게 답하면 즉시 분석</p></div>
+   <div class="hstep"><b>3</b><h4>맞춤 보고서</h4><p>차트+맞춤 가이드+A4 한장 보고서까지</p></div>
+  </div>
+
+  <div class="lp-sectk">시작하기</div>
+  <div class="lp-dualcta">
+   <div class="lp-dc b2b"><div class="dch">🏫 학교·기관 도입</div><p>학년·학교 단위 운영, 연수, 맞춤 콘텐츠</p><a class="btn small ghost" style="display:inline-block;width:auto" href="mailto:onlyjdw3831@gmail.com?subject=마이베스트%20NEXT%20기관%20도입%20문의">도입 문의 (B2B)</a></div>
+   <div class="lp-dc b2c"><div class="dch">🎒 개인·학부모</div><p>지금 무료로 진단하고 성장 보고서 받기</p><button class="btn small navy" style="display:inline-block;width:auto" onclick="go('consult')">진단 시작 (B2C)</button></div>
+  </div>
+
+  <div class="linkrow"><a onclick="go('consult')">컨설팅 진단 전체 보기</a> · <a onclick="go('pricing')">요금·도입 안내</a> · <a onclick="go('coaching')">선생님 코칭</a></div>`;
+ }
+  else if(page==='consult'){
+   v.innerHTML=`<h1>컨설팅 진단 🧭</h1><div class="sub">학년대(초·중·고)와 목적별로 정리한 진단 프로그램이에요. 카드를 골라 시작하세요.</div>
+   ${wizEntryCard()}
+   <div class="wk">진단 프로그램 <span>학년대를 골라보세요</span></div>
    <div id="tlist"></div>
    ${qualityHtml()}
    <div class="wk">이용 방법</div>
@@ -341,19 +642,16 @@ async function go(page,arg){
    <div class="hstep"><b>2</b><h4>3분 진단</h4><p>카드를 고르고 솔직하게 답하면 즉시 분석</p></div>
    <div class="hstep"><b>3</b><h4>성장 솔루션</h4><p>차트 + 맞춤 가이드 + A4 한장 보고서까지</p></div>
    </div>
-   <div class="linkrow"><a href="/admin.html">학교 관리자 페이지</a> · <a onclick="go('howto')">도입 활용 안내</a></div>`;
+   <div class="actionbar noprint"><button class="btn" onclick="go('join')">학생으로 시작하기 🚀</button><button class="btn ghost" onclick="go('coaching')">선생님 코칭 보기 🏫</button></div>
+   <div class="linkrow"><a onclick="go('home')">← 처음으로</a> · <a onclick="go('quality')">신뢰도</a> · <a href="/sample.html">결과 샘플</a></div>`;
   const t=S.tests??(S.tests=(await api('/tests')).tests);
-  $('#tlist').innerHTML=gridHtml(t, S.token?"startQuiz":"goJoin");
+  $('#tlist').innerHTML=gridHtml(t, S.token?"startQuizFx":"goJoin", S.me&&S.me.grade);
   window.goJoin=()=>go('join');
-  (function(){const sc=$('#scene'),hero=$('#hero3d');if(!sc||!hero)return;
-   hero.addEventListener('pointermove',e=>{const r=hero.getBoundingClientRect();const x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
-    [...sc.children].forEach(el=>{const z=+el.dataset.z||2;el.style.transform=`translate(${x*z*7}px,${y*z*7}px)`+(el.dataset.base||'')});});
-  })();
-  if(S.token){try{S.me=await api('/me?token='+S.token);setWho();go('dash');return}catch(e){localStorage.removeItem('myb_token');S.token=null}}
+  window.scrollTo(0,0);
  }
   else if(page==='join'){
    v.innerHTML=`<h1>간편하게 시작해요</h1><div class="sub">선생님께 받은 학급코드로 입장합니다. 처음이면 자동으로 가입돼요.</div>
-   <div class="saleshold"><p><b>현재 운영 방향</b><br>마이베스트 NEXT는 사용자가 충분히 늘기 전까지 무료 경험을 우선합니다. 진단 품질과 보고서 완성도를 먼저 높인 뒤 결제·구독을 열 예정입니다.</p></div>
+   <div class="saleshold"><p><b>학생 입장 안내</b><br>학급코드와 이름, 나만의 PIN으로 입장하면 진단 기록과 결과지가 누적됩니다. 다음 방문 때 같은 PIN으로 들어오면 이전 결과를 이어서 볼 수 있습니다.</p></div>
    <div class="card"><div class="err" id="err"></div>
   <label>학급코드</label><input id="jc" placeholder="예: ABC123" style="text-transform:uppercase" value="${esc(new URLSearchParams(location.search).get('code')||'')}">
   <label>이름</label><input id="jn" placeholder="실명을 입력하세요">
@@ -369,16 +667,20 @@ async function go(page,arg){
    const t=S.tests??(S.tests=(await api('/tests')).tests);
    const ats=S.me.attempts||[];
    v.innerHTML=`<h1>안녕, ${esc(S.me.name)}! 👋</h1><div class="sub">${esc(S.me.school||'')} ${esc(S.me.class_name||'')} · 오늘은 어떤 가능성을 열어볼까요?</div>
+   ${S.me.gate?`<div class="card" style="background:#FFF3F3;border-color:#F3C0C0;color:#C0392B;font-weight:700">⚠️ ${esc(S.me.gate)} · 기존 결과는 계속 볼 수 있어요</div>`:(S.me.max_uses?`<div class="card" style="background:#F2FBF5;border-color:#CDEBD7;color:#1E8E4E;font-weight:700">🎟️ 남은 진단 이용 ${Math.max(0,S.me.max_uses-(S.me.used||0))}회 / 총 ${S.me.max_uses}회</div>`:'')}
+   ${(S.me.assignments&&S.me.assignments.length)?`<div class="card" style="background:#EEF1FF;border-color:#C9D2FF"><div class="k" style="margin-top:0">📌 선생님이 내준 진단</div>${S.me.assignments.map(a=>`<div style="display:flex;align-items:center;gap:8px;margin:6px 0;font-size:13px"><span style="flex:1">${esc(a.test_title||a.test_slug)}${a.due_date?` <span style='color:#8489A3'>· ~${esc(a.due_date)}까지</span>`:''}</span>${a.done?`<b style="color:#1E8E4E">✓ 완료</b>`:`<button class="btn small navy" onclick="startQuizFx('${a.test_slug}')">풀기</button>`}</div>`).join('')}</div>`:''}
    ${nextStepHtml(t,ats)}
+   ${wizEntryCard()}
    <div class="k">진단 시작하기</div>
-   ${gridHtml(t,'startQuiz')}
-   <div style="height:10px"></div><div style="display:flex;gap:8px;margin-bottom:14px"><button class="btn ghost" style="flex:1" onclick="go('growth')">📈 성장 그래프</button><button class="btn navy" style="flex:1" onclick="go('profile')">📋 통합 성장 리포트</button></div>
+   ${gridHtml(t,'startQuizFx',S.me.grade)}
+   <div style="height:10px"></div><div style="display:flex;gap:8px;margin-bottom:8px"><button class="btn navy" style="flex:1" onclick="go('mypage')">🏅 마이페이지 (성장·배지)</button><button class="btn ghost" style="flex:1" onclick="go('profile')">📋 통합 성장 리포트</button></div>
+   <div style="display:flex;gap:8px;margin-bottom:14px"><button class="btn ghost" style="flex:1" onclick="go('growth')">📈 성장 그래프</button></div>
    <div class="k">내 진단 기록</div><div class="card" id="myats"><div class="muted">불러오는 중…</div></div>`;
   window.__done={};ats.forEach(a=>{if(!window.__done[a.test_slug])window.__done[a.test_slug]=a.result});
   $('#tlist2')&&0; document.querySelectorAll('.vcard').forEach(()=>{});
   setTimeout(()=>{document.querySelectorAll('.vcard[data-slug]').forEach(cd=>{const k=cd.dataset.slug;if(window.__done[k]){cd.classList.add('donecard');const m=cd.querySelector('.vtop');if(m&&!m.querySelector('.doneb')){const sp=document.createElement('span');sp.className='doneb';sp.textContent='✓ 완료';m.appendChild(sp);}}})},50);
   const old30=d=>(Date.now()-new Date(d).getTime())>30*864e5;
-  $('#myats').innerHTML=ats.length?ats.map(a=>`<div class="attrow"><span>${EMO[a.test_slug]||'📊'} ${esc(t[a.test_slug]?.title||a.test_slug)} ${old30(a.created_at)?'<span class="tag" style="background:#FFF4DC;color:#A8893E;font-size:10px">재진단 추천</span>':''}<br><span class="muted">${a.created_at.slice(0,10)}</span></span><button class="btn small navy" onclick="openAttempt('${a.id}')">결과 보기</button></div>`).join(''):'<div class="muted">아직 기록이 없어요. 첫 진단을 시작해보세요!</div>';
+  $('#myats').innerHTML=ats.length?ats.map(a=>`<div class="attrow"><span>${EMO[a.test_slug]||'📊'} ${esc(t[a.test_slug]?.title||a.test_slug)} ${old30(a.created_at)?'<span class="tag" style="background:#FFF4DC;color:#A8893E;font-size:10px">재진단 추천</span>':''}<br><span class="muted">${a.created_at.slice(0,10)}</span></span><span style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end"><button class="btn small ghost" onclick="retakeQuiz('${a.test_slug}')">다시 진단</button><button class="btn small navy" onclick="openAttempt('${a.id}')">결과 보기</button></span></div>`).join(''):'<div class="muted">아직 기록이 없어요. 첫 진단을 시작해보세요!</div>';
  }
  else if(page==='solution'){
   const d=arg, r=d.attempt.result, st=d.student;
@@ -404,31 +706,89 @@ async function go(page,arg){
  else if(page==='profile'){
   if(!S.me){try{S.me=await api('/me?token='+S.token)}catch(e){go('join');return}}
   const t=S.tests??(S.tests=(await api('/tests')).tests);
-  const latest={},first={};
-  [...(S.me.attempts||[])].forEach(a=>{if(!latest[a.test_slug])latest[a.test_slug]=a});
-  [...(S.me.attempts||[])].reverse().forEach(a=>{if(!first[a.test_slug])first[a.test_slug]=a});
+  const allAt=S.me.attempts||[];
+  const latest={},first={},counts={};
+  allAt.forEach(a=>{if(!latest[a.test_slug])latest[a.test_slug]=a;counts[a.test_slug]=(counts[a.test_slug]||0)+1});
+  [...allAt].reverse().forEach(a=>{if(!first[a.test_slug])first[a.test_slug]=a});
   const metric=r=>r.pct!==undefined?r.pct:(r.scores?Math.round(r.scores[r.best]/(r.kind==='future'?15:50)*100):(r.grades?Math.round(100-(r.grades.reduce((x,y)=>x+y,0)/r.grades.length-1)*20):null));
   const ser=latest['hs_series']||latest['ms_series']||latest['es_dream'];
   const fut=latest['future'];
   const bars=Object.entries(latest).map(([k,a])=>({k,title:t[k]?.title||k,v:metric(a.result)})).filter(x=>x.v!==null);
   const done=Object.keys(latest).length;
   const avgAll=bars.length?Math.round(bars.reduce((s,b)=>s+b.v,0)/bars.length):0;
-  const grow=Object.keys(latest).filter(k=>first[k]&&first[k].id!==latest[k].id).map(k=>({k,d:(metric(latest[k].result)??0)-(metric(first[k].result)??0)}));
+  /* 같은 진단 2회+ : 첫 진단→최근 추세(이전→현재 증감) */
+  const grow=Object.keys(latest).filter(k=>first[k]&&first[k].id!==latest[k].id).map(k=>({k,from:metric(first[k].result),to:metric(latest[k].result),fdt:(first[k].created_at||'').slice(0,10),tdt:(latest[k].created_at||'').slice(0,10),n:counts[k]})).filter(g=>g.from!==null&&g.to!==null).map(g=>(g.d=g.to-g.from,g));
+  /* 카테고리별 종합(진로/진학/공부/역량) */
+  const catGroups={};Object.keys(latest).forEach(k=>{const c=catOf(k);(catGroups[c]=catGroups[c]||[]).push(k)});
+  const CAT_ICON={'진로':'🧭','진학':'🎓','공부':'📚','역량':'🚀','기타':'📊'};
+  const catOrder=['진로','진학','공부','역량','기타'].filter(c=>catGroups[c]);
   const bestSer=ser?ser.result.labels[ser.result.best]:null;
   const dt=new Date().toISOString().slice(0,10);
+  /* 미응시 추천(미응시한 백엔드 진단 1개) — nextStepHtml 재사용 */
+  const ats=allAt;
   v.innerHTML=`<div class="hero">${ART(ser?(latest['hs_series']?'hs_series':latest['ms_series']?'ms_series':'es_dream'):'future')}<h2>${esc(S.me.name)}의 통합 성장 리포트</h2><p>${esc(S.me.school||'')} ${esc(S.me.class_name||'')} · 진단 ${done}종 완료 · ${dt}</p></div>
-  <div class="grid2"><div class="stat"><div class="v">${done}<small style="font-size:13px">/14</small></div><div class="l">완료한 진단</div></div>
+  <div class="grid2"><div class="stat"><div class="v">${done}<small style="font-size:13px">/20</small></div><div class="l">완료한 진단</div></div>
   <div class="stat"><div class="v">${bestSer||'—'}</div><div class="l">나의 계열</div></div></div>
   <div style="height:12px"></div>
+  ${catOrder.length?`<div class="card"><div class="k">카테고리별 진단 종합</div>${catOrder.map(c=>{const ks=catGroups[c].slice().sort((a,b)=>(metric(latest[b].result)??0)-(metric(latest[a].result)??0));const vs=ks.map(k=>metric(latest[k].result)).filter(x=>x!==null);const cavg=vs.length?Math.round(vs.reduce((s,x)=>s+x,0)/vs.length):null;return `<div style="padding:9px 0;border-bottom:1px dashed #ECEAFB"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><b style="font-size:13.5px;color:var(--navy)">${CAT_ICON[c]} ${c}</b><span class="muted">${ks.length}종</span>${cavg!==null?`<span class="tag" style="margin-left:auto;background:#F1EEFF;color:var(--vio)">평균 ${cavg}점</span>`:''}</div>${ks.map(k=>{const mv=metric(latest[k].result);const gr=grow.find(g=>g.k===k);return `<div style="display:flex;align-items:center;gap:9px;padding:3px 0"><span style="flex:0 0 132px;font-size:12px;font-weight:700">${EMO[k]||''} ${esc(t[k]?.title||k)}</span><div class="meter" style="flex:1;margin:0"><i style="width:${mv??0}%"></i></div>${mv!==null?`<b style="font-size:11.5px;width:30px;text-align:right">${mv}</b>`:'<span class="muted" style="width:30px;text-align:right">—</span>'}${gr?`<span style="flex:0 0 44px;text-align:right;font-size:11px;font-weight:800;color:${gr.d>=0?'#2E7D32':'#C62828'}">${gr.d>=0?'▲':'▼'}${Math.abs(gr.d)}</span>`:'<span style="flex:0 0 44px"></span>'}</div>`}).join('')}</div>`}).join('')}<p class="muted" style="margin-top:8px">※ 점수는 진단별 100점 환산 · ▲▼는 첫 진단 대비 최근 변화</p></div>`:''}
   ${ser?`<div class="card"><div class="k">진로 프로파일 ${ser.result.second!==undefined?'— 1순위 '+ser.result.labels[ser.result.best]+' · 2순위 '+ser.result.labels[ser.result.second]:''}</div><div class="chartwrap" style="height:210px"><canvas id="pr1"></canvas></div></div>`:''}
   ${fut?`<div class="card"><div class="k">미래역량 프로파일 — 강점 ${fut.result.labels[fut.result.best]}</div><div class="chartwrap" style="height:200px"><canvas id="pr2"></canvas></div></div>`:''}
   ${bars.length?`<div class="card"><div class="k">영역별 준비도 (100점 환산)</div>${bars.sort((a,b)=>b.v-a.v).map(b=>`<div style="display:flex;align-items:center;gap:10px;padding:5px 0"><span style="flex:0 0 150px;font-size:12px;font-weight:700">${EMO[b.k]||''} ${esc(b.title)}</span><div class="meter" style="flex:1;margin:0"><i style="width:${b.v}%"></i></div><b style="font-size:12px;width:34px;text-align:right">${b.v}</b></div>`).join('')}</div>`:''}
-  ${grow.length?`<div class="card"><div class="k">성장 기록 (첫 진단 대비)</div>${grow.map(g=>`<span class="tag" style="${g.d>=0?'background:#E8F8EE;color:#2E7D32':'background:#FFF0F0;color:#C62828'}">${esc(t[g.k]?.title||g.k)} ${g.d>=0?'▲':'▼'}${Math.abs(g.d)}점</span>`).join(' ')}</div>`:''}
+  ${grow.length?`<div class="card"><div class="k">재진단 추세 — 이전 → 현재</div>${grow.map(g=>`<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px dashed #ECEAFB"><span style="flex:1;font-size:12.5px;font-weight:700">${EMO[g.k]||''} ${esc(t[g.k]?.title||g.k)} <span class="muted" style="font-weight:600">· ${g.n}회</span></span><span class="muted" style="font-size:11.5px">${g.from}점${g.fdt?' ('+g.fdt.slice(5)+')':''}</span><span style="color:#A9ACC4">→</span><b style="font-size:12.5px">${g.to}점${g.tdt?'<span class="muted" style="font-weight:600;font-size:10.5px"> ('+g.tdt.slice(5)+')</span>':''}</b><span class="tag" style="margin:0;${g.d>=0?'background:#E8F8EE;color:#2E7D32':'background:#FFF0F0;color:#C62828'}">${g.d>=0?'▲':'▼'}${Math.abs(g.d)}점</span></div>`).join('')}<button class="btn small ghost noprint" style="margin-top:10px" onclick="go('growth')">📈 성장 그래프 자세히 보기</button></div>`:`<div class="card"><div class="k">재진단 추세</div><p class="muted">같은 진단을 2회 이상 보면 이전→현재 변화가 여기 표시돼요. 한 달 뒤 재진단으로 성장을 확인해 보세요.</p></div>`}
   <div class="card coach" style="background:#F4F1E8;border-color:#E2D9BD"><div class="k">종합 코칭</div><p style="font-size:13px;line-height:1.7">${esc(S.me.name)} 학생은 ${bestSer?'<b>'+bestSer+'계열</b> 성향을 중심으로 ':''}현재 ${done}개 영역을 진단했고 평균 준비도는 <b>${avgAll}점</b>입니다. ${bars.length?'가장 강한 영역은 <b>'+esc(bars[0].title)+'</b>('+bars[0].v+'점)'+(bars.length>1?', 우선 보완 영역은 <b>'+esc(bars[bars.length-1].title)+'</b>('+bars[bars.length-1].v+'점)입니다.':'.'):''} 보완 영역의 맞춤 가이드를 이번 주 실천 목표로 삼고, 한 달 뒤 재진단으로 성장을 확인해 보세요.</p></div>
-  <button class="btn navy noprint" onclick="print()">🖨️ A4 한장 리포트 인쇄/PDF</button>
-  <div style="height:8px"></div><button class="btn ghost noprint" onclick="go('dash')">대시보드로</button>`;
+  ${nextStepHtml(t,ats)}
+  <div class="actionbar noprint"><button class="btn navy" onclick="print()">🖨️ A4 한장 리포트 인쇄/PDF</button><button class="btn ghost" onclick="shareProfile()">🔗 통합 리포트 공유</button><button class="btn ghost" onclick="go('dash')">대시보드로</button></div>`;
   if(ser)new Chart($('#pr1'),{type:'radar',data:{labels:ser.result.labels,datasets:[{data:ser.result.scores,fill:true,backgroundColor:'rgba(108,92,231,.16)',borderColor:'#6C5CE7',pointBackgroundColor:'#00CEC9',borderWidth:2}]},options:{plugins:{legend:{display:false}},scales:{r:{beginAtZero:true,ticks:{display:false},pointLabels:{font:{size:11,weight:'700',family:'Pretendard'}}}},animation:false}});
   if(fut)new Chart($('#pr2'),{type:'radar',data:{labels:fut.result.labels,datasets:[{data:fut.result.scores,fill:true,backgroundColor:'rgba(0,206,201,.15)',borderColor:'#00B894',pointBackgroundColor:'#6C5CE7',borderWidth:2}]},options:{plugins:{legend:{display:false}},scales:{r:{beginAtZero:true,max:15,ticks:{display:false},pointLabels:{font:{size:11,weight:'700',family:'Pretendard'}}}},animation:false}});
+  window.scrollTo(0,0);
+ }
+ else if(page==='mypage'){
+  if(!S.me){try{S.me=await api('/me?token='+S.token)}catch(e){go('join');return}}
+  const t=S.tests??(S.tests=(await api('/tests')).tests);
+  const allAt=S.me.attempts||[];
+  /* 최신순 타임라인 */
+  const sorted=allAt.slice().sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+  /* 같은 진단 재응시 횟수 + 성장(이전→현재) */
+  const latest={},first={},counts={};
+  allAt.forEach(a=>{if(!latest[a.test_slug]||new Date(a.created_at)>new Date(latest[a.test_slug].created_at))latest[a.test_slug]=a;counts[a.test_slug]=(counts[a.test_slug]||0)+1;});
+  allAt.forEach(a=>{if(!first[a.test_slug]||new Date(a.created_at)<new Date(first[a.test_slug].created_at))first[a.test_slug]=a;});
+  const metric=r=>!r?null:(r.pct!==undefined?r.pct:(r.scores?Math.round(r.scores[r.best]/(r.kind==='future'?15:50)*100):(r.grades?Math.round(100-(r.grades.reduce((x,y)=>x+y,0)/r.grades.length-1)*20):null)));
+  /* 게임화: 레벨·배지 */
+  const distinct=Object.keys(latest).length;
+  const cats=new Set(Object.keys(latest).map(k=>catOf(k)));
+  const retakes=Object.keys(latest).filter(k=>counts[k]>=2).length;
+  const grewCount=Object.keys(latest).filter(k=>first[k]&&first[k].id!==latest[k].id&&(metric(latest[k].result)??0)>(metric(first[k].result)??0)).length;
+  const lv=mypLevel(distinct,cats.size,retakes);
+  const badges=mypBadges(distinct,cats,retakes,grewCount);
+  const earned=badges.filter(b=>b.on);
+  /* 재진단 리마인드: 마지막 응시가 90일+ 경과 */
+  const now=Date.now();
+  const remind=Object.keys(latest).map(k=>{const days=Math.floor((now-new Date(latest[k].created_at).getTime())/864e5);return {k,days,a:latest[k]};}).filter(x=>x.days>=90).sort((a,b)=>b.days-a.days);
+  const RBlink=a=>'report.html?token='+encodeURIComponent(S.token||'')+'&id='+encodeURIComponent(a.id);
+  let html=`<div class="hero"><h2>${esc(S.me.name)}의 마이페이지 🏅</h2><p>${esc(S.me.school||'')} ${esc(S.me.class_name||'')} · 진단 ${distinct}종 · ${cats.size}개 영역 · 누적 ${allAt.length}회 응시</p></div>`;
+  /* 레벨 카드 */
+  html+=`<div class="card" style="background:linear-gradient(135deg,#F1EEFF,#EEF7F3);border-color:#D9D2F7">
+   <div style="display:flex;align-items:center;gap:12px"><div style="font-size:34px;line-height:1">${lv.icon}</div>
+   <div style="flex:1"><div style="font-weight:800;font-size:16px;color:var(--navy)">Lv.${lv.level} ${esc(lv.title)}</div><div class="muted" style="font-size:12px">${esc(lv.desc)}</div></div>
+   <div style="text-align:right"><div style="font-weight:800;font-size:13px;color:var(--vio)">배지 ${earned.length}/${badges.length}</div></div></div>
+   <div class="meter" style="margin:10px 0 4px"><i style="width:${lv.pct}%"></i></div>
+   <div class="muted" style="font-size:11.5px">${lv.next?`다음 레벨까지: ${esc(lv.next)}`:'최고 레벨 달성! 🎉'}</div></div>`;
+  /* 배지 그리드 */
+  html+=`<div class="card"><div class="k">획득 배지</div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px">${badges.map(b=>`<div style="text-align:center;padding:10px 6px;border-radius:12px;border:1px solid ${b.on?'#CDEBD7':'#ECEAF2'};background:${b.on?'#F2FBF5':'#FAFAFC'};opacity:${b.on?1:.55}"><div style="font-size:26px;line-height:1.1;${b.on?'':'filter:grayscale(1)'}">${b.icon}</div><div style="font-size:11px;font-weight:800;margin-top:4px;color:${b.on?'#1E8E4E':'#9499AD'}">${esc(b.name)}</div><div class="muted" style="font-size:9.5px;line-height:1.35;margin-top:2px">${esc(b.on?b.name+' 달성!':b.hint)}</div></div>`).join('')}</div></div>`;
+  /* 재진단 리마인드 */
+  if(remind.length){
+   html+=`<div class="card" style="background:#FFF8EC;border-color:#F0DDB0"><div class="k" style="margin-top:0">⏰ 다시 볼 때예요 (90일+ 경과)</div>${remind.slice(0,5).map(x=>`<div class="attrow"><span>${EMO[x.k]||'📊'} <b>${esc(t[x.k]?.title||x.k)}</b><br><span class="muted">마지막 ${x.a.created_at.slice(0,10)} · ${x.days}일 전</span></span><button class="btn small navy" onclick="retakeQuiz('${x.k}')">다시 진단</button></div>`).join('')}<p class="muted" style="margin-top:6px">재진단하면 이전→현재 성장 변화가 기록되고 배지·레벨도 올라가요.</p></div>`;
+  }
+  /* 응시 타임라인 (최신순) */
+  html+=`<div class="card"><div class="k">응시 타임라인 (최신순)</div>`;
+  if(sorted.length){
+   html+=sorted.map(a=>{const mv=metric(a.result);const n=counts[a.test_slug];const fr=first[a.test_slug];const isLatest=latest[a.test_slug]&&latest[a.test_slug].id===a.id;const grow=(isLatest&&fr&&fr.id!==a.id)?(mv-(metric(fr.result)??mv)):null;
+    return `<div class="attrow"><span>${EMO[a.test_slug]||'📊'} <b>${esc(t[a.test_slug]?.title||a.test_slug)}</b>${n>=2?` <span class="muted" style="font-weight:600">· ${n}회 중 ${isLatest?'최근':''}</span>`:''}${grow!==null?` <span class="tag" style="margin:0;${grow>=0?'background:#E8F8EE;color:#2E7D32':'background:#FFF0F0;color:#C62828'}">${grow>=0?'▲':'▼'}${Math.abs(grow)}점</span>`:''}<br><span class="muted">${a.created_at.slice(0,10)}${mv!==null?' · '+mv+'점':''}</span></span><span style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end"><button class="btn small ghost" onclick="openAttempt('${a.id}')">결과</button>${String(a.id).indexOf('local-')===0?'':`<a class="btn small navy" href="${RBlink(a)}" target="_blank" rel="noopener">보고서</a>`}</span></div>`;
+   }).join('');
+  } else html+='<p class="muted">아직 응시 기록이 없어요. 첫 진단을 시작해보세요!</p>';
+  html+=`</div>`;
+  html+=`<div class="actionbar noprint"><button class="btn navy" onclick="go('growth')">📈 성장 그래프</button><button class="btn ghost" onclick="go('profile')">📋 통합 리포트</button><a class="btn ghost" target="_blank" rel="noopener" href="portfolio.html?token=${encodeURIComponent(S.token||'')}">📁 진로 포트폴리오(PDF)</a><button class="btn ghost" onclick="go('premium')">💎 프리미엄 안내</button><button class="btn ghost" onclick="go('dash')">진단하러 가기</button></div>`;
+  v.innerHTML=html;
   window.scrollTo(0,0);
  }
  else if(page==='growth'){
@@ -456,9 +816,43 @@ async function go(page,arg){
  }
  else if(page==='quiz'){renderQuiz()}
  else if(page==='result'){renderResult(arg)}
+  else if(page==='coaching'){
+   /* 공개 소개 — 실기능(학급코드·토큰발행·학급관리·진단배정)은 교사 로그인 후 노출 */
+   v.innerHTML=`<h1>선생님 코칭 🏫</h1><div class="sub">진로·진학 연구하는 현직 교사가 설계한 진단을, 우리 반 수업·상담에 바로.</div>
+   <div class="lp-vals" style="margin-top:4px">
+    <div class="lp-val"><div class="vi">📋</div><h3>한 반 통째로 운영</h3><p>학급코드 하나로 학생들이 입장해 진단하고, 결과가 자동으로 모입니다.</p></div>
+    <div class="lp-val"><div class="vi">📊</div><h3>학급 대시보드</h3><p>계열 분포·영역 평균·진행 현황을 한눈에. 학급 한장 보고서로 인쇄까지.</p></div>
+    <div class="lp-val"><div class="vi">🎯</div><h3>진단 배정·과제</h3><p>특정 진단을 학급에 배정하고, 학생별 핵심 결과(본인·담임 한정)를 확인합니다.</p></div>
+    <div class="lp-val"><div class="vi">🔒</div><h3>개인정보 최소</h3><p>이름·코드·PIN만 — 연락처·이메일은 받지 않습니다. 결과 열람은 본인·담임만.</p></div>
+   </div>
+   <div class="lp-sectk">사용 3스텝</div>
+   <div class="cstep">
+    <div class="hstep"><b>1</b><h4>학급 만들기</h4><p>학교명·학급명·정원 입력 → 코드+QR 발급</p></div>
+    <div class="hstep"><b>2</b><h4>코드 공유</h4><p>학생들에게 코드·QR 공유 → 자율 진단</p></div>
+    <div class="hstep"><b>3</b><h4>결과 활용</h4><p>학급 대시보드로 수업·상담 자료 만들기</p></div>
+   </div>
+   ${window._tauth?`<div class="card" style="background:#F2FBF5;border-color:#CDEBD7"><div class="k" style="margin-top:0">✅ 교사 로그인됨</div><div class="actionbar noprint" style="margin-top:6px"><button class="btn navy" onclick="go('teacher')">📋 학급 관리 / 대시보드</button></div></div>`
+    :`<div class="card" style="text-align:center"><div class="k">교사 전용 기능</div><p style="font-size:13px;color:#7A7E9A;line-height:1.6;margin-bottom:12px">학급 만들기·코드 발급·학급 관리·진단 배정은 <b>교사 로그인 후</b> 이용할 수 있어요.</p><button class="btn navy" style="width:auto;display:inline-block;padding:13px 26px" onclick="go('teacher')">교사 로그인 / 학급 관리 🔑</button></div>`}
+   <div class="card" style="text-align:center"><div class="k">학교·기관 도입 문의</div>
+   <p style="font-size:13px;color:#7A7E9A;line-height:1.6;margin-bottom:10px">다학급 운영, 연수, 기관별 맞춤 콘텐츠는 별도로 준비합니다.</p>
+   <a class="btn ghost" style="width:auto;display:inline-block;padding:12px 24px" href="mailto:onlyjdw3831@gmail.com?subject=마이베스트%20NEXT%20학교%20도입%20문의">학교 도입 문의하기</a></div>
+   <div class="linkrow"><a onclick="go('home')">← 처음으로</a> · <a onclick="go('pricing')">요금·도입</a> · <a onclick="go('quality')">신뢰도</a></div>`;
+   window.scrollTo(0,0);
+  }
+  else if(page==='pricing'){
+   const b2b=`<div class="card"><span class="planpill">B2B · 학교/기관</span><div class="k" style="margin-top:8px">학교·교육청·기관 도입</div>
+    <ul class="rx"><li><span class="n">✓</span>학년·학교 단위 라이선스, 다학급 운영, 세금계산서</li><li><span class="n">✓</span>교사 연수·운영 가이드, 기관별 맞춤 콘텐츠</li><li><span class="n">✓</span>학교장·기관관리자 / 담임·학급관리자 권한 분리</li><li><span class="n">✓</span>정식 보고서(A4·B4·10쪽)·학급 리포트 일괄 활용</li></ul>
+    <a class="btn navy" style="margin-top:10px" href="mailto:onlyjdw3831@gmail.com?subject=마이베스트%20NEXT%20기관%20도입%20문의&body=학교/기관명,%20학급%20수,%20도입%20시기를%20알려주시면%20견적을%20보내드립니다.">🏫 도입 문의하기 (견적)</a></div>`;
+   v.innerHTML=`<h1>요금·도입 안내 💎</h1><div class="sub">모든 진단과 기본 결과는 <b>계속 무료</b>예요. 학교는 B2B 도입, 개인·학부모는 프리미엄을 선택할 수 있습니다.</div>
+   ${b2b}
+   <div class="lp-sectk">B2C · 개인/학부모</div>
+   ${payPremiumHtml().replace(/^<h1>[\s\S]*?<\/div>\s*/,'')}
+   <div class="linkrow"><a onclick="go('home')">← 처음으로</a> · <a onclick="go('consult')">컨설팅 진단</a> · <a onclick="go('coaching')">선생님 코칭</a></div>`;
+   window.scrollTo(0,0);
+  }
   else if(page==='teacher'){
    v.innerHTML=`<h1>선생님 공간 🏫</h1><div class="sub">학급을 만들어 코드를 나눠주고, 우리 반 결과를 한눈에 보세요.</div>
-   <div class="saleshold"><p><b>무료 확산 운영 중</b><br>정식 유료판매와 구독은 사용자·트래픽이 충분히 쌓인 뒤 실행합니다. 지금은 학급 운영, 결과 리포트, 신뢰도 고지의 품질을 먼저 높입니다.</p></div>
+   <div class="saleshold"><p><b>교사용 권한</b><br>학급관리자는 우리 반 진행 현황과 학생별 핵심 결과를 확인하고, 학교장·기관관리자는 여러 학급을 함께 관리하는 구조로 확장됩니다.</p></div>
    <div class="card"><div class="k">학급 현황 보기</div><div class="err" id="err"></div>
   <label>학급코드</label><input id="tc" style="text-transform:uppercase" placeholder="예: ABC123">
   <label>교사 PIN</label><input id="tp" type="password" placeholder="학급 생성 시 정한 PIN">
@@ -469,9 +863,11 @@ async function go(page,arg){
   <label>교사 PIN 설정</label><input id="np" type="password" placeholder="4자리 이상">
   <div class="grid2"><div><label>정원(명)</label><input id="nm" type="number" value="40" min="5" max="200"></div>
   <div><label>이용 기간(개월)</label><input id="nmo" type="number" value="12" min="1" max="24"></div></div>
+  <div class="grid2"><div><label>1인당 이용 횟수 <span style="color:#8489A3">(비우면 무제한)</span></label><input id="nu" type="number" placeholder="예: 5" min="1" max="50"></div>
+  <div><label>이용 시작일 <span style="color:#8489A3">(비우면 즉시)</span></label><input id="nd" type="date"></div></div>
   <button class="btn" onclick="makeClass()">학급 코드 발급받기</button><div id="newcode" style="margin-top:10px"></div></div>
    <div class="card" style="text-align:center"><div class="k">학교 도입 문의</div>
-   <p style="font-size:13px;color:#7A7E9A;line-height:1.6;margin-bottom:10px">다학급 운영, 연수, 세금계산서, 맞춤 콘텐츠는 별도 문의로 준비합니다. 온라인 결제는 아직 노출하지 않습니다.</p>
+   <p style="font-size:13px;color:#7A7E9A;line-height:1.6;margin-bottom:10px">다학급 운영, 연수, 기관별 맞춤 콘텐츠는 별도 문의로 준비합니다.</p>
    <a class="btn ghost" style="width:auto;display:inline-block;padding:12px 24px" href="mailto:onlyjdw3831@gmail.com">문의 메일 보내기</a></div>
   <div class="linkrow"><a onclick="go('home')">← 처음으로</a></div>`;
  }
@@ -489,8 +885,8 @@ async function go(page,arg){
    <li><span class="n">3</span>학급 대시보드에서 계열 분포·면접/AI/로드맵 평균 확인 → <b>학급 한장 보고서</b> 인쇄</li>
    <li><span class="n">4</span>진로 수업·상담 자료로 활용 (학생별 결과는 본인+담임만 열람)</li></ul></div>
    <div class="card"><div class="k">🏢 학교·기관</div><ul class="rx">
-   <li><span class="n">1</span>현재는 무료 확산 운영으로 학생·교사 경험을 먼저 안정화합니다</li>
-   <li><span class="n">2</span>학년·학교 단위 도입, 다학급, 세금계산서, 맞춤 콘텐츠는 별도 문의로 준비합니다</li>
+   <li><span class="n">1</span>학교장·기관관리자와 담임·학급관리자 권한을 나누어 운영할 수 있도록 구성합니다</li>
+   <li><span class="n">2</span>학년·학교 단위 도입, 다학급, 맞춤 콘텐츠는 별도 문의로 준비합니다</li>
    <li><span class="n">3</span>문의: onlyjdw3831@gmail.com</li></ul></div>
   <button class="btn" onclick="go(S.token?'dash':'join')">바로 시작하기 ✨</button>
   <div class="linkrow"><a onclick="go('home')">← 처음으로</a></div>`;
@@ -507,9 +903,9 @@ async function go(page,arg){
   <div class="card"><div class="k">운영 원칙</div><ul class="rx">
    <li><span class="n">1</span>학생 개인정보는 이름·학급코드·PIN·학년 중심으로 최소 수집합니다.</li>
    <li><span class="n">2</span>결과는 합격 예측이 아니라 상담과 자기이해를 돕는 교육 자료로 안내합니다.</li>
-   <li><span class="n">3</span>유료 전환은 사용성과 트래픽이 충분히 검증된 뒤 실행합니다.</li>
-   <li><span class="n">4</span>학교 도입 전에는 보고서, 관리자, 신뢰도 고지, 보안 로그를 우선 고도화합니다.</li></ul></div>
-  <div class="card"><div class="k">다음 품질 목표</div><p style="font-size:13px;line-height:1.7;color:#4C5C4C">약한 체크형 진단은 문항 수와 하위영역 균형을 보강하고, 계열 문항은 교차 적재를 정리해 변별타당도를 높입니다. 공공데이터와 AI 코칭은 결제보다 뒤, 신뢰도 보강보다 앞서지 않게 단계적으로 붙입니다.</p></div>
+   <li><span class="n">3</span>보고서, 관리자, 신뢰도 고지, 보안 로그를 함께 고도화해 학교 현장 활용성을 높입니다.</li>
+   <li><span class="n">4</span>결과는 점수 경쟁이 아니라 학생별 다음 행동을 정하는 상담 자료로 활용합니다.</li></ul></div>
+  <div class="card"><div class="k">다음 품질 목표</div><p style="font-size:13px;line-height:1.7;color:#4C5C4C">약한 체크형 진단은 문항 수와 하위영역 균형을 보강하고, 계열 문항은 교차 적재를 정리해 변별타당도를 높입니다. 공공데이터와 AI 코칭은 신뢰도 보강과 현장 검증을 거쳐 단계적으로 붙입니다.</p></div>
   <button class="btn" onclick="go(S.token?'dash':'join')">진단 시작하기</button>
   <div class="linkrow"><a onclick="go('home')">← 처음으로</a></div>`;
  }
@@ -528,6 +924,35 @@ async function go(page,arg){
   <button class="btn navy noprint" onclick="print()">🖨️ 학과 자료 인쇄/PDF</button>
   <div class="linkrow"><a onclick="go(S.token?'dash':'home')">← 돌아가기</a></div>`;
   window.scrollTo(0,0);
+ }
+ else if(page==='subjexp'){
+  const all=await loadMajors();
+  const sr=arg?+arg:SEXP.series;
+  if(!sr){
+   v.innerHTML=`<h1>계열·학과별 2022 과목 탐색 🗂</h1><div class="sub">관심 계열을 고르면 → 학과를 선택해 → 2022 개정 교육과정의 <b>일반·진로·융합선택</b> 권장 과목을 한눈에 비교할 수 있어요.</div>
+   <div class="sxgrid">${LABELS.map((l,i)=>`<button class="sxcard" style="background:linear-gradient(135deg,${SER_GRAD[i]},${SER_GRAD[i]}cc)" onclick="go('subjexp',${i+1})"><div class="sxemo">${SER_EMO[i]}</div><div class="sxnm">${l}계열</div><div class="sxds">${esc(SER_DESC[l]||'')}</div></button>`).join('')}</div>
+   <div class="methodnote" style="margin-top:8px"><b>활용 안내</b> · 권장 과목은 2022 개정 교육과정 기준 예시입니다. 학교별 개설 과목·진로 상담과 함께 확인하세요.</div>
+   <div class="linkrow"><a onclick="go(S.token?'dash':'home')">← 돌아가기</a></div>`;
+   window.scrollTo(0,0);return;
+  }
+  if(SEXP.series!==sr){SEXP.series=sr;SEXP.picked=[];}
+  const list=all.filter(m=>m.series===sr);
+  const sel=list.filter(m=>SEXP.picked.includes(m.id));
+  const lbl=LABELS[sr-1];
+  let h=`<h1>${SER_EMO[sr-1]} ${lbl}계열 — 학과별 과목 탐색</h1><div class="sub">학과를 눌러 선택하면(여러 개 비교 가능) 아래에 권장 과목이 펼쳐집니다.</div>
+  <div class="chips noprint">${LABELS.map((l,i)=>`<button class="chip ${i+1===sr?'on':''}" onclick="go('subjexp',${i+1})">${l}</button>`).join('')}</div>
+  <div class="card"><div class="k">학과 선택 (${sel.length}개 선택됨)</div><div style="display:flex;flex-wrap:wrap;gap:7px">${list.map(m=>`<button class="mjchip ${SEXP.picked.includes(m.id)?'on':''}" onclick="sexpToggle(${m.id})">${esc(m.name)}</button>`).join('')}</div></div>`;
+  if(!sel.length){
+   h+=`<div class="card"><p class="muted">위에서 학과를 1개 이상 선택하면 일반선택 / 진로선택 / 융합선택 과목이 표시됩니다.</p></div>`;
+  }else{
+   h+=sel.map(m=>`<div class="solpage"><div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><h3 style="font-size:16px;color:var(--navy)">${esc(m.name)}</h3><span class="tag">${lbl}계열</span></div>
+   <div class="subjcol"><div class="sct"><span class="dot" style="background:var(--vio)"></span>일반선택</div><div>${subjTags(m.subj_normal,'')}</div></div>
+   <div class="subjcol"><div class="sct"><span class="dot" style="background:#00997B"></span>진로선택</div><div>${subjTags(m.subj_career,'c')}</div></div>
+   <div class="subjcol"><div class="sct"><span class="dot" style="background:#E6A100"></span>융합선택</div><div>${subjTags(m.subj_fusion,'f')}</div></div></div></div>`).join('');
+   h+=`<button class="btn navy noprint" onclick="print()">🖨️ 선택 학과 과목표 인쇄/PDF</button>`;
+  }
+  h+=`<div class="linkrow noprint"><a onclick="SEXP.series=null;SEXP.picked=[];go('subjexp')">← 계열 다시 고르기</a> · <a onclick="go(S.token?'dash':'home')">진단 목록으로</a></div>`;
+  v.innerHTML=h;window.scrollTo(0,0);
  }
  else if(page==='school'){
   v.innerHTML=`<h1>학교 대시보드 🏫</h1><div class="sub">학교 이름으로 모든 학급을 한눈에 — 관리자 전용</div>
@@ -555,12 +980,16 @@ async function go(page,arg){
   본 방침은 2026년 6월 11일부터 적용됩니다.</div></div>`}
   <div class="linkrow"><a onclick="go('home')">← 처음으로</a></div>`;
   }
+  else if(page==='premium'){
+   v.innerHTML=payPremiumHtml();
+   window.scrollTo(0,0);
+  }
   else if(page==='pay'){
-   if(!SALES_ENABLED){
-    v.innerHTML=`<h1>정식 결제 준비 중</h1><div class="sub">사용자와 트래픽이 충분히 쌓인 뒤 유료판매와 구독을 열 예정입니다.</div>
-    <div class="saleshold"><p><b>지금은 결제하지 않습니다.</b><br>현재 단계에서는 14종 진단, 결과 리포트, 교사용 운영 화면, 신뢰도 고지를 먼저 고도화합니다. 학교·기관 단위 도입은 메일로 문의해 주세요.</p></div>
-    <div class="qualitygrid"><div class="quality"><span class="qbadge ready">AVAILABLE</span><h3>무료 진단 운영</h3><p>학급코드 기반으로 학생들이 바로 입장해 결과를 확인할 수 있습니다.</p></div>
-    <div class="quality"><span class="qbadge build">BUILDING</span><h3>유료 전환 준비</h3><p>결제 UI는 숨겨두고, 보고서·관리자·콘텐츠 품질을 먼저 높입니다.</p></div></div>
+ if(!SALES_ENABLED){
+    v.innerHTML=`<h1>학교·기관 도입 문의</h1><div class="sub">다학급 운영, 연수, 맞춤 콘텐츠가 필요한 경우 운영자에게 문의해 주세요.</div>
+    <div class="saleshold"><p><b>기관 운영 안내</b><br>20종 진단, 결과 리포트, 교사용 운영 화면, 신뢰도 고지, 보안 로그를 학교 현장에 맞게 구성합니다.</p></div>
+    <div class="qualitygrid"><div class="quality"><span class="qbadge ready">READY</span><h3>학급코드 운영</h3><p>학생들이 코드와 PIN으로 입장해 결과를 확인할 수 있습니다.</p></div>
+    <div class="quality"><span class="qbadge build">EXPAND</span><h3>권한 구조</h3><p>기관관리자와 학급관리자 역할을 나누어 여러 학급을 안정적으로 운영합니다.</p></div></div>
     <a class="btn ghost" href="mailto:onlyjdw3831@gmail.com">학교 도입 문의하기</a>
     <div class="linkrow"><a onclick="go('teacher')">← 교사 공간</a></div>`;
     return;
@@ -579,6 +1008,35 @@ async function go(page,arg){
   <div class="card"><div class="err" id="err"></div><label>관리자 PIN</label><input id="ap" type="password"><button class="btn navy" onclick="adminLoad()">관리 대시보드 열기</button></div><div id="astats"></div><div id="ablocks"></div>
   <div class="linkrow"><a onclick="go('home')">← 처음으로</a></div>`;
  }
+ else if(page==='wizard'){
+  if(!S.tests){try{S.tests=(await api('/tests')).tests;}catch(e){}}
+  const step=wizStep();
+  const totalSteps=3;
+  const head=`<h1>🎯 나에게 맞는 진단 찾기</h1><div class="sub">${step<=totalSteps?`3가지만 고르면 딱 맞는 진단 3종을 추천해 드려요 (${Math.min(step,totalSteps)}/${totalSteps})`:'이렇게 시작해 보세요 ✨'}</div>`;
+  const bar=step<=totalSteps?`<div class="bar" style="margin-bottom:16px"><i style="width:${Math.round((step-1)/totalSteps*100)}%"></i></div>`:'';
+  let body='';
+  if(step===1){
+   body=`<div class="card"><div class="k">1. 지금 학년대는?</div>${wizChipRow(WIZ_GRADES,'grade')}</div>`;
+  }else if(step===2){
+   body=`<div class="card"><div class="k">2. 가장 관심 있는 건?</div>${wizChipRow(WIZ_INTERESTS,'interest')}</div>`;
+  }else if(step===3){
+   body=`<div class="card"><div class="k">3. 지금 가장 큰 고민 하나는?</div>${wizChipRow(WIZ_WORRIES,'worry')}</div>`;
+  }else{
+   const recs=wizRecommend();
+   const startFn=S.token?'startQuizFx':'goJoin';
+   window.goJoin=()=>go('join');
+   body=`<div class="card wizsummary"><span>${(WIZ_GRADES.find(x=>x[0]===WIZ.grade)||[])[1]||''}</span><span>${(WIZ_INTERESTS.find(x=>x.v===WIZ.interest)||{}).label||''}</span><span>${(WIZ_WORRIES.find(x=>x.v===WIZ.worry)||{}).label||''}</span></div>
+   <div class="wk" style="margin-top:6px">추천 진단 ${recs.length}종 <span>가장 잘 맞는 순서로 골랐어요</span></div>
+   ${recs.length?recs.map((r,i)=>`<div class="card wizrec"><div class="wizrec-top"><span class="wizrec-rank">${i+1}</span><div class="wizrec-emo">${EMO[r.slug]||'📊'}</div><div class="wizrec-tt"><b>${esc(r.d&&r.d.title?r.d.title:r.slug)}</b><span class="catb2">${esc((r.d&&r.d.cat)||catOf(r.slug))}</span></div></div>
+   <p class="wizrec-desc">${esc((r.d&&r.d.desc)||'')}</p>
+   <div class="wizrec-why">💡 ${esc(r.why)}</div>
+   <button class="btn small navy" onclick="${startFn}('${r.slug}')">${S.token?'바로 시작하기':'시작하기'}</button></div>`).join(''):`<div class="card"><p class="muted">조건에 맞는 진단을 찾지 못했어요. 진단 목록에서 직접 골라보세요.</p><button class="btn small ghost" onclick="go('${S.token?'dash':'home'}')">전체 진단 보기</button></div>`}
+   <div style="display:flex;gap:8px;margin-top:6px"><button class="btn ghost" style="flex:1" onclick="wizReset();go('wizard')">🔄 다시 고르기</button><button class="btn navy" style="flex:1" onclick="go('${S.token?'dash':'home'}')">전체 진단 보기</button></div>`;
+  }
+  v.innerHTML=`${head}${bar}${body}
+  <div class="linkrow noprint">${step>1&&step<=totalSteps?'<a onclick="wizBack()">← 이전</a> · ':''}<a onclick="go('${S.token?'dash':'home'}')">진단 목록으로</a></div>`;
+  window.scrollTo(0,0);
+ }
 }
 async function join(){
  try{
@@ -588,6 +1046,7 @@ async function join(){
 }
 async function startQuiz(slug){
  const q=await api('/questions?slug='+slug);
+ if(!S.tests||!S.tests[slug])S.tests=(await api('/tests')).tests;
  S.quiz={slug,scale:q.scale,questions:q.questions,answers:[],i:0,t:S.tests[slug]};
  try{
   const sv=JSON.parse(localStorage.getItem('myb_q_'+slug)||'null');
@@ -595,6 +1054,12 @@ async function startQuiz(slug){
   else localStorage.removeItem('myb_q_'+slug);
  }catch(e){}
  go('quiz');
+}
+function startQuizFx(slug){
+ const card=document.querySelector(`.vcard[data-slug="${slug}"]:not(.locked)`);
+ if(card)card.classList.add('launch');
+ try{confetti()}catch(e){}
+ setTimeout(()=>startQuiz(slug),260);
 }
 function quizPrev(){const z=S.quiz;if(z&&z.i>0){z.i--;renderQuiz();}}
 function renderQuiz(){
@@ -609,7 +1074,10 @@ function renderQuiz(){
  }else{
   opts=`<div class="ynrow"><button class="yn yes" onclick="answer(1)"><span>✅</span>네, 준비됐어요</button><button class="yn no" onclick="answer(0)"><span>🙏</span>아직이에요</button></div>`;
  }
- v.innerHTML=`<div class="qnum">${esc(z.t.title)}</div><div class="bar"><i style="width:${z.i/total*100}%"></i></div>
+ const pct=Math.round(z.i/total*100);
+ v.innerHTML=`<div class="qnum">${esc(z.t.title)}</div>
+ <div class="qprog noprint"><span>${z.i+1} / ${total} 문항</span><span>${pct}% 진행</span></div>
+ <div class="bar"><i style="width:${pct}%"></i></div>
  <div class="card"><div class="qnum">Q${z.i+1} / ${total}</div><div class="qtext">${esc(q.q_text)}</div>${opts}</div>
  <div class="linkrow noprint">${z.i>0?'<a onclick="quizPrev()">← 이전 문항</a> · ':''}<a onclick="go('dash')">중단하고 돌아가기 (진행 자동저장)</a></div>`;
 }
@@ -628,7 +1096,7 @@ async function openSolution(id){
  try{
    const r=await fetch(ADMAPI+'/solution',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:S.token,attempt_id:id})});
    const d=await r.json();
-   if(r.status===402){alert('심층 솔루션은 정식 운영 학급에 순차 제공될 예정입니다. 지금은 무료 진단과 A4·B4 보고서를 먼저 활용해 주세요.');return}
+   if(r.status===402){alert('심층 솔루션은 학교 운영 학급에 순차 제공될 예정입니다. 먼저 A4·B4 보고서를 활용해 주세요.');return}
   if(d.error){alert(d.error);return}
   go('solution',d);
  }catch(e){alert(e.message)}
@@ -637,29 +1105,252 @@ async function openAttempt(id){
  const d=await api(`/attempt?id=${id}&token=${S.token}`);
  go('result',d);
 }
+const BLOCK_PHOTOS=[
+ ['면접|발표|말하기','https://images.unsplash.com/photo-1556761175-b413da4baf72'],
+ ['AI|인공지능|디지털|도구','https://images.unsplash.com/photo-1519389950473-47ba0277781c'],
+ ['탐구|실험|연구|과학','https://images.unsplash.com/photo-1532094349884-543bc11b234d'],
+ ['독서|읽기|문해|책','https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0'],
+ ['과목|교과|수학|국어|영어|학점','https://images.unsplash.com/photo-1454165804606-c3d57bc86b40'],
+ ['로드맵|학생부|계획|목표','https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b'],
+ ['진로|직업|계열|학과','https://images.unsplash.com/photo-1522202176988-66273c2fd55f'],
+ ['습관|공부|준비|학습','https://images.unsplash.com/photo-1483546416237-76fd26bbcdd1'],
+ ['창의|프로젝트|문제해결','https://images.unsplash.com/photo-1531482615713-2afd69097998']
+];
+function blockPhoto(b){
+ const text=((b&&b.title)||'')+' '+((b&&b.body)||'')+' '+((b&&b.section)||'');
+ const hit=BLOCK_PHOTOS.find(([re])=>new RegExp(re,'i').test(text));
+ return (hit?hit[1]:'https://images.unsplash.com/photo-1497366754035-f200968a6e72')+'?w=960&h=360&fit=crop&q=70&auto=format';
+}
 function blockHtml(b,badge){
  const tips=(b.tips||[]);
- return `<div class="block"><div class="badge">${esc(badge||'성장 가이드')}</div><h3>${esc(b.title)}</h3><p>${esc(b.body)}</p>
+ return `<div class="block"><div class="blockpic"><img loading="lazy" decoding="async" src="${blockPhoto(b)}" alt=""></div><div class="badge">${esc(badge||'성장 가이드')}</div><h3>${esc(b.title)}</h3><p>${esc(b.body)}</p>
  ${tips.length?`<div class="tipbox"><b>실천 체크리스트</b><ul>${tips.map(t=>`<li>${esc(t)}</li>`).join('')}</ul></div>`:''}</div>`;
+}
+/* 마이페이지 게임화: 레벨 산출(완료 진단수 + 영역 다양성 + 재진단) */
+function mypLevel(distinct,catN,retakes){
+ const tiers=[
+  {min:0,title:'탐색 시작',icon:'🌱',desc:'첫 진단으로 여정을 시작해요'},
+  {min:1,title:'첫걸음 탐험가',icon:'🧭',desc:'나를 알아가는 중'},
+  {min:3,title:'성장 탐험가',icon:'🚀',desc:'여러 영역을 탐색하는 중'},
+  {min:5,title:'진로 항해사',icon:'⛵',desc:'방향이 또렷해지고 있어요'},
+  {min:8,title:'마스터 탐험가',icon:'🏆',desc:'폭넓은 자기이해를 갖췄어요'},
+  {min:12,title:'레전드',icon:'👑',desc:'거의 모든 영역을 정복!'}
+ ];
+ /* 점수 = 완료 진단수 + 영역 다양성 보너스 + 재진단 보너스 */
+ const score=distinct+Math.max(0,catN-1)+retakes;
+ let i=0;for(let k=0;k<tiers.length;k++){if(score>=tiers[k].min)i=k;}
+ const cur=tiers[i],nx=tiers[i+1];
+ const pct=nx?Math.min(100,Math.round((score-cur.min)/(nx.min-cur.min)*100)):100;
+ const need=nx?Math.max(0,nx.min-score):0;
+ return {level:i,title:cur.title,icon:cur.icon,desc:cur.desc,pct,next:nx?`진단 ${need}개 더 (또는 새 영역·재진단)`:null};
+}
+/* 배지 산출 */
+function mypBadges(distinct,cats,retakes,grew){
+ const four=['진로','진학','공부','역량'].every(c=>cats.has(c));
+ return [
+  {id:'first',name:'첫 진단',icon:'🎉',hint:'진단 1개 완료',on:distinct>=1},
+  {id:'three',name:'트리플',icon:'🥉',hint:'진단 3개 완료',on:distinct>=3},
+  {id:'five',name:'펜타',icon:'🥈',hint:'진단 5개 완료',on:distinct>=5},
+  {id:'ten',name:'마스터',icon:'🥇',hint:'진단 10개 완료',on:distinct>=10},
+  {id:'allcat',name:'올라운더',icon:'🌈',hint:'진로·진학·공부·역량 전 영역',on:four},
+  {id:'retake',name:'성장러',icon:'📈',hint:'같은 진단 재응시',on:retakes>=1},
+  {id:'grow',name:'레벨업',icon:'⬆️',hint:'재진단에서 점수 상승',on:grew>=1}
+ ];
+}
+function retakeQuiz(slug){
+ try{localStorage.removeItem('myb_q_'+slug)}catch(e){}
+ if(confirm('기존 결과는 기록에 남기고, 새 응시 결과를 추가로 만들까요?'))startQuizFx(slug);
+}
+/* ===== 유료화 동선(B5) — 무료 vs 프리미엄 비교. PAID_LIVE=false면 결제·금액 미노출 ===== */
+function payPremiumHtml(){
+ const rows=[
+  ['전체 진단 프로그램(20종+)','전체 무료','전체 무료',true,true],
+  ['기본 결과·차트·요약','포함','포함',true,true],
+  ['정식 A4 / B4 상담 보고서','미리보기','정식 다면 보고서',false,true],
+  ['통합 포트폴리오(PDF)','요약','정식 발급',false,true],
+  ['재진단 성장 추적·코칭','기본','정밀 추적+코칭',false,true],
+  ['학부모용 리포트','—','포함',false,true],
+  ['우선 지원·신규 콘텐츠 우선','—','포함',false,true]
+ ];
+ const cell=(txt,on,lim)=> on===true?'<span class="yes">✓</span>':(on===false?(txt&&txt!=='—'?`<span class="lim">${esc(txt)}</span>`:'<span class="no">—</span>'):`<span>${esc(txt)}</span>`);
+ const cta = PAID_LIVE
+   ? `<button class="btn" onclick="go('pay')">💎 프리미엄·플랜 보기</button>`
+   : `<button class="btn" onclick="payNotify()">🔔 출시되면 알림 받기</button>
+      <a class="btn ghost" href="mailto:onlyjdw3831@gmail.com?subject=마이베스트%20NEXT%20기관%20도입%20문의">🏫 기관 도입 문의</a>`;
+ return `<h1>프리미엄 안내 💎</h1>
+  <div class="sub">모든 진단과 기본 결과는 <b>계속 무료</b>예요. 프리미엄은 상담·입시에 바로 쓰는 정식 보고서와 성장 추적을 더해 줍니다.${PAID_LIVE?'':' <b style="color:var(--gold)">현재는 준비 중</b>이라 금액·결제는 표시되지 않습니다.'}</div>
+  <div class="card">
+   <span class="planpill">무료 vs 프리미엄</span>
+   <table class="cmp"><thead><tr><th>기능</th><th class="f">무료</th><th class="p pcol">프리미엄</th></tr></thead>
+   <tbody>${rows.map(r=>`<tr><td>${esc(r[0])}</td><td>${cell(r[1],r[3])}</td><td class="pcol">${cell(r[2],r[4])}</td></tr>`).join('')}</tbody></table>
+   <p class="muted" style="font-size:11.5px;margin-top:4px">※ 학습·진단 콘텐츠는 영구 무료 유지 정책입니다. 프리미엄은 부가 산출물·지원에 한합니다.</p>
+  </div>
+  <div class="actionbar noprint">${cta}<button class="btn ghost" onclick="go(S.token?'dash':'home')">← 돌아가기</button></div>`;
+}
+function payNotify(){
+ // PAID_LIVE=false 단계: 실제 결제/토스 호출 없음. 사전 알림 수요만 안내(추후 알림톡·메일 수집 연결 자리).
+ alert('프리미엄은 준비 중이에요. 출시되면 학급/마이페이지 공지로 안내드릴게요. 기관 도입이 급하시면 도입 문의 메일을 보내주세요. 🙌');
+ // TODO(PAID_LIVE): 사전 알림 신청 수집 엔드포인트 배선 위치.
 }
 function resultActions(d,opts){
  opts=opts||{};
- const url=REPORT+'?token='+encodeURIComponent(S.token)+'&id='+encodeURIComponent(d.attempt.id)+'&mode=full';
+ const RB='report.html?token='+encodeURIComponent(S.token||'')+'&id='+encodeURIComponent(d.attempt.id);
  return `<div class="actionbar noprint">
   ${opts.solution?`<button class="btn" onclick="openSolution('${d.attempt.id}')">📚 심층 솔루션 (학과·과목·4주플랜)</button>`:''}
-  <a class="btn navy" href="${url}" target="_blank" rel="noopener">📄 정식 리포트(10쪽) 보기·인쇄</a>
-  <button class="btn ghost" onclick="shareResult('${esc(opts.summary||'')}')">🔗 결과 공유</button>
+  <a class="btn navy" href="${RB}" target="_blank" rel="noopener">📄 정식 보고서(A4 다면)</a>
+  <a class="btn navy" href="${RB}&mode=b4" target="_blank" rel="noopener">🗂 B4 한장 요약</a>
+  <button class="btn ghost" onclick="retakeQuiz('${d.attempt.test_slug}')">🔄 다시 진단하기</button>
+  <button class="btn ghost" onclick="shareResult('${d.attempt.id}','${esc(opts.summary||'')}')">🔗 결과 공유</button>
+  <button class="btn ghost" onclick="shareCardMake('${d.attempt.id}')">🎨 결과 공유 카드</button>
+  <button class="btn ghost" onclick="sendResultMessage('${d.attempt.id}','${esc(opts.summary||'')}')">💬 문자·카톡 문구</button>
+  <button class="btn ghost" onclick="go('premium')">💎 프리미엄 안내</button>
   <button class="btn ghost" onclick="go('dash')">대시보드로</button>
  </div>`;
 }
-async function shareResult(summary){
- const text='마이베스트 NEXT에서 나의 진로 가능성을 진단했어요! '+(summary?('— '+summary+' '):'')+'#마이베스트NEXT';
- const url='https://mybest-next-edu.netlify.app/';
+function resultLink(id){
+ const url=new URL(location.origin+location.pathname);
+ url.searchParams.set('token',S.token||'');
+ url.searchParams.set('attempt',id);
+ return url.toString();
+}
+async function shareResult(id,summary){
+ const text='마이베스트 NEXT에서 나의 진로 가능성을 진단했어요!'+(summary?(' '+summary+'.'):'')+' #마이베스트NEXT';
+ const url=resultLink(id);
  try{ if(navigator.share){await navigator.share({title:'마이베스트 NEXT',text,url});return;} }catch(e){if(e&&e.name==='AbortError')return;}
- try{ await navigator.clipboard.writeText(text+' '+url); alert('공유 문구가 복사되었어요! 붙여넣기 해서 친구·학부모님께 보내보세요.'); }
- catch(e){ prompt('아래 문구를 복사해 공유하세요', text+' '+url); }
+ ogShareSheet(text,url,'결과 공유');
+}
+/* ===== 바이럴 결과 공유 카드(W10-B) — canvas 1080x1080 브랜드 이미지(익명/요약만) ===== */
+function shareCardLines(r,t){
+ // 결과종류별 핵심 한 줄 추출(개인정보 없음). 추출 불가 시 진단명만.
+ try{
+  if(r.kind==='series'){const L=r.labels||LABELS;const b=L[r.best],s=L[r.second];return {head:(b||'')+'계열 성향',sub:s?('융합 '+b+' × '+s):''};}
+  if(r.kind==='future'){const L=r.labels||[];const b=L[r.best];return {head:'대표 역량 · '+(b||'미래역량'),sub:(L[r.worst]?('성장 포인트 '+L[r.worst]):'')};}
+  if(r.kind==='grades'){const subs=r.subjects||[];return {head:'과목별 맞춤 공부 전략',sub:subs.length?(subs.slice(0,4).join(' · ')):''};}
+  if(r.kind==='pick'){const L=r.labels||LABELS;const p=L[(r.pick||1)-1];return {head:(p||'')+'계열 추천 과목 조합',sub:'2022 개정 교육과정 기준'};}
+  if(r.kind==='bucketcheck'||r.kind==='checklist'){return {head:'준비도 '+(r.pct||0)+'점',sub:((r.ready||0)+' / '+(r.total||0)+' 항목 준비 완료')};}
+ }catch(e){}
+ return {head:(t&&t.title)||'진단 결과',sub:''};
+}
+function scWrap(ctx,text,maxW){
+ const words=String(text||'').split(' ');const lines=[];let cur='';
+ for(const w of words){const test=cur?cur+' '+w:w;if(ctx.measureText(test).width>maxW&&cur){lines.push(cur);cur=w;}else cur=test;}
+ if(cur)lines.push(cur);return lines;
+}
+function shareCardMake(id){
+ const d=window._shareCardD;
+ let r,t,title;
+ if(d&&d.attempt&&d.attempt.id===id){r=d.attempt.result;t=S.tests[d.attempt.test_slug];}
+ else{const a=[...((S.me&&S.me.attempts)||[])].find(x=>x.id===id);if(a){r=a.result;t=S.tests[a.test_slug];}}
+ if(!r){alert('결과 정보를 불러오지 못했어요. 결과 화면에서 다시 시도해 주세요.');return;}
+ title=(t&&t.title)||'진단 결과';
+ const ln=shareCardLines(r,t);
+ const cv=document.createElement('canvas');cv.width=1080;cv.height=1080;
+ const ctx=cv.getContext('2d');
+ // 배경: 보라 → 민트 대각 그라데이션
+ const g=ctx.createLinearGradient(0,0,1080,1080);
+ g.addColorStop(0,'#6C5CE7');g.addColorStop(.55,'#5A6FE0');g.addColorStop(1,'#00CEC9');
+ ctx.fillStyle=g;ctx.fillRect(0,0,1080,1080);
+ // 장식 원
+ ctx.fillStyle='rgba(255,255,255,.08)';ctx.beginPath();ctx.arc(900,180,260,0,Math.PI*2);ctx.fill();
+ ctx.beginPath();ctx.arc(150,950,200,0,Math.PI*2);ctx.fill();
+ ctx.textAlign='center';
+ // 상단 브랜드
+ ctx.fillStyle='rgba(255,255,255,.92)';
+ ctx.font='800 46px Pretendard, sans-serif';
+ ctx.fillText('MY BEST NEXT',540,160);
+ ctx.font='600 28px Pretendard, sans-serif';
+ ctx.fillStyle='rgba(255,255,255,.78)';
+ ctx.fillText('진로·진학 가능성 진단',540,210);
+ // 중앙 카드
+ ctx.fillStyle='rgba(255,255,255,.96)';
+ if(ctx.roundRect){ctx.beginPath();ctx.roundRect(110,310,860,460,40);ctx.fill();}
+ else ctx.fillRect(110,310,860,460);
+ // 진단명
+ ctx.fillStyle='#6C5CE7';ctx.font='800 34px Pretendard, sans-serif';
+ ctx.fillText(title,540,400);
+ // 핵심 결과 한 줄(자동 줄바꿈)
+ ctx.fillStyle='#1B2A4A';ctx.font='800 64px Pretendard, sans-serif';
+ let hl=scWrap(ctx,ln.head,760);let hy=400+90;
+ hl.slice(0,2).forEach(line=>{ctx.fillText(line,540,hy);hy+=78;});
+ // 서브 한 줄
+ if(ln.sub){ctx.fillStyle='#4C5C6A';ctx.font='600 36px Pretendard, sans-serif';
+  let sl=scWrap(ctx,ln.sub,780);let sy=hy+24;
+  sl.slice(0,2).forEach(line=>{ctx.fillText(line,540,sy);sy+=46;});}
+ // 하단 CTA
+ ctx.fillStyle='rgba(255,255,255,.95)';ctx.font='800 40px Pretendard, sans-serif';
+ ctx.fillText('나도 진단해보기',540,890);
+ ctx.font='600 34px Pretendard, sans-serif';ctx.fillStyle='rgba(255,255,255,.85)';
+ ctx.fillText('mybest-next-edu.netlify.app',540,945);
+ ctx.font='500 24px Pretendard, sans-serif';ctx.fillStyle='rgba(255,255,255,.62)';
+ ctx.fillText('오늘과내일의학교',540,1010);
+ cv.toBlob(function(blob){
+  if(!blob){alert('카드 이미지를 만들지 못했어요.');return;}
+  const file=(typeof File!=='undefined')?new File([blob],'mybest-next-card.png',{type:'image/png'}):null;
+  // 가능하면 이미지 공유
+  if(file&&navigator.canShare&&navigator.canShare({files:[file]})&&navigator.share){
+   navigator.share({files:[file],title:'마이베스트 NEXT',text:'마이베스트 NEXT에서 나의 진로 가능성을 진단했어요! #마이베스트NEXT'}).catch(function(e){if(e&&e.name==='AbortError')return;shareCardDownload(blob);});
+   return;
+  }
+  shareCardDownload(blob);
+ },'image/png');
+}
+function shareCardDownload(blob){
+ try{
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='mybest-next-card.png';
+  document.body.appendChild(a);a.click();a.remove();
+  setTimeout(function(){URL.revokeObjectURL(url);},4000);
+  alert('결과 공유 카드 이미지를 저장했어요! 인스타그램·카카오톡 등에 올려 공유해 보세요.');
+ }catch(e){alert('이미지 저장에 실패했어요: '+e.message);}
+}
+async function sendResultMessage(id,summary){
+ const msg=`[마이베스트 NEXT 결과]\n${summary?summary+'.':'진단 결과가 도착했습니다.'} 아래 링크에서 확인하세요.\n${resultLink(id)}`;
+ try{await navigator.clipboard.writeText(msg);alert('문자·카톡으로 보낼 수 있는 결과 문구가 복사되었어요. 붙여넣기 해서 보내세요. (자동 발송은 SMS/카카오 알림톡 계정 연결 후 열 수 있습니다.)');}
+ catch(e){prompt('아래 문구를 문자나 카톡으로 보내세요',msg);}
+}
+async function shareProfile(){
+ try{if(!S.me)S.me=await api('/me?token='+S.token);}catch(e){}
+ const me=S.me||{name:'학생'};
+ const allAt=[...((me.attempts)||[])];
+ const done=new Set(allAt.map(a=>a.test_slug)).size;
+ const ser=allAt.find(a=>a.test_slug==='hs_series')||allAt.find(a=>a.test_slug==='ms_series')||allAt.find(a=>a.test_slug==='es_dream');
+ const bestSer=ser&&ser.result&&ser.result.labels?ser.result.labels[ser.result.best]:null;
+ const line=`${esc(me.name)} 학생의 통합 성장 리포트 — 진단 ${done}종 완료${bestSer?', 주요 계열 '+bestSer:''}`;
+ const text='마이베스트 NEXT 통합 성장 리포트 📋 '+line+' #마이베스트NEXT';
+ const url=location.origin+location.pathname+'?token='+encodeURIComponent(S.token||'')+'&view=profile';
+ try{if(navigator.share){await navigator.share({title:'마이베스트 NEXT 통합 성장 리포트',text,url});return;}}catch(e){if(e&&e.name==='AbortError')return;}
+ ogShareSheet(text,url,'통합 리포트 공유');
+}
+/* ===== 공유 시트(B7) — navigator.share 미지원 시 채널 선택(스레드·X·카톡(복사)·링크복사) ===== */
+function ogShareSheet(text,url,title){
+ const old=$('#ogsheet');if(old)old.remove();
+ const full=text+' '+url;
+ const sh=document.createElement('div');sh.id='ogsheet';sh.className='ogsheet';
+ sh.innerHTML=`<div class="ogcard"><div class="oghd">${esc(title||'공유하기')}</div>
+  <div class="oggrid">
+   <button class="ogbtn" data-act="thread">🧵<span>스레드</span></button>
+   <button class="ogbtn" data-act="x">𝕏<span>X</span></button>
+   <button class="ogbtn" data-act="kakao">💬<span>카톡(복사)</span></button>
+   <button class="ogbtn" data-act="copy">🔗<span>링크 복사</span></button>
+  </div>
+  <button class="btn ghost" data-act="close" style="margin-top:6px">닫기</button></div>`;
+ sh.addEventListener('click',e=>{
+  if(e.target===sh){sh.remove();return;}
+  const b=e.target.closest('[data-act]');if(!b)return;const act=b.dataset.act;
+  if(act==='thread'){window.open('https://www.threads.net/intent/post?text='+encodeURIComponent(full),'_blank','noopener');}
+  else if(act==='x'){window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(url),'_blank','noopener');}
+  else if(act==='kakao'){ogCopy(full,'카카오톡 채팅창에 붙여넣어 보내세요!');}
+  else if(act==='copy'){ogCopy(full,'링크가 복사되었어요!');}
+  if(act!=='close')sh.remove();else sh.remove();
+ });
+ document.body.appendChild(sh);
+}
+function ogCopy(t,msg){
+ try{navigator.clipboard.writeText(t).then(()=>alert(msg||'복사되었어요!'),()=>prompt('아래 내용을 복사하세요',t));}
+ catch(e){prompt('아래 내용을 복사하세요',t);}
 }
 function renderResult(d){
+ window._shareCardD=d;
  const v=$('#view'),r=d.attempt.result,slug=d.attempt.test_slug,t=S.tests[slug],st=d.student;
  const dt=d.attempt.created_at.slice(0,10);
  if(r.kind==='series'){
@@ -687,6 +1378,7 @@ function renderResult(d){
   v.innerHTML=`<div class="hero">${ART(slug)}<h2>${pk}계열 추천 과목 조합</h2><p>2022 개정 교육과정 · 고교학점제 기준 · ${esc(st.name)} · ${dt}</p></div>
    ${methodNote(slug)}
    ${blocks.map(b=>blockHtml(b,'추천 과목 가이드')).join('')}
+  <div class="card" style="background:linear-gradient(120deg,#F3F0FF,#EAFBF6);border:1.5px solid #E0DAFB"><div class="k">🗂 계열·학과별 2022 과목 탐색</div><p style="font-size:12.8px;line-height:1.6;color:#4C5C4C;margin-bottom:10px">${pk}계열의 학과를 골라 일반·진로·융합선택 권장 과목을 직접 비교해 보세요.</p><button class="btn small navy" onclick="SEXP.series=null;SEXP.picked=[];go('subjexp',${r.pick})">${pk}계열 학과 과목 탐색하기 →</button></div>
   <div class="card coachnote"><p style="font-size:12.5px;line-height:1.6;color:#5B6270">※ 학교별 개설 과목이 다를 수 있습니다. 최종 선택 전 학교 교육과정 편제표와 담임·진로 선생님 상담을 꼭 거치세요.</p></div>
   ${resultActions(d,{summary:pk+'계열 추천 과목 조합을 받았어요'})}`;
  }else if(r.kind==='bucketcheck'){
@@ -723,8 +1415,8 @@ function renderResult(d){
 }
 async function makeClass(){
  try{
-  const j=await api('/teacher/class',{school:$('#ns').value.trim(),name:$('#nn').value.trim(),teacher_pin:$('#np').value.trim(),max_students:+$('#nm').value,months:+$('#nmo').value});
-  $('#newcode').innerHTML=`<div class="hero" style="padding:18px"><p>학급코드가 발급되었습니다</p><h2 style="letter-spacing:.2em">${j.code}</h2><div style="margin:10px 0">${qrImg(j.code)}</div><p>정원 ${j.max_students}명 · ${j.expires_at}까지<br>QR을 칠판에 띄우면 학생들이 바로 입장해요</p></div>`;
+  const j=await api('/teacher/class',{school:$('#ns').value.trim(),name:$('#nn').value.trim(),teacher_pin:$('#np').value.trim(),max_students:+$('#nm').value,months:+$('#nmo').value,max_uses:$('#nu').value?+$('#nu').value:null,starts_at:$('#nd').value||null});
+  $('#newcode').innerHTML=`<div class="hero" style="padding:18px"><p>학급코드가 발급되었습니다</p><h2 style="letter-spacing:.2em">${j.code}</h2><div style="margin:10px 0">${qrImg(j.code)}</div><p>정원 ${j.max_students}명 · ${j.expires_at}까지${j.max_uses?(' · 1인 '+j.max_uses+'회'):''}${j.starts_at?(' · '+j.starts_at+' 시작'):''}<br>QR을 칠판에 띄우면 학생들이 바로 입장해요</p></div>`;
  }catch(e){showErr(e.message)}
 }
 async function teacherView(){
@@ -732,173 +1424,31 @@ async function teacherView(){
   const code=$('#tc').value.trim().toUpperCase(),pin=$('#tp').value.trim();
   const d=await api('/teacher/overview',{code,teacher_pin:pin});
   window._tauth={code,pin};
+  try{ if(!S.tests) S.tests=(await api('/tests')).tests; }catch(e){}
   go('tdash',d);
   }catch(e){showErr(e.message)}
 }
-function classInsightHtml(x){
- const items=[];
- if(x.avgDone<3)items.push(`전체 평균 완료 진단이 <b>${x.avgDone}</b>종입니다. 먼저 계열성향, 미래역량, 학생부 로드맵 3종을 공통 과제로 묶으면 학급 비교가 쉬워집니다.`);
- else items.push(`평균 <b>${x.avgDone}</b>종을 완료했습니다. 이제 결과 해석보다 재진단 주기와 상담 기록을 남기는 단계로 넘어갈 수 있습니다.`);
- if(x.topSeries)items.push(`가장 많은 계열은 <b>${x.topSeries}</b>입니다. 같은 계열끼리만 모으기보다 1순위와 2순위를 섞어 융합 탐구 모둠을 만들면 진로 대화가 넓어집니다.`);
- if(x.avgAi!==null)items.push(x.avgAi<70?`AI역량 평균이 <b>${x.avgAi}점</b>입니다. 도구 사용법보다 질문 만들기, 출처 확인, 결과 검토 루틴을 짧은 활동으로 반복하세요.`:`AI역량 평균이 <b>${x.avgAi}점</b>입니다. 결과물을 학생부 탐구·발표·독서 활동과 연결하는 심화 과제를 줄 수 있습니다.`);
- if(x.avgRm!==null)items.push(x.avgRm<70?`학생부 로드맵 평균이 <b>${x.avgRm}점</b>입니다. 활동을 많이 시키기보다 관심 계열-과목-탐구주제를 한 줄로 연결하게 해보세요.`:`학생부 로드맵 평균이 <b>${x.avgRm}점</b>입니다. 학생별 4주 실천 플랜을 상담 메모로 고정하기 좋습니다.`);
- if(x.avgIv!==null&&x.avgIv<70)items.push(`면접 준비도 평균이 <b>${x.avgIv}점</b>입니다. 답변 암기보다 경험-배운점-다음 행동 구조로 말하는 연습부터 권합니다.`);
- return `<div class="card"><div class="k">이번 주 학급 지도 인사이트</div><ul class="rx">${items.slice(0,5).map((m,i)=>`<li><span class="n">${i+1}</span>${m}</li>`).join('')}</ul></div>`;
-}
-function renderTeacherDash(d){
- const v=$('#view');
- const latest={};
- d.attempts.forEach(a=>{const k=a.student_id+'|'+a.test_slug;if(!latest[k])latest[k]=a});
- const series=Object.values(latest).filter(a=>a.result.kind==='series');
- const ivs=Object.values(latest).filter(a=>a.test_slug==='interview');
- const ais=Object.values(latest).filter(a=>a.test_slug==='ai_skill');
- const rms=Object.values(latest).filter(a=>a.test_slug==='roadmap');
- const futs=Object.values(latest).filter(a=>a.test_slug==='future');
- const avg=arr=>arr.length?Math.round(arr.reduce((s,a)=>s+a.result.pct,0)/arr.length):null;
- const avgAi=avg(ais), avgRm=avg(rms);
- const fdist=new Array(6).fill(0);futs.forEach(a=>fdist[a.result.best]++);
- const FUTL=['리더십','창의성','문제해결','소통','프로젝트','전략적사고'];
- const dist=new Array(7).fill(0);series.forEach(a=>dist[a.result.best]++);
- const avgIv=ivs.length?Math.round(ivs.reduce((s,a)=>s+a.result.pct,0)/ivs.length):null;
- const sname=Object.fromEntries(d.students.map(s=>[s.id,s.name]));
- const doneCounts=Object.fromEntries(d.students.map(s=>[s.id,new Set(d.attempts.filter(a=>a.student_id===s.id).map(a=>a.test_slug)).size]));
- const avgDone=d.students.length?Math.round(d.students.reduce((sum,s)=>sum+(doneCounts[s.id]||0),0)/d.students.length*10)/10:0;
- const topSeries=series.length?LABELS[dist.indexOf(Math.max(...dist))]:null;
- const rows=d.students.map(s=>{
-  const se=series.find(a=>a.student_id===s.id),iv=ivs.find(a=>a.student_id===s.id);
-  const ai=ais.find(a=>a.student_id===s.id),rm=rms.find(a=>a.student_id===s.id);
-  const pc=x=>x?`<b style="color:${x.result.pct>=70?'#2E7D32':'#C8A24B'}">${x.result.pct}</b>`:'—';
-  const doneN=doneCounts[s.id]||0;
-  return `<tr><td>${esc(s.name)}</td><td><b style="color:${doneN>=5?'#2E7D32':'#7A7E9A'}">${doneN}</b>/14</td><td>${se?'<b>'+LABELS[se.result.best]+'</b> / '+LABELS[se.result.second]:'—'}</td><td>${pc(iv)}</td><td>${pc(ai)}</td><td>${pc(rm)}</td></tr>`;
- }).join('');
- v.innerHTML=`<h1>${esc(d.class.school)} ${esc(d.class.name)}</h1><div class="sub">학급코드 <b>${d.class.code}</b> · 학생 ${d.students.length}명 · 발급일 ${new Date().toISOString().slice(0,10)}</div>
- <div class="grid2"><div class="stat"><div class="v">${d.students.length}</div><div class="l">참여 학생${d.class.max_students?' / 정원 '+d.class.max_students:''}</div></div>
- <div class="stat"><div class="v">${topSeries||'—'}</div><div class="l">최다 계열</div></div></div>
- <div style="height:12px"></div>
- <div class="grid2"><div class="stat"><div class="v" style="color:${avgAi===null?'#A9ACC4':(avgAi>=70?'#2E7D32':'#C8A24B')}">${avgAi===null?'—':avgAi+'점'}</div><div class="l">AI역량 평균 (${ais.length}명)</div></div>
- <div class="stat"><div class="v" style="color:${avgRm===null?'#A9ACC4':(avgRm>=70?'#2E7D32':'#C8A24B')}">${avgRm===null?'—':avgRm+'점'}</div><div class="l">학생부 로드맵 평균 (${rms.length}명)</div></div></div>
- <div style="height:12px"></div>
- ${futs.length?`<div class="card"><div class="k">미래역량 분포 — 최다 강점: ${FUTL[fdist.indexOf(Math.max(...fdist))]}</div><div class="chartwrap" style="height:170px"><canvas id="fdist"></canvas></div></div>`:''}
- ${series.length?`<div class="card"><div class="k">계열성향 분포 (${series.length}명)</div><div class="chartwrap" style="height:210px"><canvas id="dist"></canvas></div></div>`:''}
- ${avgIv!==null?`<div class="card"><div class="k">면접 준비도 평균 (${ivs.length}명)</div><div style="font-size:30px;font-weight:800;color:var(--navy)">${avgIv}점</div><div class="meter"><i style="width:${avgIv}%"></i></div></div>`:''}
- ${classInsightHtml({avgDone,topSeries,avgAi,avgRm,avgIv})}
- <div class="card"><div class="k">학생별 결과 · 진행 현황</div><table><tr><th>이름</th><th>진행</th><th>계열 1/2순위</th><th>면접</th><th>AI역량</th><th>로드맵</th></tr>${rows}</table></div>
- <div class="card noprint"><div class="k">학생 관리 — PIN 초기화 · 삭제</div>
- <div class="grid2"><div><label>학생 이름</label><input id="mn" placeholder="명단의 이름 그대로"></div><div><label>새 PIN (초기화용, 4자리)</label><input id="mp" inputmode="numeric" maxlength="4" placeholder="예: 0000"></div></div>
- <div style="display:flex;gap:8px"><button class="btn small navy" onclick="tReset()">PIN 초기화</button><button class="btn small ghost" style="color:#C62828;border-color:#F3D6D6" onclick="tDelete()">학생 삭제 (기록 포함)</button></div>
- <p class="muted" style="margin-top:6px" id="mres">PIN을 잊은 학생은 초기화 후 새 PIN으로 입장하면 기록이 그대로 유지됩니다.</p></div>
- <div class="card noprint"><div class="k">명단 일괄 등록</div>
- <label>학생 이름 (한 줄에 한 명, 엑셀에서 복사·붙여넣기 가능)</label>
- <textarea id="bnames" style="width:100%;min-height:90px;padding:12px;border:2px solid #ECEAFB;border-radius:12px;font-family:inherit;font-size:14px" placeholder="김하늘&#10;이서준&#10;박지우"></textarea>
- <div class="grid2"><div><label>기본 PIN (전원 동일, 4자리)</label><input id="bpin" inputmode="numeric" maxlength="4" value="0000"></div>
- <div><label>학년</label><select id="bgrade"><option>중1</option><option>중2</option><option>중3</option><option selected>고1</option><option>고2</option><option>고3</option><option>초등</option></select></div></div>
- <button class="btn small navy" onclick="bulkAdd()">일괄 등록 실행</button> <span class="muted" id="bres"></span></div>
- <div class="card" style="text-align:center"><div class="k">학생 입장 QR — 칠판에 띄워주세요</div>${qrImg(d.class.code)}<p class="muted" style="margin-top:6px">코드 ${d.class.code} 자동 입력 입장</p></div>
- <div class="card"><div class="k">지도 포인트</div><ul class="rx">
- <li><span class="n">1</span>인쇄 전에는 위의 학급 지도 인사이트를 먼저 확인하세요.</li>
- <li><span class="n">2</span>학생별 결과는 점수 순위보다 다음 행동을 정하는 상담 자료로 활용하세요.</li>
- <li><span class="n">3</span>한 달 뒤 같은 진단을 다시 진행하면 성장 그래프가 학급 지도 자료가 됩니다.</li></ul></div>
- <button class="btn navy noprint" onclick="print()">🖨️ 학급 한장 보고서 인쇄/PDF</button>
- <div style="height:8px"></div><button class="btn ghost noprint" onclick="go('teacher')">← 교사 화면</button>`;
- if(futs.length)new Chart($('#fdist'),{type:'bar',data:{labels:FUTL,datasets:[{data:fdist,backgroundColor:'#6C5CE7',borderRadius:5}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{precision:0}}},animation:false}});
- if(series.length)new Chart($('#dist'),{type:'bar',data:{labels:LABELS,datasets:[{data:dist,backgroundColor:['#1B2A4A','#27406B','#C8A24B','#7A8BA8','#3E5C8A','#A8893E','#54688C'],borderRadius:6}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{precision:0}}},animation:false}});
- window.scrollTo(0,0);
-}
-async function buyPlan(plan){
- try{
-  const cfg=window._paycfg;
-  if(!cfg.ready){alert('아직 결제 준비 모드입니다.\n관리자가 토스페이먼츠 상점 키를 등록하면 활성화됩니다.');return}
-  const code=$('#pc').value.trim().toUpperCase(), pin=$('#pp').value.trim();
-  if(!code||!pin){alert('학급코드와 교사 PIN을 입력하세요');return}
-  const ord=await fetch(PAYAPI+'/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code,teacher_pin:pin,plan})}).then(r=>r.json());
-  if(ord.error){alert(ord.error);return}
-  if(!window.TossPayments){await new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='https://js.tosspayments.com/v2/standard';sc.onload=ok;sc.onerror=no;document.head.appendChild(sc)})}
-  $('#paywrap').style.display='';
-  const widgets=TossPayments(cfg.client_key).widgets({customerKey:TossPayments.ANONYMOUS});
-  await widgets.setAmount({currency:'KRW',value:ord.amount});
-  await widgets.renderPaymentMethods({selector:'#pm'});
-  await widgets.renderAgreement({selector:'#agr'});
-  window._reqPay=()=>widgets.requestPayment({orderId:ord.order_id,orderName:ord.order_name,successUrl:location.origin+location.pathname+'?pay=ok',failUrl:location.origin+location.pathname+'?pay=fail'});
-  $('#paybtn').innerHTML=`<button class="btn" onclick="window._reqPay()">${ord.amount.toLocaleString()}원 결제하기</button>`;
-  $('#paywrap').scrollIntoView({behavior:'smooth'});
- }catch(e){alert('결제 위젯 오류: '+e.message)}
-}
-async function bulkAdd(){
- const a=window._tauth;if(!a){alert('교사 인증이 필요합니다');return}
- const names=[...new Set($('#bnames').value.split(/\n/).map(x=>x.trim()).filter(Boolean))];
- const pin=$('#bpin').value.trim(), gr=$('#bgrade').value;
- if(!names.length){alert('이름을 입력하세요');return}
- if(!/^\d{4}$/.test(pin)){alert('기본 PIN은 숫자 4자리여야 합니다');return}
- let ok=0,dup=0,fail=0;
- for(const nm of names){
-  try{const j=await api('/student/join',{class_code:a.code,name:nm,pin,grade:gr});j.created?ok++:dup++;}
-  catch(e){fail++}
-  $('#bres').textContent=`진행 ${ok+dup+fail}/${names.length}…`;
- }
- $('#bres').textContent=`✅ 신규 ${ok}명 등록 · 기존 ${dup}명 · 실패 ${fail}명 — 학생들은 이름+기본 PIN(${pin})으로 입장 후 사용`;
-}
-async function tReset(){
- try{
-  const a=window._tauth;if(!a){alert('교사 인증이 필요합니다');return}
-  const r=await fetch(ADMAPI+'/teacher/reset_pin',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:a.code,teacher_pin:a.pin,student_name:$('#mn').value.trim(),new_pin:$('#mp').value.trim()})}).then(x=>x.json());
-  $('#mres').textContent=r.ok?('✅ '+r.name+' 학생의 PIN이 초기화되었습니다. 새 PIN으로 입장하면 기록이 유지됩니다.'):('⚠️ '+(r.error||'실패'));
- }catch(e){alert(e.message)}
-}
-async function tDelete(){
- try{
-  const a=window._tauth;if(!a){alert('교사 인증이 필요합니다');return}
-  const nm=$('#mn').value.trim();
-  if(!nm||!confirm(nm+' 학생과 모든 진단 기록을 영구 삭제할까요?\n(개인정보 삭제 요청 처리용 — 되돌릴 수 없습니다)'))return;
-  const r=await fetch(ADMAPI+'/teacher/delete_student',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:a.code,teacher_pin:a.pin,student_name:nm})}).then(x=>x.json());
-  $('#mres').textContent=r.ok?('🗑️ '+r.deleted+' 학생이 삭제되었습니다. 새로고침 시 명단에서 사라집니다.'):('⚠️ '+(r.error||'실패'));
- }catch(e){alert(e.message)}
-}
-async function schoolView(){
- try{
-  const d=await fetch(ADMAPI+'/school',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({school:$('#sc').value.trim(),pin:$('#sp').value.trim()})}).then(r=>r.json());
-  if(d.error){showErr(d.error);return}
-  $('#sres').innerHTML=`<div class="grid2"><div class="stat"><div class="v">${d.classes.length}</div><div class="l">학급</div></div><div class="stat"><div class="v">${d.total_students}</div><div class="l">학생</div></div></div>
-  <div style="height:12px"></div><div class="grid2"><div class="stat"><div class="v">${d.total_attempts}</div><div class="l">누적 진단</div></div><div class="stat"><div class="v">${d.series_dist&&d.total_attempts?LABELS[d.series_dist.indexOf(Math.max(...d.series_dist))]:'—'}</div><div class="l">최다 계열</div></div></div>
-  <div style="height:12px"></div>
-  <div class="card"><div class="k">학급별 현황</div><table><tr><th>학급</th><th>코드</th><th>학생/정원</th><th>진단 수</th><th>만료일</th></tr>${d.classes.map(c=>`<tr><td>${esc(c.name)}</td><td>${c.code}</td><td>${c.students}/${c.max}</td><td>${c.attempts}</td><td>${c.expires||'—'}</td></tr>`).join('')}</table></div>
-  <div class="card"><div class="k">학교 계열 분포</div><div class="chartwrap" style="height:180px"><canvas id="sdist"></canvas></div></div>`;
-  new Chart($('#sdist'),{type:'bar',data:{labels:LABELS,datasets:[{data:d.series_dist,backgroundColor:'#1B2A4A',borderRadius:5}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{precision:0}}},animation:false}});
+async function tUpdate(patch){
+ try{const a=window._tauth||{};if(!a.code){showErr('학급 인증 정보가 없습니다. 다시 조회해 주세요');return;}
+  if(patch&&patch.active===false&&!confirm('이 학급을 정지하면 학생이 새 진단을 시작할 수 없습니다. (기존 결과 열람은 계속 가능)\n정지할까요?'))return;
+  await api('/teacher/update',Object.assign({code:a.code,teacher_pin:a.pin},patch));
+  const d=await api('/teacher/overview',{code:a.code,teacher_pin:a.pin});go('tdash',d);
  }catch(e){showErr(e.message)}
 }
-async function adminLoad(){
- try{
-  const d=await api('/admin/blocks',{pin:$('#ap').value.trim()});
-  window._apin=$('#ap').value.trim();
-  try{
-   const st=await fetch(ADMAPI+'/stats',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pin:window._apin})}).then(r=>r.json());
-   if(!st.error){
-    $('#astats').innerHTML=`<div class="grid2"><div class="stat"><div class="v">${st.schools}</div><div class="l">학교</div></div><div class="stat"><div class="v">${st.classes}</div><div class="l">학급</div></div></div>
-    <div style="height:12px"></div><div class="grid2"><div class="stat"><div class="v">${st.students}</div><div class="l">학생</div></div><div class="stat"><div class="v">${st.attempts}</div><div class="l">누적 진단</div></div></div>
-    <div style="height:12px"></div><div class="card"><div class="k">진단별 이용량 (최근 2000건)</div>${Object.entries(st.by_slug).sort((a,b)=>b[1]-a[1]).map(([k,v2])=>`<div style="display:flex;align-items:center;gap:10px;padding:4px 0"><span style="flex:0 0 150px;font-size:12px;font-weight:700">${EMO[k]||''} ${esc((S.tests&&S.tests[k])?S.tests[k].title:k)}</span><div class="meter" style="flex:1;margin:0"><i style="width:${Math.min(100,v2/Math.max(...Object.values(st.by_slug))*100)}%"></i></div><span class="muted">${v2}</span></div>`).join('')}</div>
-    <div class="card"><div class="k">최근 주문</div>${st.recent_orders.length?`<table><tr><th>주문번호</th><th>플랜</th><th>금액</th><th>상태</th></tr>${st.recent_orders.map(o=>`<tr><td style="font-size:10.5px">${o.order_id}</td><td>${o.plan}</td><td>${o.amount.toLocaleString()}원</td><td>${o.status}</td></tr>`).join('')}</table>`:'<p class="muted">주문 없음</p>'}</div>`;
-   }
-  }catch(e){}
-  $('#ablocks').innerHTML=d.blocks.map(b=>`<div class="card"><div class="k">#${b.id} · gu${b.gu_no} · ${esc(b.section)} · ${esc(b.cond_key)}</div>
-  <input id="bt${b.id}" value="${esc(b.title)}">
-  <textarea id="bb${b.id}" style="width:100%;min-height:90px;padding:12px;border:2px solid #ECEAFB;border-radius:12px;font-family:inherit;font-size:13.5px">${esc(b.body)}</textarea>
-  <button class="btn small navy" style="margin-top:8px" onclick="saveBlock(${b.id})">저장</button> <span class="muted" id="bs${b.id}"></span></div>`).join('');
+async function tAssign(){
+ try{const a=window._tauth||{};if(!a.code){showErr('학급 인증 정보가 없습니다');return;}
+  const slug=$('#asgSlug')&&$('#asgSlug').value, due=$('#asgDue')&&$('#asgDue').value;
+  if(!slug){showErr('배정할 진단을 선택하세요');return;}
+  await api('/teacher/assign',{code:a.code,teacher_pin:a.pin,test_slug:slug,due_date:due||null});
+  tLoadAssignments();
  }catch(e){showErr(e.message)}
 }
-async function saveBlock(id){
- try{
-  await api('/admin/block_update',{pin:window._apin,id,title:$('#bt'+id).value,body:$('#bb'+id).value,tips:undefined});
-  $('#bs'+id).textContent='저장됨 ✓';
- }catch(e){alert(e.message)}
+async function tAssignDelete(id){
+ try{const a=window._tauth||{};if(!a.code)return;await api('/teacher/assign_delete',{code:a.code,teacher_pin:a.pin,id});tLoadAssignments();}catch(e){showErr(e.message)}
 }
-(async()=>{
- const q=new URLSearchParams(location.search);
- if(q.get('pay')==='ok'&&q.get('paymentKey')){
-  try{
-   const r=await fetch(PAYAPI+'/confirm',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentKey:q.get('paymentKey'),orderId:q.get('orderId'),amount:+q.get('amount')})}).then(x=>x.json());
-   alert(r.ok?('결제 완료! '+(r.plan||'')+' 적용 · '+(r.expires_at||'')+'까지 이용 가능'):('결제 승인 실패: '+(r.error||'')));
-  }catch(e){alert('승인 처리 오류: '+e.message)}
-  history.replaceState(null,'',location.pathname);
- }else if(q.get('pay')==='fail'){alert('결제가 취소되었거나 실패했습니다.');history.replaceState(null,'',location.pathname);}
- go('home');
-})();
+async function tLoadAssignments(){
+ try{const a=window._tauth||{};if(!a.code)return;const j=await api('/teacher/assignments',{code:a.code,teacher_pin:a.pin});const el=$('#asgList');if(!el)return;
+  el.innerHTML=(j.assignments&&j.assignments.length)?j.assignments.map(x=>`<div style="border-top:1px solid #eee;padding:7px 0;font-size:13px"><div style="display:flex;align-items:center;gap:8px"><span style="flex:1"><b>${esc(x.test_title)}</b>${x.due_date?` · ~${esc(x.due_date)}`:''}${x.title?` <i>${esc(x.title)}</i>`:''}</span><button onclick="tAssignDelete('${esc(String(x.id))}')" style="background:#fee;color:#c00;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;font-size:12px">해제</button></div><div style="color:#666;margin-top:2px">완료 ${x.done}/${x.total}명${x.not_done&&x.not_done.length?` · 미완료: ${x.not_done.map(n=>esc(n)).join(', ')}`:'' }</div></div>`).join(''):'<p style="color:#aaa;font-size:13px">배정된 진단이 없습니다</p>';
+ }catch(e){showErr(e.message)}
+}
 </script></body></html>

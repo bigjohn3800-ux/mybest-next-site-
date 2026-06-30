@@ -394,11 +394,38 @@ const CATS=['전체','진로','진학','공부','역량'];
 const SLUG_CAT={hs_series:'진로',ms_series:'진로',es_dream:'진로',future:'역량',ai_skill:'역량',roadmap:'진학',subject_rec:'진학',interview:'진학',hs_essay:'진학',study:'공부',ms_study:'공부',inquiry:'공부',reading:'공부',es_habit:'공부'};
 /* 학년대 내 진단 카드 넘버링(슬러그→고정 번호). 신규·공통 그룹은 미부여 */
 const STAGE_NO={
- 초등:{es_dream:1,es_habit:2},
- 중등:{ms_series:1,ms_study:2,ms_hsfit:3},
- 고등:{hs_series:1,subject_rec:2,study:3,roadmap:4,inquiry:5,hs_essay:6,interview:7,reading:8,ai_skill:9,track_fit:10}
+ 초등:{es_dream:1,es_habit:2,study_manage:3,gifted_ready:4,story_writer:5,ai_inquiry:6},
+ 중등:{ms_series:1,ms_study:2,ms_hsfit:3,hs_essay:4,future:5,value_work:6,study_manage:7,gifted_ready:8,story_writer:9,ai_inquiry:10},
+ 고등:{hs_series:1,subject_rec:2,study:3,roadmap:4,inquiry:5,reading:6,interview:7,track_fit:10,study_manage:11,story_writer:12,ai_inquiry:13}
 };
-function stageTitle(lvname,k,title){const m=STAGE_NO[lvname];const n=m&&m[k];return n?`${lvname} ${n}. ${title}`:title;}
+const DISPLAY_TITLE={
+ ms_study:'중학 공부습관 진단',
+ ms_hsfit:'고교 유형 적합도 진단',
+ hs_essay:'고입&대입(과기원) 소개서 준비도',
+ future:'미래역량 진단',
+ value_work:'진로직업 진단',
+ subject_rec:'고교학점제 과목추천',
+ study:'대학합격 공부진단',
+ interview:'대입 면접 준비도 진단',
+ track_fit:'전형적합도 진단',
+ study_manage:'공부관리 진단',
+ story_writer:'AI 동화작가',
+ ai_inquiry:'AI 과제탐구'
+};
+const DISPLAY_STEP={
+ es:{es_dream:1,es_habit:2,study_manage:3,gifted_ready:4,story_writer:5,ai_inquiry:6},
+ ms:{ms_series:1,ms_study:2,ms_hsfit:3,hs_essay:4,future:5,value_work:6,study_manage:7,gifted_ready:8,story_writer:9,ai_inquiry:10},
+ hs:{hs_series:1,subject_rec:2,study:3,roadmap:4,inquiry:5,reading:6,interview:7,track_fit:10,study_manage:11,story_writer:12,ai_inquiry:13}
+};
+const DISPLAY_HIDDEN=new Set(['ai_skill','career_mature','multi_iq','study_emotion','mock_exam','admission_nav']);
+const DISPLAY_OVERRIDE_ONLY=new Set(['future','value_work','hs_essay','study_manage','gifted_ready','story_writer','ai_inquiry']);
+function displayStep(k,d,lv){
+ const ov=DISPLAY_STEP[lv]&&DISPLAY_STEP[lv][k];
+ if(ov)return ov;
+ if(DISPLAY_OVERRIDE_ONLY.has(k))return 0;
+ return (d.steps&&d.steps[lv])||0;
+}
+function stageTitle(lvname,k,title){const m=STAGE_NO[lvname];const n=m&&m[k];return n?`${lvname} ${n}. ${DISPLAY_TITLE[k]||title}`:(DISPLAY_TITLE[k]||title);}
 function catOf(slug){return SLUG_CAT[slug]||'기타';}
 /* 백엔드 26종 정본화: 진단 문항·채점·결과 저장은 mybest API만 사용한다. */
 const EXTRA_EMO={study_manage:'🧩',gifted_ready:'💡',mock_exam:'📊',admission_nav:'🎯',story_writer:'🪄',ai_inquiry:'🔬'};
@@ -410,23 +437,20 @@ function vcardHtml(k,d,act,st,i,enabled=true,reason='',lvname=''){
  const onclick=enabled?` onclick="${act}('${k}')"`:' aria-disabled="true"';
  const cls=enabled?'vcard':'vcard locked';
  const badge=lvname?esc(lvname)+st:'STEP '+st;
- return `<div class="${cls}" data-slug="${k}" style="animation-delay:${i*60}ms"${onclick}><div class="vtop" style="background:linear-gradient(135deg,${(ARTC[k]||['#6C5CE7','#00CEC9']).join(',')})"><img class="vph" loading="lazy" decoding="async" src="${PHOTO[k]||''}?w=640&h=260&fit=crop&q=60&auto=format" onerror="this.remove()" alt=""><div class="vshade"></div><div class="vmed">${ART(k)}</div><span class="stepb">${badge}</span><span class="catb">${d.cat||''}</span>${enabled?'':`<span class="lockb">${esc(reason||'다른 학년')}</span>`}</div><div class="vbody"><h3>${esc(stageTitle(lvname,k,d.title))}</h3><p>${esc(d.desc)}</p><span class="aud2">${esc(d.audience)}</span></div></div>`;
+  return `<div class="${cls}" data-slug="${k}" style="animation-delay:${i*60}ms"${onclick}><div class="vtop" style="background:linear-gradient(135deg,${(ARTC[k]||['#6C5CE7','#00CEC9']).join(',')})"><img class="vph" loading="lazy" decoding="async" src="${PHOTO[k]||''}?w=640&h=260&fit=crop&q=60&auto=format" onerror="this.remove()" alt=""><div class="vshade"></div><div class="vmed">${ART(k)}</div><span class="stepb">${badge}</span><span class="catb">${d.cat||''}</span>${enabled?'':`<span class="lockb">${esc(reason||'다른 학년')}</span>`}</div><div class="vbody"><h3>${esc(stageTitle(lvname,k,d.title))}</h3><p>${esc(d.desc)}</p><span class="aud2">${esc(d.audience)}</span></div></div>`;
 }
 function gridHtml(t,act,grade){
  const LV=[['es','초등','🌈'],['ms','중학','🌱'],['hs','고등','🎓']];
- const NEW_SLUGS=new Set(['value_work','career_mature','study_emotion','multi_iq','track_fit','ms_hsfit','study_manage','gifted_ready','mock_exam','admission_nav','story_writer','ai_inquiry']);
  let h=`<div class="chips noprint">${['전체','초등','중학','고등'].map((c,i)=>`<button class="chip${i===0?' on':''}" onclick="filterLv(this,'${c}')">${c}</button>`).join('')}</div>`;
  const target=gradeLv(grade);
  for(const[lv,nm,em]of LV){
-  const items=Object.entries(t).filter(([k,d])=>d.steps&&d.steps[lv]&&!NEW_SLUGS.has(k)).sort((a,b)=>a[1].steps[lv]-b[1].steps[lv]);
+  const items=Object.entries(t).filter(([k,d])=>!DISPLAY_HIDDEN.has(k)&&displayStep(k,d,lv)).sort((a,b)=>displayStep(a[0],a[1],lv)-displayStep(b[0],b[1],lv));
   if(!items.length)continue;
   const active=!target||target===lv;
   const extra = lv==='hs' ? `<div class="${active?'vcard':'vcard locked'}" ${active?`onclick="go('majors')"`:'aria-disabled="true"'}><div class="vtop" style="background:linear-gradient(135deg,#0F1530,#3E5C8A)"><div class="vmed">${ART('subject_rec')}</div><span class="stepb">탐색관</span><span class="catb">진학</span>${active?'':'<span class="lockb">다른 학년</span>'}</div><div class="vbody"><h3>학과 탐색관 🏛️</h3><p>7계열 56개 학과 — 설명·인재상·권장과목·진로를 한곳에서</p><span class="aud2">중3·고등</span></div></div><div class="${active?'vcard':'vcard locked'}" ${active?`onclick="go('subjexp')"`:'aria-disabled="true"'}><div class="vtop" style="background:linear-gradient(135deg,#1B2A4A,#00997B)"><div class="vmed">${ART('subject_rec')}</div><span class="stepb">탐색관</span><span class="catb">진학</span>${active?'':'<span class="lockb">다른 학년</span>'}</div><div class="vbody"><h3>2022 과목 탐색 🗂</h3><p>계열 → 학과 선택 → 일반·진로·융합선택 과목 비교</p><span class="aud2">중3·고등</span></div></div>` : '';
-  h+=`<div class="lvsec" data-lv="${nm}"><div class="wk">${em} ${nm} 로드맵 <span>${active?'나의 학년에 맞는 프로그램':'다른 학년 프로그램은 참고용으로 잠겨 있어요'}</span></div><div class="vgrid">${items.map(([k,d],i)=>vcardHtml(k,d,act,d.steps[lv],i,active,'다른 학년',nm==='중학'?'중등':nm)).join('')}${extra}</div></div>`;
- }
- const newItems=Object.entries(t).filter(([k,d])=>NEW_SLUGS.has(k));
- if(newItems.length){h+=`<div class="lvsec" data-lv="신규"><div class="wk">🆕 신규 프로그램 <span>새로 추가·보강 중인 진단이에요</span></div><div class="vgrid">${newItems.map(([k,d],i)=>vcardHtml(k,d,act,i+1,i,true,'','신규')).join('')}</div></div>`;}
- return h;
+   h+=`<div class="lvsec" data-lv="${nm}"><div class="wk">${em} ${nm} 로드맵 <span>${active?'나의 학년에 맞는 프로그램':'다른 학년 프로그램은 참고용으로 잠겨 있어요'}</span></div><div class="vgrid">${items.map(([k,d],i)=>vcardHtml(k,d,act,displayStep(k,d,lv),i,active,'다른 학년',nm==='중학'?'중등':nm)).join('')}${extra}</div></div>`;
+  }
+  return h;
 }
 function filterLv(el,c){
  [...el.parentElement.children].forEach(b=>b.classList.remove('on'));el.classList.add('on');

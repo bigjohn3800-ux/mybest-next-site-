@@ -319,6 +319,7 @@ td{padding:7px 8px;border-bottom:1px solid #EEE}
 .lp-o2{width:170px;height:170px;left:-50px;bottom:-50px;background:radial-gradient(circle at 40% 40%,rgba(0,206,201,.7),rgba(0,206,201,0) 70%)}
 .lp-o3{width:90px;height:90px;left:16%;top:14%;background:radial-gradient(circle at 40% 40%,rgba(253,203,110,.5),rgba(253,203,110,0) 70%)}
 .lp-hero>*{position:relative}
+.lp-hero .lp-horb{position:absolute}
 .lp-eyebrow{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:7px 13px;margin-bottom:14px;font-size:11px;font-weight:800;letter-spacing:.06em}
 .lp-hero h1{font-size:29px;line-height:1.3;margin:0 0 12px;color:#fff}
 .lp-grad{background:linear-gradient(92deg,#FFFFFF 18%,#B9AAFF 46%,#7DF3E6 76%,#FFFFFF 96%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:sheen 6s linear infinite}
@@ -360,6 +361,35 @@ td{padding:7px 8px;border-bottom:1px solid #EEE}
 .cstep{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:8px}
 .cstep .hstep h4{font-size:13px}
 @media(max-width:560px){.cstep{grid-template-columns:1fr}}
+@media(max-width:640px){
+ body{background-attachment:scroll}
+ .topbar{position:sticky;top:0;z-index:38;background:rgba(247,246,255,.92);backdrop-filter:blur(12px);padding:10px 0;margin:-8px 0 14px}
+ .lp-hero{border-radius:20px;padding:30px 18px 26px;margin-left:-2px;margin-right:-2px}
+ .lp-cta{display:grid;grid-template-columns:1fr}
+ .lp-cta .btn{width:100%;min-width:0}
+ .lp-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+ .lp-stats b{font-size:16px}.lp-stats span{font-size:9.5px}
+ .lp-video{border-radius:14px}
+ .lp-report{display:block;padding:16px}
+ .lp-report .lp-shot{margin:0 auto 14px}
+ .grid2,.gradegrid{grid-template-columns:1fr}
+ .attrow{align-items:flex-start;gap:10px;flex-direction:column}
+ .attrow .btn.small{padding:9px 12px}
+ .teacher-student-modal{padding:10px}
+ .teacher-student-sheet{border-radius:14px;padding:14px}
+ .oggrid{grid-template-columns:repeat(2,1fr)}
+ table{font-size:11.5px}
+ th,td{padding:7px 6px}
+}
+@media(min-width:641px) and (max-width:1024px){
+ .app{max-width:900px;padding:28px 24px 70px}
+ .lp-vals,.qualitygrid,.proofgrid{grid-template-columns:repeat(2,1fr)}
+ .vgrid{grid-template-columns:repeat(2,1fr)}
+ .lp-hero{padding:40px 32px}
+ .lp-report{align-items:stretch}
+ .how,.cstep{grid-template-columns:repeat(3,1fr)}
+ .tabbar{display:none}
+}
 </style></head><body><div class="app">
 <div class="topbar"><div class="logo" onclick="go('home')">MY BEST <span>NEXT</span></div>
 <nav class="mnav noprint"><a onclick="go('home')">홈</a><a onclick="go('consult')">컨설팅 진단</a><a href="/sample.html">결과 샘플</a><a onclick="go('coaching')">선생님 코칭</a><a onclick="go('pricing')">요금·도입</a><a class="loginpill" onclick="go(S.token?'dash':'teacher')">로그인</a></nav>
@@ -1537,5 +1567,18 @@ async function tLoadAssignments(){
  try{const a=window._tauth||{};if(!a.code)return;const j=await api('/teacher/assignments',{code:a.code,teacher_pin:a.pin});const el=$('#asgList');if(!el)return;
   el.innerHTML=(j.assignments&&j.assignments.length)?j.assignments.map(x=>`<div style="border-top:1px solid #eee;padding:7px 0;font-size:13px"><div style="display:flex;align-items:center;gap:8px"><span style="flex:1"><b>${esc(x.test_title)}</b>${x.due_date?` · ~${esc(x.due_date)}`:''}${x.title?` <i>${esc(x.title)}</i>`:''}</span><button onclick="tAssignDelete('${esc(String(x.id))}')" style="background:#fee;color:#c00;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;font-size:12px">해제</button></div><div style="color:#666;margin-top:2px">완료 ${x.done}/${x.total}명${x.not_done&&x.not_done.length?` · 미완료: ${x.not_done.map(n=>esc(n)).join(', ')}`:'' }</div></div>`).join(''):'<p style="color:#aaa;font-size:13px">배정된 진단이 없습니다</p>';
  }catch(e){showErr(e.message)}
+}
+function boot(){
+ try{renderTabs()}catch(e){}
+ const p=new URLSearchParams(location.search);
+ const token=p.get('token');
+ if(token){S.token=token;try{localStorage.setItem('myb_token',token)}catch(e){}}
+ if(p.get('view')==='profile'&&S.token){go('profile');return}
+ if(p.get('code')){go('join');return}
+ go('home');
+}
+try{boot()}catch(e){
+ const v=document.getElementById('view');
+ if(v)v.innerHTML='<div class="card"><h1>화면을 불러오지 못했습니다</h1><p class="muted">새로고침 후에도 계속되면 관리자에게 알려주세요.</p><button class="btn" onclick="location.reload()">다시 불러오기</button></div>';
 }
 </script></body></html>

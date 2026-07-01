@@ -570,9 +570,9 @@ function qualityHtml(){return `<div class="wk">품질 고도화 현황 <span>학
  <div class="quality"><span class="qbadge lock">NEXT</span><h3>기관 확장</h3><p>학교장·기관관리자와 담임·학급관리자 권한을 나누어 더 안정적인 운영 구조로 확장합니다.</p></div>
  </div>`}
 function conversionWhyHtml(){return `<div class="convgrid">
- <div class="convcard"><b>결과 저장</b><span>이름·PIN으로 입장하면 결과가 사라지지 않고 다음 방문 때 이어집니다.</span></div>
- <div class="convcard"><b>재진단 비교</b><span>같은 진단을 다시 보면 이전 결과와 변화가 성장 그래프로 쌓입니다.</span></div>
- <div class="convcard"><b>상담 보고서</b><span>A4·B4 보고서와 학급 대시보드로 학생·학부모·교사가 같은 자료를 봅니다.</span></div>
+ <div class="convcard"><b>검증 기준 공개</b><span>계열성향은 전국 규준과 신뢰도 기준을 함께 보여주고, 체크형은 활용 범위를 구분합니다.</span></div>
+ <div class="convcard"><b>학년별 연결</b><span>초등 자기이해, 중등 고교 선택, 고등 과목·학생부·면접까지 성장 흐름으로 이어집니다.</span></div>
+ <div class="convcard"><b>학교 운영 확장</b><span>개인 결과함과 학급 대시보드가 연결되어 학생·학부모·교사가 같은 자료를 봅니다.</span></div>
  </div>`}
 function saveValueHtml(){return `<div class="savebox"><h3>진단 후 바로 저장되는 개인 결과함</h3><p>회원가입을 길게 요구하지 않습니다. 학급코드·이름·4자리 PIN만 있으면 결과 저장, 다시 진단, 성장 그래프, A4·B4 보고서 보기가 이어집니다.</p><div class="savechips"><span>결과 누적</span><span>재진단 비교</span><span>보고서 다시보기</span><span>추천 진단</span></div></div>`}
 function seoLinksHtml(){return `<div class="seolinks noprint"><a href="/career-test-middle.html">중학생 진로검사</a><a href="/highschool-subject-choice.html">고교학점제 과목선택</a><a href="/study-habit-test.html">공부습관 진단</a><a href="/student-record-roadmap.html">학생부 로드맵</a></div>`}
@@ -698,7 +698,7 @@ async function go(page,arg){
    <h1><span class="lp-grad">학년·결과별 초개별화</span><br>진로·진학 성장 보고서</h1>
    <p class="lp-lead">초등·중학·고등 학생의 자기이해를 학년별 진단으로 돕고,<br>학년과 결과에 맞춰 한 명 한 명 다른 맞춤 성장 보고서를 만듭니다.</p>
    <div class="lp-cta">
-    <button class="btn ghost" onclick="go('join')">3분 진단 시작</button>
+    <button class="btn ghost" onclick="go('consult')">3분 진단 시작</button>
     <a class="btn" style="background:rgba(255,255,255,.16);box-shadow:none" href="/sample.html">실제 결과 먼저 보기</a>
    </div>
    <div class="lp-stats"><div><b>45,000+</b><span>누적 활용</span></div><div><b>초·중·고</b><span>학년별 진단</span></div><div><b>A4·B4·10쪽</b><span>맞춤 보고서</span></div></div>
@@ -1672,6 +1672,7 @@ async function tLoadAssignments(){
 function boot(){
  try{renderTabs()}catch(e){}
  const p=new URLSearchParams(location.search);
+ try{const key='myb_growth_trail';const trail=JSON.parse(localStorage.getItem(key)||'[]');trail.push({ts:Date.now(),path:location.pathname,view:p.get('view')||'',ref:document.referrer||''});localStorage.setItem(key,JSON.stringify(trail.slice(-20)));}catch(e){}
  const token=p.get('token');
  if(token){S.token=token;try{localStorage.setItem('myb_token',token)}catch(e){}}
  const view=p.get('view');

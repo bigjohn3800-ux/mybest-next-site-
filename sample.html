@@ -70,6 +70,11 @@ h1{font-size:25px;margin:10px 0 4px}.sub{font-size:14px;color:var(--muted);margi
 .proof div{background:#fff;border:1px solid var(--line);border-radius:14px;padding:13px;box-shadow:0 5px 18px rgba(27,42,74,.05)}
 .proof b{display:block;font-size:14px;color:var(--navy);margin-bottom:3px}
 .proof span{display:block;font-size:11.5px;line-height:1.45;color:var(--muted)}
+.reportformats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0 0 18px}
+.reportformats article{background:#fff;border:1px solid var(--line);border-radius:16px;padding:15px;box-shadow:0 8px 24px rgba(27,42,74,.06)}
+.reportformats b{display:flex;align-items:center;gap:7px;color:var(--navy);font-size:14px;margin-bottom:6px}
+.reportformats p{font-size:12.5px;line-height:1.65;color:#5C617C}
+.reportformats .tag{display:inline-flex;align-items:center;justify-content:center;min-width:42px;padding:4px 9px;border-radius:999px;background:#F1EEFF;color:var(--vio);font-size:11px;font-weight:900}
 .muted{color:var(--muted)}
 .samplehero{background:radial-gradient(circle at 10% 0,rgba(0,206,201,.34),transparent 32%),linear-gradient(135deg,#20284F,#6C5CE7);color:#fff;border-radius:22px;padding:28px;margin:12px 0 16px;box-shadow:0 20px 55px rgba(27,42,74,.18)}
 .samplehero h1{font-size:31px;line-height:1.18;margin:8px 0 9px;color:#fff}.samplehero p{font-size:14px;line-height:1.7;color:rgba(255,255,255,.9);max-width:760px}.samplehero .eyebrow{display:inline-flex;border:1px solid rgba(255,255,255,.32);border-radius:999px;padding:6px 12px;font-size:12px;font-weight:900;color:#fff}.heroactions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.heroactions .btn.ghost{background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.35)}
@@ -77,7 +82,7 @@ h1{font-size:25px;margin:10px 0 4px}.sub{font-size:14px;color:var(--muted);margi
 .sampleguide{background:#fff;border:1px solid var(--line);border-radius:18px;padding:17px;margin:14px 0 16px;display:grid;grid-template-columns:1.1fr .9fr;gap:14px;align-items:start}.sampleguide h2{font-size:18px;color:var(--navy);margin-bottom:8px}.sampleguide p,.sampleguide li{font-size:13px;line-height:1.7;color:#555B72}.sampleguide ul{padding-left:18px}.sampleguide .mini{background:#F7F6FF;border-radius:14px;padding:14px}.sampleguide .mini b{display:block;color:var(--vio);margin-bottom:6px}.stickycta{position:sticky;bottom:10px;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:16px;padding:10px;display:flex;gap:10px;align-items:center;box-shadow:0 15px 40px rgba(27,42,74,.12);margin-top:18px}.stickycta span{flex:1;font-size:12.5px;color:#5C617C;line-height:1.45}.stickycta b{color:var(--navy)}
 @media(max-width:760px){.sampleguide,.quickbar{grid-template-columns:1fr}.samplehero h1{font-size:25px}.stickycta{display:block}.stickycta .btn{width:100%;text-align:center;margin-top:8px}}
 @media(max-width:760px){.grid{grid-template-columns:1fr 1fr}}
-@media(max-width:480px){.grid,.proof{grid-template-columns:1fr}}
+@media(max-width:480px){.grid,.proof,.reportformats{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style></head>
 <body>
@@ -92,6 +97,11 @@ h1{font-size:25px;margin:10px 0 4px}.sub{font-size:14px;color:var(--muted);margi
  </section>
  <div class="quickbar"><a href="/?view=consult">전체 진단 보기</a><a href="/highschool-subject-choice.html">고교학점제 과목선택</a><a href="/study-habit-test.html">공부습관 진단</a><a href="/student-record-roadmap.html">학생부 로드맵</a><a href="/content-quality.html">보고서 품질 기준</a></div>
  <div class="proof"><div><b>검증 규준</b><span>계열성향은 전국 표본과 신뢰도 값을 함께 고지합니다.</span></div><div><b>상담 자료</b><span>A4·B4 인쇄를 전제로 학생·담임이 같이 볼 수 있게 구성합니다.</span></div><div><b>기관 운영</b><span>학급과 기관 권한을 나누어 상담 자료를 안정적으로 관리합니다.</span></div></div>
+ <section class="reportformats" aria-label="보고서 형식 안내">
+  <article><b><span class="tag">A4</span> 세부 보고서</b><p>학생 강점, 보완 영역, 문항 기반 해석, 4주 실천 과제를 상담용 문장으로 정리합니다.</p></article>
+  <article><b><span class="tag">B4</span> 인포그래프</b><p>학급 상담이나 학부모 설명회에서 빠르게 읽을 수 있도록 핵심 차트와 행동 가이드를 한 장에 압축합니다.</p></article>
+  <article><b><span class="tag">10쪽</span> 종합 리포트</b><p>검사 개요, 신뢰도 범위, 또래 비교, 상세 코칭, 상담 메모까지 누적 결과함에서 다시 확인합니다.</p></article>
+ </section>
  <section class="sampleguide"><div><h2>샘플에서 확인할 것</h2><p>카드의 결과 샘플은 핵심 해석을 빠르게 보여주고, 세부 보고서는 학부모 상담과 교사용 기록에 바로 쓸 수 있는 문장·차트·실천 가이드까지 보여줍니다.</p><ul><li>학생 개인 강점과 보완 영역이 한눈에 보이는지</li><li>다음 행동이 구체적인 과제와 상담 질문으로 이어지는지</li><li>교사·학부모가 같은 자료를 보며 대화할 수 있는지</li></ul></div><div class="mini"><b>추천 흐름</b><p>샘플 확인 → 학생 입장 → 진단 실행 → 결과 저장 → A4/B4 보고서 보기 → 필요하면 다른 진단으로 확장</p></div></section>
  <div class="chips" id="chips"></div>
  <div class="chips lv2" id="chips2"></div>

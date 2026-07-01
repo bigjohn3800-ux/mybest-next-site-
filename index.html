@@ -575,7 +575,7 @@ function conversionWhyHtml(){return `<div class="convgrid">
  <div class="convcard"><b>학교 운영 확장</b><span>개인 결과함과 학급 대시보드가 연결되어 학생·학부모·교사가 같은 자료를 봅니다.</span></div>
  </div>`}
 function saveValueHtml(){return `<div class="savebox"><h3>진단 후 바로 저장되는 개인 결과함</h3><p>회원가입을 길게 요구하지 않습니다. 학급코드·이름·4자리 PIN만 있으면 결과 저장, 다시 진단, 성장 그래프, A4·B4 보고서 보기가 이어집니다.</p><div class="savechips"><span>결과 누적</span><span>재진단 비교</span><span>보고서 다시보기</span><span>추천 진단</span></div></div>`}
-function seoLinksHtml(){return `<div class="seolinks noprint"><a href="/career-test-middle.html">중학생 진로검사</a><a href="/highschool-subject-choice.html">고교학점제 과목선택</a><a href="/study-habit-test.html">공부습관 진단</a><a href="/student-record-roadmap.html">학생부 로드맵</a></div>`}
+function seoLinksHtml(){return `<div class="seolinks noprint"><a href="/career-test-middle.html">중학생 진로검사</a><a href="/highschool-subject-choice.html">고교학점제 과목선택</a><a href="/study-habit-test.html">공부습관 진단</a><a href="/student-record-roadmap.html">학생부 로드맵</a><a href="/content-quality.html">보고서 품질 기준</a></div>`}
 function resultSaveHtml(){return `<div class="resultsave noprint"><h3>이 결과를 성장 기록으로 남겨두세요</h3><p>이미 개인 결과함에 저장되었습니다. 다음에는 같은 이름과 PIN으로 들어오면 오늘 결과, 다시 진단, 성장 그래프, 정식 보고서를 계속 볼 수 있습니다.</p><div class="actionbar" style="margin-top:0"><button class="btn navy" onclick="go('mypage')">내 결과함 보기</button><button class="btn ghost" onclick="go('profile')">통합 성장 리포트</button></div></div>`}
 function methodNote(slug){
  const series=slug==='hs_series'||slug==='ms_series';
@@ -725,7 +725,7 @@ async function go(page,arg){
   ${seoLinksHtml()}
   <div class="lp-report">
    <div class="lp-shot"><i class="t"></i><i class="s"></i><i></i><i class="s2"></i><i class="s"></i><div class="lp-don"></div></div>
-   <div class="lp-report-b"><h3>A4·B4·10쪽 상담 보고서</h3><p>레이더·막대·게이지 차트와 또래/전국 비교, 영역별 강점·보완, 4주 실천 플랜까지 — 상담·생기부에 바로 쓰는 정식 보고서.</p><a class="btn small navy" style="display:inline-block;width:auto" href="/sample.html">실제 결과 샘플 열기 →</a></div>
+   <div class="lp-report-b"><h3>A4·B4·10쪽 상담 보고서</h3><p>레이더·막대·게이지 차트와 또래/전국 비교, 영역별 강점·보완, 4주 실천 플랜까지 — 상담·생기부에 바로 쓰는 정식 보고서.</p><a class="btn small navy" style="display:inline-block;width:auto" href="/sample.html">실제 결과 샘플 열기 →</a> <a class="btn small ghost" style="display:inline-block;width:auto;margin-left:6px" href="/content-quality.html">품질 기준 보기</a></div>
   </div>
 
   ${proofHtml()}

@@ -360,6 +360,14 @@ td{padding:7px 8px;border-bottom:1px solid #EEE}
 .lp-dc.b2b .dch{color:#fff}.lp-dc.b2c .dch{color:var(--navy)}
 .lp-dc p{font-size:11.5px;line-height:1.5;margin-bottom:11px}
 .lp-dc.b2b p{color:rgba(255,255,255,.85)}.lp-dc.b2c p{color:#6B708A}
+
+.convgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0 18px}
+.convcard{background:#fff;border:1px solid #E7E6F2;border-radius:16px;padding:16px;box-shadow:0 6px 20px rgba(27,42,74,.06)}
+.convcard b{display:block;color:var(--navy);font-size:14px;margin-bottom:5px}.convcard span{display:block;color:#5C617C;font-size:11.8px;line-height:1.5}
+.savebox{background:linear-gradient(120deg,#F2FBF5,#F7F5FF);border:1.5px solid #D8F0E3;border-radius:16px;padding:16px;margin:12px 0}.savebox h3{font-size:16px;color:var(--navy);margin-bottom:6px}.savebox p{font-size:12.8px;line-height:1.65;color:#4C5263}.savechips{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}.savechips span{background:#fff;border:1px solid #E5E0FB;border-radius:999px;padding:5px 10px;font-size:11px;font-weight:800;color:var(--vio)}
+.seolinks{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:10px 0 16px}.seolinks a{display:block;text-decoration:none;background:#fff;border:1px solid #E7E6F2;border-radius:13px;padding:12px 13px;color:var(--ink);font-size:12.5px;font-weight:800;box-shadow:0 5px 16px rgba(27,42,74,.05)}
+.resultsave{border:1.5px solid #D8F0E3;background:linear-gradient(120deg,#F2FBF5,#FCFBFF);border-radius:16px;padding:16px;margin:12px 0}.resultsave h3{font-size:16px;color:var(--navy);margin-bottom:5px}.resultsave p{font-size:12.8px;line-height:1.65;color:#4C5263;margin-bottom:10px}
+@media(max-width:700px){.convgrid,.seolinks{grid-template-columns:1fr}.convcard{padding:14px}}
 @media(max-width:560px){.lp-vals{grid-template-columns:1fr}.lp-dualcta{grid-template-columns:1fr}.lp-hero h1{font-size:24px}}
 .cstep{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:8px}
 .cstep .hstep h4{font-size:13px}
@@ -428,12 +436,12 @@ td{padding:7px 8px;border-bottom:1px solid #EEE}
 }
 </style></head><body><div class="app">
 <div class="topbar"><div class="brandwrap"><button id="backBtn" class="backlink noprint" onclick="appBack()" style="display:none">← 뒤로</button><div class="logo" onclick="go('home')">MY BEST <span>NEXT</span></div></div>
-<nav class="mnav noprint"><a onclick="go('home')">홈</a><a onclick="go('consult')">컨설팅 진단</a><a href="/sample.html">결과 샘플</a><a onclick="go('coaching')">선생님 코칭</a><a onclick="go('pricing')">요금·도입</a><a class="loginpill" onclick="go(S.token?'dash':'login')">로그인</a></nav>
+<nav class="mnav noprint"><a onclick="go('home')">홈</a><a onclick="go('consult')">컨설팅 진단</a><a href="/sample.html">샘플 1분 확인</a><a onclick="go('coaching')">선생님 코칭</a><a onclick="go('pricing')">요금·도입</a><a class="loginpill" onclick="go(S.token?'dash':'login')">로그인</a></nav>
 <div class="who" id="who"></div></div>
 <div id="view"></div>
 <div class="tabbar noprint" id="tabbar"></div>
 <div class="foot">
-<div class="flinks noprint"><a onclick="go('legal','terms')">이용약관</a> · <a onclick="go('legal','privacy')"><b>개인정보처리방침</b></a> · <a onclick="go('howto')">활용법</a> · <a onclick="go('quality')">신뢰도</a> · <a href="/sample.html">결과샘플</a> · <a href="/admin.html">관리자</a> · <a onclick="toggleView()" id="viewtgl">🖥 PC 화면 보기</a></div>
+<div class="flinks noprint"><a onclick="go('legal','terms')">이용약관</a> · <a onclick="go('legal','privacy')"><b>개인정보처리방침</b></a> · <a onclick="go('howto')">활용법</a> · <a onclick="go('quality')">신뢰도</a> · <a href="/sample.html">실제 결과 샘플</a> · <a href="/admin.html">관리자</a> · <a onclick="toggleView()" id="viewtgl">🖥 PC 화면 보기</a></div>
 <div style="margin-top:8px;line-height:1.7">(주)가르치는사람들 · 대표 이성훈 · 사업자등록번호 115-87-03727<br>
 서울특별시 강남구 테헤란로70길 12, 402-J913호(대치동) · 문의 onlyjdw3831@gmail.com<br>
 ⓒ My Best NEXT · 살아갈 힘을 기르는 진단 플랫폼</div></div>
@@ -561,6 +569,14 @@ function qualityHtml(){return `<div class="wk">품질 고도화 현황 <span>학
  <div class="quality"><span class="qbadge build">IMPROVING</span><h3>콘텐츠 신뢰도</h3><p>계열성향은 전국 규준으로, 체크형은 자가점검+또래비교로 구분해 표시합니다.</p></div>
  <div class="quality"><span class="qbadge lock">NEXT</span><h3>기관 확장</h3><p>학교장·기관관리자와 담임·학급관리자 권한을 나누어 더 안정적인 운영 구조로 확장합니다.</p></div>
  </div>`}
+function conversionWhyHtml(){return `<div class="convgrid">
+ <div class="convcard"><b>결과 저장</b><span>이름·PIN으로 입장하면 결과가 사라지지 않고 다음 방문 때 이어집니다.</span></div>
+ <div class="convcard"><b>재진단 비교</b><span>같은 진단을 다시 보면 이전 결과와 변화가 성장 그래프로 쌓입니다.</span></div>
+ <div class="convcard"><b>상담 보고서</b><span>A4·B4 보고서와 학급 대시보드로 학생·학부모·교사가 같은 자료를 봅니다.</span></div>
+ </div>`}
+function saveValueHtml(){return `<div class="savebox"><h3>진단 후 바로 저장되는 개인 결과함</h3><p>회원가입을 길게 요구하지 않습니다. 학급코드·이름·4자리 PIN만 있으면 결과 저장, 다시 진단, 성장 그래프, A4·B4 보고서 보기가 이어집니다.</p><div class="savechips"><span>결과 누적</span><span>재진단 비교</span><span>보고서 다시보기</span><span>추천 진단</span></div></div>`}
+function seoLinksHtml(){return `<div class="seolinks noprint"><a href="/career-test-middle.html">중학생 진로검사</a><a href="/highschool-subject-choice.html">고교학점제 과목선택</a><a href="/study-habit-test.html">공부습관 진단</a><a href="/student-record-roadmap.html">학생부 로드맵</a></div>`}
+function resultSaveHtml(){return `<div class="resultsave noprint"><h3>이 결과를 성장 기록으로 남겨두세요</h3><p>이미 개인 결과함에 저장되었습니다. 다음에는 같은 이름과 PIN으로 들어오면 오늘 결과, 다시 진단, 성장 그래프, 정식 보고서를 계속 볼 수 있습니다.</p><div class="actionbar" style="margin-top:0"><button class="btn navy" onclick="go('mypage')">내 결과함 보기</button><button class="btn ghost" onclick="go('profile')">통합 성장 리포트</button></div></div>`}
 function methodNote(slug){
  const series=slug==='hs_series'||slug==='ms_series';
  if(series)return `<div class="methodnote"><b>신뢰도 기준</b> · 이 계열성향 결과는 전국 규준과 내적일관도 검증을 함께 표시합니다. 고등 α0.951(N=8,575), 중학 α0.930(N=4,069) 기준입니다.</div>`;
@@ -682,11 +698,14 @@ async function go(page,arg){
    <h1><span class="lp-grad">학년·결과별 초개별화</span><br>진로·진학 성장 보고서</h1>
    <p class="lp-lead">초등·중학·고등 학생의 자기이해를 학년별 진단으로 돕고,<br>학년과 결과에 맞춰 한 명 한 명 다른 맞춤 성장 보고서를 만듭니다.</p>
    <div class="lp-cta">
-    <button class="btn ghost" onclick="go('join')">무료로 진단 시작 🚀</button>
-    <a class="btn" style="background:rgba(255,255,255,.16);box-shadow:none" href="/sample.html">결과 샘플 보기</a>
+    <button class="btn ghost" onclick="go('join')">3분 진단 시작</button>
+    <a class="btn" style="background:rgba(255,255,255,.16);box-shadow:none" href="/sample.html">실제 결과 먼저 보기</a>
    </div>
    <div class="lp-stats"><div><b>45,000+</b><span>누적 활용</span></div><div><b>초·중·고</b><span>학년별 진단</span></div><div><b>A4·B4·10쪽</b><span>맞춤 보고서</span></div></div>
   </div>
+
+  ${conversionWhyHtml()}
+  ${saveValueHtml()}
 
   <!-- 소개 영상 슬롯: 추후 아래 lp-video 내부를 <iframe ...> 또는 <video ...>로 교체하세요 -->
   <div class="lp-video" onclick="alert('소개 영상은 준비 중입니다. 곧 공개됩니다! 🎬')">
@@ -703,6 +722,7 @@ async function go(page,arg){
   </div>
 
   <div class="lp-sectk">보고서 미리보기</div>
+  ${seoLinksHtml()}
   <div class="lp-report">
    <div class="lp-shot"><i class="t"></i><i class="s"></i><i></i><i class="s2"></i><i class="s"></i><div class="lp-don"></div></div>
    <div class="lp-report-b"><h3>A4·B4·10쪽 상담 보고서</h3><p>레이더·막대·게이지 차트와 또래/전국 비교, 영역별 강점·보완, 4주 실천 플랜까지 — 상담·생기부에 바로 쓰는 정식 보고서.</p><a class="btn small navy" style="display:inline-block;width:auto" href="/sample.html">실제 결과 샘플 열기 →</a></div>
@@ -726,7 +746,8 @@ async function go(page,arg){
   <div class="linkrow"><a onclick="go('consult')">컨설팅 진단 전체 보기</a> · <a onclick="go('pricing')">요금·도입 안내</a> · <a onclick="go('coaching')">선생님 코칭</a></div>`;
  }
   else if(page==='consult'){
-   v.innerHTML=`<h1>컨설팅 진단 🧭</h1><div class="sub">학년대(초·중·고)와 목적별로 정리한 진단 프로그램이에요. 카드를 골라 시작하세요.</div>
+   v.innerHTML=`<h1>컨설팅 진단 🧭</h1><div class="sub">학년대(초·중·고)와 목적별로 정리한 진단 프로그램이에요. 카드를 골라 시작하고, 결과는 개인 결과함에 누적하세요.</div>
+   ${saveValueHtml()}
    ${wizEntryCard()}
    <div class="wk">진단 프로그램 <span>학년대를 골라보세요</span></div>
    <div id="tlist"></div>
@@ -737,8 +758,8 @@ async function go(page,arg){
    <div class="hstep"><b>2</b><h4>3분 진단</h4><p>카드를 고르고 솔직하게 답하면 즉시 분석</p></div>
    <div class="hstep"><b>3</b><h4>성장 솔루션</h4><p>차트 + 맞춤 가이드 + A4 한장 보고서까지</p></div>
    </div>
-   <div class="actionbar noprint"><button class="btn" onclick="go('join')">학생으로 시작하기 🚀</button><button class="btn ghost" onclick="go('coaching')">선생님 코칭 보기 🏫</button></div>
-   <div class="linkrow"><a onclick="go('home')">← 처음으로</a> · <a onclick="go('quality')">신뢰도</a> · <a href="/sample.html">결과 샘플</a></div>`;
+   <div class="actionbar noprint"><button class="btn" onclick="go('join')">10초 입장하고 결과 저장하기</button><button class="btn ghost" onclick="go('coaching')">선생님 코칭 보기</button></div>
+   <div class="linkrow"><a onclick="go('home')">← 처음으로</a> · <a onclick="go('quality')">신뢰도</a> · <a href="/sample.html">샘플 1분 확인</a></div>`;
   const t=S.tests??(S.tests=(await api('/tests')).tests);
   $('#tlist').innerHTML=gridHtml(t, S.token?"startQuizFx":"goJoin", S.me&&S.me.grade);
   window.goJoin=()=>go('join');
@@ -772,15 +793,16 @@ async function go(page,arg){
    window.scrollTo(0,0);
   }
   else if(page==='join'){
-   v.innerHTML=`<h1>간편하게 시작해요</h1><div class="sub">선생님께 받은 학급코드로 입장합니다. 처음이면 자동으로 가입돼요.</div>
-   <div class="saleshold"><p><b>학생 입장 안내</b><br>학급코드와 이름, 나만의 PIN으로 입장하면 진단 기록과 결과지가 누적됩니다. 다음 방문 때 같은 PIN으로 들어오면 이전 결과를 이어서 볼 수 있습니다.</p></div>
+   v.innerHTML=`<h1>10초 입장하고 결과를 저장해요</h1><div class="sub">긴 회원가입 없이 학급코드·이름·PIN만으로 개인 결과함이 만들어집니다.</div>
+   ${saveValueHtml()}
+   <div class="saleshold"><p><b>왜 입장이 필요할까요?</b><br>진단 결과는 한 번 보고 끝나는 자료가 아니라 누적 성장 기록입니다. 입장하면 결과 다시보기, A4·B4 보고서, 재진단 비교, 선생님이 배정한 진단까지 이어집니다.</p></div>
    <div class="card"><div class="err" id="err"></div>
   <label>학급코드</label><input id="jc" placeholder="예: ABC123" style="text-transform:uppercase" value="${esc(new URLSearchParams(location.search).get('code')||'')}">
   <label>이름</label><input id="jn" placeholder="실명을 입력하세요">
   <label>나만의 PIN (4자리 숫자)</label><input id="jp" type="password" inputmode="numeric" maxlength="4" placeholder="••••">
   <label>학년</label><select id="jg"><option>중1</option><option>중2</option><option>중3</option><option selected>고1</option><option>고2</option><option>고3</option></select>
   <div style="background:#F4F8F1;border-radius:10px;padding:10px 12px;font-size:11.5px;color:#4C5C4C;line-height:1.6;margin-bottom:10px">🔒 <b>개인정보 최소수집</b>: 이름·학급코드·PIN·학년만 수집하며 연락처/이메일/주민번호는 받지 않습니다. PIN은 암호화 저장됩니다. 입장 시 <a style="color:var(--vio);cursor:pointer" onclick="go('legal','privacy')">개인정보처리방침</a>에 동의한 것으로 봅니다.</div>
-  <button class="btn" onclick="join()">입장하기</button></div>
+  <button class="btn" onclick="join()">입장하고 진단 시작</button></div>
   <div class="linkrow"><a onclick="go('home')">← 처음으로</a></div>`;
  }
   else if(page==='dash'){
@@ -1391,7 +1413,7 @@ function payNotify(){
 function resultActions(d,opts){
  opts=opts||{};
  const RB='report.html?token='+encodeURIComponent(S.token||'')+'&id='+encodeURIComponent(d.attempt.id);
- return `<div class="actionbar noprint">
+ return `${resultSaveHtml()}<div class="actionbar noprint">
   ${opts.solution?`<button class="btn" onclick="openSolution('${d.attempt.id}')">📚 심층 솔루션 (학과·과목·4주플랜)</button>`:''}
   <a class="btn navy" href="${RB}" target="_blank" rel="noopener">📄 정식 보고서(A4 다면)</a>
   <a class="btn navy" href="${RB}&mode=b4" target="_blank" rel="noopener">🗂 B4 한장 요약</a>
@@ -1399,8 +1421,8 @@ function resultActions(d,opts){
   <button class="btn ghost" onclick="shareResult('${d.attempt.id}','${esc(opts.summary||'')}')">🔗 결과 공유</button>
   <button class="btn ghost" onclick="shareCardMake('${d.attempt.id}')">🎨 결과 공유 카드</button>
   <button class="btn ghost" onclick="sendResultMessage('${d.attempt.id}','${esc(opts.summary||'')}')">💬 문자·카톡 문구</button>
-  <button class="btn ghost" onclick="go('premium')">🏫 학교·기관 도입 안내</button>
-  <button class="btn ghost" onclick="go('dash')">대시보드로</button>
+  <button class="btn ghost" onclick="go('premium')">학교·기관 도입 안내</button>
+  <button class="btn ghost" onclick="go('dash')">다음 진단 고르기</button>
  </div>${relatedTestsHtml(d.attempt.test_slug)}`;
 }
 function resultLink(id){
@@ -1652,7 +1674,9 @@ function boot(){
  const p=new URLSearchParams(location.search);
  const token=p.get('token');
  if(token){S.token=token;try{localStorage.setItem('myb_token',token)}catch(e){}}
- if(p.get('view')==='profile'&&S.token){go('profile');return}
+ const view=p.get('view');
+ if(view==='profile'&&S.token){go('profile');return}
+ if(['join','consult','pricing','coaching','quality','login'].includes(view)){go(view);return}
  if(p.get('code')){go('join');return}
  go('home');
 }

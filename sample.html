@@ -176,7 +176,7 @@ function setGrade(c){GRADE=c;$('#chips').querySelectorAll('.chip').forEach(e=>e.
 function setPurpose(c){PURPOSE=c;$('#chips2').querySelectorAll('.chip').forEach(e=>e.classList.toggle('on',e.textContent===c));render();}
 function cardHtml(k,t,label){return `<div class="cardx" onclick="openSample('${k}')">
    <div class="emo">${EMO[k]||'📊'}</div><h3>${label?'<span class="numbadge">'+esc(label)+'</span>':''}${esc(t.title)}</h3><p>${esc(t.desc)}</p>
-   <div><span class="cat">${esc(t.cat)}</span></div><div class="sampleActions"><button class="btn ghost" onclick="event.stopPropagation();openSample('${k}')">📊 결과 샘플</button><a class="btn" onclick="event.stopPropagation()" href="/">지금 해보기 →</a></div>${DEMO_RPT[k]?`<a class="btn rpt" target="_blank" rel="noopener" onclick="event.stopPropagation()" href="${rptHref(k)}">📄 세부 보고서 (정식 A4)</a>`:''}</div>`;}
+   <div><span class="cat">${esc(t.cat)}</span></div><div class="sampleActions"><button class="btn ghost" onclick="event.stopPropagation();openSample('${k}')">📊 결과 샘플</button><a class="btn" onclick="event.stopPropagation()" href="/?view=consult">지금 해보기 →</a></div>${DEMO_RPT[k]?`<a class="btn rpt" target="_blank" rel="noopener" onclick="event.stopPropagation()" href="${rptHref(k)}">📄 세부 보고서 (정식 A4)</a>`:''}</div>`;}
 function render(){
  const groups=(GRADE==='전체'?GRADES:[GRADE]).filter(g=>PLACEMENTS.some(p=>p.grade===g&&TESTS[p.slug]));
  let html='';
@@ -224,7 +224,7 @@ async function openSample(slug){
    <div class="lockitem">계열 심층 8쪽 리포트 · 대표 학과 6 · 권장 과목</div>
    <div class="lockitem">전국 규준 백분위(신뢰도 0.95) · 통합 성장 리포트(학부모용)</div>
    <div class="lockitem">A4 인쇄 · 상담 자료</div></div>
-  <a class="btn" style="width:100%;text-align:center;margin-top:14px" href="/">이 진단 지금 해보기 →</a>`;
+  <a class="btn" style="width:100%;text-align:center;margin-top:14px" href="/?view=consult">이 진단 지금 해보기 →</a>`;
 }
 function close_(){$('#modal').classList.remove('open');if(chart){chart.destroy();chart=null;}}
 init();

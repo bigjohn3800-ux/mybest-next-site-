@@ -34,6 +34,8 @@ body{font-family:Pretendard,-apple-system,sans-serif;background:radial-gradient(
 .topbar .who{text-align:right}
 .topbar .who{font-size:12px;color:#7A7E9A}
 .topbar .who b{color:var(--ink)}
+.brandwrap{display:flex;align-items:center;gap:10px}
+.backlink{border:1.5px solid #E5E0FB;background:#fff;color:var(--vio);border-radius:999px;padding:7px 11px;font-family:inherit;font-size:12px;font-weight:800;cursor:pointer}
 h1{font-size:25px;font-weight:800;line-height:1.32;margin:10px 0 6px}
 .sub{font-size:13.5px;color:var(--muted);margin-bottom:20px}
 .card{background:#fff;border-radius:18px;padding:20px;box-shadow:0 6px 24px rgba(108,92,231,.09);margin-bottom:14px}
@@ -85,6 +87,7 @@ label{font-size:12px;font-weight:700;color:#7A7E9A;display:block;margin:4px 0 4p
 .block .badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.13em;color:var(--gold);border:1px solid var(--gold);border-radius:999px;padding:2px 10px;margin-bottom:8px}
 .block h3{font-size:16px;color:var(--navy);margin-bottom:6px;line-height:1.4}
 .block p{font-size:13px;line-height:1.65}
+.bodytext p{font-size:13px;line-height:1.65;margin:0 0 6px}.bodytext p:last-child{margin-bottom:0}
 .tipbox{margin-top:10px;background:#F4F1E8;border-radius:10px;padding:11px 13px}
 .tipbox b{font-size:10px;letter-spacing:.14em;color:#A8893E}
 .tipbox ul{list-style:none;margin-top:5px}
@@ -424,7 +427,7 @@ td{padding:7px 8px;border-bottom:1px solid #EEE}
  .lp-hero h1{font-size:48px}
 }
 </style></head><body><div class="app">
-<div class="topbar"><div class="logo" onclick="go('home')">MY BEST <span>NEXT</span></div>
+<div class="topbar"><div class="brandwrap"><button id="backBtn" class="backlink noprint" onclick="appBack()" style="display:none">← 뒤로</button><div class="logo" onclick="go('home')">MY BEST <span>NEXT</span></div></div>
 <nav class="mnav noprint"><a onclick="go('home')">홈</a><a onclick="go('consult')">컨설팅 진단</a><a href="/sample.html">결과 샘플</a><a onclick="go('coaching')">선생님 코칭</a><a onclick="go('pricing')">요금·도입</a><a class="loginpill" onclick="go(S.token?'dash':'login')">로그인</a></nav>
 <div class="who" id="who"></div></div>
 <div id="view"></div>
@@ -448,7 +451,7 @@ const $=s=>document.querySelector(s);
 function applyView(){var v=localStorage.getItem('myb_view'),m=document.getElementById('vp'),b=document.getElementById('viewtgl');if(v==='pc'){if(m)m.setAttribute('content','width=1100');if(b)b.textContent='📱 모바일 화면 보기';}else{if(m)m.setAttribute('content','width=device-width,initial-scale=1');if(b)b.textContent='🖥 PC 화면 보기';}}
 function toggleView(){localStorage.setItem('myb_view',localStorage.getItem('myb_view')==='pc'?'mobile':'pc');applyView();}
 try{applyView();}catch(e){}
-const S={token:localStorage.getItem('myb_token'),me:null,tests:null,quiz:null};
+const S={token:localStorage.getItem('myb_token'),me:null,tests:null,quiz:null,page:null,prevPage:null};
 const EMO={hs_series:'🧭',ms_series:'🌱',interview:'🎤',hs_essay:'✍️',study:'📚',inquiry:'🔍',ms_study:'📝',future:'🚀',subject_rec:'🗂️',roadmap:'🗺️',ai_skill:'🤖',es_dream:'🌈',es_habit:'✏️',reading:'📖'};
 const ARTC={study:['#FF8A00','#FFC163'],inquiry:['#00B894','#55EFC4'],ms_study:['#0984E3','#74B9FF'],future:['#6C5CE7','#00CEC9'],hs_series:['#6C5CE7','#A29BFE'],ms_series:['#00B894','#81ECEC'],interview:['#E84393','#FD79A8'],hs_essay:['#E1A300','#FFD36E'],subject_rec:['#00897B','#4DD0B1'],roadmap:['#5C6BC0','#9FA8DA'],ai_skill:['#222B45','#6C5CE7'],es_dream:['#FF6B9D','#FFC371'],es_habit:['#20BF6B','#A8E063'],reading:['#8E5BE8','#FFB88C']};
 const PHOTO={hs_series:'https://images.unsplash.com/photo-1619468129361-605ebea04b44',ms_series:'https://images.unsplash.com/photo-1654089669464-dcc57c490d2b',subject_rec:'https://images.unsplash.com/photo-1604866830893-c13cafa515d5',roadmap:'https://images.unsplash.com/photo-1620608964186-18a8cfc2ad44',interview:'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4',hs_essay:'https://images.unsplash.com/photo-1455390582262-044cdead277a',study:'https://images.unsplash.com/photo-1769794371055-54436b54577e',ms_study:'https://images.unsplash.com/photo-1483546416237-76fd26bbcdd1',inquiry:'https://images.unsplash.com/photo-1532094349884-543bc11b234d',future:'https://images.unsplash.com/photo-1517976487492-5750f3195933',ai_skill:'https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b',reading:'https://images.unsplash.com/photo-1553729784-e91953dec042',es_dream:'https://images.unsplash.com/photo-1630139026564-4a2bf5670879',es_habit:'https://images.unsplash.com/photo-1513542789411-b6a5d4f31634'};
@@ -481,6 +484,7 @@ const DISPLAY_STEP={
  hs:{hs_series:1,subject_rec:2,study:3,roadmap:4,inquiry:5,hs_essay:6,interview:7,future:9,track_fit:10}
 };
 const DISPLAY_HIDDEN=new Set(['ai_skill','career_mature','multi_iq','study_emotion','mock_exam','admission_nav','study_manage','reading']);
+function visibleTestKeys(t){return Object.keys(t||{}).filter(k=>!DISPLAY_HIDDEN.has(k));}
 const DISPLAY_OVERRIDE_ONLY=new Set(['future','value_work','hs_essay','gifted_ready','story_writer','ai_inquiry']);
 function displayStep(k,d,lv){
  const ov=DISPLAY_STEP[lv]&&DISPLAY_STEP[lv][k];
@@ -544,6 +548,8 @@ function showErr(m){const e=$('#err');if(e){e.textContent=m;e.style.display='blo
 function setWho(){$('#who').innerHTML=S.me?`<b>${esc(S.me.name)}</b> · ${esc(S.me.class_name||'')} <a style="color:#C62828;cursor:pointer;margin-left:6px" onclick="logout()">나가기</a>`:''}
 function logout(){localStorage.removeItem('myb_token');S.token=null;S.me=null;go('home')}
 function renderTabs(){var el=document.getElementById("tabbar");if(!el)return;var t=S.token?[["🏠","홈","dash0"],["🧭","진단","dash"],["🏅","마이","mypage"],["📋","리포트","profile"],["🚪","나가기","*logout"]]:[["🏠","홈","home"],["🧭","진단","consult"],["🏫","코칭","coaching"],["💎","요금","pricing"],["✨","샘플","*sample"]];el.innerHTML=t.map(function(x){var a=x[2]==="*logout"?"logout()":(x[2]==="*sample"?"location.href='/sample.html'":(x[2]==="dash0"?"go('home')":"go('"+x[2]+"')"));return "<a onclick=\""+a+"\"><span>"+x[0]+"</span>"+x[1]+"</a>";}).join("");}
+function updateBack(page){var b=document.getElementById('backBtn');if(!b)return;var root=(page==='home'||page==='dash'||page==='dash0');b.style.display=root?'none':'inline-flex';}
+function appBack(){var p=S.prevPage;if(p&&p!==S.page){go(p);return;}go(S.token?'dash':'home');}
 function proofHtml(){return `<div class="proofgrid">
  <div class="proof"><b>45,000명 활용 기반</b><span>기존 마이베스트 운영 경험을 NEXT 흐름으로 재설계</span></div>
  <div class="proof"><b>검증 규준 공개</b><span>고등 N=8,575 α0.951 · 중학 N=4,069 α0.930</span></div>
@@ -565,7 +571,7 @@ function nextStepHtml(t,ats){
  const done=new Set((ats||[]).map(a=>a.test_slug));
  const order=['hs_series','ms_series','es_dream','subject_rec','roadmap','study','ms_study','interview','future','value_work','track_fit'];
  const pick=order.find(k=>t[k]&&!DISPLAY_HIDDEN.has(k)&&!done.has(k))||Object.keys(t).find(k=>!DISPLAY_HIDDEN.has(k)&&!done.has(k));
- if(!pick)return `<div class="card nextcard"><div class="k">오늘의 다음 STEP</div><p style="font-size:13px;line-height:1.65;color:#4C5C4C">20종 진단을 모두 경험했어요. 한 달 뒤 재진단하면 성장 그래프가 더 선명해집니다.</p><button class="btn small ghost" onclick="go('growth')">성장 변화 보기</button></div>`;
+ if(!pick)return `<div class="card nextcard"><div class="k">오늘의 다음 STEP</div><p style="font-size:13px;line-height:1.65;color:#4C5C4C">주요 진단을 모두 경험했어요. 한 달 뒤 재진단하면 성장 그래프가 더 선명해집니다.</p><button class="btn small ghost" onclick="go('growth')">성장 변화 보기</button></div>`;
  return `<div class="card nextcard"><div class="k">오늘의 다음 STEP</div><p style="font-size:13px;line-height:1.65;color:#4C5C4C"><b>${esc(t[pick].title)}</b>부터 이어가면 진로·진학 리포트가 더 촘촘해집니다.</p><button class="btn small navy" onclick="startQuizFx('${pick}')">추천 진단 시작</button></div>`;
 }
 /* ===== 🎯 진단 추천 마법사 (프런트 전용 · 규칙기반) ===== */
@@ -663,6 +669,8 @@ function wizEntryCard(){
 }
 async function go(page,arg){
  const v=$('#view');
+ if(S.page!==page){S.prevPage=S.page;S.page=page;}
+ updateBack(page);
  try{renderTabs()}catch(e){}
  if(page==='home'){
   /* 로그인 토큰이 있으면 기존처럼 바로 대시보드로 (소개 랜딩은 비로그인 유입용) */
@@ -841,7 +849,7 @@ async function go(page,arg){
   /* 미응시 추천(미응시한 백엔드 진단 1개) — nextStepHtml 재사용 */
   const ats=allAt;
   v.innerHTML=`<div class="hero">${ART(ser?(latest['hs_series']?'hs_series':latest['ms_series']?'ms_series':'es_dream'):'future')}<h2>${esc(S.me.name)}의 통합 성장 리포트</h2><p>${esc(S.me.school||'')} ${esc(S.me.class_name||'')} · 진단 ${done}종 완료 · ${dt}</p></div>
-  <div class="grid2"><div class="stat"><div class="v">${done}<small style="font-size:13px">/20</small></div><div class="l">완료한 진단</div></div>
+  <div class="grid2"><div class="stat"><div class="v">${done}<small style="font-size:13px">/${visibleTestKeys(t).length||14}</small></div><div class="l">완료한 진단</div></div>
   <div class="stat"><div class="v">${bestSer||'—'}</div><div class="l">나의 계열</div></div></div>
   <div style="height:12px"></div>
   ${catOrder.length?`<div class="card"><div class="k">카테고리별 진단 종합</div>${catOrder.map(c=>{const ks=catGroups[c].slice().sort((a,b)=>(metric(latest[b].result)??0)-(metric(latest[a].result)??0));const vs=ks.map(k=>metric(latest[k].result)).filter(x=>x!==null);const cavg=vs.length?Math.round(vs.reduce((s,x)=>s+x,0)/vs.length):null;return `<div style="padding:9px 0;border-bottom:1px dashed #ECEAFB"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><b style="font-size:13.5px;color:var(--navy)">${CAT_ICON[c]} ${c}</b><span class="muted">${ks.length}종</span>${cavg!==null?`<span class="tag" style="margin-left:auto;background:#F1EEFF;color:var(--vio)">평균 ${cavg}점</span>`:''}</div>${ks.map(k=>{const mv=metric(latest[k].result);const gr=grow.find(g=>g.k===k);return `<div style="display:flex;align-items:center;gap:9px;padding:3px 0"><span style="flex:0 0 132px;font-size:12px;font-weight:700">${EMO[k]||''} ${esc(t[k]?.title||k)}</span><div class="meter" style="flex:1;margin:0"><i style="width:${mv??0}%"></i></div>${mv!==null?`<b style="font-size:11.5px;width:30px;text-align:right">${mv}</b>`:'<span class="muted" style="width:30px;text-align:right">—</span>'}${gr?`<span style="flex:0 0 44px;text-align:right;font-size:11px;font-weight:800;color:${gr.d>=0?'#2E7D32':'#C62828'}">${gr.d>=0?'▲':'▼'}${Math.abs(gr.d)}</span>`:'<span style="flex:0 0 44px"></span>'}</div>`}).join('')}</div>`}).join('')}<p class="muted" style="margin-top:8px">※ 점수는 진단별 100점 환산 · ▲▼는 첫 진단 대비 최근 변화</p></div>`:''}
@@ -1277,9 +1285,10 @@ function blockPhoto(b){
 }
 function blockHtml(b,badge){
  const tips=(b.tips||[]);
- return `<div class="block"><div class="blockpic"><img loading="lazy" decoding="async" src="${blockPhoto(b)}" alt=""></div><div class="badge">${esc(badge||'성장 가이드')}</div><h3>${esc(b.title)}</h3><p>${esc(b.body)}</p>
+ return `<div class="block"><div class="blockpic"><img loading="lazy" decoding="async" src="${blockPhoto(b)}" alt=""></div><div class="badge">${esc(badge||'성장 가이드')}</div><h3>${esc(b.title)}</h3><div class="bodytext">${bodyParas(b.body)}</div>
  ${tips.length?`<div class="tipbox"><b>실천 체크리스트</b><ul>${tips.map(t=>`<li>${esc(t)}</li>`).join('')}</ul></div>`:''}</div>`;
 }
+function bodyParas(v){const s=String(v||'').trim();if(!s)return '';const a=s.split(/(?<=[.!?。？！]|다\.|요\.|함\.|임\.)\s+/).filter(Boolean);return (a.length>1?a:[s]).map(x=>`<p>${esc(x.trim())}</p>`).join('');}
 /* 마이페이지 게임화: 레벨 산출(완료 진단수 + 영역 다양성 + 재진단) */
 function mypLevel(distinct,catN,retakes){
  const tiers=[

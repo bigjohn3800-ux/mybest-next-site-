@@ -1,5 +1,8 @@
 <!doctype html><!-- build:2026-06-23a-fullreport -->
 <html lang="ko"><head><meta charset="utf-8"><meta name="viewport" id="vp" content="width=device-width,initial-scale=1">
+<!-- Google Analytics 4 (GA4 속성: studentlifenavigator) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-3CGHX7BVM9"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-3CGHX7BVM9');</script>
 <title>마이베스트 NEXT — 나의 가능성 진단</title>
 <meta name="description" content="초·중·고 학생을 위한 진로·진학·공부·미래역량 진단 20종 + 맞춤 성장 가이드와 A4·B4 상담 보고서. 45,000명이 활용한 마이베스트의 다음 진단.">
 <!-- og:* (B7) 카카오톡·페이스북·스레드 링크 미리보기 -->
@@ -703,14 +706,14 @@ async function go(page,arg){
     <button class="btn ghost" onclick="go('consult')">3분 진단 시작</button>
     <a class="btn" style="background:rgba(255,255,255,.16);box-shadow:none" href="/sample.html">실제 결과 먼저 보기</a>
    </div>
-   <div class="lp-stats"><div><b>45,000+</b><span>누적 활용</span></div><div><b>초·중·고</b><span>학년별 진단</span></div><div><b>A4·B4·10쪽</b><span>맞춤 보고서</span></div></div>
+   <div class="lp-stats"><div><b>45,000+</b><span>누적 활용 · 구 마이베스트 포함</span></div><div><b>초·중·고</b><span>학년별 진단</span></div><div><b>A4·B4·10쪽</b><span>맞춤 보고서</span></div></div>
   </div>
 
   ${conversionWhyHtml()}
   ${saveValueHtml()}
 
   <!-- 소개 영상 슬롯: 추후 아래 lp-video 내부를 <iframe ...> 또는 <video ...>로 교체하세요 -->
-  <div class="lp-video" onclick="alert('소개 영상은 준비 중입니다. 곧 공개됩니다! 🎬')">
+  <div class="lp-video" style="display:none" onclick="alert('소개 영상은 준비 중입니다. 곧 공개됩니다! 🎬')">
    <div class="lp-play">▶</div>
    <div class="lp-vlabel">소개 영상 (준비 중)</div>
   </div>

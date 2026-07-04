@@ -515,15 +515,17 @@ function vcardHtml(k,d,act,st,i,enabled=true,reason='',lvname=''){
   return `<div class="${cls}" data-slug="${k}" style="animation-delay:${i*60}ms"${onclick}><div class="vtop" style="background:linear-gradient(135deg,${(ARTC[k]||['#6C5CE7','#00CEC9']).join(',')})"><img class="vph" loading="lazy" decoding="async" src="${PHOTO[k]||''}?w=640&h=260&fit=crop&q=60&auto=format" onerror="this.remove()" alt=""><div class="vshade"></div><div class="vmed">${ART(k)}</div><span class="stepb">${badge}</span><span class="catb">${d.cat||''}</span>${enabled?'':`<span class="lockb">${esc(reason||'다른 학년')}</span>`}</div><div class="vbody"><h3>${esc(stageTitle(lvname,k,d.title))}</h3><p>${esc(d.desc)}</p><span class="aud2">${esc(d.audience)}</span></div></div>`;
 }
 function gridHtml(t,act,grade){
- const LV=[['es','초등','🌈'],['ms','중학','🌱'],['hs','고등','🎓']];
+ let LV=[['es','초등','🌈'],['ms','중학','🌱'],['hs','고등','🎓']];
  let h=`<div class="chips noprint">${['전체','초등','중학','고등'].map((c,i)=>`<button class="chip${i===0?' on':''}" onclick="filterLv(this,'${c}')">${c}</button>`).join('')}</div>`;
  const target=gradeLv(grade);
+ if(target){const ti=LV.findIndex(x=>x[0]===target);if(ti>0){const[picked]=LV.splice(ti,1);LV.unshift(picked);}}
  for(const[lv,nm,em]of LV){
   const items=Object.entries(t).filter(([k,d])=>!DISPLAY_HIDDEN.has(k)&&displayStep(k,d,lv)).sort((a,b)=>displayStep(a[0],a[1],lv)-displayStep(b[0],b[1],lv));
   if(!items.length)continue;
   const active=!target||target===lv;
   const extra = lv==='hs' ? `<div class="${active?'vcard':'vcard locked'}" ${active?`onclick="go('majors')"`:'aria-disabled="true"'}><div class="vtop" style="background:linear-gradient(135deg,#0F1530,#3E5C8A)"><div class="vmed">${ART('subject_rec')}</div><span class="stepb">탐색관</span><span class="catb">진학</span>${active?'':'<span class="lockb">다른 학년</span>'}</div><div class="vbody"><h3>학과 탐색관 🏛️</h3><p>7계열 56개 학과 — 설명·인재상·권장과목·진로를 한곳에서</p><span class="aud2">중3·고등</span></div></div><div class="${active?'vcard':'vcard locked'}" ${active?`onclick="go('subjexp')"`:'aria-disabled="true"'}><div class="vtop" style="background:linear-gradient(135deg,#1B2A4A,#00997B)"><div class="vmed">${ART('subject_rec')}</div><span class="stepb">탐색관</span><span class="catb">진학</span>${active?'':'<span class="lockb">다른 학년</span>'}</div><div class="vbody"><h3>2022 과목 탐색 🗂</h3><p>계열 → 학과 선택 → 일반·진로·융합선택 과목 비교</p><span class="aud2">중3·고등</span></div></div>` : '';
-   h+=`<div class="lvsec" data-lv="${nm}"><div class="wk">${em} ${nm} 로드맵 <span>${active?'나의 학년에 맞는 프로그램':'다른 학년 프로그램은 참고용으로 잠겨 있어요'}</span></div><div class="vgrid">${items.map(([k,d],i)=>vcardHtml(k,d,act,displayStep(k,d,lv),i,active,'다른 학년',nm==='중학'?'중등':nm)).join('')}${extra}</div></div>`;
+  const recBadge = (target&&target===lv) ? '<span class="tag" style="margin-left:6px;background:#FFF3D6;color:#A8893E">✨ 내 학년 추천</span>' : '';
+   h+=`<div class="lvsec" data-lv="${nm}"><div class="wk">${em} ${nm} 로드맵${recBadge} <span>${active?'나의 학년에 맞는 프로그램':'다른 학년 프로그램은 참고용으로 잠겨 있어요'}</span></div><div class="vgrid">${items.map(([k,d],i)=>vcardHtml(k,d,act,displayStep(k,d,lv),i,active,'다른 학년',nm==='중학'?'중등':nm)).join('')}${extra}</div></div>`;
   }
   return h;
 }
@@ -1567,6 +1569,17 @@ function ogCopy(t,msg){
  try{navigator.clipboard.writeText(t).then(()=>alert(msg||'복사되었어요!'),()=>prompt('아래 내용을 복사하세요',t));}
  catch(e){prompt('아래 내용을 복사하세요',t);}
 }
+function personaBannerHtml(d){
+ const st=d.student||{};
+ const glv=gradeLv(st.grade);
+ const gLabel=st.grade?String(st.grade):(glv?({es:'초등',ms:'중학',hs:'고등'}[glv]):'');
+ const allAt=(S.me&&S.me.attempts)||[];
+ const serAt=[...allAt].reverse().find(a=>a.test_slug==='hs_series'||a.test_slug==='ms_series'||a.test_slug==='es_dream');
+ const serLabel=(serAt&&serAt.result&&serAt.result.labels&&serAt.result.best!==undefined)?serAt.result.labels[serAt.result.best]+' 계열 성향':'';
+ const parts=[gLabel,serLabel].filter(Boolean);
+ if(!parts.length)return '';
+ return `<div class="card" style="padding:9px 14px;margin-bottom:10px;background:#F1EEFF;border-color:#E0DAFB"><span class="tag" style="background:#fff">${parts.map(p=>esc(p)).join(' · ')} 맞춤 결과</span></div>`;
+}
 function renderResult(d){
  window._shareCardD=d;
  const v=$('#view'),r=d.attempt.result,slug=d.attempt.test_slug,t=S.tests[slug],st=d.student;
@@ -1628,6 +1641,7 @@ function renderResult(d){
   ${blocks.map(b=>blockHtml(b)).join('')||'<div class="muted">모든 항목이 준비되었습니다! 🎉</div>'}
   ${resultActions(d,{summary:esc(t.title)+' 결과를 받았어요'})}`;
  }
+ const pbh=personaBannerHtml(d);if(pbh)v.insertAdjacentHTML('afterbegin',pbh);
  window.scrollTo(0,0);
  countUp();confetti();
 }

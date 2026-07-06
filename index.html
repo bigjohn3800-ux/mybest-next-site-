@@ -952,7 +952,7 @@ async function go(page,arg){
    const ms=ats.map(a=>({d:a.created_at.slice(5,10),v:metric(a.result)})).filter(x=>x.v!==null);
    if(!ms.length)return;
    const last=ms[ms.length-1].v, first=ms[0].v, dlt=last-first;
-   const badge=ms.length<2?'<span class="tag">첫 진단 완료</span>':`<span class="tag" style="${dlt>=0?'background:#E8F8EE;color:#2E7D32':'background:#FFF0F0;color:#C62828'}">${dlt>=0?'▲':'▼'} ${Math.abs(dlt)}점 ${dlt>=0?'성장':'변화'}</span>`;
+   const badge=(ms.length<2?'<span class="tag">첫 진단 완료</span>':`<span class="tag" style="${dlt>=0?'background:#E8F8EE;color:#2E7D32':'background:#FFF0F0;color:#C62828'}">${dlt>=0?'▲':'▼'} ${Math.abs(dlt)}점 ${dlt>=0?'성장':'변화'}</span>`)+retestBadgeFx(slug,ats[ats.length-1].created_at)+(retestInfoFx(slug,ats[ats.length-1].created_at)?.diff<=0?` <button class="btn small navy noprint" onclick="startQuizFx('${slug}')">지금 재진단</button>`:'');
    html+=`<div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><div class="k" style="margin:0">${EMO[slug]||''} ${esc(t[slug]?.title||slug)}</div>${badge}</div>`;
    if(ms.length>=2){html+=`<div style="height:140px;position:relative;margin-top:10px"><canvas id="gw${gi}"></canvas></div>`;charts.push([gi,ms]);gi++;}
    else html+=`<p class="muted" style="margin-top:8px">현재 ${last}점 · 재진단하면 성장 그래프가 열려요!</p>`;
@@ -1378,11 +1378,14 @@ const RELATED_TESTS={
  story_writer:['value_work','future','ai_inquiry'],
  ai_inquiry:['inquiry','future','story_writer']
 };
+const RETEST_WEEKS={hs_series:24,ms_series:24,es_dream:24,future:12,multi_iq:24,value_work:24};
+function retestInfoFx(slug,lastISO){const w=RETEST_WEEKS[slug]||8;const d=new Date(lastISO);if(isNaN(d.getTime()))return null;d.setDate(d.getDate()+w*7);const diff=Math.ceil((d-new Date())/86400000);return{w,date:d.toISOString().slice(0,10),diff};}
+function retestBadgeFx(slug,lastISO){const ri=retestInfoFx(slug,lastISO);if(!ri)return '';return ri.diff>0?`<span class="tag" style="background:#FFF6E0;color:#A8760B">⏰ 재진단 D-${ri.diff}</span>`:`<span class="tag" style="background:#E8F8EE;color:#2E7D32">✅ 재진단 시기예요</span>`;}
 function relatedTestsHtml(slug){
  const t=S.tests||{};
  const keys=(RELATED_TESTS[slug]||['hs_series','ms_series','future']).filter(k=>!DISPLAY_HIDDEN.has(k)&&t[k]&&k!==slug).slice(0,3);
  if(!keys.length)return '';
- return `<div class="card noprint" style="border:1px solid #E5E0FB;background:#FCFBFF"><div class="k">다른 진단으로 나를 더 깊이 알아보기</div><p class="muted" style="font-size:12.5px;line-height:1.65;margin-bottom:10px">이번 결과와 연결되는 진단을 이어서 하면 학습·진로·활동 방향을 더 입체적으로 볼 수 있습니다. 정식 상담 보고서와 학급 운영은 학교·기관 도입으로 확장됩니다.</p><div class="actionbar" style="margin-top:0">${keys.map(k=>`<button class="btn ghost" onclick="startQuizFx('${k}')">${EMO[k]||EXTRA_EMO[k]||'📊'} ${esc(t[k].title||k)}</button>`).join('')}<button class="btn navy" onclick="go('premium')">학교·기관 도입 안내</button></div></div>`;
+ return `<div class="card noprint" style="border:1px solid #E5E0FB;background:#FCFBFF"><div class="k">다른 진단으로 나를 더 깊이 알아보기</div><p class="muted" style="font-size:12.5px;line-height:1.65;margin-bottom:10px">⏰ 이 진단은 약 ${RETEST_WEEKS[slug]||8}주 후 재진단을 권장해요 — 다시 하면 성장 변화가 자동으로 비교됩니다. 이번 결과와 연결되는 진단을 이어서 하면 학습·진로·활동 방향을 더 입체적으로 볼 수 있습니다. 정식 상담 보고서와 학급 운영은 학교·기관 도입으로 확장됩니다.</p><div class="actionbar" style="margin-top:0">${keys.map(k=>`<button class="btn ghost" onclick="startQuizFx('${k}')">${EMO[k]||EXTRA_EMO[k]||'📊'} ${esc(t[k].title||k)}</button>`).join('')}<button class="btn navy" onclick="go('premium')">학교·기관 도입 안내</button></div></div>`;
 }
 /* ===== 유료화 동선(B5) — 무료 vs 프리미엄 비교. PAID_LIVE=false면 결제·금액 미노출 ===== */
 function payPremiumHtml(){

@@ -249,6 +249,11 @@ td{padding:7px 8px;border-bottom:1px solid #EEE}
 .doneb{position:absolute;bottom:8px;right:10px;background:#2E7D32;color:#fff;font-size:10px;font-weight:800;border-radius:999px;padding:3px 10px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
 .lockb{position:absolute;bottom:8px;right:10px;background:rgba(20,24,42,.88);color:#fff;font-size:10px;font-weight:800;border-radius:999px;padding:3px 10px}
 .donecard{outline:2px solid #B7E4C7;outline-offset:-2px}
+.vchips{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin-top:8px;cursor:default}
+.vchips-label{font-size:10px;color:#9096AD;font-weight:700;margin-right:2px}
+.vchip{display:inline-flex;align-items:center;font-size:10px;font-weight:700;color:var(--vio,#6C5CE7);background:#F1EEFE;border-radius:999px;padding:4px 9px;cursor:pointer;transition:.15s}
+.vchip:hover{background:#E4DEFC}
+.vchip.done{color:#2E7D32;background:#E7F5EA}
 .loginpill{border:1px solid #E5E0FB;border-radius:999px;padding:6px 11px;color:var(--vio)!important;background:#fff;font-size:12px;box-shadow:0 4px 14px rgba(108,92,231,.08)}
 .teacher-student-modal{position:fixed;inset:0;background:rgba(12,14,30,.48);z-index:100;display:flex;align-items:flex-start;justify-content:center;padding:24px 14px;overflow:auto}
 .teacher-student-sheet{max-width:720px;width:100%;background:#fff;border-radius:18px;padding:20px;box-shadow:0 24px 80px rgba(0,0,0,.28)}
@@ -472,8 +477,8 @@ const SLUG_CAT={hs_series:'진로',ms_series:'진로',es_dream:'진로',future:'
 /* 학년대 내 진단 카드 넘버링(슬러그→고정 번호). 신규·공통 그룹은 미부여 */
 const STAGE_NO={
  초등:{es_dream:1,es_habit:2,value_work:3,gifted_ready:4,story_writer:5,ai_inquiry:6},
- 중등:{ms_series:1,ms_study:2,ms_hsfit:3,hs_essay:4,value_work:5,story_writer:6,ai_inquiry:7},
- 고등:{hs_series:1,subject_rec:2,study:3,roadmap:4,inquiry:5,hs_essay:6,interview:7,future:9,track_fit:10}
+ 중등:{ms_series:1,ms_study:2,ms_hsfit:3,hs_essay:4,future:5,value_work:6,story_writer:7,ai_inquiry:8},
+ 고등:{hs_series:1,subject_rec:2,study:3,roadmap:4,inquiry:5,interview:6,track_fit:8}
 };
 const DISPLAY_TITLE={
  ms_study:'중학 공부습관 진단',
@@ -487,16 +492,43 @@ const DISPLAY_TITLE={
  track_fit:'전형적합도 진단',
  study_manage:'공부관리 진단',
  story_writer:'AI 동화작가',
- ai_inquiry:'AI 과제탐구'
+ ai_inquiry:'AI 과제탐구',
+ study_emotion:'공부정서 진단',
+ ai_skill:'AI 활용역량 진단',
+ career_mature:'진로성숙도 진단',
+ multi_iq:'다중지능 진단',
+ admission_nav:'입시전형 내비게이터',
+ mock_exam:'모의고사 분석'
 };
 const DISPLAY_STEP={
  es:{es_dream:1,es_habit:2,value_work:3,gifted_ready:4,story_writer:5,ai_inquiry:6},
- ms:{ms_series:1,ms_study:2,ms_hsfit:3,hs_essay:4,value_work:5,story_writer:6,ai_inquiry:7},
- hs:{hs_series:1,subject_rec:2,study:3,roadmap:4,inquiry:5,hs_essay:6,interview:7,future:9,track_fit:10}
+ ms:{ms_series:1,ms_study:2,ms_hsfit:3,hs_essay:4,future:5,value_work:6,story_writer:7,ai_inquiry:8},
+ hs:{hs_series:1,subject_rec:2,study:3,roadmap:4,inquiry:5,interview:6,future:9,track_fit:10}
 };
 const DISPLAY_HIDDEN=new Set(['ai_skill','career_mature','multi_iq','study_emotion','mock_exam','admission_nav','study_manage','reading']);
 function visibleTestKeys(t){return Object.keys(t||{}).filter(k=>!DISPLAY_HIDDEN.has(k));}
 const DISPLAY_OVERRIDE_ONLY=new Set(['future','value_work','hs_essay','gifted_ready','story_writer','ai_inquiry']);
+/* 통합 표시 그룹: 대표 slug 1장 카드 + members는 대표 카드 하단 칩으로 종속 표시(슬러그·데이터는 불변) */
+const DISPLAY_GROUPS={
+ ms_study:{label:'중학 공부습관 진단',members:['study_manage','study_emotion']},
+ future:{label:'미래·AI 활용역량 진단',members:['ai_skill']},
+ value_work:{label:'진로직업 진단',members:['career_mature','multi_iq']},
+ track_fit:{label:'전형적합도 진단',members:['admission_nav','mock_exam']}
+};
+const MEMBER_OF={};
+Object.entries(DISPLAY_GROUPS).forEach(([rep,g])=>{g.members.forEach(m=>{MEMBER_OF[m]=rep;});});
+function groupChipsHtml(repSlug,act,t){
+ const g=DISPLAY_GROUPS[repSlug];
+ if(!g||!g.members||!g.members.length)return'';
+ const members=g.members.filter(m=>!t||t[m]);
+ if(!members.length)return'';
+ const chips=members.map(m=>{
+  const done=window.__done&&window.__done[m];
+  const label=DISPLAY_TITLE[m]||(t&&t[m]&&t[m].title)||m;
+  return `<span class="vchip${done?' done':''}" data-chip-slug="${m}" onclick="event.stopPropagation();${act}('${m}')">${done?'✓ ':''}${esc(label)}</span>`;
+ }).join('');
+ return `<div class="vchips" onclick="event.stopPropagation()"><span class="vchips-label">+ 함께 보기</span>${chips}</div>`;
+}
 function displayStep(k,d,lv){
  const ov=DISPLAY_STEP[lv]&&DISPLAY_STEP[lv][k];
  if(ov)return ov;
@@ -511,11 +543,12 @@ Object.assign(EMO,EXTRA_EMO);
 Object.assign(ARTC,{study_manage:['#2D9CDB','#56CCF2'],gifted_ready:['#F2994A','#F2C94C'],mock_exam:['#EB5757','#F2994A'],admission_nav:['#1B2A4A','#6C5CE7'],story_writer:['#BB6BD9','#F299C2'],ai_inquiry:['#00A884','#2D9CDB']});
 Object.assign(PHOTO,{study_manage:'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4',gifted_ready:'https://images.unsplash.com/photo-1531482615713-2afd69097998',mock_exam:'https://images.unsplash.com/photo-1434030216411-0b793f4b4173',admission_nav:'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40',story_writer:'https://images.unsplash.com/photo-1455390582262-044cdead277a',ai_inquiry:'https://images.unsplash.com/photo-1532094349884-543bc11b234d'});
 function gradeLv(g){g=String(g||'');if(g.includes('초'))return'es';if(g.includes('중'))return'ms';if(g.includes('고'))return'hs';return''}
-function vcardHtml(k,d,act,st,i,enabled=true,reason='',lvname=''){
+function vcardHtml(k,d,act,st,i,enabled=true,reason='',lvname='',t=null){
  const onclick=enabled?` onclick="${act}('${k}')"`:' aria-disabled="true"';
  const cls=enabled?'vcard':'vcard locked';
  const badge=lvname?esc(lvname)+st:'STEP '+st;
-  return `<div class="${cls}" data-slug="${k}" style="animation-delay:${i*60}ms"${onclick}><div class="vtop" style="background:linear-gradient(135deg,${(ARTC[k]||['#6C5CE7','#00CEC9']).join(',')})"><img class="vph" loading="lazy" decoding="async" src="${PHOTO[k]||''}?w=640&h=260&fit=crop&q=60&auto=format" onerror="this.remove()" alt=""><div class="vshade"></div><div class="vmed">${ART(k)}</div><span class="stepb">${badge}</span><span class="catb">${d.cat||''}</span>${enabled?'':`<span class="lockb">${esc(reason||'다른 학년')}</span>`}</div><div class="vbody"><h3>${esc(stageTitle(lvname,k,d.title))}</h3><p>${esc(d.desc)}</p><span class="aud2">${esc(d.audience)}</span></div></div>`;
+ const chipsHtml=enabled?groupChipsHtml(k,act,t):'';
+  return `<div class="${cls}" data-slug="${k}" style="animation-delay:${i*60}ms"${onclick}><div class="vtop" style="background:linear-gradient(135deg,${(ARTC[k]||['#6C5CE7','#00CEC9']).join(',')})"><img class="vph" loading="lazy" decoding="async" src="${PHOTO[k]||''}?w=640&h=260&fit=crop&q=60&auto=format" onerror="this.remove()" alt=""><div class="vshade"></div><div class="vmed">${ART(k)}</div><span class="stepb">${badge}</span><span class="catb">${d.cat||''}</span>${enabled?'':`<span class="lockb">${esc(reason||'다른 학년')}</span>`}</div><div class="vbody"><h3>${esc(stageTitle(lvname,k,d.title))}</h3><p>${esc(d.desc)}</p><span class="aud2">${esc(d.audience)}</span>${chipsHtml}</div></div>`;
 }
 function gridHtml(t,act,grade){
  let LV=[['es','초등','🌈'],['ms','중학','🌱'],['hs','고등','🎓']];
@@ -528,7 +561,7 @@ function gridHtml(t,act,grade){
   const active=!target||target===lv;
   const extra = lv==='hs' ? `<div class="${active?'vcard':'vcard locked'}" ${active?`onclick="go('majors')"`:'aria-disabled="true"'}><div class="vtop" style="background:linear-gradient(135deg,#0F1530,#3E5C8A)"><div class="vmed">${ART('subject_rec')}</div><span class="stepb">탐색관</span><span class="catb">진학</span>${active?'':'<span class="lockb">다른 학년</span>'}</div><div class="vbody"><h3>학과 탐색관 🏛️</h3><p>7계열 56개 학과 — 설명·인재상·권장과목·진로를 한곳에서</p><span class="aud2">중3·고등</span></div></div><div class="${active?'vcard':'vcard locked'}" ${active?`onclick="go('subjexp')"`:'aria-disabled="true"'}><div class="vtop" style="background:linear-gradient(135deg,#1B2A4A,#00997B)"><div class="vmed">${ART('subject_rec')}</div><span class="stepb">탐색관</span><span class="catb">진학</span>${active?'':'<span class="lockb">다른 학년</span>'}</div><div class="vbody"><h3>2022 과목 탐색 🗂</h3><p>계열 → 학과 선택 → 일반·진로·융합선택 과목 비교</p><span class="aud2">중3·고등</span></div></div>` : '';
   const recBadge = (target&&target===lv) ? '<span class="tag" style="margin-left:6px;background:#FFF3D6;color:#A8893E">✨ 내 학년 추천</span>' : '';
-   h+=`<div class="lvsec" data-lv="${nm}"><div class="wk">${em} ${nm} 로드맵${recBadge} <span>${active?'나의 학년에 맞는 프로그램':'다른 학년 프로그램은 참고용으로 잠겨 있어요'}</span></div><div class="vgrid">${items.map(([k,d],i)=>vcardHtml(k,d,act,displayStep(k,d,lv),i,active,'다른 학년',nm==='중학'?'중등':nm)).join('')}${extra}</div></div>`;
+   h+=`<div class="lvsec" data-lv="${nm}"><div class="wk">${em} ${nm} 로드맵${recBadge} <span>${active?'나의 학년에 맞는 프로그램':'다른 학년 프로그램은 참고용으로 잠겨 있어요'}</span></div><div class="vgrid">${items.map(([k,d],i)=>vcardHtml(k,d,act,displayStep(k,d,lv),i,active,'다른 학년',nm==='중학'?'중등':nm,t)).join('')}${extra}</div></div>`;
   }
   return h;
 }
@@ -827,7 +860,7 @@ async function go(page,arg){
    <div class="k">내 진단 기록</div><div class="card" id="myats"><div class="muted">불러오는 중…</div></div>`;
   window.__done={};ats.forEach(a=>{if(!window.__done[a.test_slug])window.__done[a.test_slug]=a.result});
   $('#tlist2')&&0; document.querySelectorAll('.vcard').forEach(()=>{});
-  setTimeout(()=>{document.querySelectorAll('.vcard[data-slug]').forEach(cd=>{const k=cd.dataset.slug;if(window.__done[k]){cd.classList.add('donecard');const m=cd.querySelector('.vtop');if(m&&!m.querySelector('.doneb')){const sp=document.createElement('span');sp.className='doneb';sp.textContent='✓ 완료';m.appendChild(sp);}}})},50);
+  setTimeout(()=>{document.querySelectorAll('.vcard[data-slug]').forEach(cd=>{const k=cd.dataset.slug;if(window.__done[k]){cd.classList.add('donecard');const m=cd.querySelector('.vtop');if(m&&!m.querySelector('.doneb')){const sp=document.createElement('span');sp.className='doneb';sp.textContent='✓ 완료';m.appendChild(sp);}}});document.querySelectorAll('.vchip[data-chip-slug]').forEach(ch=>{const mk=ch.dataset.chipSlug;if(window.__done[mk]&&!ch.classList.contains('done')){ch.classList.add('done');ch.textContent='✓ '+ch.textContent;}})},50);
   const old30=d=>(Date.now()-new Date(d).getTime())>30*864e5;
   $('#myats').innerHTML=ats.length?ats.map(a=>`<div class="attrow"><span>${EMO[a.test_slug]||'📊'} ${esc(t[a.test_slug]?.title||a.test_slug)} ${old30(a.created_at)?'<span class="tag" style="background:#FFF4DC;color:#A8893E;font-size:10px">재진단 추천</span>':''}<br><span class="muted">${a.created_at.slice(0,10)}</span></span><span style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end"><button class="btn small ghost" onclick="retakeQuiz('${a.test_slug}')">다시 진단</button><button class="btn small navy" onclick="openAttempt('${a.id}')">결과 보기</button></span></div>`).join(''):'<div class="muted">아직 기록이 없어요. 첫 진단을 시작해보세요!</div>';
  }

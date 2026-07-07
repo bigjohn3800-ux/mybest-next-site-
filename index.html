@@ -1218,7 +1218,7 @@ async function startQuiz(slug){
  S.quiz={slug,scale:q.scale,questions,answers:[],i:0,t:S.tests[slug],majors};
  try{
   const sv=JSON.parse(localStorage.getItem('myb_q_'+slug)||'null');
-  if(sv&&sv.i>0&&sv.i<q.questions.length&&confirm(`이전에 ${sv.i}번까지 답한 기록이 있어요.\n이어서 할까요? (취소=처음부터)`)){S.quiz.answers=sv.answers;S.quiz.i=sv.i;}
+  if(sv&&sv.i>0&&sv.i<questions.length&&confirm(`이전에 ${sv.i}번까지 답한 기록이 있어요.\n이어서 할까요? (취소=처음부터)`)){S.quiz.answers=sv.answers;S.quiz.i=sv.i;}
   else localStorage.removeItem('myb_q_'+slug);
  }catch(e){}
  go('quiz');
@@ -1267,7 +1267,7 @@ function renderQuiz(){
  v.innerHTML=`<div class="qnum">${esc(z.t.title)}</div>
  <div class="qprog noprint"><span>${z.i+1} / ${total} 문항</span><span>${pct}% 진행</span></div>
  <div class="bar"><i style="width:${pct}%"></i></div>
-  <div class="card"><div class="qnum">Q${z.i+1} / ${total}</div><div class="qtext">${esc(subjectRecQText(z,q))}</div>${opts}</div>
+  <div class="card"><div class="qnum">Q${z.i+1} / ${total}</div><div class="qtext">${esc(z.slug==='subject_rec'?subjectRecQText(z,q):q.q_text)}</div>${opts}</div>
  <div class="linkrow noprint">${z.i>0?'<a onclick="quizPrev()">← 이전 문항</a> · ':''}<a onclick="go('dash')">중단하고 돌아가기 (진행 자동저장)</a></div>`;
 }
 async function answer(val){

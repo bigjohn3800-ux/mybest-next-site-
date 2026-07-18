@@ -27,3 +27,4 @@ SUPABASE_URL=*.env.txt
 *.cer
 *.der
 Thumbs.db
+supabase/.temp/

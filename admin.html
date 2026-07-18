@@ -232,6 +232,7 @@ async function loadDash(){
  const nm=($('#fName')?.value||'').trim();
  let rows=j.students||[];if(nm)rows=rows.filter(r=>(r.name||'').includes(nm));
  S.rows=rows;
+ S.classes=j.classes||[];
  try{localStorage.setItem('myb_adm_filters',JSON.stringify({school:body.school,grade:body.grade,code:body.code,name:nm}))}catch(e){}
  const s=j.summary||{};
  $('#stats').innerHTML=[['학생',s.students],['학급',s.classes],['총 응시',s.attempts],['5종+ 완료',s.completed],['평균 완료',s.avg_done]]
@@ -241,7 +242,7 @@ async function loadDash(){
    <td><span class="pbar"><i style="width:${Math.round((r.done/r.total)*100)}%"></i></span> ${r.done}/${r.total}</td>
    <td>${r.attempts}</td><td class="muted">${r.last_at?r.last_at.slice(0,10):'-'}</td>
    <td><span class="tag ${r.plan==='paid'?'paid':'free'}">${r.plan==='paid'?'운영':'기본'}</span></td>
-   <td><button class="btn ghost sm" onclick="openStudent('${r.id}')">결과·상담</button></td></tr>`).join('')
+   <td style="white-space:nowrap"><button class="btn ghost sm" onclick="openStudent('${r.id}')">결과·상담</button> <button class="btn ghost sm" title="학생 정보 수정" onclick="openEditStudent('${r.id}')">✏️</button> <button class="btn ghost sm" title="학생 삭제" onclick="delStudent('${r.id}')">🗑</button></td></tr>`).join('')
    :`<tr><td colspan="10" class="muted" style="text-align:center;padding:30px">조건에 맞는 학생이 없습니다</td></tr>`;
  $('#cnt').textContent=`총 ${rows.length}명 표시`;
  renderCompare(rows,s);
@@ -374,6 +375,67 @@ async function openStudent(id){
      <div class="meta">${a.created_at.slice(0,10)}</div>
      <div class="kv">${summarize(a.test_slug,a.result)}</div></div>`).join(''):'<div class="muted">아직 응시 기록이 없습니다.</div>'}
   <div class="muted" style="font-size:11px;margin-top:10px">※ 각 진단의 <b>A4·B4 보고서</b>를 새 창에서 열어 바로 인쇄/PDF 저장할 수 있습니다(상담 배포용).</div>`;
+}
+// ── 학생 정보 수정 (웨이브: 회원 관리) ──
+function openEditStudent(id){
+ const r=S.rows.find(x=>x.id===id);
+ if(!r){alert('학생 정보를 찾을 수 없습니다. 목록을 새로고침하세요.');return;}
+ const classes=(S.classes||[]).slice().sort((a,b)=>String(a.name).localeCompare(String(b.name),'ko'));
+ const hasCur=classes.some(c=>String(c.id)===String(r.class_id));
+ const opts=(hasCur?'':'<option value="" selected>현재 학급 유지</option>')
+  +classes.map(c=>`<option value="${esc(c.id)}"${String(c.id)===String(r.class_id)?' selected':''}>${esc(c.name)} (${esc(c.code)})${c.school?' · '+esc(c.school):''}</option>`).join('');
+ $('#sheet').innerHTML=`
+  <div class="topbar"><h2 style="font-size:19px">✏️ 학생 정보 수정</h2><div class="spacer"></div>
+   <button class="btn navy sm noprint" onclick="closeModal()">닫기</button></div>
+  <div class="muted" style="font-size:12.5px;margin-bottom:14px">${esc(r.school||'')} ${esc(r.class_name||'')} · 응시 ${r.attempts||0}건</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+   <div><label>이름</label><input id="edName" value="${esc(r.name||'')}" maxlength="40"></div>
+   <div><label>학년</label><input id="edGrade" value="${esc(r.grade||'')}" placeholder="예: 1학년 / 중3"></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+   <div><label>소속 학급</label><select id="edClass">${opts}</select></div>
+   <div><label>PIN 재설정</label><input id="edPin" inputmode="numeric" maxlength="4" placeholder="변경 시에만 입력 (4자리)"></div>
+  </div>
+  <div class="err" id="edErr"></div>
+  <button class="btn" style="width:100%;margin-top:6px" onclick="doEditStudent('${esc(r.id)}')">저장</button>
+  <div class="muted" style="font-size:11px;margin-top:10px">※ 학급을 바꾸면 학생이 해당 학급으로 이동합니다. PIN을 비워 두면 기존 PIN이 유지됩니다.</div>`;
+ $('#modal').classList.add('open');
+}
+async function doEditStudent(id){
+ const name=($('#edName')?.value||'').trim();
+ const grade=($('#edGrade')?.value||'').trim();
+ const classId=$('#edClass')?.value||'';
+ const pin=($('#edPin')?.value||'').trim();
+ const errBox=$('#edErr');const showErr=m=>{errBox.textContent=m;errBox.style.display='block';};
+ if(!name){showErr('이름을 입력하세요.');return;}
+ if(pin&&!/^\d{4}$/.test(pin)){showErr('PIN은 4자리 숫자여야 합니다.');return;}
+ const body={token:S.token,student_id:id,name,grade};
+ if(classId)body.class_id=classId;
+ if(pin)body.pin=pin;
+ const btn=event?.target;if(btn)btn.disabled=true;
+ try{
+  const j=await api('/student_update',body);
+  if(j.error){showErr(j.error);return;}
+  closeModal();
+  loadDash();
+ }catch(e){showErr('네트워크 오류: '+e.message);}
+ finally{if(btn)btn.disabled=false;}
+}
+// ── 학생 삭제 ──
+async function delStudent(id){
+ const r=S.rows.find(x=>x.id===id);
+ if(!r){alert('학생 정보를 찾을 수 없습니다. 목록을 새로고침하세요.');return;}
+ const warn=(r.attempts||0)>0
+  ?`'${r.name}' 학생을 삭제합니다.\n\n⚠ 응시 기록 ${r.attempts}건도 함께 삭제되며 복구할 수 없습니다.\n\n계속할까요?`
+  :`'${r.name}' 학생을 삭제합니다. 복구할 수 없습니다.\n\n계속할까요?`;
+ if(!confirm(warn))return;
+ if(S.deleting)return;S.deleting=true;
+ try{
+  const j=await api('/student_delete',{token:S.token,student_id:id});
+  if(j.error){alert('삭제 실패: '+j.error);return;}
+  loadDash();
+ }catch(e){alert('네트워크 오류: '+e.message);}
+ finally{S.deleting=false;}
 }
 async function openReport(){
  $('#sheet').innerHTML='<div style="padding:34px;text-align:center" class="muted">학급 종합 리포트를 집계하는 중…</div>';

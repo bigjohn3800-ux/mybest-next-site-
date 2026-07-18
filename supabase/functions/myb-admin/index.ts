@@ -118,7 +118,7 @@ Deno.serve(async (req) => {
       if (sids.length) { const { data } = await sb.from("myb_attempts").select("student_id,test_slug,created_at").in("student_id", sids).limit(20000); ats = data ?? []; }
       const byStu: Record<string, { slugs: Set<string>; last: string; cnt: number }> = {};
       ats.forEach((a) => { const b = byStu[a.student_id] ?? (byStu[a.student_id] = { slugs: new Set(), last: "", cnt: 0 }); b.slugs.add(a.test_slug); b.cnt++; if (a.created_at > b.last) b.last = a.created_at; });
-      const rows = students.map((s) => { const b = byStu[s.id]; const c = clsById[s.class_id] ?? {}; return { id: s.id, name: s.name, grade: s.grade, school: c.school, class_name: c.name, code: c.code, plan: c.plan, done: b ? b.slugs.size : 0, total: TOTAL_TESTS, attempts: b ? b.cnt : 0, last_at: b ? b.last : null }; });
+      const rows = students.map((s) => { const b = byStu[s.id]; const c = clsById[s.class_id] ?? {}; return { id: s.id, name: s.name, grade: s.grade, class_id: s.class_id, school: c.school, class_name: c.name, code: c.code, plan: c.plan, done: b ? b.slugs.size : 0, total: TOTAL_TESTS, attempts: b ? b.cnt : 0, last_at: b ? b.last : null }; });
       rows.sort((a, b) => (b.last_at ?? "").localeCompare(a.last_at ?? ""));
       const summary = { students: rows.length, attempts: ats.length, classes: (classes ?? []).length, completed: rows.filter((r) => r.done >= 5).length, avg_done: rows.length ? Math.round(rows.reduce((x, r) => x + r.done, 0) / rows.length * 10) / 10 : 0 };
       return J({ role: me.role, summary, classes: classes ?? [], students: rows });
@@ -207,8 +207,66 @@ Deno.serve(async (req) => {
       const { data: st } = await sb.from("myb_students").select("id,name,grade,class_id, myb_classes(code,name,school)").eq("id", sid).maybeSingle();
       if (!st) return err("학생을 찾을 수 없습니다", 404);
       if (me.role === "teacher" && me.scope && (st as any).myb_classes?.code !== String(me.scope).toUpperCase()) return err("권한이 없습니다", 403);
+      if (me.role === "school" && me.scope && !String((st as any).myb_classes?.school ?? "").toLowerCase().includes(String(me.scope).toLowerCase())) return err("권한이 없습니다", 403);
       const { data: ats } = await sb.from("myb_attempts").select("id,test_slug,result,created_at").eq("student_id", sid).order("created_at", { ascending: false });
       return J({ student: { name: st.name, grade: st.grade, school: (st as any).myb_classes?.school, class_name: (st as any).myb_classes?.name, code: (st as any).myb_classes?.code }, attempts: ats ?? [] });
+    }
+
+    // ── 학생 정보 수정 ──
+    if (path === "/student_update") {
+      const sid = String(body.student_id ?? "").trim();
+      if (!sid) return err("student_id가 필요합니다", 400);
+      const { data: st } = await sb.from("myb_students").select("id,name,grade,class_id").eq("id", sid).maybeSingle();
+      if (!st) return err("학생을 찾을 수 없습니다", 404);
+      // 현재 소속 학급이 관리자 스코프 내인지 검증
+      let cq = sb.from("myb_classes").select("id").eq("id", st.class_id); cq = scoped(cq);
+      const { data: curCls } = await cq.maybeSingle();
+      if (!curCls) return err("권한이 없습니다", 403);
+      const patch: Record<string, unknown> = {};
+      if (body.name !== undefined) {
+        const n = String(body.name).trim();
+        if (!n || n.length > 40) return err("이름은 1~40자로 입력하세요", 400);
+        patch.name = n;
+      }
+      if (body.grade !== undefined) {
+        const g = String(body.grade).trim();
+        if (g.length > 20) return err("학년은 20자 이내로 입력하세요", 400);
+        patch.grade = g;
+      }
+      if (body.pin !== undefined && String(body.pin).trim() !== "") {
+        const p = String(body.pin).trim();
+        if (!/^\d{4}$/.test(p)) return err("PIN은 4자리 숫자여야 합니다", 400);
+        patch.pin = p;
+      }
+      if (body.class_id !== undefined && String(body.class_id) !== String(st.class_id)) {
+        const nid = String(body.class_id).trim();
+        let nq = sb.from("myb_classes").select("id,max_students").eq("id", nid); nq = scoped(nq);
+        const { data: ncls } = await nq.maybeSingle();
+        if (!ncls) return err("이동할 학급을 찾을 수 없거나 권한이 없습니다", 403);
+        const { count } = await sb.from("myb_students").select("id", { count: "exact", head: true }).eq("class_id", nid);
+        if ((count ?? 0) + 1 > (ncls.max_students ?? 40)) return err("이동 대상 학급의 정원을 초과합니다", 400);
+        patch.class_id = nid;
+      }
+      if (!Object.keys(patch).length) return err("변경할 내용이 없습니다", 400);
+      const { data: upd, error: uErr } = await sb.from("myb_students").update(patch).eq("id", sid).select("id,name,grade,class_id").maybeSingle();
+      if (uErr) return err("수정 실패: " + uErr.message, 500);
+      return J({ ok: true, student: upd });
+    }
+
+    // ── 학생 삭제 (응시 기록 포함 하드 삭제) ──
+    if (path === "/student_delete") {
+      const sid = String(body.student_id ?? "").trim();
+      if (!sid) return err("student_id가 필요합니다", 400);
+      const { data: st } = await sb.from("myb_students").select("id,class_id").eq("id", sid).maybeSingle();
+      if (!st) return err("학생을 찾을 수 없습니다", 404);
+      let cq = sb.from("myb_classes").select("id").eq("id", st.class_id); cq = scoped(cq);
+      const { data: cls } = await cq.maybeSingle();
+      if (!cls) return err("권한이 없습니다", 403);
+      const { error: aErr } = await sb.from("myb_attempts").delete().eq("student_id", sid);
+      if (aErr) return err("삭제 실패(응시 기록): " + aErr.message, 500);
+      const { error: dErr } = await sb.from("myb_students").delete().eq("id", sid);
+      if (dErr) return err("삭제 실패: " + dErr.message, 500);
+      return J({ ok: true });
     }
 
     if (path === "/logout") { await sb.from("myb_admin_sessions").delete().eq("token", body.token); return J({ ok: true }); }

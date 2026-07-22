@@ -1,4 +1,4 @@
-<!doctype html><!-- build:2026-07-22a-bulkfix -->
+<!doctype html><!-- build:2026-07-23a-feedback -->
 <html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>마이베스트 NEXT — 관리자 대시보드</title>
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
@@ -164,6 +164,7 @@ async function viewDash(){
     ${S.role==='super'?'<button class="btn ghost sm" onclick="viewAdmins()">👤 관리자 계정</button>':''}
     ${(S.role==='super'||S.role==='school')?'<button class="btn ghost sm" onclick="viewAccounts()">👪 학부모 회원</button>':''}
     <button class="btn ghost sm" onclick="openChangePassword()">🔑 비밀번호</button>
+    <button class="btn ghost sm" onclick="openFeedback()">💬 의견·오류 보내기</button>
     <button class="btn navy sm" onclick="logout()">로그아웃</button></div>
    <div class="notice noprint"><b>운영 기준</b> · 학생별 결과는 상담 자료로만 활용하고, 계열성향은 전국 규준 기반·체크형은 자가점검 기준으로 구분해 안내하세요.</div>
    <div class="stats" id="stats"></div>
@@ -627,6 +628,41 @@ function exportBulkCsv(){
 }
 function printBulk(){window.print();}
 function closeModal(){$('#modal').classList.remove('open');}
+
+// ── 의견·오류 피드백(교사·관리자용, 2026-07-23 추가) ──
+function openFeedback(){
+ $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">💬 의견·오류 보내기</h2><div class="spacer"></div><button class="btn navy sm" onclick="closeModal()">닫기</button></div>
+ <div class="err" id="fbErr"></div>
+ <label>유형</label><select id="fbType">
+  <option value="product_feedback">제품 피드백·오류 신고</option>
+  <option value="feature_request">기능 제안</option>
+  <option value="school_inquiry">학교·기관 도입 문의</option>
+ </select>
+ <label>이메일(필수, 답변 받으실 주소)</label><input id="fbEmail" type="email" placeholder="example@school.kr" value="${esc(S.email||'')}">
+ <label>내용(필수)</label><textarea id="fbMsg" rows="5" style="width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px;font-family:inherit;font-size:14px" placeholder="불편했던 점, 오류 상황, 제안 내용을 자유롭게 적어주세요"></textarea>
+ <button class="btn" style="margin-top:10px;width:100%" onclick="submitFeedback()">보내기</button>
+ <div id="fbResult" style="margin-top:10px"></div>`;
+ $('#modal').classList.add('open');
+}
+async function submitFeedback(){
+ const email=($('#fbEmail')?.value||'').trim();
+ const message=($('#fbMsg')?.value||'').trim();
+ const err=$('#fbErr');
+ if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){err.textContent='이메일을 올바르게 입력하세요';err.style.display='block';return;}
+ if(!message||message.length<2){err.textContent='내용을 입력하세요';err.style.display='block';return;}
+ err.style.display='none';
+ $('#fbResult').innerHTML='<div class="muted" style="font-size:12.5px">전송 중…</div>';
+ try{
+  const r=await fetch('https://onqisdgxwuvlxehjvoto.supabase.co/functions/v1/cs-api',{
+   method:'POST',headers:{'Content-Type':'application/json',apikey:'sb_publishable_z3KmGPFA4RKka5e_tDWD5A_-CUDC7t8'},
+   body:JSON.stringify({action:'lead.submit',lead_type:$('#fbType').value,org_name:'',contact_name:S.name||'',email,phone:'',message,source_page:'mybest-next-admin'})
+  });
+  const j=await r.json();
+  if(!j.ok){$('#fbResult').innerHTML='<div class="err" style="display:block">전송에 실패했습니다. 잠시 후 다시 시도해주세요.</div>';return;}
+  $('#fbResult').innerHTML='<div class="notice" style="background:#F2FBF5;border-color:#CDEBD7">의견이 접수되었습니다. 확인 후 반영·답변드릴게요. 감사합니다!</div>';
+  $('#fbMsg').value='';
+ }catch(e){$('#fbResult').innerHTML='<div class="err" style="display:block">전송에 실패했습니다. 잠시 후 다시 시도해주세요.</div>'}
+}
 
 // ── 학생 개별 수정/삭제 ──
 function openEditStudent(id,name,grade){

@@ -462,7 +462,7 @@ td{padding:7px 8px;border-bottom:1px solid #EEE}
     {"@type":"Question","name":"마이베스트 NEXT는 무엇인가요?","acceptedAnswer":{"@type":"Answer","text":"초·중·고 학생을 위한 진로·진학·공부·미래역량 진단 26종과 맞춤 성장 리포트를 제공하는 온라인 진로교육 플랫폼이다. 학교/학급 단위 도입뿐 아니라 개인 이용자도 이용할 수 있다."}},
     {"@type":"Question","name":"진로심리검사는 꼭 필요한가요?","acceptedAnswer":{"@type":"Answer","text":"한국직업능력연구원의 2025년 초·중등 진로교육 현황조사에 따르면 중학교 98.3%, 고등학교 98.9%가 이미 진로심리검사를 실시하고 있어, 진로검사는 사실상 보편적인 진로교육 절차로 자리잡았다."}},
     {"@type":"Question","name":"고등학생들은 대학 진학을 얼마나 희망하나요?","acceptedAnswer":{"@type":"Answer","text":"같은 조사에서 고등학생의 대학 진학 희망 비율은 2023년 77.3%에서 2025년 64.9%로 매년 감소하고 취업 희망 비율은 늘고 있어, 조기에 적성을 파악하는 진단의 중요성이 커지고 있다."}},
-    {"@type":"Question","name":"학급코드 없이 개인적으로도 이용할 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"가능하다. 학급코드 없이 이름과 4자리 PIN만으로 개인 결과함을 만들어 무료 진단 3종(고등/중학 계열성향, 초등 진로탐험)을 바로 이용할 수 있다."}},
+    {"@type":"Question","name":"학급코드 없이 개인적으로도 이용할 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"가능하다. 학급코드 없이 이름과 4자리 PIN만으로 개인 결과함을 만들어 무료 진단 8종(고등/중학 계열성향, 고교 과목추천, 학생부 로드맵, 공부습관, 면접 준비도, 고교 유형, 초등 진로탐험 등)을 바로 이용할 수 있다."}},
     {"@type":"Question","name":"진단 결과는 무엇을 알려주나요?","acceptedAnswer":{"@type":"Answer","text":"계열·적성 성향, 학습습관, 미래역량 등을 진단하고 A4 요약·B4 상세 보고서(선택 시 10쪽 종합 보고서)로 제공하며, 학급 단위 이용 시 또래·전국 규준과 비교한 결과도 함께 제공한다."}},
     {"@type":"Question","name":"비용이 드나요?","acceptedAnswer":{"@type":"Answer","text":"26종 진단 중 통계적으로 검증된 계열성향 검사(고1 α=0.951, 중학 α=0.930)를 포함한 기본 진단과 A4·B4 리포트는 무료다."}}
   ]
@@ -622,6 +622,25 @@ const api=async(p,body)=>{
  return j;
 };
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+async function askSubjectChat(attemptId){
+ const inp=$('#subjChatQ');if(!inp)return;const q=(inp.value||'').trim();if(!q)return;
+ const log=$('#subjChatLog');if(!log)return;
+ log.insertAdjacentHTML('beforeend',`<div style="margin:6px 0;font-size:13px"><b>나</b> ${esc(q)}</div>`);
+ inp.value='';inp.disabled=true;
+ const btn=inp.nextElementSibling;if(btn)btn.disabled=true;
+ log.insertAdjacentHTML('beforeend','<div id="subjChatWait" style="color:#999;font-size:12.5px">답변 준비 중…</div>');
+ log.scrollTop=log.scrollHeight;
+ try{
+  const j=await api('/chat',{token:S.token,question:q,attempt_id:attemptId});
+  const w=$('#subjChatWait');if(w)w.remove();
+  log.insertAdjacentHTML('beforeend',`<div style="margin:6px 0;background:#F6F4FF;border-radius:10px;padding:8px 10px;font-size:13px;line-height:1.6"><b>🤖</b> ${esc(j.answer)}</div>`);
+ }catch(e){
+  const w=$('#subjChatWait');if(w)w.remove();
+  log.insertAdjacentHTML('beforeend',`<div style="margin:6px 0;color:#c00;font-size:12.5px">${esc(e.message)}</div>`);
+ }
+ inp.disabled=false;if(btn)btn.disabled=false;
+ log.scrollTop=log.scrollHeight;
+}
 function showErr(m){const e=$('#err');if(e){e.textContent=m;e.style.display='block'}else alert(m)}
 function setWho(){$('#who').innerHTML=S.me?`<b>${esc(S.me.name)}</b> · ${esc(S.me.class_name||'')} <a style="color:#C62828;cursor:pointer;margin-left:6px" onclick="logout()">나가기</a>`:''}
 function logout(){localStorage.removeItem('myb_token');S.token=null;S.me=null;go('home')}
@@ -875,12 +894,12 @@ async function go(page,arg){
    const isInd=arg==='individual';
    v.innerHTML=`<h1>${isInd?'10초 만에 개인 진단 시작하기':'10초 입장하고 결과를 저장해요'}</h1><div class="sub">${isInd?'학급코드 없이 이름·PIN만으로 개인 결과함이 만들어집니다.':'긴 회원가입 없이 학급코드·이름·PIN만으로 개인 결과함이 만들어집니다.'}</div>
    ${saveValueHtml()}
-   <div class="saleshold"><p><b>${isInd?'개인으로 시작하면':'왜 입장이 필요할까요?'}</b><br>${isInd?'학급코드 없이 개인으로 입장하면 무료 진단 3종(고등/중학 계열성향, 초등 진로탐험)을 바로 이용할 수 있어요. 학급 도입은 학교/기관 전용입니다.':'진단 결과는 한 번 보고 끝나는 자료가 아니라 누적 성장 기록입니다. 입장하면 결과 다시보기, A4·B4 보고서, 재진단 비교, 선생님이 배정한 진단까지 이어집니다.'}</p></div>
+   <div class="saleshold"><p><b>${isInd?'개인으로 시작하면':'왜 입장이 필요할까요?'}</b><br>${isInd?'학급코드 없이 개인으로 입장하면 무료 진단 8종(계열성향·고교 과목추천·학생부 로드맵·공부습관·면접 준비도·고교 유형·초등 진로탐험 등)을 바로 이용할 수 있어요. 학급 도입은 학교/기관 전용입니다.':'진단 결과는 한 번 보고 끝나는 자료가 아니라 누적 성장 기록입니다. 입장하면 결과 다시보기, A4·B4 보고서, 재진단 비교, 선생님이 배정한 진단까지 이어집니다.'}</p></div>
    <div class="card"><div class="err" id="err"></div>
   ${isInd?'':`<label>학급코드</label><input id="jc" placeholder="예: ABC123" style="text-transform:uppercase" value="${esc(new URLSearchParams(location.search).get('code')||'')}">`}
   <label>이름</label><input id="jn" placeholder="실명을 입력하세요">
   <label>나만의 PIN (4자리 숫자)</label><input id="jp" type="password" inputmode="numeric" maxlength="4" placeholder="••••">
-  <label>학년</label><select id="jg"><option>초5</option><option>초6</option><option>중1</option><option>중2</option><option>중3</option><option selected>고1</option><option>고2</option><option>고3</option></select>
+  <label>학년</label><select id="jg"><option>초1</option><option>초2</option><option>초3</option><option>초4</option><option>초5</option><option>초6</option><option>중1</option><option>중2</option><option>중3</option><option selected>고1</option><option>고2</option><option>고3</option></select>
   <div style="background:#F4F8F1;border-radius:10px;padding:10px 12px;font-size:11.5px;color:#4C5C4C;line-height:1.6;margin-bottom:10px">🔒 <b>개인정보 최소수집</b>: 이름·${isInd?'':'학급코드·'}PIN·학년만 수집하며 연락처/이메일/주민번호는 받지 않습니다. PIN은 암호화 저장됩니다. 입장 시 <a style="color:var(--vio);cursor:pointer" href="/privacy.html" target="_blank">개인정보처리방침</a>에 동의한 것으로 봅니다.</div>
   ${isInd?'<label style="display:flex;gap:6px;align-items:center;font-size:12px;color:#555;margin-bottom:8px"><input type="checkbox" id="jMinor" style="margin:0"> 저는(또는 이용자는) 만 14세 미만이에요 — 보호자 동의가 필요해요</label>':''}
   <button class="btn" onclick="${isInd?'joinIndividual()':'join()'}">${isInd?'개인으로 시작하기':'입장하고 진단 시작'}</button></div>
@@ -899,7 +918,7 @@ async function go(page,arg){
    <div class="k">진단 시작하기</div>
    ${gridHtml(t,'startQuizFx',S.me.grade)}
    <div style="height:10px"></div><div style="display:flex;gap:8px;margin-bottom:8px"><button class="btn navy" style="flex:1" onclick="go('mypage')">🏅 마이페이지 (성장·배지)</button><button class="btn ghost" style="flex:1" onclick="go('profile')">📋 통합 성장 리포트</button></div>
-   <div style="display:flex;gap:8px;margin-bottom:14px"><button class="btn ghost" style="flex:1" onclick="go('growth')">📈 성장 그래프</button></div>
+   <div style="display:flex;gap:8px;margin-bottom:14px"><button class="btn ghost" style="flex:1" onclick="go('growth')">📈 성장 그래프</button><button class="btn ghost" style="flex:1" onclick="go('cs')">💬 의견·오류 보내기</button></div>
    <div class="k">내 진단 기록</div><div class="card" id="myats"><div class="muted">불러오는 중…</div></div>`;
   window.__done={};ats.forEach(a=>{if(!window.__done[a.test_slug])window.__done[a.test_slug]=a.result});
   $('#tlist2')&&0; document.querySelectorAll('.vcard').forEach(()=>{});
@@ -1123,7 +1142,7 @@ async function go(page,arg){
    <li><span class="n">1</span>학교장·기관관리자와 담임·학급관리자 권한을 나누어 운영할 수 있도록 구성합니다</li>
    <li><span class="n">2</span>학년·학교 단위 도입, 다학급, 맞춤 콘텐츠는 별도 문의로 준비합니다</li>
    <li><span class="n">3</span>문의: onlyjdw3831@gmail.com</li></ul></div>
-  <div class="card"><div class="k">🎒 학급코드 없이 개인으로</div><p style="font-size:13px;line-height:1.7;color:#4C5C4C">학급코드가 없어도 이름·PIN만으로 개인 진단을 바로 시작할 수 있어요. 개인 이용자는 무료 진단 3종(고등/중학 계열성향, 초등 진로탐험)을 이용할 수 있습니다. 학급/학교 도입은 학교·기관 전용입니다.</p></div>
+  <div class="card"><div class="k">🎒 학급코드 없이 개인으로</div><p style="font-size:13px;line-height:1.7;color:#4C5C4C">학급코드가 없어도 이름·PIN만으로 개인 진단을 바로 시작할 수 있어요. 개인 이용자는 무료 진단 8종(계열성향·고교 과목추천·학생부 로드맵·공부습관·면접 준비도·고교 유형·초등 진로탐험 등)을 이용할 수 있습니다. 학급/학교 도입은 학교·기관 전용입니다.</p></div>
   <button class="btn" onclick="go(S.token?'dash':'join')">바로 시작하기 ✨</button>
   <div class="linkrow"><a onclick="go('home')">← 처음으로</a> · <a onclick="go('join','individual')">개인으로 시작하기</a></div>`;
  }
@@ -1217,9 +1236,10 @@ async function go(page,arg){
   <div class="linkrow"><a onclick="go('home')">← 처음으로</a></div>`;
   }
   else if(page==='cs'){
-   v.innerHTML=`<h1>문의하기 ✉️</h1><div class="sub">학교·기관 도입, 대량 문의, 기타 궁금한 점을 남겨주시면 확인 후 연락드립니다.</div>
+   v.innerHTML=`<h1>문의·의견 보내기 ✉️</h1><div class="sub">불편한 점, 오류, 기능 제안부터 학교·기관 도입 문의까지 편하게 남겨주세요. 확인 후 연락드립니다.</div>
    <div class="card"><div class="err" id="err"></div>
    <label>문의 유형</label><select id="csType">
+    <option value="product_feedback">제품 피드백·오류 신고·기능 제안</option>
     <option value="school_inquiry">학교·기관 도입 문의</option>
     <option value="pilot_apply">시범 운영 신청</option>
     <option value="bulk_inquiry">대량(학년·전교) 문의</option>
@@ -1297,7 +1317,8 @@ async function go(page,arg){
 async function join(){
  try{
   const j=await api('/student/join',{class_code:$('#jc').value.trim(),name:$('#jn').value.trim(),pin:$('#jp').value.trim(),grade:$('#jg').value});
-  S.token=j.token;localStorage.setItem('myb_token',j.token);S.me=null;go('dash');
+  S.token=j.token;localStorage.setItem('myb_token',j.token);S.me=null;
+  const pend=consumePendingQuiz();if(pend){startQuizFx(pend);}else{go('dash');}
  }catch(e){showErr(e.message)}
 }
 async function submitCs(){
@@ -1321,7 +1342,8 @@ async function joinIndividual(){
  const doJoin=async()=>{
   try{
    const j=await api('/student/join_individual',{name:$('#jn').value.trim(),pin:$('#jp').value.trim(),grade:$('#jg').value});
-   S.token=j.token;localStorage.setItem('myb_token',j.token);S.me=null;go('dash');
+   S.token=j.token;localStorage.setItem('myb_token',j.token);S.me=null;
+   const pend=consumePendingQuiz();if(pend){startQuizFx(pend);}else{go('dash');}
   }catch(e){showErr(e.message)}
  };
  const minorBox=$('#jMinor');
@@ -1743,6 +1765,7 @@ function renderResult(d){
    ${blocks.map(b=>blockHtml(b,'추천 과목 가이드')).join('')}
   <div class="card" style="background:linear-gradient(120deg,#F3F0FF,#EAFBF6);border:1.5px solid #E0DAFB"><div class="k">🗂 계열·학과별 2022 과목 탐색</div><p style="font-size:12.8px;line-height:1.6;color:#4C5C4C;margin-bottom:10px">${pk}계열의 학과를 골라 일반·진로·융합선택 권장 과목을 직접 비교해 보세요.</p><button class="btn small navy" onclick="SEXP.series=null;SEXP.picked=[];go('subjexp',${r.pick})">${pk}계열 학과 과목 탐색하기 →</button></div>
   <div class="card coachnote"><p style="font-size:12.5px;line-height:1.6;color:#5B6270">※ 학교별 개설 과목이 다를 수 있습니다. 최종 선택 전 학교 교육과정 편제표와 담임·진로 선생님 상담을 꼭 거치세요.</p></div>
+  <div class="card" id="subjChatCard"><div class="k">🤖 과목추천 AI 챗봇에게 물어보기</div><p style="font-size:12.5px;line-height:1.6;color:#686D84;margin:0 0 10px">단순 과목명 나열이 아니라, ${esc(st.name)}님의 진단 결과(관심사·역량)에 맞춰 설명해 드려요.</p><div id="subjChatLog" style="max-height:280px;overflow:auto;margin-bottom:8px"></div><div style="display:flex;gap:6px"><input id="subjChatQ" placeholder="예: 왜 이 학과가 추천됐어요?" onkeydown="if(event.key==='Enter')askSubjectChat('${d.attempt.id}')" style="flex:1;padding:9px 10px;border:1px solid #E8E4F8;border-radius:10px;font-size:13px"><button class="btn small" onclick="askSubjectChat('${d.attempt.id}')">질문하기</button></div></div>
   ${resultActions(d,{summary:pk+'계열 추천 과목 조합을 받았어요'})}`;
  }else if(r.kind==='bucketcheck'){
   const blocks=d.blocks||[];
@@ -1823,9 +1846,30 @@ function boot(){
  if(token){S.token=token;try{localStorage.setItem('myb_token',token)}catch(e){}}
  const view=p.get('view');
  if(view==='profile'&&S.token){go('profile');return}
+ // 2026-07-23: SEO/마케팅 랜딩페이지에서 "지금 시작하기"를 누르면 전체 검사 목록(consult)이 아니라
+ // 해당 진단으로 바로 연결되도록 ?view=quiz&slug=XXX 딥링크 지원.
+ if(view==='quiz'){
+  const slug=p.get('slug');
+  if(slug){
+   if(S.token){
+    (async()=>{
+     try{S.me=await api('/me?token='+S.token);setWho();}catch(e){localStorage.removeItem('myb_token');S.token=null}
+     if(S.token){startQuizFx(slug);}else{try{localStorage.setItem('myb_pending_quiz',slug)}catch(e){}go('join','individual');}
+    })();
+    return;
+   }
+   try{localStorage.setItem('myb_pending_quiz',slug)}catch(e){}
+   go('join','individual');return;
+  }
+ }
  if(['join','consult','pricing','coaching','quality','login'].includes(view)){go(view);return}
  if(p.get('code')){go('join');return}
  go('home');
+}
+function consumePendingQuiz(){
+ let slug=null;
+ try{slug=localStorage.getItem('myb_pending_quiz');localStorage.removeItem('myb_pending_quiz');}catch(e){}
+ return slug;
 }
 try{boot()}catch(e){
  const v=document.getElementById('view');

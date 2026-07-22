@@ -575,14 +575,17 @@ Object.assign(EMO,EXTRA_EMO);
 Object.assign(ARTC,{study_manage:['#2D9CDB','#56CCF2'],gifted_ready:['#F2994A','#F2C94C'],mock_exam:['#EB5757','#F2994A'],admission_nav:['#1B2A4A','#6C5CE7'],story_writer:['#BB6BD9','#F299C2'],ai_inquiry:['#00A884','#2D9CDB']});
 Object.assign(PHOTO,{study_manage:'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4',gifted_ready:'https://images.unsplash.com/photo-1531482615713-2afd69097998',mock_exam:'https://images.unsplash.com/photo-1434030216411-0b793f4b4173',admission_nav:'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40',story_writer:'https://images.unsplash.com/photo-1455390582262-044cdead277a',ai_inquiry:'https://images.unsplash.com/photo-1532094349884-543bc11b234d'});
 function gradeLv(g){g=String(g||'');if(g.includes('초'))return'es';if(g.includes('중'))return'ms';if(g.includes('고'))return'hs';return''}
-function vcardHtml(k,d,act,st,i,enabled=true,reason='',lvname='',t=null){
+function vcardHtml(k,d,act,st,i,enabled=true,reason='',lvname='',t=null,plan=null){
  const onclick=enabled?` onclick="${act}('${k}')"`:' aria-disabled="true"';
  const cls=enabled?'vcard':'vcard locked';
  const badge=lvname?esc(lvname)+st:'STEP '+st;
  const chipsHtml=enabled?groupChipsHtml(k,act,t):'';
-  return `<div class="${cls}" data-slug="${k}" style="animation-delay:${i*60}ms"${onclick}><div class="vtop" style="background:linear-gradient(135deg,${(ARTC[k]||['#6C5CE7','#00CEC9']).join(',')})"><img class="vph" loading="lazy" decoding="async" src="${PHOTO[k]||''}?w=640&h=260&fit=crop&q=60&auto=format" onerror="this.remove()" alt=""><div class="vshade"></div><div class="vmed">${ART(k)}</div><span class="stepb">${badge}</span><span class="catb">${d.cat||''}</span>${enabled?'':`<span class="lockb">${esc(reason||'다른 학년')}</span>`}</div><div class="vbody"><h3>${esc(stageTitle(lvname,k,d.title))}</h3><p>${esc(d.desc)}</p><span class="aud2">${esc(d.audience)}</span>${chipsHtml}</div></div>`;
+ // 2026-07-23: 개인(비학급) 무료 이용자에게 어떤 진단이 무료 범위인지 미리 보여주는 배지.
+ // 학급코드로 들어온 학생(plan==='paid', 기본값)에게는 아무 배지도 표시하지 않음(전체 무료라 구분 불필요).
+ const planTag = (plan && plan!=='paid') ? (d.free?'<span class="tag" style="background:#E9FBF3;color:#1E8E4E;margin-left:6px">🆓 개인 무료</span>':'<span class="tag" style="background:#FFF3D6;color:#A8893E;margin-left:6px">🔒 학교 도입 전용</span>') : '';
+  return `<div class="${cls}" data-slug="${k}" style="animation-delay:${i*60}ms"${onclick}><div class="vtop" style="background:linear-gradient(135deg,${(ARTC[k]||['#6C5CE7','#00CEC9']).join(',')})"><img class="vph" loading="lazy" decoding="async" src="${PHOTO[k]||''}?w=640&h=260&fit=crop&q=60&auto=format" onerror="this.remove()" alt=""><div class="vshade"></div><div class="vmed">${ART(k)}</div><span class="stepb">${badge}</span><span class="catb">${d.cat||''}</span>${enabled?'':`<span class="lockb">${esc(reason||'다른 학년')}</span>`}</div><div class="vbody"><h3>${esc(stageTitle(lvname,k,d.title))}${planTag}</h3><p>${esc(d.desc)}</p><span class="aud2">${esc(d.audience)}</span>${chipsHtml}</div></div>`;
 }
-function gridHtml(t,act,grade){
+function gridHtml(t,act,grade,plan){
  let LV=[['es','초등','🌈'],['ms','중학','🌱'],['hs','고등','🎓']];
  let h=`<div class="chips noprint">${['전체','초등','중학','고등'].map((c,i)=>`<button class="chip${i===0?' on':''}" onclick="filterLv(this,'${c}')">${c}</button>`).join('')}</div>`;
  const target=gradeLv(grade);
@@ -593,7 +596,7 @@ function gridHtml(t,act,grade){
   const active=!target||target===lv;
   const extra = lv==='hs' ? `<div class="${active?'vcard':'vcard locked'}" ${active?`onclick="go('majors')"`:'aria-disabled="true"'}><div class="vtop" style="background:linear-gradient(135deg,#0F1530,#3E5C8A)"><div class="vmed">${ART('subject_rec')}</div><span class="stepb">탐색관</span><span class="catb">진학</span>${active?'':'<span class="lockb">다른 학년</span>'}</div><div class="vbody"><h3>학과 탐색관 🏛️</h3><p>7계열 56개 학과 — 설명·인재상·권장과목·진로를 한곳에서</p><span class="aud2">중3·고등</span></div></div><div class="${active?'vcard':'vcard locked'}" ${active?`onclick="go('subjexp')"`:'aria-disabled="true"'}><div class="vtop" style="background:linear-gradient(135deg,#1B2A4A,#00997B)"><div class="vmed">${ART('subject_rec')}</div><span class="stepb">탐색관</span><span class="catb">진학</span>${active?'':'<span class="lockb">다른 학년</span>'}</div><div class="vbody"><h3>2022 과목 탐색 🗂</h3><p>계열 → 학과 선택 → 일반·진로·융합선택 과목 비교</p><span class="aud2">중3·고등</span></div></div>` : '';
   const recBadge = (target&&target===lv) ? '<span class="tag" style="margin-left:6px;background:#FFF3D6;color:#A8893E">✨ 내 학년 추천</span>' : '';
-   h+=`<div class="lvsec" data-lv="${nm}"><div class="wk">${em} ${nm} 로드맵${recBadge} <span>${active?'나의 학년에 맞는 프로그램':'다른 학년 프로그램은 참고용으로 잠겨 있어요'}</span></div><div class="vgrid">${items.map(([k,d],i)=>vcardHtml(k,d,act,displayStep(k,d,lv),i,active,'다른 학년',nm==='중학'?'중등':nm,t)).join('')}${extra}</div></div>`;
+   h+=`<div class="lvsec" data-lv="${nm}"><div class="wk">${em} ${nm} 로드맵${recBadge} <span>${active?'나의 학년에 맞는 프로그램':'다른 학년 프로그램은 참고용으로 잠겨 있어요'}</span></div><div class="vgrid">${items.map(([k,d],i)=>vcardHtml(k,d,act,displayStep(k,d,lv),i,active,'다른 학년',nm==='중학'?'중등':nm,t,plan)).join('')}${extra}</div></div>`;
   }
   return h;
 }
@@ -859,7 +862,7 @@ async function go(page,arg){
    <div class="actionbar noprint"><button class="btn" onclick="go('join')">10초 입장하고 결과 저장하기</button><button class="btn ghost" onclick="go('coaching')">선생님 코칭 보기</button></div>
    <div class="linkrow"><a onclick="go('home')">← 처음으로</a> · <a onclick="go('quality')">신뢰도</a> · <a href="/sample.html">샘플 1분 확인</a></div>`;
   const t=S.tests??(S.tests=(await api('/tests')).tests);
-  $('#tlist').innerHTML=gridHtml(t, S.token?"startQuizFx":"goJoin", S.me&&S.me.grade);
+  $('#tlist').innerHTML=gridHtml(t, S.token?"startQuizFx":"goJoin", S.me&&S.me.grade, S.me&&S.me.plan);
   window.goJoin=()=>go('join');
   window.scrollTo(0,0);
  }
@@ -916,7 +919,7 @@ async function go(page,arg){
    ${nextStepHtml(t,ats,S.me.grade)}
    ${wizEntryCard()}
    <div class="k">진단 시작하기</div>
-   ${gridHtml(t,'startQuizFx',S.me.grade)}
+   ${gridHtml(t,'startQuizFx',S.me.grade,S.me.plan)}
    <div style="height:10px"></div><div style="display:flex;gap:8px;margin-bottom:8px"><button class="btn navy" style="flex:1" onclick="go('mypage')">🏅 마이페이지 (성장·배지)</button><button class="btn ghost" style="flex:1" onclick="go('profile')">📋 통합 성장 리포트</button></div>
    <div style="display:flex;gap:8px;margin-bottom:14px"><button class="btn ghost" style="flex:1" onclick="go('growth')">📈 성장 그래프</button><button class="btn ghost" style="flex:1" onclick="go('cs')">💬 의견·오류 보내기</button></div>
    <div class="k">내 진단 기록</div><div class="card" id="myats"><div class="muted">불러오는 중…</div></div>`;
@@ -1371,7 +1374,25 @@ async function startQuiz(slug){
  }catch(e){}
  go('quiz');
 }
+function planGateModal(msg){
+ const id='pgm'+Date.now();
+ const ov=document.createElement('div');
+ ov.id=id;
+ ov.style.cssText='position:fixed;inset:0;background:rgba(20,20,35,.45);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px';
+ ov.onclick=e=>{if(e.target===ov)ov.remove()};
+ ov.innerHTML=`<div class="card" style="max-width:380px;margin:0"><div class="k">🔒 개인 무료 범위 밖 진단이에요</div><p style="font-size:13.5px;line-height:1.7;color:#4C5C4C;margin:6px 0 14px">${esc(msg)}</p><div style="display:flex;gap:8px"><button class="btn ghost" id="${id}c" style="flex:1">닫기</button><button class="btn navy" style="flex:1" onclick="document.getElementById('${id}').remove();go('pay')">학교 도입 안내</button></div></div>`;
+ document.body.appendChild(ov);
+ document.getElementById(id+'c').onclick=()=>ov.remove();
+}
 function startQuizFx(slug){
+ // 2026-07-23: 개인(비학급) 무료 이용자가 무료 8종 밖 진단을 골랐을 때, 문항을 다 푼 뒤가 아니라
+ // 시작하는 그 순간 바로 안내하도록 변경(이전엔 제출 시점에만 막혀 끝까지 풀고도 결과를 못 받는 문제가 있었음).
+ const plan=S.me&&S.me.plan;
+ const td=S.tests&&S.tests[slug];
+ if(plan&&plan!=='paid'&&td&&!td.free){
+  planGateModal('이 진단은 아직 개인 무료 이용에는 포함되지 않았어요. 지금 개인 무료로 이용 가능한 진단은 계열성향(고등·중학)·과목추천·학생부 로드맵·공부습관·면접 준비도·고교 유형·초등 진로탐험 8종이에요. 학교·학급으로 도입하면 전체 진단을 이용할 수 있어요.');
+  return;
+ }
  const card=document.querySelector(`.vcard[data-slug="${slug}"]:not(.locked)`);
  if(card)card.classList.add('launch');
  try{confetti()}catch(e){}

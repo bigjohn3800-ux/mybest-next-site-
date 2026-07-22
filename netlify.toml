@@ -3,7 +3,45 @@
   publish = "."
   command = ""
 
-# 단일 파일 정적 SPA — 모든 경로를 index.html로
+# 실제 정적 파일은 그대로 서빙(캐치올보다 먼저 매칭돼야 함 — 안 그러면 index.html로 덮어써짐)
+[[redirects]]
+  from = "/privacy.html"
+  to = "/privacy.html"
+  status = 200
+[[redirects]]
+  from = "/terms.html"
+  to = "/terms.html"
+  status = 200
+[[redirects]]
+  from = "/ecommerce.html"
+  to = "/ecommerce.html"
+  status = 200
+[[redirects]]
+  from = "/refund.html"
+  to = "/refund.html"
+  status = 200
+[[redirects]]
+  from = "/admin.html"
+  to = "/admin.html"
+  status = 200
+[[redirects]]
+  from = "/sample.html"
+  to = "/sample.html"
+  status = 200
+[[redirects]]
+  from = "/robots.txt"
+  to = "/robots.txt"
+  status = 200
+[[redirects]]
+  from = "/llms.txt"
+  to = "/llms.txt"
+  status = 200
+[[redirects]]
+  from = "/sitemap.xml"
+  to = "/sitemap.xml"
+  status = 200
+
+# 단일 파일 정적 SPA — 나머지 경로는 index.html로
 [[redirects]]
   from = "/*"
   to = "/index.html"

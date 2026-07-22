@@ -160,6 +160,9 @@ async function viewDash(){
     <button class="btn ghost sm" onclick="openReport()">🏫 학급 종합 리포트</button>
     <button class="btn ghost sm" onclick="exportCsv()">📥 명단 CSV</button>
     <button class="btn ghost sm" onclick="exportResultCsv()">📊 결과값 CSV</button>
+    ${S.role==='super'?'<button class="btn ghost sm" onclick="viewAdmins()">👤 관리자 계정</button>':''}
+    ${(S.role==='super'||S.role==='school')?'<button class="btn ghost sm" onclick="viewAccounts()">👪 학부모 회원</button>':''}
+    <button class="btn ghost sm" onclick="openChangePassword()">🔑 비밀번호</button>
     <button class="btn navy sm" onclick="logout()">로그아웃</button></div>
    <div class="notice noprint"><b>운영 기준</b> · 학생별 결과는 상담 자료로만 활용하고, 계열성향은 전국 규준 기반·체크형은 자가점검 기준으로 구분해 안내하세요.</div>
    <div class="stats" id="stats"></div>
@@ -232,7 +235,6 @@ async function loadDash(){
  const nm=($('#fName')?.value||'').trim();
  let rows=j.students||[];if(nm)rows=rows.filter(r=>(r.name||'').includes(nm));
  S.rows=rows;
- S.classes=j.classes||[];
  try{localStorage.setItem('myb_adm_filters',JSON.stringify({school:body.school,grade:body.grade,code:body.code,name:nm}))}catch(e){}
  const s=j.summary||{};
  $('#stats').innerHTML=[['학생',s.students],['학급',s.classes],['총 응시',s.attempts],['5종+ 완료',s.completed],['평균 완료',s.avg_done]]
@@ -242,7 +244,9 @@ async function loadDash(){
    <td><span class="pbar"><i style="width:${Math.round((r.done/r.total)*100)}%"></i></span> ${r.done}/${r.total}</td>
    <td>${r.attempts}</td><td class="muted">${r.last_at?r.last_at.slice(0,10):'-'}</td>
    <td><span class="tag ${r.plan==='paid'?'paid':'free'}">${r.plan==='paid'?'운영':'기본'}</span></td>
-   <td style="white-space:nowrap"><button class="btn ghost sm" onclick="openStudent('${r.id}')">결과·상담</button> <button class="btn ghost sm" title="학생 정보 수정" onclick="openEditStudent('${r.id}')">✏️</button> <button class="btn ghost sm" title="학생 삭제" onclick="delStudent('${r.id}')">🗑</button></td></tr>`).join('')
+   <td style="white-space:nowrap"><button class="btn ghost sm" onclick="openStudent('${r.id}')">결과·상담</button>
+    <button class="btn ghost sm" onclick="openEditStudent('${r.id}','${esc(r.name).replace(/'/g,"\\'")}','${esc(r.grade||'').replace(/'/g,"\\'")}')" title="수정">✏️</button>
+    <button class="btn ghost sm" onclick="deleteStudent('${r.id}','${esc(r.name).replace(/'/g,"\\'")}')" title="삭제">🗑</button></td></tr>`).join('')
    :`<tr><td colspan="10" class="muted" style="text-align:center;padding:30px">조건에 맞는 학생이 없습니다</td></tr>`;
  $('#cnt').textContent=`총 ${rows.length}명 표시`;
  renderCompare(rows,s);
@@ -375,67 +379,6 @@ async function openStudent(id){
      <div class="meta">${a.created_at.slice(0,10)}</div>
      <div class="kv">${summarize(a.test_slug,a.result)}</div></div>`).join(''):'<div class="muted">아직 응시 기록이 없습니다.</div>'}
   <div class="muted" style="font-size:11px;margin-top:10px">※ 각 진단의 <b>A4·B4 보고서</b>를 새 창에서 열어 바로 인쇄/PDF 저장할 수 있습니다(상담 배포용).</div>`;
-}
-// ── 학생 정보 수정 (웨이브: 회원 관리) ──
-function openEditStudent(id){
- const r=S.rows.find(x=>x.id===id);
- if(!r){alert('학생 정보를 찾을 수 없습니다. 목록을 새로고침하세요.');return;}
- const classes=(S.classes||[]).slice().sort((a,b)=>String(a.name).localeCompare(String(b.name),'ko'));
- const hasCur=classes.some(c=>String(c.id)===String(r.class_id));
- const opts=(hasCur?'':'<option value="" selected>현재 학급 유지</option>')
-  +classes.map(c=>`<option value="${esc(c.id)}"${String(c.id)===String(r.class_id)?' selected':''}>${esc(c.name)} (${esc(c.code)})${c.school?' · '+esc(c.school):''}</option>`).join('');
- $('#sheet').innerHTML=`
-  <div class="topbar"><h2 style="font-size:19px">✏️ 학생 정보 수정</h2><div class="spacer"></div>
-   <button class="btn navy sm noprint" onclick="closeModal()">닫기</button></div>
-  <div class="muted" style="font-size:12.5px;margin-bottom:14px">${esc(r.school||'')} ${esc(r.class_name||'')} · 응시 ${r.attempts||0}건</div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-   <div><label>이름</label><input id="edName" value="${esc(r.name||'')}" maxlength="40"></div>
-   <div><label>학년</label><input id="edGrade" value="${esc(r.grade||'')}" placeholder="예: 1학년 / 중3"></div>
-  </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-   <div><label>소속 학급</label><select id="edClass">${opts}</select></div>
-   <div><label>PIN 재설정</label><input id="edPin" inputmode="numeric" maxlength="4" placeholder="변경 시에만 입력 (4자리)"></div>
-  </div>
-  <div class="err" id="edErr"></div>
-  <button class="btn" style="width:100%;margin-top:6px" onclick="doEditStudent('${esc(r.id)}')">저장</button>
-  <div class="muted" style="font-size:11px;margin-top:10px">※ 학급을 바꾸면 학생이 해당 학급으로 이동합니다. PIN을 비워 두면 기존 PIN이 유지됩니다.</div>`;
- $('#modal').classList.add('open');
-}
-async function doEditStudent(id){
- const name=($('#edName')?.value||'').trim();
- const grade=($('#edGrade')?.value||'').trim();
- const classId=$('#edClass')?.value||'';
- const pin=($('#edPin')?.value||'').trim();
- const errBox=$('#edErr');const showErr=m=>{errBox.textContent=m;errBox.style.display='block';};
- if(!name){showErr('이름을 입력하세요.');return;}
- if(pin&&!/^\d{4}$/.test(pin)){showErr('PIN은 4자리 숫자여야 합니다.');return;}
- const body={token:S.token,student_id:id,name,grade};
- if(classId)body.class_id=classId;
- if(pin)body.pin=pin;
- const btn=event?.target;if(btn)btn.disabled=true;
- try{
-  const j=await api('/student_update',body);
-  if(j.error){showErr(j.error);return;}
-  closeModal();
-  loadDash();
- }catch(e){showErr('네트워크 오류: '+e.message);}
- finally{if(btn)btn.disabled=false;}
-}
-// ── 학생 삭제 ──
-async function delStudent(id){
- const r=S.rows.find(x=>x.id===id);
- if(!r){alert('학생 정보를 찾을 수 없습니다. 목록을 새로고침하세요.');return;}
- const warn=(r.attempts||0)>0
-  ?`'${r.name}' 학생을 삭제합니다.\n\n⚠ 응시 기록 ${r.attempts}건도 함께 삭제되며 복구할 수 없습니다.\n\n계속할까요?`
-  :`'${r.name}' 학생을 삭제합니다. 복구할 수 없습니다.\n\n계속할까요?`;
- if(!confirm(warn))return;
- if(S.deleting)return;S.deleting=true;
- try{
-  const j=await api('/student_delete',{token:S.token,student_id:id});
-  if(j.error){alert('삭제 실패: '+j.error);return;}
-  loadDash();
- }catch(e){alert('네트워크 오류: '+e.message);}
- finally{S.deleting=false;}
 }
 async function openReport(){
  $('#sheet').innerHTML='<div style="padding:34px;text-align:center" class="muted">학급 종합 리포트를 집계하는 중…</div>';
@@ -627,6 +570,232 @@ function exportBulkCsv(){
 }
 function printBulk(){window.print();}
 function closeModal(){$('#modal').classList.remove('open');}
+
+// ── 학생 개별 수정/삭제 ──
+function openEditStudent(id,name,grade){
+ $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">✏️ 학생 정보 수정</h2><div class="spacer"></div><button class="btn navy sm" onclick="closeModal()">닫기</button></div>
+  <label>이름</label><input id="esName" value="${esc(name)}">
+  <div style="height:8px"></div>
+  <label>학년(선택)</label><input id="esGrade" value="${esc(grade||'')}" placeholder="예: 1학년 / 중3">
+  <div style="height:14px"></div>
+  <button class="btn" style="width:100%" onclick="doEditStudent('${id}')">저장</button>
+  <div id="esResult" style="margin-top:10px"></div>`;
+ $('#modal').classList.add('open');
+}
+async function doEditStudent(id){
+ const name=($('#esName')?.value||'').trim();
+ const grade=($('#esGrade')?.value||'').trim();
+ if(!name){$('#esResult').innerHTML='<div class="err" style="display:block">이름을 입력하세요.</div>';return}
+ $('#esResult').innerHTML='<div class="muted" style="font-size:12.5px">저장 중…</div>';
+ const j=await api('/update_student',{token:S.token,student_id:id,name,grade});
+ if(j.error){$('#esResult').innerHTML=`<div class="err" style="display:block">${esc(j.error)}</div>`;return}
+ $('#esResult').innerHTML='<div class="notice" style="background:#F2FBF5;border-color:#CDEBD7">저장되었습니다.</div>';
+ loadDash();
+}
+async function deleteStudent(id,name){
+ if(!confirm(`'${name}' 학생을 삭제하시겠습니까? 응시 기록도 함께 삭제되며 되돌릴 수 없습니다.`))return;
+ const j=await api('/delete_student',{token:S.token,student_id:id});
+ if(j.error){alert('삭제 실패: '+j.error);return}
+ loadDash();
+}
+
+// ── 비밀번호 변경 (본인 / super는 타인 초기화) ──
+function openChangePassword(targetUsername){
+ const isReset=!!targetUsername;
+ $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">🔑 비밀번호 ${isReset?'초기화':'변경'}</h2><div class="spacer"></div><button class="btn navy sm" onclick="closeModal()">닫기</button></div>
+  ${isReset?`<div class="notice"><b>${esc(targetUsername)}</b> 계정의 비밀번호를 초기화합니다.</div>`:''}
+  ${isReset?'':'<label>현재 비밀번호</label><input id="pwOld" type="password"><div style="height:8px"></div>'}
+  <label>새 비밀번호</label><input id="pwNew" type="password" placeholder="4자 이상">
+  <div style="height:8px"></div>
+  <label>새 비밀번호 확인</label><input id="pwNew2" type="password">
+  <div style="height:14px"></div>
+  <button class="btn" style="width:100%" onclick="doChangePassword(${isReset?`'${targetUsername}'`:'null'})">저장</button>
+  <div id="pwResult" style="margin-top:10px"></div>`;
+ $('#modal').classList.add('open');
+}
+async function doChangePassword(targetUsername){
+ const n1=$('#pwNew')?.value||'',n2=$('#pwNew2')?.value||'';
+ if(n1.length<4){$('#pwResult').innerHTML='<div class="err" style="display:block">새 비밀번호는 4자 이상이어야 합니다.</div>';return}
+ if(n1!==n2){$('#pwResult').innerHTML='<div class="err" style="display:block">새 비밀번호가 일치하지 않습니다.</div>';return}
+ const body={token:S.token,new_password:n1};
+ if(targetUsername)body.target_username=targetUsername;else body.old_password=$('#pwOld')?.value||'';
+ $('#pwResult').innerHTML='<div class="muted" style="font-size:12.5px">저장 중…</div>';
+ const j=await api('/change_password',body);
+ if(j.error){$('#pwResult').innerHTML=`<div class="err" style="display:block">${esc(j.error)}</div>`;return}
+ $('#pwResult').innerHTML='<div class="notice" style="background:#F2FBF5;border-color:#CDEBD7">비밀번호가 변경되었습니다.</div>';
+}
+
+// ── 관리자 계정 관리 (super 전용) ──
+function adminTopbar(active){
+ return `<div class="topbar noprint"><div class="logo">MY BEST <span>NEXT</span></div>
+  <span class="rolebadge">${esc(S.name||'관리자')}</span><div class="spacer"></div>
+  <button class="btn ${active==='dash'?'':'ghost'} sm" onclick="viewDash()">📊 대시보드</button>
+  ${S.role==='super'?`<button class="btn ${active==='admins'?'':'ghost'} sm" onclick="viewAdmins()">👤 관리자 계정</button>`:''}
+  ${(S.role==='super'||S.role==='school')?`<button class="btn ${active==='accounts'?'':'ghost'} sm" onclick="viewAccounts()">👪 학부모 회원</button>`:''}
+  ${(S.role==='super'||S.role==='school')?`<button class="btn ${active==='billing'?'':'ghost'} sm" onclick="viewBilling()">💳 매출·구독</button>`:''}
+  <button class="btn ghost sm" onclick="openChangePassword()">🔑 비밀번호</button>
+  <button class="btn navy sm" onclick="logout()">로그아웃</button></div>`;
+}
+async function viewAdmins(){
+ if(S.role!=='super'){alert('권한이 없습니다.');return}
+ $('#app').innerHTML=`<div class="wrap">${adminTopbar('admins')}
+  <div class="card noprint" style="display:flex;justify-content:space-between;align-items:center">
+   <div><b>관리자 계정 관리</b><div class="muted" style="font-size:12px;margin-top:3px">최고관리자(super)·학교관리자(school)·담임(teacher) 계정을 추가·수정·삭제합니다.</div></div>
+   <button class="btn sm" onclick="openAdminForm()">➕ 새 관리자 추가</button></div>
+  <div class="tablewrap"><table><thead><tr><th>아이디</th><th>이름</th><th>역할</th><th>범위</th><th>생성일</th><th></th></tr></thead><tbody id="admTbody"><tr><td colspan="6" class="muted" style="text-align:center;padding:20px">불러오는 중…</td></tr></tbody></table></div>
+ </div>
+ <div class="modal" id="modal" onclick="if(event.target.id==='modal')closeModal()"><div class="sheet" id="sheet"></div></div>`;
+ loadAdmins();
+}
+const ROLE_LABEL={super:'최고관리자',school:'학교관리자',teacher:'담임/학급관리자'};
+async function loadAdmins(){
+ const j=await api('/admins_list',{token:S.token});
+ if(j.error){$('#admTbody').innerHTML=`<tr><td colspan="6" class="err" style="display:table-cell">${esc(j.error)}</td></tr>`;return}
+ S.admins=j.admins||[];
+ $('#admTbody').innerHTML=S.admins.length?S.admins.map(a=>`<tr>
+   <td><b>${esc(a.username)}</b></td><td>${esc(a.display_name||'-')}</td><td>${esc(ROLE_LABEL[a.role]||a.role)}</td><td>${esc(a.scope||'-')}</td>
+   <td class="muted">${a.created_at?a.created_at.slice(0,10):'-'}</td>
+   <td style="white-space:nowrap">
+    <button class="btn ghost sm" onclick="openAdminForm('${a.id}')">수정</button>
+    <button class="btn ghost sm" onclick="openChangePassword('${esc(a.username)}')">비번초기화</button>
+    <button class="btn ghost sm" onclick="doAdminDelete('${a.id}','${esc(a.username)}')">삭제</button></td></tr>`).join('')
+  :`<tr><td colspan="6" class="muted" style="text-align:center;padding:24px">등록된 관리자가 없습니다</td></tr>`;
+}
+function openAdminForm(id){
+ const admin=id?(S.admins||[]).find(x=>String(x.id)===String(id)):null;
+ const isEdit=!!admin;
+ $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">${isEdit?'✏️ 관리자 수정':'➕ 새 관리자 추가'}</h2><div class="spacer"></div><button class="btn navy sm" onclick="closeModal()">닫기</button></div>
+  ${isEdit?'':'<label>아이디</label><input id="admUser" placeholder="로그인 아이디"><div style="height:8px"></div><label>초기 비밀번호</label><input id="admPass" type="password"><div style="height:8px"></div>'}
+  <label>이름(표시명)</label><input id="admName" value="${isEdit?esc(admin.display_name||''):''}">
+  <div style="height:8px"></div>
+  <label>역할</label><select id="admRole">
+   <option value="teacher"${(!isEdit||admin.role==='teacher')?' selected':''}>담임/학급관리자</option>
+   <option value="school"${isEdit&&admin.role==='school'?' selected':''}>학교관리자</option>
+   <option value="super"${isEdit&&admin.role==='super'?' selected':''}>최고관리자</option>
+  </select>
+  <div style="height:8px"></div>
+  <label>범위(scope, 학교명/학급코드 · 선택)</label><input id="admScope" value="${isEdit?esc(admin.scope||''):''}" placeholder="school=학교명 일부 · teacher=학급코드">
+  <div style="height:14px"></div>
+  <button class="btn" style="width:100%" onclick="doAdminSave(${isEdit?`'${admin.id}'`:'null'})">저장</button>
+  <div id="admResult" style="margin-top:10px"></div>`;
+ $('#modal').classList.add('open');
+}
+async function doAdminSave(id){
+ const display_name=($('#admName')?.value||'').trim();
+ const role=$('#admRole')?.value||'teacher';
+ const scope=($('#admScope')?.value||'').trim();
+ $('#admResult').innerHTML='<div class="muted" style="font-size:12.5px">저장 중…</div>';
+ let j;
+ if(id){
+  j=await api('/admin_update',{token:S.token,id,display_name,role,scope:scope||null});
+ }else{
+  const username=($('#admUser')?.value||'').trim();
+  const password=$('#admPass')?.value||'';
+  if(!username||!password){$('#admResult').innerHTML='<div class="err" style="display:block">아이디와 초기 비밀번호를 입력하세요.</div>';return}
+  j=await api('/admin_create',{token:S.token,username,password,role,scope:scope||null,display_name});
+ }
+ if(j.error){$('#admResult').innerHTML=`<div class="err" style="display:block">${esc(j.error)}</div>`;return}
+ $('#admResult').innerHTML='<div class="notice" style="background:#F2FBF5;border-color:#CDEBD7">저장되었습니다.</div>';
+ loadAdmins();
+}
+async function doAdminDelete(id,username){
+ if(!confirm(`관리자 '${username}' 계정을 삭제하시겠습니까?`))return;
+ const j=await api('/admin_delete',{token:S.token,id});
+ if(j.error){alert('삭제 실패: '+j.error);return}
+ loadAdmins();
+}
+
+// ── 학부모/보호자 회원 조회 ──
+async function viewAccounts(){
+ if(S.role!=='super'&&S.role!=='school'){alert('권한이 없습니다.');return}
+ $('#app').innerHTML=`<div class="wrap">${adminTopbar('accounts')}
+  <div class="card noprint"><b>학부모·보호자 회원 조회</b><div class="muted" style="font-size:12px;margin-top:3px">학습자 앱(mybest) 자체 회원가입 계정(myb_accounts) 목록입니다.</div></div>
+  <div class="tablewrap"><table><thead><tr><th>역할</th><th>이름</th><th>이메일</th><th>전화</th><th>연결학생</th><th>가입일</th><th>최근로그인</th><th>상태</th></tr></thead><tbody id="acTbody"><tr><td colspan="8" class="muted" style="text-align:center;padding:20px">불러오는 중…</td></tr></tbody></table></div>
+ </div>
+ <div class="modal" id="modal" onclick="if(event.target.id==='modal')closeModal()"><div class="sheet" id="sheet"></div></div>`;
+ loadAccounts();
+}
+async function loadAccounts(){
+ const j=await api('/accounts_list',{token:S.token});
+ if(j.error){$('#acTbody').innerHTML=`<tr><td colspan="8" class="err" style="display:table-cell">${esc(j.error)}</td></tr>`;return}
+ const rows=j.accounts||[];
+ $('#acTbody').innerHTML=rows.length?rows.map(a=>`<tr>
+   <td>${esc(a.role||'-')}</td><td>${esc(a.display_name||'-')}</td><td>${esc(a.email||'-')}</td><td>${esc(a.phone||'-')}</td>
+   <td class="muted" style="font-size:11px">${esc(a.student_id||'-')}</td>
+   <td class="muted">${a.created_at?a.created_at.slice(0,10):'-'}</td>
+   <td class="muted">${a.last_login_at?a.last_login_at.slice(0,10):'-'}</td>
+   <td>${esc(a.status||'-')}</td></tr>`).join('')
+  :`<tr><td colspan="8" class="muted" style="text-align:center;padding:30px">아직 가입한 학부모·보호자 회원이 없습니다.</td></tr>`;
+}
+
+// ── 매출·구독·만료·사용량 위젯 + 세금계산서 (super/school) ──
+const PLAN_LABEL={class40:'학급 플랜',class100:'학년 플랜'};
+function won(n){return (n||0).toLocaleString('ko-KR')+'원'}
+async function viewBilling(){
+ if(S.role!=='super'&&S.role!=='school'){alert('권한이 없습니다.');return}
+ $('#app').innerHTML=`<div class="wrap">${adminTopbar('billing')}
+  <div class="card noprint"><b>매출·구독 현황</b><div class="muted" style="font-size:12px;margin-top:3px">결제·이용권·만료·사용량 요약과 세금계산서 요청을 관리합니다.</div></div>
+  <div id="widgetGrid" class="qualitygrid" style="margin-bottom:14px"><div class="muted">불러오는 중…</div></div>
+  <div class="card noprint" style="display:flex;justify-content:space-between;align-items:center">
+   <b>세금계산서 요청 내역</b><div class="muted" style="font-size:11.5px">결제완료 주문만 표시됩니다. 발행은 운영자가 외부 계산서 서비스로 처리 후 "발행완료"로 표시합니다.</div></div>
+  <div class="tablewrap"><table><thead><tr><th>주문번호</th><th>학급</th><th>요금제</th><th>금액</th><th>결제일</th><th>계산서 상태</th><th></th></tr></thead><tbody id="taxTbody"><tr><td colspan="7" class="muted" style="text-align:center;padding:20px">불러오는 중…</td></tr></tbody></table></div>
+ </div>
+ <div class="modal" id="modal" onclick="if(event.target.id==='modal')closeModal()"><div class="sheet" id="sheet"></div></div>`;
+ loadBillingWidgets(); loadTaxInvoices();
+}
+async function loadBillingWidgets(){
+ const j=await api('/billing_widgets',{token:S.token});
+ if(j.error){$('#widgetGrid').innerHTML=`<div class="err" style="display:block">${esc(j.error)}</div>`;return}
+ const planRows=Object.entries(j.subscriptions.by_plan||{}).map(([k,v])=>`${esc(PLAN_LABEL[k]||k)} ${v}개`).join(' · ')||'없음';
+ const expD1=(j.expiring.d1||[]).length, expD7=(j.expiring.d7||[]).length;
+ $('#widgetGrid').innerHTML=`
+  <div class="quality"><span class="qbadge ready">매출</span><h3>${won(j.revenue.total_paid)}</h3><p>누적 결제 ${j.revenue.total_paid_count}건 · 이번달 ${won(j.revenue.this_month)}(${j.revenue.this_month_count}건)</p></div>
+  <div class="quality"><span class="qbadge ready">구독/이용권</span><h3>활성 ${j.subscriptions.active_count} / 전체 ${j.subscriptions.total_classes}</h3><p>${esc(planRows)}</p></div>
+  <div class="quality"><span class="qbadge ${expD1?'build':'ready'}">만료 알림</span><h3>D-1: ${expD1}건 · D-7: ${expD7}건</h3><p>${expD7?(j.expiring.d7.map(c=>esc(c.name)+'('+c.expires_at+')').join(', ')):'임박 만료 없음'}</p></div>
+  <div class="quality"><span class="qbadge ready">사용량</span><h3>최근30일 ${j.usage.attempts_30d}건</h3><p>누적 응시 ${j.usage.attempts_total}건</p></div>`;
+}
+async function loadTaxInvoices(){
+ const j=await api('/tax_invoice_list',{token:S.token});
+ if(j.error){$('#taxTbody').innerHTML=`<tr><td colspan="7" class="err" style="display:table-cell">${esc(j.error)}</td></tr>`;return}
+ S.taxOrders=j.orders||[];
+ const statusLabel={none:'미요청',requested:'요청됨',issued:'발행완료'};
+ $('#taxTbody').innerHTML=S.taxOrders.length?S.taxOrders.map(o=>`<tr>
+   <td style="font-size:11px">${esc(o.order_id)}</td><td>${o.class?esc(o.class.name):'-'}</td><td>${esc(PLAN_LABEL[o.plan]||o.plan)}</td>
+   <td>${won(o.amount)}</td><td class="muted">${o.paid_at?o.paid_at.slice(0,10):'-'}</td>
+   <td>${esc(statusLabel[o.tax_invoice_status]||o.tax_invoice_status)}</td>
+   <td style="white-space:nowrap">
+    ${o.tax_invoice_status==='none'?`<button class="btn ghost sm" onclick="openTaxRequestForm('${o.order_id}')">요청 등록</button>`:''}
+    ${o.tax_invoice_status==='requested'&&S.role==='super'?`<button class="btn sm" onclick="doTaxIssue('${o.order_id}')">발행완료 처리</button>`:''}
+   </td></tr>`).join('')
+  :`<tr><td colspan="7" class="muted" style="text-align:center;padding:24px">결제완료 주문이 없습니다</td></tr>`;
+}
+function openTaxRequestForm(orderId){
+ $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">🧾 세금계산서 요청 등록</h2><div class="spacer"></div><button class="btn navy sm" onclick="closeModal()">닫기</button></div>
+  <label>사업자명(상호)</label><input id="taxBizName" placeholder="예: OO중학교">
+  <div style="height:8px"></div>
+  <label>사업자등록번호</label><input id="taxBizRegNo" placeholder="000-00-00000">
+  <div style="height:8px"></div>
+  <label>계산서 수신 이메일</label><input id="taxBizEmail" placeholder="example@school.kr">
+  <div style="height:14px"></div>
+  <button class="btn" style="width:100%" onclick="doTaxRequest('${orderId}')">요청 등록</button>
+  <div id="taxResult" style="margin-top:10px"></div>`;
+ $('#modal').classList.add('open');
+}
+async function doTaxRequest(orderId){
+ const biz_name=($('#taxBizName')?.value||'').trim();
+ const biz_reg_no=($('#taxBizRegNo')?.value||'').trim();
+ const biz_email=($('#taxBizEmail')?.value||'').trim();
+ if(!biz_name||!biz_reg_no||!biz_email){$('#taxResult').innerHTML='<div class="err" style="display:block">모든 항목을 입력하세요.</div>';return}
+ const j=await api('/tax_invoice_request',{token:S.token,order_id:orderId,biz_name,biz_reg_no,biz_email});
+ if(j.error){$('#taxResult').innerHTML=`<div class="err" style="display:block">${esc(j.error)}</div>`;return}
+ closeModal(); loadTaxInvoices();
+}
+async function doTaxIssue(orderId){
+ if(!confirm('이 주문을 세금계산서 발행완료로 표시하시겠습니까? (실제 발행은 외부 계산서 서비스에서 먼저 처리하세요)'))return;
+ const j=await api('/tax_invoice_issue',{token:S.token,order_id:orderId});
+ if(j.error){alert('처리 실패: '+j.error);return}
+ loadTaxInvoices();
+}
 
 if(S.token)viewDash();else viewLogin();
 </script>

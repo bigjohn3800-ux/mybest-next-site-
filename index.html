@@ -653,10 +653,18 @@ function methodNote(slug){
  if(slug==='study'||slug==='subject_rec')return `<div class="methodnote"><b>활용 기준</b> · 이 화면은 심리검사가 아니라 입력값 기반 맞춤 자료입니다. 학교 교육과정과 상담을 함께 확인하세요.</div>`;
  return `<div class="methodnote"><b>활용 기준</b> · 이 결과는 준거참조 자가점검입니다. 점수보다 보완 영역과 이번 주 실천 항목을 중심으로 활용하세요.</div>`;
 }
-function nextStepHtml(t,ats){
+function nextStepHtml(t,ats,grade){
  const done=new Set((ats||[]).map(a=>a.test_slug));
  const order=['hs_series','ms_series','es_dream','subject_rec','roadmap','study','ms_study','interview','future','value_work','track_fit'];
- const pick=order.find(k=>t[k]&&!DISPLAY_HIDDEN.has(k)&&!done.has(k))||Object.keys(t).find(k=>!DISPLAY_HIDDEN.has(k)&&!done.has(k));
+ // 2026-07-22: 학년에 맞지 않는 진단(예: 초등학생에게 고등 계열성향)이 추천되던 문제 수정.
+ // gridHtml과 동일한 gradeLv/displayStep 기준으로 "이 학년대에 실제로 제공되는 진단"만 우선 추천.
+ const lv=gradeLv(grade);
+ const fitsGrade=k=>t[k]&&!DISPLAY_HIDDEN.has(k)&&!done.has(k)&&(!lv||displayStep(k,t[k],lv));
+ let pick=order.find(fitsGrade)||Object.keys(t).find(fitsGrade);
+ if(!pick){ // 학년에 맞는 미완료 진단이 하나도 없으면(=이미 다 함) 학년 무시하고 폴백
+  const fitsAny=k=>t[k]&&!DISPLAY_HIDDEN.has(k)&&!done.has(k);
+  pick=order.find(fitsAny)||Object.keys(t).find(fitsAny);
+ }
  if(!pick)return `<div class="card nextcard"><div class="k">오늘의 다음 STEP</div><p style="font-size:13px;line-height:1.65;color:#4C5C4C">주요 진단을 모두 경험했어요. 한 달 뒤 재진단하면 성장 그래프가 더 선명해집니다.</p><button class="btn small ghost" onclick="go('growth')">성장 변화 보기</button></div>`;
  return `<div class="card nextcard"><div class="k">오늘의 다음 STEP</div><p style="font-size:13px;line-height:1.65;color:#4C5C4C"><b>${esc(t[pick].title)}</b>부터 이어가면 진로·진학 리포트가 더 촘촘해집니다.</p><button class="btn small navy" onclick="startQuizFx('${pick}')">추천 진단 시작</button></div>`;
 }
@@ -886,7 +894,7 @@ async function go(page,arg){
    v.innerHTML=`<h1>안녕, ${esc(S.me.name)}! 👋</h1><div class="sub">${esc(S.me.school||'')} ${esc(S.me.class_name||'')} · 오늘은 어떤 가능성을 열어볼까요?</div>
    ${S.me.gate?`<div class="card" style="background:#FFF3F3;border-color:#F3C0C0;color:#C0392B;font-weight:700">⚠️ ${esc(S.me.gate)} · 기존 결과는 계속 볼 수 있어요</div>`:(S.me.max_uses?`<div class="card" style="background:#F2FBF5;border-color:#CDEBD7;color:#1E8E4E;font-weight:700">🎟️ 남은 진단 이용 ${Math.max(0,S.me.max_uses-(S.me.used||0))}회 / 총 ${S.me.max_uses}회</div>`:'')}
    ${(S.me.assignments&&S.me.assignments.length)?`<div class="card" style="background:#EEF1FF;border-color:#C9D2FF"><div class="k" style="margin-top:0">📌 선생님이 내준 진단</div>${S.me.assignments.map(a=>`<div style="display:flex;align-items:center;gap:8px;margin:6px 0;font-size:13px"><span style="flex:1">${esc(a.test_title||a.test_slug)}${a.due_date?` <span style='color:#8489A3'>· ~${esc(a.due_date)}까지</span>`:''}</span>${a.done?`<b style="color:#1E8E4E">✓ 완료</b>`:`<button class="btn small navy" onclick="startQuizFx('${a.test_slug}')">풀기</button>`}</div>`).join('')}</div>`:''}
-   ${nextStepHtml(t,ats)}
+   ${nextStepHtml(t,ats,S.me.grade)}
    ${wizEntryCard()}
    <div class="k">진단 시작하기</div>
    ${gridHtml(t,'startQuizFx',S.me.grade)}
@@ -953,7 +961,7 @@ async function go(page,arg){
   ${bars.length?`<div class="card"><div class="k">영역별 준비도 (100점 환산)</div>${bars.sort((a,b)=>b.v-a.v).map(b=>`<div style="display:flex;align-items:center;gap:10px;padding:5px 0"><span style="flex:0 0 150px;font-size:12px;font-weight:700">${EMO[b.k]||''} ${esc(b.title)}</span><div class="meter" style="flex:1;margin:0"><i style="width:${b.v}%"></i></div><b style="font-size:12px;width:34px;text-align:right">${b.v}</b></div>`).join('')}</div>`:''}
   ${grow.length?`<div class="card"><div class="k">재진단 추세 — 이전 → 현재</div>${grow.map(g=>`<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px dashed #ECEAFB"><span style="flex:1;font-size:12.5px;font-weight:700">${EMO[g.k]||''} ${esc(t[g.k]?.title||g.k)} <span class="muted" style="font-weight:600">· ${g.n}회</span></span><span class="muted" style="font-size:11.5px">${g.from}점${g.fdt?' ('+g.fdt.slice(5)+')':''}</span><span style="color:#A9ACC4">→</span><b style="font-size:12.5px">${g.to}점${g.tdt?'<span class="muted" style="font-weight:600;font-size:10.5px"> ('+g.tdt.slice(5)+')</span>':''}</b><span class="tag" style="margin:0;${g.d>=0?'background:#E8F8EE;color:#2E7D32':'background:#FFF0F0;color:#C62828'}">${g.d>=0?'▲':'▼'}${Math.abs(g.d)}점</span></div>`).join('')}<button class="btn small ghost noprint" style="margin-top:10px" onclick="go('growth')">📈 성장 그래프 자세히 보기</button></div>`:`<div class="card"><div class="k">재진단 추세</div><p class="muted">같은 진단을 2회 이상 보면 이전→현재 변화가 여기 표시돼요. 한 달 뒤 재진단으로 성장을 확인해 보세요.</p></div>`}
   <div class="card coach" style="background:#F4F1E8;border-color:#E2D9BD"><div class="k">종합 코칭</div><p style="font-size:13px;line-height:1.7">${esc(S.me.name)} 학생은 ${bestSer?'<b>'+bestSer+'계열</b> 성향을 중심으로 ':''}현재 ${done}개 영역을 진단했고 평균 준비도는 <b>${avgAll}점</b>입니다. ${bars.length?'가장 강한 영역은 <b>'+esc(bars[0].title)+'</b>('+bars[0].v+'점)'+(bars.length>1?', 우선 보완 영역은 <b>'+esc(bars[bars.length-1].title)+'</b>('+bars[bars.length-1].v+'점)입니다.':'.'):''} 보완 영역의 맞춤 가이드를 이번 주 실천 목표로 삼고, 한 달 뒤 재진단으로 성장을 확인해 보세요.</p></div>
-  ${nextStepHtml(t,ats)}
+  ${nextStepHtml(t,ats,S.me.grade)}
   <div class="actionbar noprint"><button class="btn navy" onclick="print()">🖨️ A4 한장 리포트 인쇄/PDF</button><button class="btn ghost" onclick="shareProfile()">🔗 통합 리포트 공유</button><button class="btn ghost" onclick="go('dash')">대시보드로</button></div>`;
   if(ser)new Chart($('#pr1'),{type:'radar',data:{labels:ser.result.labels,datasets:[{data:ser.result.scores,fill:true,backgroundColor:'rgba(108,92,231,.16)',borderColor:'#6C5CE7',pointBackgroundColor:'#00CEC9',borderWidth:2}]},options:{plugins:{legend:{display:false}},scales:{r:{beginAtZero:true,ticks:{display:false},pointLabels:{font:{size:11,weight:'700',family:'Pretendard'}}}},animation:false}});
   if(fut)new Chart($('#pr2'),{type:'radar',data:{labels:fut.result.labels,datasets:[{data:fut.result.scores,fill:true,backgroundColor:'rgba(0,206,201,.15)',borderColor:'#00B894',pointBackgroundColor:'#6C5CE7',borderWidth:2}]},options:{plugins:{legend:{display:false}},scales:{r:{beginAtZero:true,max:15,ticks:{display:false},pointLabels:{font:{size:11,weight:'700',family:'Pretendard'}}}},animation:false}});
@@ -1379,7 +1387,7 @@ function renderQuiz(){
  }else if(z.scale==='likert'){
   opts='<div class="lkrow">'+['😴|전혀 아니다','🙁|아닌 편','😐|보통','🙂|그런 편','🤩|매우 그렇다'].map((o,k)=>{const[e,l]=o.split('|');return `<button class="lk" onclick="answer(${k+1})"><span>${e}</span>${l}</button>`}).join('')+'</div>';
  }else{
-  opts=`<div class="ynrow"><button class="yn yes" onclick="answer(1)"><span>✅</span>네, 준비됐어요</button><button class="yn no" onclick="answer(0)"><span>🙏</span>아직이에요</button></div>`;
+  opts=`<div class="ynrow"><button class="yn yes" onclick="answer(1)"><span>⭕</span>네, 맞아요</button><button class="yn no" onclick="answer(0)"><span>❌</span>아니요, 아니에요</button></div>`;
  }
  const pct=Math.round(z.i/total*100);
  v.innerHTML=`<div class="qnum">${esc(z.t.title)}</div>

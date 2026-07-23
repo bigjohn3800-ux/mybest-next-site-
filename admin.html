@@ -122,7 +122,7 @@ const KEY='sb_publishable_z3KmGPFA4RKka5e_tDWD5A_-CUDC7t8';
 const TITLES={es_dream:'초등1. 계열·직업 탐색',es_habit:'초등2. 공부습관',value_work:'직업&능력 진단',gifted_ready:'초등 영재진단&준비',story_writer:'AI 동화작가',ai_inquiry:'AI 과제탐구',hs_series:'고등1. 계열·학과·직업',ms_series:'중등1. 계열·직업·학과',subject_rec:'고등2. 고교학점제 과목추천',study:'고등3. 대학합격 공부진단',ms_study:'중등2. 중학 공부습관',roadmap:'고등4. 학생부 로드맵',inquiry:'고등5. 과제탐구',future:'고등9. 미래·AI 활용역량',hs_essay:'중등4·고등6. 소개서 준비도',interview:'고등7. 대입 면접 준비도',track_fit:'고등10. 전형적합도',ms_hsfit:'중등3. 고교 유형 적합도'};
 const SER=['인문','사회','자연','공학','의생명','교육','예체능'];
 const FUT=['리더십','창의성','문제해결','소통','프로젝트','전략적사고'];
-const S={token:localStorage.getItem('myb_adm_token'),role:localStorage.getItem('myb_adm_role'),name:localStorage.getItem('myb_adm_name'),rows:[],filters:null};
+const S={token:localStorage.getItem('myb_adm_token'),role:localStorage.getItem('myb_adm_role'),name:localStorage.getItem('myb_adm_name'),institutionId:localStorage.getItem('myb_adm_inst')||null,rows:[],filters:null};
 const $=s=>document.querySelector(s);
 const esc=t=>String(t==null?'':t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 async function api(path,bodyObj){const r=await fetch(EP+path,{method:'POST',headers:{'Content-Type':'application/json',apikey:KEY},body:JSON.stringify(bodyObj||{})});return r.json();}
@@ -145,11 +145,15 @@ function viewLogin(msg){
 async function doLogin(){
  const j=await api('/login',{username:$('#u').value.trim(),password:$('#p').value});
  if(j.error){viewLogin(j.error);return;}
- S.token=j.token;S.role=j.role;S.name=j.display_name;
+ // myb-admin v13 /login 응답={token,role,display_name,scope} — institution_id는 포함되지 않음(백엔드 세션이 institution_id를 담지 않음).
+ // school/teacher 역할은 institution_id를 서버가 자체 조회(myInstitutionId)해 admin_create·class_create_inst에는 자동 반영되지만,
+ // ent_inst_get/save처럼 institution_id를 필수 파라미터로 요구하는 API는 클라이언트가 알아야 함 → class_create_inst 응답에서 기회적으로 캡처(아래 doCreateClassInst 참고).
+ S.token=j.token;S.role=j.role;S.name=j.display_name;S.institutionId=j.institution_id||j.institutionId||localStorage.getItem('myb_adm_inst')||null;
  localStorage.setItem('myb_adm_token',j.token);localStorage.setItem('myb_adm_role',j.role);localStorage.setItem('myb_adm_name',j.display_name);
+ if(S.institutionId)localStorage.setItem('myb_adm_inst',S.institutionId);else localStorage.removeItem('myb_adm_inst');
  viewDash();
 }
-function logout(){api('/logout',{token:S.token});localStorage.removeItem('myb_adm_token');localStorage.removeItem('myb_adm_role');localStorage.removeItem('myb_adm_name');S.token=null;viewLogin();}
+function logout(){api('/logout',{token:S.token});localStorage.removeItem('myb_adm_token');localStorage.removeItem('myb_adm_role');localStorage.removeItem('myb_adm_name');localStorage.removeItem('myb_adm_inst');S.token=null;viewLogin();}
 
 async function viewDash(){
  $('#app').innerHTML=`<div class="wrap">
@@ -162,6 +166,9 @@ async function viewDash(){
     <button class="btn ghost sm" onclick="exportCsv()">📥 명단 CSV</button>
     <button class="btn ghost sm" onclick="exportResultCsv()">📊 결과값 CSV</button>
     ${S.role==='super'?'<button class="btn ghost sm" onclick="viewAdmins()">👤 관리자 계정</button>':''}
+    ${S.role==='super'?'<button class="btn ghost sm" onclick="viewInstitutions()">🏢 기관 관리</button>':''}
+    ${S.role==='school'?'<button class="btn ghost sm" onclick="viewInstAdmin()">🏢 기관 설정</button>':''}
+    ${S.role==='teacher'?'<button class="btn ghost sm" onclick="openClassEntitlements()">📋 진단 설정</button>':''}
     ${(S.role==='super'||S.role==='school')?'<button class="btn ghost sm" onclick="viewAccounts()">👪 학부모 회원</button>':''}
     <button class="btn ghost sm" onclick="openChangePassword()">🔑 비밀번호</button>
     <button class="btn ghost sm" onclick="openFeedback()">💬 의견·오류 보내기</button>
@@ -724,6 +731,9 @@ function adminTopbar(active){
   <span class="rolebadge">${esc(S.name||'관리자')}</span><div class="spacer"></div>
   <button class="btn ${active==='dash'?'':'ghost'} sm" onclick="viewDash()">📊 대시보드</button>
   ${S.role==='super'?`<button class="btn ${active==='admins'?'':'ghost'} sm" onclick="viewAdmins()">👤 관리자 계정</button>`:''}
+  ${S.role==='super'?`<button class="btn ${active==='inst'?'':'ghost'} sm" onclick="viewInstitutions()">🏢 기관 관리</button>`:''}
+  ${S.role==='school'?`<button class="btn ${active==='inst'?'':'ghost'} sm" onclick="viewInstAdmin()">🏢 기관 설정</button>`:''}
+  ${S.role==='teacher'?`<button class="btn ghost sm" onclick="openClassEntitlements()">📋 진단 설정</button>`:''}
   ${(S.role==='super'||S.role==='school')?`<button class="btn ${active==='accounts'?'':'ghost'} sm" onclick="viewAccounts()">👪 학부모 회원</button>`:''}
   ${(S.role==='super'||S.role==='school')?`<button class="btn ${active==='billing'?'':'ghost'} sm" onclick="viewBilling()">💳 매출·구독</button>`:''}
   <button class="btn ghost sm" onclick="openChangePassword()">🔑 비밀번호</button>
@@ -733,14 +743,14 @@ async function viewAdmins(){
  if(S.role!=='super'){alert('권한이 없습니다.');return}
  $('#app').innerHTML=`<div class="wrap">${adminTopbar('admins')}
   <div class="card noprint" style="display:flex;justify-content:space-between;align-items:center">
-   <div><b>관리자 계정 관리</b><div class="muted" style="font-size:12px;margin-top:3px">최고관리자(super)·학교관리자(school)·담임(teacher) 계정을 추가·수정·삭제합니다.</div></div>
+   <div><b>관리자 계정 관리</b><div class="muted" style="font-size:12px;margin-top:3px">최고관리자(super)·기관관리자(school)·담임(teacher) 계정을 추가·수정·삭제합니다.</div></div>
    <button class="btn sm" onclick="openAdminForm()">➕ 새 관리자 추가</button></div>
   <div class="tablewrap"><table><thead><tr><th>아이디</th><th>이름</th><th>역할</th><th>범위</th><th>생성일</th><th></th></tr></thead><tbody id="admTbody"><tr><td colspan="6" class="muted" style="text-align:center;padding:20px">불러오는 중…</td></tr></tbody></table></div>
  </div>
  <div class="modal" id="modal" onclick="if(event.target.id==='modal')closeModal()"><div class="sheet" id="sheet"></div></div>`;
  loadAdmins();
 }
-const ROLE_LABEL={super:'최고관리자',school:'학교관리자',teacher:'담임/학급관리자'};
+const ROLE_LABEL={super:'최고관리자',school:'기관관리자',teacher:'담임/학급관리자'};
 async function loadAdmins(){
  const j=await api('/admins_list',{token:S.token});
  if(j.error){$('#admTbody').innerHTML=`<tr><td colspan="6" class="err" style="display:table-cell">${esc(j.error)}</td></tr>`;return}
@@ -763,7 +773,7 @@ function openAdminForm(id){
   <div style="height:8px"></div>
   <label>역할</label><select id="admRole">
    <option value="teacher"${(!isEdit||admin.role==='teacher')?' selected':''}>담임/학급관리자</option>
-   <option value="school"${isEdit&&admin.role==='school'?' selected':''}>학교관리자</option>
+   <option value="school"${isEdit&&admin.role==='school'?' selected':''}>기관관리자</option>
    <option value="super"${isEdit&&admin.role==='super'?' selected':''}>최고관리자</option>
   </select>
   <div style="height:8px"></div>
@@ -888,6 +898,277 @@ async function doTaxIssue(orderId){
  const j=await api('/tax_invoice_issue',{token:S.token,order_id:orderId});
  if(j.error){alert('처리 실패: '+j.error);return}
  loadTaxInvoices();
+}
+
+// ══════════════════ 기관 계층 관리 (super:기관 관리 / school=기관관리자:기관 설정 / teacher:학급 진단 설정) ══════════════════
+const ENT_SLUGS=Object.keys(TITLES);
+const GRADE_GROUP_LABEL={es:'초등',ms:'중등',hs:'고등'};
+function entRow(slug,e,capNoteHtml){
+ e=e||{};
+ return `<tr data-slug="${esc(slug)}">
+  <td>${esc(TITLES[slug]||slug)}</td>
+  <td style="text-align:center"><input type="checkbox" class="entAllow" style="width:auto" ${e.allowed!==false?'checked':''}></td>
+  <td><input type="number" class="entMax" value="${e.max_attempts_per_student??''}" min="0" placeholder="제한없음"></td>
+  <td><input type="date" class="entStart" value="${esc(e.usage_start||'')}"></td>
+  <td><input type="date" class="entEnd" value="${esc(e.usage_end||'')}"></td>
+  ${capNoteHtml!==undefined?`<td class="muted" style="font-size:11px">${capNoteHtml}</td>`:''}
+ </tr>`;
+}
+function readEntRows(sel){
+ return [...document.querySelectorAll(sel)].map(tr=>({
+  test_slug:tr.dataset.slug,
+  allowed:tr.querySelector('.entAllow').checked,
+  max_attempts_per_student:tr.querySelector('.entMax').value?+tr.querySelector('.entMax').value:null,
+  usage_start:tr.querySelector('.entStart').value||null,
+  usage_end:tr.querySelector('.entEnd').value||null
+ }));
+}
+
+// ── super: 기관 목록·생성·수정·통계 ──
+async function viewInstitutions(){
+ if(S.role!=='super'){alert('권한이 없습니다.');return}
+ $('#app').innerHTML=`<div class="wrap">${adminTopbar('inst')}
+  <div class="card noprint" style="display:flex;justify-content:space-between;align-items:center">
+   <div><b>기관 관리</b><div class="muted" style="font-size:12px;margin-top:3px">학교·기관 단위 계정, 학급, 진단 이용범위를 관리합니다.</div></div>
+   <button class="btn sm" onclick="openInstForm()">➕ 새 기관 추가</button></div>
+  <div class="tablewrap"><table><thead><tr><th>기관명</th><th>유형</th><th>학년그룹</th><th>학급수</th><th>학생수</th><th>이용기간</th><th></th></tr></thead>
+   <tbody id="instTbody"><tr><td colspan="7" class="muted" style="text-align:center;padding:20px">불러오는 중…</td></tr></tbody></table></div>
+ </div>
+ <div class="modal" id="modal" onclick="if(event.target.id==='modal')closeModal()"><div class="sheet" id="sheet"></div></div>`;
+ loadInstitutions();
+}
+async function loadInstitutions(){
+ const j=await api('/inst_list',{token:S.token});
+ if(j.error){$('#instTbody').innerHTML=`<tr><td colspan="7" class="err" style="display:table-cell">${esc(j.error)}</td></tr>`;return}
+ S.insts=j.institutions||[];
+ $('#instTbody').innerHTML=S.insts.length?S.insts.map(o=>`<tr>
+   <td><b>${esc(o.name)}</b></td><td>${esc(o.type||'-')}</td>
+   <td>${(o.school_level_groups||[]).map(g=>esc(GRADE_GROUP_LABEL[g]||g)).join('·')||'-'}</td>
+   <td>${o.class_count??'-'}</td><td>${o.student_count??'-'}</td>
+   <td class="muted" style="font-size:11.5px">${esc(o.usage_start||'-')} ~ ${esc(o.usage_end||'-')}</td>
+   <td style="white-space:nowrap">
+    <button class="btn ghost sm" onclick="openInstForm('${o.id}')">수정</button>
+    <button class="btn ghost sm" onclick="openInstStats('${o.id}')">📊 통계</button></td></tr>`).join('')
+  :`<tr><td colspan="7" class="muted" style="text-align:center;padding:24px">등록된 기관이 없습니다</td></tr>`;
+}
+function openInstForm(id){
+ const inst=id?(S.insts||[]).find(x=>String(x.id)===String(id)):null;
+ const isEdit=!!inst;
+ const gg=new Set(inst?.school_level_groups||[]);
+ $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">${isEdit?'✏️ 기관 수정':'➕ 새 기관 추가'}</h2><div class="spacer"></div><button class="btn navy sm" onclick="closeModal()">닫기</button></div>
+  <label>기관명</label><input id="iName" value="${isEdit?esc(inst.name||''):''}" placeholder="예: 마이베스트고등학교">
+  <div style="height:8px"></div>
+  <label>유형</label><select id="iType">
+   <option value="school"${(!isEdit||inst?.type==='school')?' selected':''}>학교</option>
+   <option value="academy"${isEdit&&inst?.type==='academy'?' selected':''}>학원</option>
+   <option value="etc"${isEdit&&inst?.type==='etc'?' selected':''}>기타</option>
+  </select>
+  <div style="height:8px"></div>
+  <label>학년그룹(복수선택)</label>
+  <div style="display:flex;gap:14px;padding:4px 2px">
+   <label style="display:flex;align-items:center;gap:5px;font-weight:600"><input type="checkbox" id="iGgEs" style="width:auto" ${gg.has('es')?'checked':''}>초등(es)</label>
+   <label style="display:flex;align-items:center;gap:5px;font-weight:600"><input type="checkbox" id="iGgMs" style="width:auto" ${gg.has('ms')?'checked':''}>중등(ms)</label>
+   <label style="display:flex;align-items:center;gap:5px;font-weight:600"><input type="checkbox" id="iGgHs" style="width:auto" ${gg.has('hs')?'checked':''}>고등(hs)</label>
+  </div>
+  <div style="height:8px"></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+   <div><label>이용 시작일</label><input id="iStart" type="date" value="${isEdit?esc(inst.usage_start||''):''}"></div>
+   <div><label>이용 종료일</label><input id="iEnd" type="date" value="${isEdit?esc(inst.usage_end||''):''}"></div>
+  </div>
+  <div style="height:8px"></div>
+  <label>담당 이메일</label><input id="iEmail" value="${isEdit?esc(inst.contact_email||''):''}" placeholder="example@school.kr">
+  <div style="height:8px"></div>
+  <label>메모</label><input id="iMemo" value="${isEdit?esc(inst.memo||''):''}" placeholder="선택 입력">
+  <div style="height:14px"></div>
+  <button class="btn" style="width:100%" onclick="doInstSave(${isEdit?`'${inst.id}'`:'null'})">저장</button>
+  <div id="iResult" style="margin-top:10px"></div>`;
+ $('#modal').classList.add('open');
+}
+async function doInstSave(id){
+ const name=($('#iName')?.value||'').trim();
+ if(!name){$('#iResult').innerHTML='<div class="err" style="display:block">기관명을 입력하세요.</div>';return}
+ const school_level_groups=[['iGgEs','es'],['iGgMs','ms'],['iGgHs','hs']].filter(([elId])=>$('#'+elId)?.checked).map(([,v])=>v);
+ const fields={name,type:$('#iType')?.value||'school',school_level_groups,
+  usage_start:$('#iStart')?.value||null,usage_end:$('#iEnd')?.value||null,
+  contact_email:($('#iEmail')?.value||'').trim()||null,memo:($('#iMemo')?.value||'').trim()||null};
+ // myb-admin v13: /inst_create는 필드를 top-level로, /inst_update는 {id, patch:{...}} 형태로 받는다(계약 상이).
+ const body=id?{token:S.token,id,patch:fields}:{token:S.token,...fields};
+ $('#iResult').innerHTML='<div class="muted" style="font-size:12.5px">저장 중…</div>';
+ const j=await api(id?'/inst_update':'/inst_create',body);
+ if(j.error){$('#iResult').innerHTML=`<div class="err" style="display:block">${esc(j.error)}</div>`;return}
+ $('#iResult').innerHTML='<div class="notice" style="background:#F2FBF5;border-color:#CDEBD7">저장되었습니다.</div>';
+ loadInstitutions();
+}
+async function openInstStats(id){
+ const inst=(S.insts||[]).find(x=>String(x.id)===String(id));
+ $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">📊 ${esc(inst?.name||'기관')} 통계</h2><div class="spacer"></div><button class="btn navy sm" onclick="closeModal()">닫기</button></div><div class="muted" style="padding:20px;text-align:center">불러오는 중…</div>`;
+ $('#modal').classList.add('open');
+ const j=await api('/inst_stats',{token:S.token,id});
+ if(j.error){$('#sheet').innerHTML+=`<div class="err" style="display:block;margin-top:10px">${esc(j.error)}</div>`;return}
+ // myb-admin v13 실제 응답: {ok,stats:{classes:[{id,name,student_count,attempt_count}],totals:{students,attempts},per_test:[{test_slug,count}]}}
+ const s=j.stats||{};
+ const classes=s.classes||[];
+ const totals=s.totals||{};
+ const perTest=s.per_test||[];
+ const stats=[['학급',classes.length||'-'],['학생',totals.students??'-'],['총 응시',totals.attempts??'-']];
+ $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">📊 ${esc(inst?.name||'기관')} 통계</h2><div class="spacer"></div><button class="btn navy sm" onclick="closeModal()">닫기</button></div>
+  <div class="stats" style="grid-template-columns:repeat(3,1fr)">${stats.map(([l,v])=>`<div class="stat"><div class="v">${esc(v)}</div><div class="l">${esc(l)}</div></div>`).join('')}</div>
+  ${classes.length?`<div class="tablewrap" style="margin-top:12px"><table><thead><tr><th>학급</th><th>학생수</th><th>응시</th></tr></thead><tbody>${classes.map(c=>`<tr><td>${esc(c.name||'-')}</td><td>${c.student_count??'-'}</td><td>${c.attempt_count??'-'}</td></tr>`).join('')}</tbody></table></div>`:''}
+  ${perTest.length?`<div class="tablewrap" style="margin-top:12px"><table><thead><tr><th>진단</th><th>응시수</th></tr></thead><tbody>${perTest.map(p=>`<tr><td>${esc(TITLES[p.test_slug]||p.test_slug)}</td><td>${p.count??'-'}</td></tr>`).join('')}</tbody></table></div>`:''}`;
+}
+
+// ── school(기관관리자): 담임 초대 · 학급 생성 · 진단별 설정 · 학급별 통계 ──
+async function viewInstAdmin(){
+ if(S.role!=='school'){alert('권한이 없습니다.');return}
+ $('#app').innerHTML=`<div class="wrap">${adminTopbar('inst')}
+  <div class="card noprint"><b>기관 설정</b><div class="muted" style="font-size:12px;margin-top:3px">담임 초대, 학급 발급, 진단별 이용 설정을 관리합니다.</div></div>
+  <div class="card">
+   <div style="margin-bottom:10px"><b>👤 담임 초대</b></div>
+   <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:end">
+    <div><label>아이디</label><input id="tiUser" placeholder="로그인 아이디"></div>
+    <div><label>이름(표시명)</label><input id="tiName" placeholder="예: 김담임"></div>
+    <div><label>초기 비밀번호(비우면 자동생성)</label><input id="tiPass" type="password" placeholder="선택 입력"></div>
+    <div><button class="btn" style="width:100%" onclick="doInviteTeacher()">초대</button></div>
+   </div>
+   <div id="tiResult" style="margin-top:10px"></div>
+  </div>
+  <div class="card">
+   <div style="margin-bottom:10px"><b>🏫 학급 생성</b></div>
+   <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end">
+    <div><label>학급명</label><input id="ciName" placeholder="예: 3학년 1반"></div>
+    <div><label>학년</label><input id="ciGrade" placeholder="예: 3학년"></div>
+    <div><button class="btn" style="width:100%" onclick="doCreateClassInst()">발급</button></div>
+   </div>
+   <div id="ciResult" style="margin-top:10px"></div>
+  </div>
+  <div class="card">
+   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><b>📋 진단별 설정</b><span class="muted" style="font-size:11.5px">기관 전체에 적용되는 허용·횟수·이용기간 상한입니다.</span></div>
+   <div class="tablewrap" id="entInstWrap"><div class="muted" style="text-align:center;padding:20px">불러오는 중…</div></div>
+   <button class="btn sm" style="margin-top:10px" onclick="doSaveInstEntitlements()">저장</button>
+   <div id="entInstResult" style="margin-top:10px"></div>
+  </div>
+  <div class="card">
+   <div style="margin-bottom:10px"><b>📊 학급별 통계</b></div>
+   <div class="tablewrap" id="instClassStatsWrap"><div class="muted" style="text-align:center;padding:20px">불러오는 중…</div></div>
+  </div>
+ </div>
+ <div class="modal" id="modal" onclick="if(event.target.id==='modal')closeModal()"><div class="sheet" id="sheet"></div></div>`;
+ loadInstEntitlements();
+ loadInstClassStats();
+}
+async function doInviteTeacher(){
+ const username=($('#tiUser')?.value||'').trim();
+ const display_name=($('#tiName')?.value||'').trim();
+ let password=$('#tiPass')?.value||'';
+ if(!username){$('#tiResult').innerHTML='<div class="err" style="display:block">아이디를 입력하세요.</div>';return}
+ if(!password)password=Math.random().toString(36).slice(-4)+Math.random().toString(36).slice(-4);
+ $('#tiResult').innerHTML='<div class="muted" style="font-size:12.5px">초대 처리 중…</div>';
+ const j=await api('/admin_create',{token:S.token,username,password,role:'teacher',display_name,institution_id:S.institutionId||null});
+ if(j.error){$('#tiResult').innerHTML=`<div class="err" style="display:block">${esc(j.error)}</div>`;return}
+ $('#tiResult').innerHTML=`<div class="notice" style="background:#F2FBF5;border-color:#CDEBD7"><b>초대 완료</b> — 아래 계정 정보를 담임에게 전달하세요.<br>
+  아이디 <b>${esc(username)}</b> · 초기 비밀번호 <b>${esc(password)}</b>
+  <div style="margin-top:8px"><button class="btn ghost sm" onclick="navigator.clipboard&&navigator.clipboard.writeText('아이디: ${esc(username)} / 초기비밀번호: ${esc(password)}')">📋 복사</button></div></div>`;
+ $('#tiUser').value='';$('#tiName').value='';$('#tiPass').value='';
+}
+async function doCreateClassInst(){
+ const name=($('#ciName')?.value||'').trim();
+ const grade=($('#ciGrade')?.value||'').trim();
+ if(!name){$('#ciResult').innerHTML='<div class="err" style="display:block">학급명을 입력하세요.</div>';return}
+ $('#ciResult').innerHTML='<div class="muted" style="font-size:12.5px">발급 중…</div>';
+ // myb-admin v13: institution_id는 body로 보내도 school/teacher 역할은 서버가 자체 institution_id로 강제 대입(무시)한다.
+ const j=await api('/class_create_inst',{token:S.token,institution_id:S.institutionId||null,name,grade});
+ if(j.error){$('#ciResult').innerHTML=`<div class="err" style="display:block">${esc(j.error)}</div>`;return}
+ const c=j.class||{};
+ const pin=j.teacher_pin||''; // 응답 최상위 teacher_pin(평문). class 객체 안에는 없음.
+ if(c.institution_id&&!S.institutionId){S.institutionId=c.institution_id;localStorage.setItem('myb_adm_inst',S.institutionId);} // institution_id 기회적 캡처(로그인 응답에 없으므로)
+ $('#ciResult').innerHTML=`<div class="notice" style="background:#F2FBF5;border-color:#CDEBD7"><b>발급 완료</b><br>
+  <div style="display:flex;gap:18px;flex-wrap:wrap;margin:8px 0">
+   <div><span class="muted" style="font-size:11.5px">학급코드</span><div style="font-size:26px;font-weight:900;letter-spacing:.14em;color:var(--navy)">${esc(c.code||'-')}</div></div>
+   <div><span class="muted" style="font-size:11.5px">교사 PIN</span><div style="font-size:26px;font-weight:900;letter-spacing:.14em;color:var(--vio)">${esc(pin||'-')}</div></div>
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost sm" onclick="navigator.clipboard&&navigator.clipboard.writeText('학급코드: ${esc(c.code||'')} / PIN: ${esc(pin)}')">📋 복사</button></div>
+  <div class="repnote">※ PIN은 이 화면에서 1회만 표시됩니다. 담임에게 즉시 전달하세요.</div></div>`;
+ $('#ciName').value='';$('#ciGrade').value='';
+ loadInstClassStats();
+ loadInstEntitlements(); // institutionId를 방금 확보했을 수 있으므로 재시도
+}
+async function loadInstEntitlements(){
+ const wrap=$('#entInstWrap');if(!wrap)return;
+ if(!S.institutionId){wrap.innerHTML='<div class="muted" style="text-align:center;padding:20px">기관 ID를 아직 확인할 수 없습니다. 먼저 위에서 학급을 1개 발급하면 자동으로 확인됩니다.</div>';return}
+ const j=await api('/ent_inst_get',{token:S.token,institution_id:S.institutionId});
+ if(j.error){wrap.innerHTML=`<div class="err" style="display:block">${esc(j.error)}</div>`;return}
+ const list=j.entitlements||[];
+ const map=new Map(list.map(e=>[e.test_slug,e]));
+ wrap.innerHTML=`<table><thead><tr><th>진단</th><th>허용</th><th>1인당 횟수</th><th>시작일</th><th>종료일</th></tr></thead>
+  <tbody>${ENT_SLUGS.map(slug=>entRow(slug,map.get(slug))).join('')}</tbody></table>`;
+}
+async function doSaveInstEntitlements(){
+ if(!S.institutionId){$('#entInstResult').innerHTML='<div class="err" style="display:block">기관 ID를 아직 확인할 수 없습니다. 먼저 학급을 1개 발급하세요.</div>';return}
+ const entitlements=readEntRows('#entInstWrap tr[data-slug]');
+ $('#entInstResult').innerHTML='<div class="muted" style="font-size:12.5px">저장 중…</div>';
+ const j=await api('/ent_inst_save',{token:S.token,institution_id:S.institutionId,entitlements});
+ if(j.error){$('#entInstResult').innerHTML=`<div class="err" style="display:block">${esc(j.error)}</div>`;return}
+ $('#entInstResult').innerHTML='<div class="notice" style="background:#F2FBF5;border-color:#CDEBD7">저장되었습니다.</div>';
+}
+async function loadInstClassStats(){
+ const wrap=$('#instClassStatsWrap');if(!wrap)return;
+ const j=await api('/overview',{token:S.token});
+ if(j.error){wrap.innerHTML=`<div class="err" style="display:block">${esc(j.error)}</div>`;return}
+ const groups=aggClasses(j.students||[]);
+ wrap.innerHTML=groups.length?`<table><thead><tr><th>학급</th><th>학생수</th><th>총응시</th><th>평균완료</th><th>완료율</th></tr></thead>
+  <tbody>${groups.map(g=>`<tr><td>${esc(g.cls)}</td><td>${g.n}</td><td>${g.attempts}</td><td>${g.avgDone}</td><td>${g.rate}%</td></tr>`).join('')}</tbody></table>`
+  :`<div class="muted" style="text-align:center;padding:20px">등록된 학급이 없습니다</div>`;
+}
+
+// ── teacher: 자기 학급 진단별 조정(ent_class_get/save, 기관 상한 표시) ──
+async function openClassEntitlements(){
+ const classes=S.filters?.classes||[];
+ if(!classes.length){alert('학급 정보를 찾을 수 없습니다.');return}
+ $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">📋 진단별 설정</h2><div class="spacer"></div><button class="btn navy sm" onclick="closeModal()">닫기</button></div>
+  ${classes.length>1?`<label>학급 선택</label><select id="ceClass" onchange="loadClassEntitlements(this.value)">${classes.map(c=>`<option value="${esc(c.id)}">${esc(c.name)} (${esc(c.code)})</option>`).join('')}</select><div style="height:10px"></div>`:''}
+  <div class="tablewrap" id="entClassWrap"><div class="muted" style="text-align:center;padding:20px">불러오는 중…</div></div>
+  <button class="btn sm" style="margin-top:10px" onclick="doSaveClassEntitlements()">저장</button>
+  <div id="entClassResult" style="margin-top:10px"></div>`;
+ $('#modal').classList.add('open');
+ loadClassEntitlements(classes[0].id);
+}
+async function loadClassEntitlements(classId){
+ S.curClassId=classId;
+ const wrap=$('#entClassWrap');if(!wrap)return;
+ wrap.innerHTML='<div class="muted" style="text-align:center;padding:20px">불러오는 중…</div>';
+ const j=await api('/ent_class_get',{token:S.token,class_id:classId});
+ if(j.error){wrap.innerHTML=`<div class="err" style="display:block">${esc(j.error)}</div>`;return}
+ const capMap=new Map((j.inst_caps||[]).map(e=>[e.test_slug,e]));
+ const map=new Map((j.class_entitlements||[]).map(e=>[e.test_slug,e]));
+ wrap.innerHTML=`<table><thead><tr><th>진단</th><th>허용</th><th>1인당 횟수</th><th>시작일</th><th>종료일</th><th>기관 상한</th></tr></thead>
+  <tbody>${ENT_SLUGS.map(slug=>{
+    const cap=capMap.get(slug);
+    const capNote=cap?`기관 상한: ${cap.max_attempts_per_student??'제한없음'}회 / ${cap.usage_end?('~'+cap.usage_end):'기간무제한'}`:'-';
+    return entRow(slug,map.get(slug),capNote);
+  }).join('')}</tbody></table>`;
+}
+async function doSaveClassEntitlements(){
+ const classId=S.curClassId;
+ const rows=[...document.querySelectorAll('#entClassWrap tr[data-slug]')];
+ const entitlements=readEntRows('#entClassWrap tr[data-slug]');
+ $('#entClassResult').innerHTML='<div class="muted" style="font-size:12.5px">저장 중…</div>';
+ const j=await api('/ent_class_save',{token:S.token,class_id:classId,entitlements});
+ if(j.error){$('#entClassResult').innerHTML=`<div class="err" style="display:block">${esc(j.error)}</div>`;return}
+ if(j.ok===false&&j.violations&&j.violations.length){
+  const vMap=new Map(j.violations.map(v=>[v.test_slug,v.reason]));
+  rows.forEach(tr=>{
+   const old=tr.querySelector('.rowerrmsg');if(old)old.remove();
+   const reason=vMap.get(tr.dataset.slug);
+   if(reason){
+    const box=document.createElement('div');
+    box.className='rowerrmsg';box.style.cssText='color:#C62828;font-size:11px;margin-top:2px';box.textContent=reason;
+    (tr.querySelector('td:last-child')||tr.lastElementChild).appendChild(box);
+   }
+  });
+  $('#entClassResult').innerHTML='<div class="err" style="display:block">일부 항목이 기관 상한을 초과해 저장하지 못했습니다. 빨간 안내를 확인하세요.</div>';
+  return;
+ }
+ $('#entClassResult').innerHTML='<div class="notice" style="background:#F2FBF5;border-color:#CDEBD7">저장되었습니다.</div>';
 }
 
 if(S.token)viewDash();else viewLogin();

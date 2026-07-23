@@ -583,7 +583,16 @@ function vcardHtml(k,d,act,st,i,enabled=true,reason='',lvname='',t=null,plan=nul
  // 2026-07-23: 개인(비학급) 무료 이용자에게 어떤 진단이 무료 범위인지 미리 보여주는 배지.
  // 학급코드로 들어온 학생(plan==='paid', 기본값)에게는 아무 배지도 표시하지 않음(전체 무료라 구분 불필요).
  const planTag = (plan && plan!=='paid') ? (d.free?'<span class="tag" style="background:#E9FBF3;color:#1E8E4E;margin-left:6px">🆓 개인 무료</span>':'<span class="tag" style="background:#FFF3D6;color:#A8893E;margin-left:6px">🔒 학교 도입 전용</span>') : '';
-  return `<div class="${cls}" data-slug="${k}" style="animation-delay:${i*60}ms"${onclick}><div class="vtop" style="background:linear-gradient(135deg,${(ARTC[k]||['#6C5CE7','#00CEC9']).join(',')})"><img class="vph" loading="lazy" decoding="async" src="${PHOTO[k]||''}?w=640&h=260&fit=crop&q=60&auto=format" onerror="this.remove()" alt=""><div class="vshade"></div><div class="vmed">${ART(k)}</div><span class="stepb">${badge}</span><span class="catb">${d.cat||''}</span>${enabled?'':`<span class="lockb">${esc(reason||'다른 학년')}</span>`}</div><div class="vbody"><h3>${esc(stageTitle(lvname,k,d.title))}${planTag}</h3><p>${esc(d.desc)}</p><span class="aud2">${esc(d.audience)}</span>${chipsHtml}</div></div>`;
+ // 2026-07-23: v30 entitlement(ent) 배지 — 학급/기관 단위 사용기간·횟수·허용여부. planTag(개인계정 FREE_SLUGS)와 로직 완전 분리, d.ent 있을 때만 표시(레거시 응답은 무동작).
+ const entTag = (function(){
+  if(!d.ent) return '';
+  if(d.ent.allowed===false) return '<span class="tag" style="background:#FDEAEA;color:#C0392B;margin-left:6px">🔒 지금 이용 불가</span>';
+  const parts=[];
+  if(typeof d.ent.remaining==='number') parts.push('남은 '+d.ent.remaining+'회');
+  if(d.ent.until) parts.push('~'+esc(String(d.ent.until).slice(5,10).replace('-','/'))+'까지');
+  return parts.length?('<span class="tag" style="background:#EEF1FF;color:#3B4BB0;margin-left:6px">⏳ '+parts.join(' · ')+'</span>'):'';
+ })();
+  return `<div class="${cls}" data-slug="${k}" style="animation-delay:${i*60}ms"${onclick}><div class="vtop" style="background:linear-gradient(135deg,${(ARTC[k]||['#6C5CE7','#00CEC9']).join(',')})"><img class="vph" loading="lazy" decoding="async" src="${PHOTO[k]||''}?w=640&h=260&fit=crop&q=60&auto=format" onerror="this.remove()" alt=""><div class="vshade"></div><div class="vmed">${ART(k)}</div><span class="stepb">${badge}</span><span class="catb">${d.cat||''}</span>${enabled?'':`<span class="lockb">${esc(reason||'다른 학년')}</span>`}</div><div class="vbody"><h3>${esc(stageTitle(lvname,k,d.title))}${planTag}${entTag}</h3><p>${esc(d.desc)}</p><span class="aud2">${esc(d.audience)}</span>${chipsHtml}</div></div>`;
 }
 function gridHtml(t,act,grade,plan){
  let LV=[['es','초등','🌈'],['ms','중학','🌱'],['hs','고등','🎓']];
@@ -621,7 +630,8 @@ function sexpToggle(id){id=+id;const i=SEXP.picked.indexOf(id);if(i>=0)SEXP.pick
 const api=async(p,body)=>{
  const r=await fetch(API+'/api'+p,body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:undefined);
  const j=await r.json();
- if(!r.ok)throw new Error(j.error||'오류가 발생했습니다');
+ if(!r.ok){const e=new Error((j&&j.error)||'오류가 발생했습니다');e.data=j;throw e;}
+ if(j&&j.ok===false&&j.gate){const e=new Error(j.error||'이용할 수 없습니다');e.data=j;throw e;}
  return j;
 };
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -783,6 +793,238 @@ function wizChipRow(opts,field){
 function wizEntryCard(){
  return `<div class="card wizentry" onclick="go('wizard')"><div class="wizentry-l"><div class="wizentry-emo">🎯</div><div><b>나에게 맞는 진단 찾기</b><span>3가지만 고르면 딱 맞는 진단 3종을 추천해 드려요</span></div></div><span class="wizentry-go">시작 →</span></div>`;
 }
+// ===== 2026-07-23 학교찾기 위젯(myb-school) + entitlement gate 모달 (웨이브3/작업2) =====
+function schoolWidgetHtml(){
+ return `<div class="mybsw-wrap noprint">
+  <button type="button" id="mybsw-togglebtn" class="mybsw-togglebtn" onclick="mybswToggle()">🏫 우리학교 정보 보기 (급식·학사일정)</button>
+  <div id="mybsw-root" class="mybsw-root" hidden>
+    <div class="mybsw-head">
+      <span class="mybsw-icon" aria-hidden="true">🏫</span>
+      <div class="mybsw-headtext">
+        <strong>우리 학교 급식·학사일정</strong>
+        <span>학교 이름을 검색하면 오늘 급식과 이번 주 학사일정을 바로 볼 수 있어요</span>
+      </div>
+    </div>
+    <div class="mybsw-searchwrap">
+      <input id="mybsw-input" class="mybsw-input" type="text" inputmode="search" autocomplete="off" placeholder="학교 이름 검색 (예: 개포중, 서울고)" aria-label="학교 이름 검색">
+      <ul id="mybsw-list" class="mybsw-list" role="listbox" hidden></ul>
+    </div>
+    <div id="mybsw-result" class="mybsw-result" hidden>
+      <div class="mybsw-school">
+        <strong id="mybsw-school-name"></strong>
+        <span id="mybsw-school-sub"></span>
+      </div>
+      <div class="mybsw-cards">
+        <section class="mybsw-card">
+          <h4>오늘 급식</h4>
+          <div id="mybsw-meal" class="mybsw-cardbody"><p class="mybsw-muted">학교를 선택하면 표시됩니다</p></div>
+        </section>
+        <section class="mybsw-card">
+          <h4>이번 주 학사일정</h4>
+          <div id="mybsw-schedule" class="mybsw-cardbody"><p class="mybsw-muted">학교를 선택하면 표시됩니다</p></div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <style>
+    .mybsw-wrap{max-width:720px;margin:0 auto 18px}
+    .mybsw-togglebtn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:12px 14px;font-size:13.5px;font-weight:700;color:#2563eb;background:#eff6ff;border:1.5px solid #dbeafe;border-radius:12px;cursor:pointer;transition:.15s}
+    .mybsw-togglebtn:hover{background:#e0ecff}
+    .mybsw-root{--mybsw-blue:#2563eb;--mybsw-blue-light:#eff6ff;--mybsw-border:#e2e8f0;--mybsw-text:#1e293b;--mybsw-muted:#64748b;box-sizing:border-box;margin-top:10px;padding:18px;background:#fff;border:1px solid var(--mybsw-border);border-radius:16px;font-family:-apple-system,BlinkMacSystemFont,"Pretendard","Noto Sans KR",sans-serif;color:var(--mybsw-text)}
+    .mybsw-root[hidden]{display:none}
+    .mybsw-root *{box-sizing:border-box}
+    .mybsw-head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+    .mybsw-icon{font-size:26px;line-height:1;flex-shrink:0}
+    .mybsw-headtext{display:flex;flex-direction:column;gap:2px}
+    .mybsw-headtext strong{font-size:16px}
+    .mybsw-headtext span{font-size:12.5px;color:var(--mybsw-muted)}
+    .mybsw-searchwrap{position:relative}
+    .mybsw-input{width:100%;padding:12px 14px;font-size:15px;border:1.5px solid var(--mybsw-border);border-radius:10px;outline:none;transition:border-color .15s}
+    .mybsw-input:focus{border-color:var(--mybsw-blue)}
+    .mybsw-list{position:absolute;z-index:30;top:calc(100% + 6px);left:0;right:0;margin:0;padding:6px;list-style:none;background:#fff;border:1px solid var(--mybsw-border);border-radius:12px;box-shadow:0 8px 24px rgba(15,23,42,.12);max-height:280px;overflow-y:auto}
+    .mybsw-list[hidden]{display:none}
+    .mybsw-item{padding:10px 12px;border-radius:8px;cursor:pointer;display:flex;flex-direction:column;gap:2px}
+    .mybsw-item:hover,.mybsw-item.mybsw-active{background:var(--mybsw-blue-light)}
+    .mybsw-item-name{font-size:14.5px;font-weight:600}
+    .mybsw-item-addr{font-size:12px;color:var(--mybsw-muted)}
+    .mybsw-item-empty{padding:14px 10px;text-align:center;color:var(--mybsw-muted);font-size:13px}
+    .mybsw-result{margin-top:16px;padding-top:14px;border-top:1px dashed var(--mybsw-border)}
+    .mybsw-school{display:flex;flex-direction:column;gap:2px;margin-bottom:12px}
+    .mybsw-school strong{font-size:15.5px}
+    .mybsw-school span{font-size:12px;color:var(--mybsw-muted)}
+    .mybsw-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media(max-width:560px){.mybsw-cards{grid-template-columns:1fr}}
+    .mybsw-card{border:1px solid var(--mybsw-border);border-radius:12px;padding:12px 14px;background:#f8fafc;min-width:0}
+    .mybsw-card h4{margin:0 0 8px;font-size:13.5px;color:var(--mybsw-blue)}
+    .mybsw-cardbody{font-size:13px;line-height:1.55}
+    .mybsw-muted{color:var(--mybsw-muted);margin:0}
+    .mybsw-dish-list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:4px}
+    .mybsw-dish-list li{word-break:keep-all}
+    .mybsw-meal-meta{margin-top:8px;font-size:11.5px;color:var(--mybsw-muted)}
+    .mybsw-sched-list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+    .mybsw-sched-item{display:flex;gap:8px;align-items:flex-start}
+    .mybsw-sched-date{flex-shrink:0;font-size:11.5px;font-weight:700;color:#fff;background:var(--mybsw-blue);border-radius:6px;padding:2px 6px;white-space:nowrap}
+    .mybsw-sched-item.mybsw-holiday .mybsw-sched-date{background:#ef4444}
+    .mybsw-sched-text{display:flex;flex-direction:column}
+    .mybsw-sched-name{font-weight:600}
+    .mybsw-sched-grade{font-size:11px;color:var(--mybsw-muted)}
+    .mybsw-error{color:#dc2626;margin:0;font-size:12.5px}
+    .mybsw-spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--mybsw-border);border-top-color:var(--mybsw-blue);border-radius:50%;animation:mybsw-spin .7s linear infinite;vertical-align:-2px;margin-right:6px}
+    @keyframes mybsw-spin{to{transform:rotate(360deg)}}
+  </style>
+ </div>`;
+}
+function mybswToggle(){
+ var root=document.getElementById('mybsw-root');
+ var btn=document.getElementById('mybsw-togglebtn');
+ if(!root||!btn)return;
+ var willShow=root.hidden;
+ root.hidden=!willShow;
+ btn.textContent=willShow?'🏫 우리학교 정보 접기':'🏫 우리학교 정보 보기 (급식·학사일정)';
+ if(willShow){try{var inp=document.getElementById('mybsw-input');if(inp)inp.focus();}catch(e){}}
+}
+function mybswInit(){
+ var API_BASE="https://onqisdgxwuvlxehjvoto.supabase.co/functions/v1/myb-school";
+ var DEBOUNCE_MS=280, MIN_CHARS=2;
+ var root=document.getElementById("mybsw-root");
+ if(!root||root.dataset.mybswBound)return;
+ root.dataset.mybswBound='1';
+ var $input=document.getElementById("mybsw-input");
+ var $list=document.getElementById("mybsw-list");
+ var $result=document.getElementById("mybsw-result");
+ var $schoolName=document.getElementById("mybsw-school-name");
+ var $schoolSub=document.getElementById("mybsw-school-sub");
+ var $meal=document.getElementById("mybsw-meal");
+ var $schedule=document.getElementById("mybsw-schedule");
+ var debounceTimer=null, activeIndex=-1, currentItems=[], requestSeq=0;
+ function escapeHtml(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+ function fmtDate(ymd){if(!ymd||ymd.length!==8)return ymd||"";return ymd.slice(4,6)+"."+ymd.slice(6,8);}
+ function todayYMD(){var d=new Date();var mm=String(d.getMonth()+1).padStart(2,"0");var dd=String(d.getDate()).padStart(2,"0");return ""+d.getFullYear()+mm+dd;}
+ function addDaysYMD(base,days){var y=+base.slice(0,4),m=+base.slice(4,6)-1,d=+base.slice(6,8);var dt=new Date(y,m,d+days);var mm=String(dt.getMonth()+1).padStart(2,"0");var dd=String(dt.getDate()).padStart(2,"0");return ""+dt.getFullYear()+mm+dd;}
+ function closeList(){$list.hidden=true;$list.innerHTML="";currentItems=[];activeIndex=-1;}
+ function renderList(items){
+  currentItems=items||[];activeIndex=-1;
+  if(!currentItems.length){$list.innerHTML='<li class="mybsw-item-empty">검색 결과가 없습니다</li>';$list.hidden=false;return;}
+  $list.innerHTML=currentItems.map(function(it,i){
+   return '<li class="mybsw-item" role="option" data-idx="'+i+'">'+
+    '<span class="mybsw-item-name">'+escapeHtml(it.name)+' <span style="font-weight:400;color:#64748b;">('+escapeHtml(it.schoolLevel||"")+')</span></span>'+
+    '<span class="mybsw-item-addr">'+escapeHtml(it.addr||"")+'</span>'+
+    '</li>';
+  }).join("");
+  $list.hidden=false;
+  Array.prototype.forEach.call($list.querySelectorAll(".mybsw-item"),function(el){
+   el.addEventListener("click",function(){var idx=+el.getAttribute("data-idx");selectSchool(currentItems[idx]);});
+  });
+ }
+ function searchSchool(name){
+  var seq=++requestSeq;
+  fetch(API_BASE+"/search?name="+encodeURIComponent(name))
+   .then(function(res){return res.json();})
+   .then(function(data){
+    if(seq!==requestSeq)return;
+    if(!data||data.ok===false){renderList([]);return;}
+    renderList(data.results||[]);
+   })
+   .catch(function(){
+    if(seq!==requestSeq)return;
+    $list.innerHTML='<li class="mybsw-item-empty">검색 중 오류가 발생했습니다</li>';
+    $list.hidden=false;
+   });
+ }
+ $input.addEventListener("input",function(){
+  var v=$input.value.trim();
+  if(debounceTimer)clearTimeout(debounceTimer);
+  if(v.length<MIN_CHARS){closeList();return;}
+  debounceTimer=setTimeout(function(){searchSchool(v);},DEBOUNCE_MS);
+ });
+ $input.addEventListener("keydown",function(e){
+  if($list.hidden||!currentItems.length)return;
+  if(e.key==="ArrowDown"){e.preventDefault();activeIndex=Math.min(activeIndex+1,currentItems.length-1);highlightActive();}
+  else if(e.key==="ArrowUp"){e.preventDefault();activeIndex=Math.max(activeIndex-1,0);highlightActive();}
+  else if(e.key==="Enter"){if(activeIndex>=0){e.preventDefault();selectSchool(currentItems[activeIndex]);}}
+  else if(e.key==="Escape"){closeList();}
+ });
+ function highlightActive(){
+  var items=$list.querySelectorAll(".mybsw-item");
+  Array.prototype.forEach.call(items,function(el,i){el.classList.toggle("mybsw-active",i===activeIndex);});
+  if(items[activeIndex])items[activeIndex].scrollIntoView({block:"nearest"});
+ }
+ document.addEventListener("click",function(e){if(!root.contains(e.target))closeList();});
+ function selectSchool(item){
+  if(!item)return;
+  closeList();
+  $input.value=item.name;
+  $schoolName.textContent=item.name;
+  $schoolSub.textContent=(item.schoolLevel||"")+(item.addr?" · "+item.addr:"");
+  $result.hidden=false;
+  loadMeal(item.atptCode,item.sdCode);
+  loadSchedule(item.atptCode,item.sdCode);
+ }
+ function loadMeal(atpt,sd){
+  $meal.innerHTML='<span class="mybsw-spinner"></span>불러오는 중…';
+  fetch(API_BASE+"/meal?ATPT="+encodeURIComponent(atpt)+"&SD="+encodeURIComponent(sd))
+   .then(function(res){return res.json();})
+   .then(function(data){
+    if(!data||data.ok===false||!data.meals||!data.meals.length){$meal.innerHTML='<p class="mybsw-muted">오늘은 급식 정보가 없어요</p>';return;}
+    var html=data.meals.map(function(m){
+     var dishes=(m.dishes||[]).map(function(d){return '<li>'+escapeHtml(d)+'</li>';}).join("");
+     return '<div>'+
+      (m.mealName?'<div style="font-weight:600;margin-bottom:4px;">'+escapeHtml(m.mealName)+'</div>':'')+
+      '<ul class="mybsw-dish-list">'+dishes+'</ul>'+
+      (m.calorie?'<div class="mybsw-meal-meta">'+escapeHtml(m.calorie)+'</div>':'')+
+      '</div>';
+    }).join('<hr style="border:none;border-top:1px dashed #e2e8f0;margin:8px 0;">');
+    $meal.innerHTML=html;
+   })
+   .catch(function(){$meal.innerHTML='<p class="mybsw-error">급식 정보를 불러오지 못했습니다</p>';});
+ }
+ function loadSchedule(atpt,sd){
+  $schedule.innerHTML='<span class="mybsw-spinner"></span>불러오는 중…';
+  var from=todayYMD();
+  var to=addDaysYMD(from,7);
+  fetch(API_BASE+"/schedule?ATPT="+encodeURIComponent(atpt)+"&SD="+encodeURIComponent(sd)+"&from="+from+"&to="+to)
+   .then(function(res){return res.json();})
+   .then(function(data){
+    if(!data||data.ok===false||!data.events||!data.events.length){$schedule.innerHTML='<p class="mybsw-muted">이번 주 학사일정이 없어요</p>';return;}
+    var html='<ul class="mybsw-sched-list">'+data.events.map(function(ev){
+     return '<li class="mybsw-sched-item'+(ev.isHoliday?' mybsw-holiday':'')+'">'+
+      '<span class="mybsw-sched-date">'+escapeHtml(fmtDate(ev.date))+'</span>'+
+      '<span class="mybsw-sched-text">'+
+       '<span class="mybsw-sched-name">'+escapeHtml(ev.name)+'</span>'+
+       '<span class="mybsw-sched-grade">'+escapeHtml(ev.grade||"전체")+'</span>'+
+      '</span>'+
+     '</li>';
+    }).join("")+'</ul>';
+    $schedule.innerHTML=html;
+   })
+   .catch(function(){$schedule.innerHTML='<p class="mybsw-error">학사일정을 불러오지 못했습니다</p>';});
+ }
+}
+// entitlement(ent) gate deny 모달 — questions/submit이 {ok:false,gate:{reason,detail}}로 거부할 때 표시. 담임 문의 안내 포함.
+function gateDenyModal(gate){
+ var reasonMsg={
+  period:'설정된 사용기간이 아닙니다.',
+  quota:'사용 가능 횟수를 모두 사용했습니다.',
+  level_mismatch:'우리 학교급에서 사용할 수 없는 진단입니다.',
+  status:'기관 이용이 중지된 상태입니다.',
+  not_allowed:'선생님이 허용하지 않은 진단입니다.'
+ };
+ var msg=(gate&&reasonMsg[gate.reason])||'지금은 이 진단을 이용할 수 없습니다.';
+ var detail=(gate&&gate.detail)||{};
+ var subParts=[];
+ if(typeof detail.attemptsUsed==='number'&&typeof detail.maxAttempts==='number')subParts.push('이용 '+detail.attemptsUsed+'/'+detail.maxAttempts+'회');
+ else if(typeof detail.attemptsRemaining==='number')subParts.push('남은 '+detail.attemptsRemaining+'회');
+ if(detail.periodStart||detail.periodEnd)subParts.push('이용 기간 '+(detail.periodStart||'')+'~'+(detail.periodEnd||''));
+ var sub=subParts.join(' · ');
+ var id='gdm'+Date.now();
+ var ov=document.createElement('div');
+ ov.id=id;
+ ov.style.cssText='position:fixed;inset:0;background:rgba(20,20,35,.45);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px';
+ ov.onclick=function(e){if(e.target===ov)ov.remove()};
+ ov.innerHTML='<div class="card" style="max-width:380px;margin:0"><div class="k">🔒 지금은 이용할 수 없어요</div><p style="font-size:13.5px;line-height:1.7;color:#4C5C4C;margin:6px 0 4px">'+esc(msg)+'</p>'+(sub?'<p style="font-size:12px;color:#8489A3;margin:0 0 10px">'+esc(sub)+'</p>':'')+'<p style="font-size:12px;color:#8489A3;margin:0 0 14px">궁금한 점이 있으면 담임 선생님께 문의해 주세요.</p><div style="display:flex;gap:8px"><button class="btn navy" id="'+id+'c" style="flex:1">확인</button></div></div>';
+ document.body.appendChild(ov);
+ document.getElementById(id+'c').onclick=function(){ov.remove()};
+}
 async function go(page,arg){
  const v=$('#view');
  if(S.page!==page){S.prevPage=S.page;S.page=page;}
@@ -803,6 +1045,8 @@ async function go(page,arg){
    </div>
    <div class="lp-stats"><div><b>45,000+</b><span>누적 활용 · 구 마이베스트 포함</span></div><div><b>초·중·고</b><span>학년별 진단</span></div><div><b>A4·B4·10쪽</b><span>맞춤 보고서</span></div></div>
   </div>
+
+  ${schoolWidgetHtml()}
 
   ${conversionWhyHtml()}
   ${saveValueHtml()}
@@ -845,6 +1089,7 @@ async function go(page,arg){
   </div>
 
   <div class="linkrow"><a onclick="go('consult')">컨설팅 진단 전체 보기</a> · <a onclick="go('pricing')">요금·도입 안내</a> · <a onclick="go('coaching')">선생님 코칭</a></div>`;
+  try{mybswInit()}catch(e){}
  }
   else if(page==='consult'){
    v.innerHTML=`<h1>컨설팅 진단 🧭</h1><div class="sub">학년대(초·중·고)와 목적별로 정리한 진단 프로그램이에요. 카드를 골라 시작하고, 결과는 개인 결과함에 누적하세요.</div>
@@ -914,6 +1159,7 @@ async function go(page,arg){
    const t=S.tests??(S.tests=(await api('/tests')).tests);
    const ats=S.me.attempts||[];
    v.innerHTML=`<h1>안녕, ${esc(S.me.name)}! 👋</h1><div class="sub">${esc(S.me.school||'')} ${esc(S.me.class_name||'')} · 오늘은 어떤 가능성을 열어볼까요?</div>
+   ${schoolWidgetHtml()}
    ${S.me.gate?`<div class="card" style="background:#FFF3F3;border-color:#F3C0C0;color:#C0392B;font-weight:700">⚠️ ${esc(S.me.gate)} · 기존 결과는 계속 볼 수 있어요</div>`:(S.me.max_uses?`<div class="card" style="background:#F2FBF5;border-color:#CDEBD7;color:#1E8E4E;font-weight:700">🎟️ 남은 진단 이용 ${Math.max(0,S.me.max_uses-(S.me.used||0))}회 / 총 ${S.me.max_uses}회</div>`:'')}
    ${(S.me.assignments&&S.me.assignments.length)?`<div class="card" style="background:#EEF1FF;border-color:#C9D2FF"><div class="k" style="margin-top:0">📌 선생님이 내준 진단</div>${S.me.assignments.map(a=>`<div style="display:flex;align-items:center;gap:8px;margin:6px 0;font-size:13px"><span style="flex:1">${esc(a.test_title||a.test_slug)}${a.due_date?` <span style='color:#8489A3'>· ~${esc(a.due_date)}까지</span>`:''}</span>${a.done?`<b style="color:#1E8E4E">✓ 완료</b>`:`<button class="btn small navy" onclick="startQuizFx('${a.test_slug}')">풀기</button>`}</div>`).join('')}</div>`:''}
    ${nextStepHtml(t,ats,S.me.grade)}
@@ -928,6 +1174,7 @@ async function go(page,arg){
   setTimeout(()=>{document.querySelectorAll('.vcard[data-slug]').forEach(cd=>{const k=cd.dataset.slug;if(window.__done[k]){cd.classList.add('donecard');const m=cd.querySelector('.vtop');if(m&&!m.querySelector('.doneb')){const sp=document.createElement('span');sp.className='doneb';sp.textContent='✓ 완료';m.appendChild(sp);}}});document.querySelectorAll('.vchip[data-chip-slug]').forEach(ch=>{const mk=ch.dataset.chipSlug;if(window.__done[mk]&&!ch.classList.contains('done')){ch.classList.add('done');ch.textContent='✓ '+ch.textContent;}})},50);
   const old30=d=>(Date.now()-new Date(d).getTime())>30*864e5;
   $('#myats').innerHTML=ats.length?ats.map(a=>`<div class="attrow"><span>${EMO[a.test_slug]||'📊'} ${esc(t[a.test_slug]?.title||a.test_slug)} ${old30(a.created_at)?'<span class="tag" style="background:#FFF4DC;color:#A8893E;font-size:10px">재진단 추천</span>':''}<br><span class="muted">${a.created_at.slice(0,10)}</span></span><span style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end"><button class="btn small ghost" onclick="retakeQuiz('${a.test_slug}')">다시 진단</button><button class="btn small navy" onclick="openAttempt('${a.id}')">결과 보기</button></span></div>`).join(''):'<div class="muted">아직 기록이 없어요. 첫 진단을 시작해보세요!</div>';
+  try{mybswInit()}catch(e){}
  }
  else if(page==='solution'){
   const d=arg, r=d.attempt.result, st=d.student;
@@ -1355,7 +1602,13 @@ async function joinIndividual(){
  } else { doJoin(); }
 }
 async function startQuiz(slug){
- let q=await api('/questions?slug='+slug);
+ let q;
+ try{
+  q=await api('/questions?slug='+slug);
+ }catch(e){
+  if(e.data&&e.data.gate){gateDenyModal(e.data.gate);return;}
+  throw e;
+ }
  if(!S.tests||!S.tests[slug])S.tests=(await api('/tests')).tests;
  let majors=null, questions=q.questions;
  if(slug==='subject_rec'){
@@ -1448,7 +1701,10 @@ async function answer(val){
  try{
   const r=await api('/submit',{token:S.token,slug:z.slug,answers:z.answers});
   S.me=null;openAttempt(r.attempt_id);
- }catch(e){alert(e.message);go('dash')}
+ }catch(e){
+  if(e.data&&e.data.gate){gateDenyModal(e.data.gate);go('dash');}
+  else{alert(e.message);go('dash')}
+ }
 }
 async function openSolution(id){
  try{

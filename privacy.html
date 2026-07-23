@@ -85,7 +85,7 @@ td{padding:8px;border-bottom:1px solid #ECEAFB;vertical-align:top}
 <tr><th>수탁업체</th><th>위탁업무 내용</th></tr>
 <tr><td>Supabase (서버/DB 인프라)</td><td>데이터 저장·암호화·접근통제 등 클라우드 인프라 운영</td></tr>
 <tr><td>토스페이먼츠</td><td>유료 이용권 결제·환불 처리</td></tr>
-<tr><td>[입력필요: 이메일/알림 발송 대행사]</td><td>[입력필요: 위탁업무 — 해당 기능 도입 시 기재]</td></tr>
+<tr><td>Resend (이메일 발송 서비스)</td><td>회원 알림, 진단결과 안내, 법정대리인 동의 요청 이메일 발송</td></tr>
 </table>
 회사는 위탁계약 체결 시 개인정보보호법 제26조에 따라 안전한 관리를 위한 사항을 규정하고, 수탁자가 개인정보를 안전하게 처리하는지 감독합니다.
 </div>
@@ -98,7 +98,7 @@ td{padding:8px;border-bottom:1px solid #ECEAFB;vertical-align:top}
 &nbsp;&nbsp;나. 회사가 직접 법정대리인 동의를 받아야 하는 경우, 법정대리인의 이메일 확인, 법정대리인 명의 결제수단 확인 등 관계 법령이 인정하는 방법으로 동의를 확인합니다.<br>
 ③ 법정대리인은 아동의 개인정보에 대해 열람, 정정, 삭제 및 동의철회를 요청할 수 있으며, 이 경우 회사는 지체 없이 필요한 조치를 취합니다.<br>
 ④ 회사는 법정대리인의 동의 없이 수집된 만 14세 미만 아동의 개인정보를 확인한 경우, 지체 없이 해당 정보를 파기합니다.<br>
-<span style="color:#C0431E;font-weight:700">※ [입력필요] 법정대리인 동의 확보의 구체적 UI·플로우(동의 화면, 동의 확인 로그 저장 방식)는 서비스 확장 시 확정하여 본 조항에 반영해야 합니다.</span>
+법정대리인 동의 확보는 동의 화면(체크박스 2종: 법정대리인 확인·약관 확인)에서 보호자 이메일을 입력받아 진행하며, 동의 시각·IP·이메일을 <code>myb_consents</code> 테이블에 로그로 저장합니다(API: <code>POST /api/consent</code>).
 </div>
 
 <div class="card">
@@ -124,8 +124,8 @@ td{padding:8px;border-bottom:1px solid #ECEAFB;vertical-align:top}
 <tr><th>구분</th><th>내용</th></tr>
 <tr><td>개인정보보호책임자</td><td>이성훈 (대표)</td></tr>
 <tr><td>이메일</td><td>onlyjdw3831@gmail.com</td></tr>
-<tr><td>직통 연락처(전화)</td><td class="ph">[입력필요: 개인정보보호책임자 직통 전화번호]</td></tr>
-<tr><td>담당부서</td><td class="ph">[입력필요: 담당부서명 — 별도 부서 미지정 시 "대표"로 갈음 가능]</td></tr>
+<tr><td>직통 연락처(전화)</td><td>02-547-6846</td></tr>
+<tr><td>담당부서</td><td>대표 (별도 개인정보 전담부서 미지정)</td></tr>
 </table>
 이용자는 회사의 서비스를 이용하며 발생한 모든 개인정보보호 관련 문의, 불만처리, 피해구제 등을 위 연락처로 문의할 수 있으며, 회사는 이용자의 문의에 대해 지체 없이 답변·처리하겠습니다.
 </div>

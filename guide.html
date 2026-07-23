@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>학교 도입 안내 | 마이베스트 NEXT</title>
+<meta name="description" content="마이베스트 NEXT 학교 도입 안내 — 진단 26종·A4/B4/10쪽 보고서·교사 대시보드 소개, 도입 절차, 무료 파일럿 모집, 자료 다운로드.">
+<style>
+:root{--ink:#23284A;--vio:#6C5CE7;--mint:#00CEC9;--sun:#FDCB6E;--bg:#F7F6FF;--navy:#1B2A4A;--gold:#C8A24B;--paper:#FBFAF7;--muted:#5C617C}
+*{box-sizing:border-box}
+body{font-family:Pretendard,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at 12% -10%,rgba(0,206,201,.18),transparent 30%),radial-gradient(circle at 90% 8%,rgba(108,92,231,.16),transparent 34%),linear-gradient(180deg,#F6F8FF 0%,#F7F6FF 42%,#F3FBFA 100%);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased;margin:0;padding:0 0 60px}
+.wrap{max-width:980px;margin:0 auto;padding:24px 18px 10px}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.logo{font-weight:900;font-size:18px;color:var(--ink);cursor:pointer;text-decoration:none}
+.logo span{color:var(--vio)}
+.backlink{border:1.5px solid #E5E0FB;background:#fff;color:var(--vio);border-radius:999px;padding:7px 14px;font-family:inherit;font-size:12.5px;font-weight:800;text-decoration:none;white-space:nowrap}
+
+.hero{background:linear-gradient(135deg,var(--navy),#2A3D66);border-radius:22px;padding:34px 26px;color:#fff;margin-bottom:22px;position:relative;overflow:hidden}
+.hero:before{content:"";position:absolute;right:-40px;top:-40px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(200,162,75,.35),transparent 70%)}
+.hero .tag{display:inline-block;background:rgba(200,162,75,.18);color:var(--gold);border:1px solid rgba(200,162,75,.4);border-radius:999px;padding:5px 14px;font-size:12px;font-weight:800;margin-bottom:14px}
+.hero h1{font-size:26px;font-weight:900;margin:0 0 10px;line-height:1.4}
+.hero p{font-size:14px;line-height:1.7;color:#D8DEEF;margin:0 0 20px;max-width:640px}
+.hero .ctas{display:flex;gap:10px;flex-wrap:wrap}
+.btn{display:inline-block;border-radius:12px;padding:12px 20px;font-size:13.5px;font-weight:800;text-decoration:none;border:0;cursor:pointer;font-family:inherit}
+.btn.primary{background:linear-gradient(90deg,var(--gold),#DDB962);color:var(--navy)}
+.btn.ghost{background:rgba(255,255,255,.08);color:#fff;border:1.5px solid rgba(255,255,255,.35)}
+.btn.vio{background:linear-gradient(90deg,var(--vio),#8E7CF3);color:#fff}
+.btn.small{padding:9px 14px;font-size:12.5px}
+
+h2.sec{font-size:17px;font-weight:900;color:var(--navy);margin:34px 0 14px;display:flex;align-items:center;gap:8px}
+h2.sec .n{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--vio);color:#fff;font-size:12px;font-weight:900}
+
+.card{background:#fff;border-radius:18px;padding:22px 20px;box-shadow:0 6px 24px rgba(108,92,231,.09);margin-bottom:16px;font-size:13.5px;line-height:1.85;color:#3A4154}
+.card h3{font-size:14.5px;color:var(--navy);margin:0 0 8px;font-weight:800}
+
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+@media(max-width:720px){.grid3{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}}
+
+.feat{background:#fff;border-radius:16px;padding:18px;box-shadow:0 4px 16px rgba(108,92,231,.08)}
+.feat .ico{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:10px}
+.feat h4{font-size:13.5px;font-weight:800;color:var(--navy);margin:0 0 6px}
+.feat p{font-size:12.5px;color:var(--muted);margin:0;line-height:1.6}
+
+table.rel{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px}
+table.rel th{background:var(--navy);color:#fff;padding:8px;text-align:left;font-weight:700;font-size:11.5px}
+table.rel td{padding:8px;border-bottom:1px solid #ECEAFB;vertical-align:top}
+
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:720px){.steps{grid-template-columns:1fr}}
+.step{background:#fff;border-radius:16px;padding:18px;box-shadow:0 4px 16px rgba(108,92,231,.08)}
+.step .num{width:30px;height:30px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;margin-bottom:10px}
+.step h4{font-size:13.5px;font-weight:800;color:var(--navy);margin:0 0 6px}
+.step p{font-size:12.5px;color:var(--muted);margin:0;line-height:1.6}
+
+.pilot-box{background:#F1EEFF;border:1.5px solid #E1D9FF;border-radius:16px;padding:18px 20px;font-size:13px;color:var(--ink);line-height:1.8}
+.pilot-box b{color:var(--vio)}
+
+.price-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+.price-table th{background:var(--navy);color:#fff;padding:10px;text-align:left;font-size:12px}
+.price-table td{padding:10px;border-bottom:1px solid #ECEAFB}
+.price-table td.num{text-align:right;font-weight:800;color:var(--navy)}
+.note{font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.7}
+
+.files{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(max-width:720px){.files{grid-template-columns:1fr}}
+.file{background:#fff;border-radius:14px;padding:16px;box-shadow:0 4px 16px rgba(108,92,231,.08);display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink);transition:.15s}
+.file:hover{box-shadow:0 8px 22px rgba(108,92,231,.16);transform:translateY(-1px)}
+.file .ext{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#fff;flex-shrink:0}
+.file .info b{display:block;font-size:13px;font-weight:800;color:var(--navy)}
+.file .info span{font-size:11.5px;color:var(--muted)}
+
+.contact-bar{background:var(--navy);border-radius:16px;padding:20px 22px;color:#fff;display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;align-items:center;margin-top:26px}
+.contact-bar .l b{font-size:14.5px}
+.contact-bar .l div{font-size:12px;color:#B9C2DE;margin-top:4px}
+.foot{text-align:center;color:#8489A3;font-size:11.5px;margin-top:26px;line-height:1.8}
+.copybtn{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:999px;padding:6px 12px;font-size:11.5px;cursor:pointer;font-family:inherit}
+</style></head>
+<body>
+<div class="wrap">
+<div class="topbar">
+  <a class="logo" href="https://mybest-next-edu.netlify.app/">MY BEST <span>NEXT</span></a>
+  <a class="backlink" href="https://mybest-next-edu.netlify.app/">← 서비스 홈으로</a>
+</div>
+
+<div class="hero">
+  <span class="tag">2026년 2학기 무료 파일럿 모집</span>
+  <h1>마이베스트 NEXT<br>학교 도입 안내</h1>
+  <p>초·중·고 진로·진학·학습·미래역량 진단 26종과 A4·B4·10쪽 상담 보고서를 학급 단위로 무료 체험할 수 있습니다. 별도 설치 없이 웹에서 바로 시작하세요.</p>
+  <div class="ctas">
+    <a class="btn primary" href="mailto:onlyjdw3831@gmail.com?subject=마이베스트%20NEXT%20학교%20도입%20문의&body=학교명,%20참여%20희망%20학급(학년)%20수,%20희망%20시작일을%20알려주시면%20안내드립니다.">📩 도입 문의하기</a>
+    <a class="btn ghost" href="https://mybest-next-edu.netlify.app/sample.html">결과 샘플 보기</a>
+  </div>
+</div>
+
+<h2 class="sec"><span class="n">1</span>서비스 한눈에 보기</h2>
+<div class="grid3">
+  <div class="feat"><div class="ico" style="background:#EFEBFF">🧭</div><h4>진단 26종</h4><p>진로·계열 탐색, 학습·역량, 입시 준비(면접·자소서·전형적합도), 자기이해 등 학교급별 진단을 학급코드 하나로 이용합니다.</p></div>
+  <div class="feat"><div class="ico" style="background:#E6FBFA">📄</div><h4>보고서 3모드</h4><p>A4 요약(기본, 6면) · B4 한장 요약 · 10쪽 종합 보고서(&amp;mode=full) 중 상황에 맞게 출력·공유합니다.</p></div>
+  <div class="feat"><div class="ico" style="background:#FFF6E4">🖥️</div><h4>교사 대시보드</h4><p>학급 현황·계열 분포·학생별 보고서·학급 종합 리포트(인쇄/CSV)를 관리자 화면에서 바로 확인합니다.</p></div>
+</div>
+
+<h2 class="sec"><span class="n">2</span>신뢰도 안내</h2>
+<div class="card">
+  <table class="rel">
+    <tr><th>진단</th><th>신뢰도·규준</th><th>성격</th></tr>
+    <tr><td>계열성향 (고등학교 1학년용)</td><td>α = 0.951 (N = 8,575)</td><td>표준화 검사</td></tr>
+    <tr><td>계열성향 (중학교 1학년용)</td><td>α = 0.930 (N = 4,069)</td><td>표준화 검사</td></tr>
+    <tr><td>그 외 24종</td><td>또래 비교 지표 제공</td><td>자가점검형 준거참조 체크리스트</td></tr>
+  </table>
+</div>
+
+<h2 class="sec"><span class="n">3</span>학급 도입 절차 (3단계)</h2>
+<div class="steps">
+  <div class="step"><div class="num">1</div><h4>신청</h4><p>학교명·학년·참여 학급 수를 문의처로 전달하면 학급코드와 교사 PIN을 발급해 드립니다.</p></div>
+  <div class="step"><div class="num">2</div><h4>응시</h4><p>학생이 학급코드+이름+개인 PIN+학년으로 로그인 후 웹에서 바로 진단에 응시합니다(설치 불필요).</p></div>
+  <div class="step"><div class="num">3</div><h4>확인</h4><p>교사가 관리자 대시보드에서 학급 현황과 학생별 보고서(A4/B4/10쪽)를 확인·인쇄합니다.</p></div>
+</div>
+
+<h2 class="sec"><span class="n">4</span>무료 파일럿 모집 안내</h2>
+<div class="pilot-box">
+  <b>2026년 2학기 개학</b>에 맞춰 파일럿 참여 학교(학급)를 모집합니다. 조건은 <b>무료 · 학급 단위 · 운영 기간 협의</b>이며, 파일럿 종료 후 짧은 활용 설문(교사 후기 양식)에 응해주시면 됩니다. 학교 결재가 필요한 경우 아래 공문 템플릿을 내려받아 사용하실 수 있습니다.
+</div>
+
+<h2 class="sec"><span class="n">5</span>가격 안내</h2>
+<div class="card">
+  <table class="price-table">
+    <tr><th>구분</th><th>가격</th><th>비고</th></tr>
+    <tr><td>개인(비회원) 구매</td><td class="num">8,000원</td><td>6개월 · 2회 응시 기준</td></tr>
+    <tr><td>학교·기관 도입</td><td class="num">협의</td><td>학급 수·이용 기간에 따라 별도 산정 (견적서 템플릿 참고)</td></tr>
+  </table>
+  <div class="note">※ 현재 사이트는 전 진단·기본 결과가 무료로 제공되며(PAID_LIVE=false), 위 금액은 향후 유료 전환 시 적용 예정인 참고 가격입니다. 기관 도입은 무료 파일럿으로 우선 진행합니다.</div>
+</div>
+
+<h2 class="sec"><span class="n">6</span>자료실 — 다운로드</h2>
+<div class="files">
+  <a class="file" href="assets/sales/마이베스트NEXT_교사용소개서.pdf" download>
+    <div class="ext" style="background:#D64545">PDF</div>
+    <div class="info"><b>교사용 소개서 (1장)</b><span>서비스 개요·진단 구성·보고서 3모드·도입 절차</span></div>
+  </a>
+  <a class="file" href="assets/sales/학교결재용_공문_파일럿참여협조요청.docx" download>
+    <div class="ext" style="background:#2B579A">DOC</div>
+    <div class="info"><b>학교 결재용 공문 템플릿</b><span>파일럿 참여 협조 요청 · 개인정보 처리 안내 포함</span></div>
+  </a>
+  <a class="file" href="assets/sales/견적서_템플릿.xlsx" download>
+    <div class="ext" style="background:#1D6F42">XLS</div>
+    <div class="info"><b>견적서 템플릿</b><span>진단 이용권·보고서·관리자 계정 · 부가세 자동계산</span></div>
+  </a>
+  <a class="file" href="assets/sales/데모영상_스크립트_스토리보드.md" download>
+    <div class="ext" style="background:#6C5CE7">MD</div>
+    <div class="info"><b>데모 영상 스크립트·스토리보드</b><span>3분 구성 — 응시·보고서·대시보드·도입안내</span></div>
+  </a>
+  <a class="file" href="assets/sales/파일럿_후기수집양식.md" download>
+    <div class="ext" style="background:#00CEC9">MD</div>
+    <div class="info"><b>파일럿 후기 수집 양식</b><span>교사 대상 10문항 · NPS·활용도·개선점 (Google Form용)</span></div>
+  </a>
+  <a class="file" href="https://mybest-next-edu.netlify.app/sample.html">
+    <div class="ext" style="background:#C8A24B">WEB</div>
+    <div class="info"><b>결과 샘플 페이지</b><span>실제 라이브 사이트에서 결과 화면 바로 확인</span></div>
+  </a>
+</div>
+
+<div class="contact-bar">
+  <div class="l">
+    <b>도입 문의</b>
+    <div>이메일 onlyjdw3831@gmail.com · 대표전화 02-547-6846</div>
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <button class="copybtn" id="copyEmailBtn" type="button">이메일 복사</button>
+    <a class="btn primary small" href="mailto:onlyjdw3831@gmail.com?subject=마이베스트%20NEXT%20학교%20도입%20문의">문의 메일 보내기</a>
+  </div>
+</div>
+
+<div class="foot">
+  운영·저작권 오늘과내일의학교 연구소 · (주)가르치는사람들(협업)<br>
+  본 페이지는 학교 도입 안내 전용 자료이며, 실제 파일럿 사례·후기는 운영 개시 후 별도로 공유됩니다.
+</div>
+</div>
+
+<script>
+(function(){
+  var btn = document.getElementById('copyEmailBtn');
+  if (!btn) return;
+  btn.addEventListener('click', function(){
+    var email = 'onlyjdw3831@gmail.com';
+    var done = function(){ btn.textContent = '복사됨 ✓'; setTimeout(function(){ btn.textContent = '이메일 복사'; }, 1600); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(email).then(done).catch(function(){
+        window.prompt('아래 이메일 주소를 복사하세요', email);
+      });
+    } else {
+      window.prompt('아래 이메일 주소를 복사하세요', email);
+    }
+  });
+})();
+</script>
+</body></html>

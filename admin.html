@@ -6,49 +6,53 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
-:root{--ink:#23284A;--vio:#6C5CE7;--mint:#00CEC9;--sun:#FDCB6E;--bg:#F4F5FB;--navy:#1B2A4A;--muted:#5C617C;--line:#E7E6F2}
+:root{--ink:#23284A;--vio:#6C5CE7;--mint:#00CEC9;--mint-text:#007A75;--sun:#FDCB6E;--gold-text:#7D6329;--bg:#F4F5FB;--navy:#1B2A4A;--muted:#5C617C;--line:#E7E6F2;--card:#fff;--paper:#FBFAF7;--tint-vio:#EEE9FF;--tint-gold:#FFF4DC;--danger-bg:#FFF0F0;--danger-text:#C62828;--success-bg:#E7F8EE;--success-text:#1E8E4E;--radius-xs:8px;--radius-sm:10px;--radius-md:12px;--radius-lg:16px;--radius-pill:999px;--shadow-1:0 4px 14px rgba(27,42,74,.05);--shadow-2:0 10px 26px rgba(27,42,74,.09)}
+@media(prefers-color-scheme:dark){:root{--ink:#E7E8F5;--bg:#171A2E;--navy:#C9CEF2;--muted:#9BA0C0;--line:#2C3050;--card:#20233C;--paper:#20233C;--mint-text:#00CEC9;--gold-text:#C8A24B;--tint-vio:rgba(108,92,231,.22);--tint-gold:rgba(200,162,75,.18);--danger-bg:rgba(198,40,40,.18);--danger-text:#FF8A80;--success-bg:rgba(30,142,78,.2);--success-text:#6FDB9C}}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:Pretendard,-apple-system,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
 .wrap{max-width:1180px;margin:0 auto;padding:18px}
 .topbar{display:flex;align-items:center;gap:12px;margin-bottom:16px}
-.logo{font-weight:800;letter-spacing:.08em;color:var(--vio)}.logo span{color:var(--mint)}
-.rolebadge{font-size:12px;font-weight:800;background:#EEE9FF;color:var(--vio);border-radius:999px;padding:5px 12px}
+.logo{font-weight:800;letter-spacing:.08em;color:var(--vio)}.logo span{color:var(--mint-text)}
+.rolebadge{font-size:12px;font-weight:800;background:var(--tint-vio);color:var(--vio);border-radius:var(--radius-pill);padding:5px 12px}
 .spacer{flex:1}
-.btn{border:0;border-radius:11px;padding:11px 16px;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;background:linear-gradient(90deg,var(--vio),#8E7CF3);color:#fff}
-.btn.ghost{background:#fff;color:var(--vio);border:1.5px solid #DAD4FB}
-.btn.sm{padding:7px 12px;font-size:12.5px;border-radius:9px}
+.btn{border:0;border-radius:var(--radius-md);padding:11px 16px;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;background:linear-gradient(90deg,var(--vio),#8E7CF3);color:#fff}
+.btn.ghost{background:var(--card);color:var(--vio);border:1.5px solid #DAD4FB}
+.btn.sm{padding:7px 12px;font-size:12.5px;border-radius:var(--radius-xs)}
 .btn.navy{background:var(--navy)}
-.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:14px}
-.notice{background:#FBFAF7;border:1px solid #E7E4DA;border-radius:14px;padding:13px 14px;margin-bottom:14px;font-size:12.5px;line-height:1.6;color:#5B6270}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-lg);padding:18px;margin-bottom:14px;box-shadow:var(--shadow-1)}
+.notice{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-md);padding:13px 14px;margin-bottom:14px;font-size:12.5px;line-height:1.6;color:var(--muted)}
 .notice b{color:var(--navy)}
-input,select{width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:10px;font-family:inherit;font-size:14px;background:#fff}
+.notice.ok{background:var(--success-bg);border-color:var(--success-text);color:var(--navy)}
+input,select{width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:var(--radius-sm);font-family:inherit;font-size:14px;background:var(--card);color:var(--ink)}
 input:focus,select:focus{outline:none;border-color:var(--vio)}
 label{font-size:12px;font-weight:700;color:var(--muted);display:block;margin:0 0 5px 2px}
+.spinner{width:16px;height:16px;border:2.5px solid var(--line);border-top-color:var(--vio);border-radius:50%;display:inline-block;vertical-align:middle;margin-right:8px;animation:mybspin .7s linear infinite}
+@keyframes mybspin{to{transform:rotate(360deg)}}
 /* login */
 .login{max-width:380px;margin:8vh auto}
 .login h1{font-size:22px;margin-bottom:4px}.login .sub{font-size:13px;color:var(--muted);margin-bottom:18px}
-.err{background:#FFF0F0;color:#C62828;border-radius:9px;padding:9px 12px;font-size:13px;margin-bottom:10px;display:none}
+.err{background:var(--danger-bg);color:var(--danger-text);border-radius:var(--radius-xs);padding:9px 12px;font-size:13px;margin-bottom:10px;display:none}
 /* dashboard */
 .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px}
-.stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-lg);padding:14px;text-align:center;box-shadow:var(--shadow-1)}
 .stat .v{font-size:25px;font-weight:800;color:var(--navy)}
 .stat .l{font-size:11.5px;color:var(--muted);font-weight:700;margin-top:2px}
 .filters{display:grid;grid-template-columns:repeat(4,1fr) auto;gap:10px;align-items:end}
 table{width:100%;border-collapse:collapse;font-size:13px}
-th{background:#F3F1FD;color:var(--navy);text-align:left;padding:10px;font-size:12px;font-weight:800;position:sticky;top:0}
-td{padding:9px 10px;border-bottom:1px solid #F0EFF7}
-tr:hover td{background:#FAF9FF}
+th{background:var(--tint-vio);color:var(--navy);text-align:left;padding:10px;font-size:12px;font-weight:800;position:sticky;top:0}
+td{padding:9px 10px;border-bottom:1px solid var(--line)}
+tr:hover td{background:var(--bg)}
 .pbar{height:8px;border-radius:4px;background:#ECEAFB;overflow:hidden;min-width:90px;display:inline-block;vertical-align:middle}
 .pbar i{display:block;height:100%;background:linear-gradient(90deg,var(--vio),var(--mint))}
-.tag{display:inline-block;font-size:10.5px;font-weight:800;border-radius:999px;padding:2px 8px}
-.tag.paid{background:#E7F8EE;color:#1E8E4E}.tag.free{background:#FFF4DC;color:#A8893E}
-.tablewrap{max-height:60vh;overflow:auto;border:1px solid var(--line);border-radius:12px}
+.tag{display:inline-block;font-size:10.5px;font-weight:800;border-radius:var(--radius-pill);padding:2px 8px}
+.tag.paid{background:var(--success-bg);color:var(--success-text)}.tag.free{background:var(--tint-gold);color:var(--gold-text)}
+.tablewrap{max-height:60vh;overflow:auto;border:1px solid var(--line);border-radius:var(--radius-md)}
 .muted{color:var(--muted)}
 /* modal */
 .modal{position:fixed;inset:0;background:rgba(20,18,50,.45);display:none;align-items:flex-start;justify-content:center;padding:30px 14px;overflow:auto;z-index:50}
 .modal.open{display:flex}
-.sheet{background:#fff;border-radius:16px;max-width:760px;width:100%;padding:22px}
-.atrow{border:1px solid var(--line);border-radius:12px;padding:13px 15px;margin-bottom:10px}
+.sheet{background:var(--card);border-radius:var(--radius-lg);max-width:760px;width:100%;padding:22px;box-shadow:var(--shadow-2)}
+.atrow{border:1px solid var(--line);border-radius:var(--radius-md);padding:13px 15px;margin-bottom:10px}
 .atrow h4{font-size:14.5px;margin-bottom:3px}
 .atrow .meta{font-size:11.5px;color:var(--muted);margin-bottom:7px}
 .kv{font-size:12.5px;line-height:1.7}
@@ -59,7 +63,7 @@ tr:hover td{background:#FAF9FF}
 .rep .rhead .rsub{font-size:12.5px;color:var(--muted);margin-top:4px;line-height:1.6}
 .rep h3{font-size:15px;color:var(--vio);margin:18px 0 9px;padding-left:9px;border-left:4px solid var(--mint)}
 .rstats{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:6px}
-.rstat{background:#F7F6FE;border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}
+.rstat{background:var(--tint-vio);border:1px solid var(--line);border-radius:var(--radius-md);padding:12px;text-align:center}
 .rstat .v{font-size:21px;font-weight:800;color:var(--navy)}
 .rstat .l{font-size:11px;color:var(--muted);font-weight:700;margin-top:2px}
 .rbar{display:flex;align-items:center;gap:8px;margin:5px 0;font-size:12.5px}
@@ -68,8 +72,8 @@ tr:hover td{background:#FAF9FF}
 .rbar .tr i{display:block;height:100%;background:linear-gradient(90deg,var(--vio),var(--mint))}
 .rbar .vn{width:80px;text-align:right;flex-shrink:0;color:var(--muted);font-weight:700}
 .chips{display:flex;flex-wrap:wrap;gap:7px;margin:6px 0}
-.chip{background:#FFF4DC;color:#9A7B2E;border:1px solid #F0E2BC;border-radius:999px;padding:4px 11px;font-size:12px;font-weight:700}
-.chip.warn{background:#FFF0F0;color:#C0392B;border-color:#F3CFCB}
+.chip{background:var(--tint-gold);color:var(--gold-text);border:1px solid #F0E2BC;border-radius:var(--radius-pill);padding:4px 11px;font-size:12px;font-weight:700}
+.chip.warn{background:var(--danger-bg);color:var(--danger-text);border-color:#F3CFCB}
 .repnote{font-size:11.5px;color:var(--muted);line-height:1.6;margin-top:4px}
 .rtbl td,.rtbl th{font-size:12px;padding:7px 8px}
 /* multi-class comparison */
@@ -82,7 +86,7 @@ tr:hover td{background:#FAF9FF}
 .cmptbl th .arrow{font-size:9px;color:var(--vio);margin-left:2px}
 .cmptbl td.num,.cmptbl th.num{text-align:right}
 .cmptbl td.cls{font-weight:800;color:var(--navy)}
-.cmptbl tr.totalrow td{background:#F3F1FD;font-weight:800;border-top:2px solid #D8D2F6}
+.cmptbl tr.totalrow td{background:var(--tint-vio);font-weight:800;border-top:2px solid #D8D2F6}
 .minibar{height:7px;border-radius:4px;background:#ECEAFB;overflow:hidden;width:64px;display:inline-block;vertical-align:middle;margin-right:6px}
 .minibar i{display:block;height:100%;background:linear-gradient(90deg,var(--vio),var(--mint))}
 .kpi6{display:grid;grid-template-columns:repeat(6,1fr);gap:9px;margin-bottom:12px}
@@ -90,8 +94,8 @@ tr:hover td{background:#FAF9FF}
 .nudge{display:flex;flex-wrap:wrap;gap:14px}
 .nudge .col{flex:1;min-width:230px}
 .nudge .col h4{font-size:13px;color:var(--navy);margin-bottom:7px}
-.nudge .col h4 .cnt{font-size:11px;background:#FFF0F0;color:#C0392B;border-radius:999px;padding:2px 8px;margin-left:6px;font-weight:800}
-.nudge .col.low h4 .cnt{background:#FFF4DC;color:#9A7B2E}
+.nudge .col h4 .cnt{font-size:11px;background:var(--danger-bg);color:var(--danger-text);border-radius:var(--radius-pill);padding:2px 8px;margin-left:6px;font-weight:800}
+.nudge .col.low h4 .cnt{background:var(--tint-gold);color:var(--gold-text)}
 @media(max-width:780px){.stats{grid-template-columns:repeat(2,1fr)}.kpi6{grid-template-columns:repeat(2,1fr)}.filters{grid-template-columns:1fr 1fr}.rstats{grid-template-columns:repeat(2,1fr)}.rbar .nm{width:80px}.nudge{flex-direction:column}}
 @media print{
  @page{margin:14mm}
@@ -373,7 +377,7 @@ function summarize(slug,r){
  return '결과 있음';
 }
 async function openStudent(id){
- $('#sheet').innerHTML='<div style="padding:30px;text-align:center" class="muted">불러오는 중…</div>';
+ $('#sheet').innerHTML='<div style="padding:30px;text-align:center" class="muted"><span class="spinner"></span>불러오는 중…</div>';
  $('#modal').classList.add('open');
  const j=await api('/student',{token:S.token,student_id:id});
  if(j.error){$('#sheet').innerHTML=`<div class="err" style="display:block">${esc(j.error)}</div>`;return;}
@@ -414,8 +418,8 @@ async function openReport(){
    :'<div class="repnote">준비도형(로드맵·면접·AI역량 등) 응시 결과가 아직 없습니다.</div>';
  // low participation
  const none=j.lowParticipation||[],low=j.lowActive||[];
- const noneHtml=none.length?`<div class="repnote" style="margin-bottom:5px"><b>미응시(0종) ${none.length}명</b> — 독려 대상</div><div class="chips"><span class="chip warn" style="background:#C0392B;color:#fff;border-color:#C0392B">${none.length}명</span>${none.map(r=>`<span class="chip warn">${esc(r.name)}${r.grade?' ('+esc(r.grade)+')':''}</span>`).join('')}</div>`:'';
- const lowHtml=low.length?`<div class="repnote" style="margin:9px 0 5px"><b>저참여(1~2종) ${low.length}명</b></div><div class="chips"><span class="chip" style="background:#9A7B2E;color:#fff;border-color:#9A7B2E">${low.length}명</span>${low.map(r=>`<span class="chip">${esc(r.name)} · ${r.done}종</span>`).join('')}</div>`:'';
+ const noneHtml=none.length?`<div class="repnote" style="margin-bottom:5px"><b>미응시(0종) ${none.length}명</b> — 독려 대상</div><div class="chips"><span class="chip warn" style="background:var(--danger-text);color:#fff;border-color:var(--danger-text)">${none.length}명</span>${none.map(r=>`<span class="chip warn">${esc(r.name)}${r.grade?' ('+esc(r.grade)+')':''}</span>`).join('')}</div>`:'';
+ const lowHtml=low.length?`<div class="repnote" style="margin:9px 0 5px"><b>저참여(1~2종) ${low.length}명</b></div><div class="chips"><span class="chip" style="background:var(--gold-text);color:#fff;border-color:var(--gold-text)">${low.length}명</span>${low.map(r=>`<span class="chip">${esc(r.name)} · ${r.done}종</span>`).join('')}</div>`:'';
  const dunHtml=(none.length||low.length)?noneHtml+lowHtml:'<div class="repnote">모든 학생이 3종 이상 응시했습니다. 👏</div>';
  // student summary table
  const rows=j.students||[];
@@ -500,14 +504,14 @@ async function doCreateClass(){
  const j=await r.json();
  if(j.error){$('#ccResult').innerHTML=`<div class="err" style="display:block">${esc(j.error)}</div>`;return}
  const link=location.origin+'/?code='+encodeURIComponent(j.code);
- $('#ccResult').innerHTML=`<div class="notice" style="background:#F2FBF5;border-color:#CDEBD7"><b>발급 완료</b><br>
+ $('#ccResult').innerHTML=`<div class="notice ok"><b>발급 완료</b><br>
   <div style="font-size:30px;font-weight:900;letter-spacing:.18em;color:var(--navy);margin:8px 0">${esc(j.code)}</div>
   ${esc(j.name||'')} · 정원 ${esc(j.max_students||'')}명 · ${esc(j.expires_at||'')}까지<br>
   <a href="${esc(link)}" target="_blank" rel="noopener" style="color:var(--vio);word-break:break-all">${esc(link)}</a>
   <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost sm" onclick="navigator.clipboard&&navigator.clipboard.writeText('${esc(link)}')">링크 복사</button><button class="btn ghost sm" onclick="loadDash();closeModal()">대시보드 새로고침</button></div></div>`;
 }
 async function openBulk(){
- $('#sheet').innerHTML='<div style="padding:30px;text-align:center" class="muted">학급 목록을 불러오는 중…</div>';
+ $('#sheet').innerHTML='<div style="padding:30px;text-align:center" class="muted"><span class="spinner"></span>학급 목록을 불러오는 중…</div>';
  $('#modal').classList.add('open');
  // id 포함 학급 목록 확보 (/overview 응답)
  const j=await api('/overview',{token:S.token,school:$('#fSchool')?.value||'',grade:'',code:$('#fClass')?.value||''});
@@ -666,7 +670,7 @@ async function submitFeedback(){
   });
   const j=await r.json();
   if(!j.ok){$('#fbResult').innerHTML='<div class="err" style="display:block">전송에 실패했습니다. 잠시 후 다시 시도해주세요.</div>';return;}
-  $('#fbResult').innerHTML='<div class="notice" style="background:#F2FBF5;border-color:#CDEBD7">의견이 접수되었습니다. 확인 후 반영·답변드릴게요. 감사합니다!</div>';
+  $('#fbResult').innerHTML='<div class="notice ok">의견이 접수되었습니다. 확인 후 반영·답변드릴게요. 감사합니다!</div>';
   $('#fbMsg').value='';
  }catch(e){$('#fbResult').innerHTML='<div class="err" style="display:block">전송에 실패했습니다. 잠시 후 다시 시도해주세요.</div>'}
 }
@@ -689,7 +693,7 @@ async function doEditStudent(id){
  $('#esResult').innerHTML='<div class="muted" style="font-size:12.5px">저장 중…</div>';
  const j=await api('/update_student',{token:S.token,student_id:id,name,grade});
  if(j.error){$('#esResult').innerHTML=`<div class="err" style="display:block">${esc(j.error)}</div>`;return}
- $('#esResult').innerHTML='<div class="notice" style="background:#F2FBF5;border-color:#CDEBD7">저장되었습니다.</div>';
+ $('#esResult').innerHTML='<div class="notice ok">저장되었습니다.</div>';
  loadDash();
 }
 async function deleteStudent(id,name){
@@ -722,7 +726,7 @@ async function doChangePassword(targetUsername){
  $('#pwResult').innerHTML='<div class="muted" style="font-size:12.5px">저장 중…</div>';
  const j=await api('/change_password',body);
  if(j.error){$('#pwResult').innerHTML=`<div class="err" style="display:block">${esc(j.error)}</div>`;return}
- $('#pwResult').innerHTML='<div class="notice" style="background:#F2FBF5;border-color:#CDEBD7">비밀번호가 변경되었습니다.</div>';
+ $('#pwResult').innerHTML='<div class="notice ok">비밀번호가 변경되었습니다.</div>';
 }
 
 // ── 관리자 계정 관리 (super 전용) ──
@@ -745,7 +749,7 @@ async function viewAdmins(){
   <div class="card noprint" style="display:flex;justify-content:space-between;align-items:center">
    <div><b>관리자 계정 관리</b><div class="muted" style="font-size:12px;margin-top:3px">최고관리자(super)·기관관리자(school)·담임(teacher) 계정을 추가·수정·삭제합니다.</div></div>
    <button class="btn sm" onclick="openAdminForm()">➕ 새 관리자 추가</button></div>
-  <div class="tablewrap"><table><thead><tr><th>아이디</th><th>이름</th><th>역할</th><th>범위</th><th>생성일</th><th></th></tr></thead><tbody id="admTbody"><tr><td colspan="6" class="muted" style="text-align:center;padding:20px">불러오는 중…</td></tr></tbody></table></div>
+  <div class="tablewrap"><table><thead><tr><th>아이디</th><th>이름</th><th>역할</th><th>범위</th><th>생성일</th><th></th></tr></thead><tbody id="admTbody"><tr><td colspan="6" class="muted" style="text-align:center;padding:20px"><span class="spinner"></span>불러오는 중…</td></tr></tbody></table></div>
  </div>
  <div class="modal" id="modal" onclick="if(event.target.id==='modal')closeModal()"><div class="sheet" id="sheet"></div></div>`;
  loadAdmins();
@@ -798,7 +802,7 @@ async function doAdminSave(id){
   j=await api('/admin_create',{token:S.token,username,password,role,scope:scope||null,display_name});
  }
  if(j.error){$('#admResult').innerHTML=`<div class="err" style="display:block">${esc(j.error)}</div>`;return}
- $('#admResult').innerHTML='<div class="notice" style="background:#F2FBF5;border-color:#CDEBD7">저장되었습니다.</div>';
+ $('#admResult').innerHTML='<div class="notice ok">저장되었습니다.</div>';
  loadAdmins();
 }
 async function doAdminDelete(id,username){
@@ -813,7 +817,7 @@ async function viewAccounts(){
  if(S.role!=='super'&&S.role!=='school'){alert('권한이 없습니다.');return}
  $('#app').innerHTML=`<div class="wrap">${adminTopbar('accounts')}
   <div class="card noprint"><b>학부모·보호자 회원 조회</b><div class="muted" style="font-size:12px;margin-top:3px">학습자 앱(mybest) 자체 회원가입 계정(myb_accounts) 목록입니다.</div></div>
-  <div class="tablewrap"><table><thead><tr><th>역할</th><th>이름</th><th>이메일</th><th>전화</th><th>연결학생</th><th>가입일</th><th>최근로그인</th><th>상태</th></tr></thead><tbody id="acTbody"><tr><td colspan="8" class="muted" style="text-align:center;padding:20px">불러오는 중…</td></tr></tbody></table></div>
+  <div class="tablewrap"><table><thead><tr><th>역할</th><th>이름</th><th>이메일</th><th>전화</th><th>연결학생</th><th>가입일</th><th>최근로그인</th><th>상태</th></tr></thead><tbody id="acTbody"><tr><td colspan="8" class="muted" style="text-align:center;padding:20px"><span class="spinner"></span>불러오는 중…</td></tr></tbody></table></div>
  </div>
  <div class="modal" id="modal" onclick="if(event.target.id==='modal')closeModal()"><div class="sheet" id="sheet"></div></div>`;
  loadAccounts();
@@ -838,10 +842,10 @@ async function viewBilling(){
  if(S.role!=='super'&&S.role!=='school'){alert('권한이 없습니다.');return}
  $('#app').innerHTML=`<div class="wrap">${adminTopbar('billing')}
   <div class="card noprint"><b>매출·구독 현황</b><div class="muted" style="font-size:12px;margin-top:3px">결제·이용권·만료·사용량 요약과 세금계산서 요청을 관리합니다.</div></div>
-  <div id="widgetGrid" class="qualitygrid" style="margin-bottom:14px"><div class="muted">불러오는 중…</div></div>
+  <div id="widgetGrid" class="qualitygrid" style="margin-bottom:14px"><div class="muted"><span class="spinner"></span>불러오는 중…</div></div>
   <div class="card noprint" style="display:flex;justify-content:space-between;align-items:center">
    <b>세금계산서 요청 내역</b><div class="muted" style="font-size:11.5px">결제완료 주문만 표시됩니다. 발행은 운영자가 외부 계산서 서비스로 처리 후 "발행완료"로 표시합니다.</div></div>
-  <div class="tablewrap"><table><thead><tr><th>주문번호</th><th>학급</th><th>요금제</th><th>금액</th><th>결제일</th><th>계산서 상태</th><th></th></tr></thead><tbody id="taxTbody"><tr><td colspan="7" class="muted" style="text-align:center;padding:20px">불러오는 중…</td></tr></tbody></table></div>
+  <div class="tablewrap"><table><thead><tr><th>주문번호</th><th>학급</th><th>요금제</th><th>금액</th><th>결제일</th><th>계산서 상태</th><th></th></tr></thead><tbody id="taxTbody"><tr><td colspan="7" class="muted" style="text-align:center;padding:20px"><span class="spinner"></span>불러오는 중…</td></tr></tbody></table></div>
  </div>
  <div class="modal" id="modal" onclick="if(event.target.id==='modal')closeModal()"><div class="sheet" id="sheet"></div></div>`;
  loadBillingWidgets(); loadTaxInvoices();
@@ -932,7 +936,7 @@ async function viewInstitutions(){
    <div><b>기관 관리</b><div class="muted" style="font-size:12px;margin-top:3px">학교·기관 단위 계정, 학급, 진단 이용범위를 관리합니다.</div></div>
    <button class="btn sm" onclick="openInstForm()">➕ 새 기관 추가</button></div>
   <div class="tablewrap"><table><thead><tr><th>기관명</th><th>유형</th><th>학년그룹</th><th>학급수</th><th>학생수</th><th>이용기간</th><th></th></tr></thead>
-   <tbody id="instTbody"><tr><td colspan="7" class="muted" style="text-align:center;padding:20px">불러오는 중…</td></tr></tbody></table></div>
+   <tbody id="instTbody"><tr><td colspan="7" class="muted" style="text-align:center;padding:20px"><span class="spinner"></span>불러오는 중…</td></tr></tbody></table></div>
  </div>
  <div class="modal" id="modal" onclick="if(event.target.id==='modal')closeModal()"><div class="sheet" id="sheet"></div></div>`;
  loadInstitutions();
@@ -996,12 +1000,12 @@ async function doInstSave(id){
  $('#iResult').innerHTML='<div class="muted" style="font-size:12.5px">저장 중…</div>';
  const j=await api(id?'/inst_update':'/inst_create',body);
  if(j.error){$('#iResult').innerHTML=`<div class="err" style="display:block">${esc(j.error)}</div>`;return}
- $('#iResult').innerHTML='<div class="notice" style="background:#F2FBF5;border-color:#CDEBD7">저장되었습니다.</div>';
+ $('#iResult').innerHTML='<div class="notice ok">저장되었습니다.</div>';
  loadInstitutions();
 }
 async function openInstStats(id){
  const inst=(S.insts||[]).find(x=>String(x.id)===String(id));
- $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">📊 ${esc(inst?.name||'기관')} 통계</h2><div class="spacer"></div><button class="btn navy sm" onclick="closeModal()">닫기</button></div><div class="muted" style="padding:20px;text-align:center">불러오는 중…</div>`;
+ $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">📊 ${esc(inst?.name||'기관')} 통계</h2><div class="spacer"></div><button class="btn navy sm" onclick="closeModal()">닫기</button></div><div class="muted" style="padding:20px;text-align:center"><span class="spinner"></span>불러오는 중…</div>`;
  $('#modal').classList.add('open');
  const j=await api('/inst_stats',{token:S.token,id});
  if(j.error){$('#sheet').innerHTML+=`<div class="err" style="display:block;margin-top:10px">${esc(j.error)}</div>`;return}
@@ -1043,13 +1047,13 @@ async function viewInstAdmin(){
   </div>
   <div class="card">
    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><b>📋 진단별 설정</b><span class="muted" style="font-size:11.5px">기관 전체에 적용되는 허용·횟수·이용기간 상한입니다.</span></div>
-   <div class="tablewrap" id="entInstWrap"><div class="muted" style="text-align:center;padding:20px">불러오는 중…</div></div>
+   <div class="tablewrap" id="entInstWrap"><div class="muted" style="text-align:center;padding:20px"><span class="spinner"></span>불러오는 중…</div></div>
    <button class="btn sm" style="margin-top:10px" onclick="doSaveInstEntitlements()">저장</button>
    <div id="entInstResult" style="margin-top:10px"></div>
   </div>
   <div class="card">
    <div style="margin-bottom:10px"><b>📊 학급별 통계</b></div>
-   <div class="tablewrap" id="instClassStatsWrap"><div class="muted" style="text-align:center;padding:20px">불러오는 중…</div></div>
+   <div class="tablewrap" id="instClassStatsWrap"><div class="muted" style="text-align:center;padding:20px"><span class="spinner"></span>불러오는 중…</div></div>
   </div>
  </div>
  <div class="modal" id="modal" onclick="if(event.target.id==='modal')closeModal()"><div class="sheet" id="sheet"></div></div>`;
@@ -1065,7 +1069,7 @@ async function doInviteTeacher(){
  $('#tiResult').innerHTML='<div class="muted" style="font-size:12.5px">초대 처리 중…</div>';
  const j=await api('/admin_create',{token:S.token,username,password,role:'teacher',display_name,institution_id:S.institutionId||null});
  if(j.error){$('#tiResult').innerHTML=`<div class="err" style="display:block">${esc(j.error)}</div>`;return}
- $('#tiResult').innerHTML=`<div class="notice" style="background:#F2FBF5;border-color:#CDEBD7"><b>초대 완료</b> — 아래 계정 정보를 담임에게 전달하세요.<br>
+ $('#tiResult').innerHTML=`<div class="notice ok"><b>초대 완료</b> — 아래 계정 정보를 담임에게 전달하세요.<br>
   아이디 <b>${esc(username)}</b> · 초기 비밀번호 <b>${esc(password)}</b>
   <div style="margin-top:8px"><button class="btn ghost sm" onclick="navigator.clipboard&&navigator.clipboard.writeText('아이디: ${esc(username)} / 초기비밀번호: ${esc(password)}')">📋 복사</button></div></div>`;
  $('#tiUser').value='';$('#tiName').value='';$('#tiPass').value='';
@@ -1081,7 +1085,7 @@ async function doCreateClassInst(){
  const c=j.class||{};
  const pin=j.teacher_pin||''; // 응답 최상위 teacher_pin(평문). class 객체 안에는 없음.
  if(c.institution_id&&!S.institutionId){S.institutionId=c.institution_id;localStorage.setItem('myb_adm_inst',S.institutionId);} // institution_id 기회적 캡처(로그인 응답에 없으므로)
- $('#ciResult').innerHTML=`<div class="notice" style="background:#F2FBF5;border-color:#CDEBD7"><b>발급 완료</b><br>
+ $('#ciResult').innerHTML=`<div class="notice ok"><b>발급 완료</b><br>
   <div style="display:flex;gap:18px;flex-wrap:wrap;margin:8px 0">
    <div><span class="muted" style="font-size:11.5px">학급코드</span><div style="font-size:26px;font-weight:900;letter-spacing:.14em;color:var(--navy)">${esc(c.code||'-')}</div></div>
    <div><span class="muted" style="font-size:11.5px">교사 PIN</span><div style="font-size:26px;font-weight:900;letter-spacing:.14em;color:var(--vio)">${esc(pin||'-')}</div></div>
@@ -1108,7 +1112,7 @@ async function doSaveInstEntitlements(){
  $('#entInstResult').innerHTML='<div class="muted" style="font-size:12.5px">저장 중…</div>';
  const j=await api('/ent_inst_save',{token:S.token,institution_id:S.institutionId,entitlements});
  if(j.error){$('#entInstResult').innerHTML=`<div class="err" style="display:block">${esc(j.error)}</div>`;return}
- $('#entInstResult').innerHTML='<div class="notice" style="background:#F2FBF5;border-color:#CDEBD7">저장되었습니다.</div>';
+ $('#entInstResult').innerHTML='<div class="notice ok">저장되었습니다.</div>';
 }
 async function loadInstClassStats(){
  const wrap=$('#instClassStatsWrap');if(!wrap)return;
@@ -1126,7 +1130,7 @@ async function openClassEntitlements(){
  if(!classes.length){alert('학급 정보를 찾을 수 없습니다.');return}
  $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">📋 진단별 설정</h2><div class="spacer"></div><button class="btn navy sm" onclick="closeModal()">닫기</button></div>
   ${classes.length>1?`<label>학급 선택</label><select id="ceClass" onchange="loadClassEntitlements(this.value)">${classes.map(c=>`<option value="${esc(c.id)}">${esc(c.name)} (${esc(c.code)})</option>`).join('')}</select><div style="height:10px"></div>`:''}
-  <div class="tablewrap" id="entClassWrap"><div class="muted" style="text-align:center;padding:20px">불러오는 중…</div></div>
+  <div class="tablewrap" id="entClassWrap"><div class="muted" style="text-align:center;padding:20px"><span class="spinner"></span>불러오는 중…</div></div>
   <button class="btn sm" style="margin-top:10px" onclick="doSaveClassEntitlements()">저장</button>
   <div id="entClassResult" style="margin-top:10px"></div>`;
  $('#modal').classList.add('open');
@@ -1135,7 +1139,7 @@ async function openClassEntitlements(){
 async function loadClassEntitlements(classId){
  S.curClassId=classId;
  const wrap=$('#entClassWrap');if(!wrap)return;
- wrap.innerHTML='<div class="muted" style="text-align:center;padding:20px">불러오는 중…</div>';
+ wrap.innerHTML='<div class="muted" style="text-align:center;padding:20px"><span class="spinner"></span>불러오는 중…</div>';
  const j=await api('/ent_class_get',{token:S.token,class_id:classId});
  if(j.error){wrap.innerHTML=`<div class="err" style="display:block">${esc(j.error)}</div>`;return}
  const capMap=new Map((j.inst_caps||[]).map(e=>[e.test_slug,e]));
@@ -1168,7 +1172,7 @@ async function doSaveClassEntitlements(){
   $('#entClassResult').innerHTML='<div class="err" style="display:block">일부 항목이 기관 상한을 초과해 저장하지 못했습니다. 빨간 안내를 확인하세요.</div>';
   return;
  }
- $('#entClassResult').innerHTML='<div class="notice" style="background:#F2FBF5;border-color:#CDEBD7">저장되었습니다.</div>';
+ $('#entClassResult').innerHTML='<div class="notice ok">저장되었습니다.</div>';
 }
 
 if(S.token)viewDash();else viewLogin();

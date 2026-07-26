@@ -4,12 +4,12 @@
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-3CGHX7BVM9"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-3CGHX7BVM9');</script>
 <title>마이베스트 NEXT — 나의 가능성 진단</title>
-<meta name="description" content="초·중·고 학생을 위한 진로·진학·공부·미래역량 진단 20종 + 맞춤 성장 가이드와 A4·B4 상담 보고서. 45,000명이 활용한 마이베스트의 다음 진단.">
+<meta name="description" content="초·중·고 학생을 위한 진로·진학·공부·미래역량 진단 26종 + 맞춤 성장 가이드와 A4·B4 상담 보고서. 45,000명이 활용한 마이베스트의 다음 진단.">
 <!-- og:* (B7) 카카오톡·페이스북·스레드 링크 미리보기 -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="마이베스트 NEXT">
 <meta property="og:title" content="마이베스트 NEXT — 나의 가능성 진단">
-<meta property="og:description" content="초·중·고 학생을 위한 진로·진학·공부·미래역량 진단 20종 + 맞춤 성장 가이드와 상담 보고서. 무료로 시작하세요.">
+<meta property="og:description" content="초·중·고 학생을 위한 진로·진학·공부·미래역량 진단 26종 + 맞춤 성장 가이드와 상담 보고서. 무료로 시작하세요.">
 <meta property="og:url" content="https://mybest-next-edu.netlify.app/">
 <meta property="og:image" content="https://mybest-next-edu.netlify.app/og-default.png">
 <meta property="og:image:width" content="1200">
@@ -17,7 +17,7 @@
 <meta property="og:locale" content="ko_KR">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="마이베스트 NEXT — 나의 가능성 진단">
-<meta name="twitter:description" content="초·중·고 진로·진학·공부·미래역량 진단 20종 + 맞춤 성장 가이드. 무료로 시작하세요.">
+<meta name="twitter:description" content="초·중·고 진로·진학·공부·미래역량 진단 26종 + 맞춤 성장 가이드. 무료로 시작하세요.">
 <meta name="twitter:image" content="https://mybest-next-edu.netlify.app/og.png">
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link rel="preconnect" href="https://images.unsplash.com">
@@ -29,7 +29,7 @@
 /* WCAG AA(4.5:1) 보정 텍스트 색(배경/장식용 원본 색상은 위 그대로 유지) */
 --mint-text:#007775;--gold-text:#836728;
 /* 텍스트 전용 별칭(배경으로도 쓰이는 --ink/--vio/--navy와 분리해 다크모드에서 안전하게 전환) */
---text:var(--ink);--vio-text:var(--vio);--navy-text:var(--navy);
+--text:var(--ink);--vio-text:var(--vio);--navy-text:var(--navy);--vio-soft:#F1EEFF;
 /* 반경 스케일(4~5단계) + 특수 2종 */
 --r-xs:4px;--r-sm:10px;--r-md:14px;--r-lg:18px;--r-xl:26px;--r-pill:999px;--r-circle:50%;
 /* 그림자 스케일(반복값 통합) */
@@ -471,7 +471,7 @@ td{padding:7px 8px;border-bottom:1px solid #EEE}
  :root{
   --text:#E8E9F5;--muted:#A6ACC7;--navy-text:#B9C6F0;--vio-text:#B3A6FF;
   --mint-text:#5EEAE4;--gold-text:#E8C877;
-  --bg:#171A24;--paper:#1C2029
+  --bg:#171A24;--paper:#1C2029;--vio-soft:#2A2454
  }
  body{background:radial-gradient(circle at 12% -10%,rgba(0,206,201,.10),transparent 30%),radial-gradient(circle at 90% 8%,rgba(108,92,231,.12),transparent 34%),linear-gradient(180deg,#14161F 0%,#171A24 42%,#151A1D 100%)}
  .card,.block,.opt,.stat,.proof,.quality,.ogcard,.subjcol,.wizchip,.chip,.mjchip,.hstep,.lk,.yn,.tabbar,.lp-val,.lp-shot,.lp-dc.b2c,.convcard,.teacher-student-sheet,.backlink,.btn.ghost,.loginpill,.gcell,.methodnote,.skel-card{
@@ -491,7 +491,7 @@ td{padding:7px 8px;border-bottom:1px solid #EEE}
  .skel{background:linear-gradient(90deg,#242A38 25%,#2E3444 37%,#242A38 63%);background-size:400% 100%}
  .card:hover,.proof:hover,.quality:hover,.convcard:hover,.lp-val:hover{box-shadow:0 12px 30px rgba(0,0,0,.35)}
  #ls-footer{color:#9198B2}
- .qbadge.lock,.planpill,.tag{background:#2A2454;color:var(--vio-text);border:1px solid #3D3570}
+ .qbadge.lock,.planpill,.tag,.catb2{background:#2A2454;color:var(--vio-text);border:1px solid #3D3570}
 }
 @media(prefers-color-scheme:dark) and (max-width:640px){
  .topbar{background:rgba(20,22,32,.85)}
@@ -699,6 +699,94 @@ const api=async(p,body)=>{
  return j;
 };
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+// 2026-07-26: 개별(비회원) 진단 구매 — 백엔드(mybpay v10: /order-individual·/confirm·자동편입)는 이미 완성돼 있었고
+// 프런트에만 결제 버튼이 없어 죽어있던 기능을 연결. 로그인 여부와 무관하게 이름+이메일만 받아 결제 후
+// 학급코드+PIN을 자동 발급(이메일 발송)하는 방식이라 별도 회원가입/SNS로그인 없이 가장 가벼운 구조로 동작.
+let _portoneLoading=null;
+function loadPortone(){
+ if(window.PortOne)return Promise.resolve();
+ if(_portoneLoading)return _portoneLoading;
+ _portoneLoading=new Promise((res,rej)=>{
+  const s=document.createElement('script');
+  s.src='https://cdn.portone.io/v2/browser-sdk.js';
+  s.onload=res;s.onerror=()=>rej(new Error('결제 모듈을 불러오지 못했습니다. 잠시 후 다시 시도해주세요'));
+  document.head.appendChild(s);
+ });
+ return _portoneLoading;
+}
+const payApi=async(p,body)=>{
+ const r=await fetch(PAYAPI+p,body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:undefined);
+ const j=await r.json().catch(()=>({}));
+ if(!r.ok||j.error){const e=new Error(j.error||'오류가 발생했습니다');e.data=j;throw e;}
+ return j;
+};
+function openBuyIndividual(slug){
+ const id='biv'+Date.now();
+ const ov=document.createElement('div');
+ ov.id=id;
+ ov.style.cssText='position:fixed;inset:0;background:rgba(20,20,35,.45);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px';
+ ov.onclick=e=>{if(e.target===ov)ov.remove()};
+ ov.innerHTML=`<div class="card" style="max-width:380px;margin:0">
+  <div class="k">💳 이 진단만 개별 구매</div>
+  <p style="font-size:13px;line-height:1.7;color:#4C5C4C;margin:6px 0 12px">8,000원 · 6개월 이용 · 최대 2회 응시. 결제 후 입장용 학급코드를 화면과 이메일로 바로 받아요.</p>
+  <div class="err" id="${id}err" style="display:none"></div>
+  <label>이름</label><input id="${id}name" placeholder="실명을 입력하세요">
+  <label>이메일 (코드 수령용)</label><input id="${id}email" type="email" placeholder="you@example.com">
+  <div style="display:flex;gap:8px;margin-top:10px"><button class="btn ghost" id="${id}c" style="flex:1">닫기</button><button class="btn navy" id="${id}go" style="flex:1">8,000원 결제하기</button></div>
+ </div>`;
+ document.body.appendChild(ov);
+ document.getElementById(id+'c').onclick=()=>ov.remove();
+ document.getElementById(id+'go').onclick=()=>startBuyIndividual(id,slug);
+}
+async function startBuyIndividual(id,slug){
+ const errBox=document.getElementById(id+'err');
+ const showE=m=>{errBox.textContent=m;errBox.style.display='block'};
+ const name=(document.getElementById(id+'name').value||'').trim();
+ const email=(document.getElementById(id+'email').value||'').trim();
+ if(!name){showE('이름을 입력하세요');return}
+ if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){showE('이메일을 올바르게 입력하세요');return}
+ const btn=document.getElementById(id+'go');btn.disabled=true;btn.textContent='준비 중…';
+ try{
+  const cfg=window._paycfg||(window._paycfg=await fetch(PAYAPI+'/config').then(r=>r.json()));
+  if(!cfg.ready){showE('결제 모듈이 아직 준비되지 않았습니다. 잠시 후 다시 시도해주세요');btn.disabled=false;btn.textContent='8,000원 결제하기';return}
+  const ord=await payApi('/order-individual',{test_slug:slug,buyer_name:name,buyer_email:email});
+  await loadPortone();
+  btn.textContent='결제창 여는 중…';
+  const res=await window.PortOne.requestPayment({
+   storeId:cfg.store_id,channelKey:cfg.channel_key,paymentId:ord.payment_id,orderName:ord.order_name,
+   totalAmount:ord.amount,currency:'CURRENCY_KRW',payMethod:'CARD',
+   customer:{fullName:name,email},
+  });
+  if(res&&res.code){showE(res.message||'결제가 취소되었습니다');btn.disabled=false;btn.textContent='8,000원 결제하기';return}
+  btn.textContent='결제 확인 중…';
+  const r=await payApi('/confirm',{paymentId:ord.payment_id,orderId:ord.order_id,amount:ord.amount});
+  const ov=document.getElementById(id);if(ov)ov.remove();
+  buyDoneModal(r);
+ }catch(e){
+  showE(e.message||'결제 중 오류가 발생했습니다');btn.disabled=false;btn.textContent='8,000원 결제하기';
+ }
+}
+function buyDoneModal(r){
+ const id='bdm'+Date.now();
+ const ov=document.createElement('div');ov.id=id;
+ ov.style.cssText='position:fixed;inset:0;background:rgba(20,20,35,.45);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px';
+ ov.innerHTML=`<div class="card" style="max-width:380px;margin:0">
+  <div class="k">✅ 구매가 완료됐어요</div>
+  <p style="font-size:13px;line-height:1.7;color:#4C5C4C;margin:6px 0 10px">아래 학급코드로 입장해서 이름과 원하는 PIN을 입력하면 바로 진단을 시작할 수 있어요. 같은 내용을 이메일로도 보내드렸어요.</p>
+  <div style="background:#F4F8F1;border-radius:10px;padding:12px;margin-bottom:10px">
+   <div style="font-size:12px;color:#4C5C4C">학급코드 (입장용)</div>
+   <div style="font-size:22px;font-weight:800;letter-spacing:2px;color:#2b6cb0">${esc(r.class_code||'')}</div>
+   <div style="font-size:11.5px;color:#8489A3;margin-top:6px">이용기간 ~${esc(r.usage_end||'')} · 최대 2회</div>
+  </div>
+  <button class="btn navy" style="width:100%;margin-bottom:8px" onclick="document.getElementById('${id}').remove();goEnterBought('${esc(r.class_code||'')}')">이 코드로 바로 입장하기</button>
+  <button class="btn ghost" style="width:100%" onclick="document.getElementById('${id}').remove()">닫기</button>
+ </div>`;
+ document.body.appendChild(ov);
+}
+function goEnterBought(code){
+ const u=new URL(location.href);u.searchParams.set('code',code);history.replaceState(null,'',u);
+ go('join');
+}
 async function askSubjectChat(attemptId){
  const inp=$('#subjChatQ');if(!inp)return;const q=(inp.value||'').trim();if(!q)return;
  const log=$('#subjChatLog');if(!log)return;
@@ -1332,7 +1420,7 @@ async function go(page,arg){
   const RBlink=a=>'report.html?token='+encodeURIComponent(S.token||'')+'&id='+encodeURIComponent(a.id);
   let html=`<div class="hero"><h2>${esc(S.me.name)}의 마이페이지 🏅</h2><p>${esc(S.me.school||'')} ${esc(S.me.class_name||'')} · 진단 ${distinct}종 · ${cats.size}개 영역 · 누적 ${allAt.length}회 응시</p></div>`;
   /* 레벨 카드 */
-  html+=`<div class="card" style="background:linear-gradient(135deg,#F1EEFF,#EEF7F3);border-color:#D9D2F7">
+  html+=`<div class="card" style="background:var(--vio-soft);border-color:#D9D2F7">
    <div style="display:flex;align-items:center;gap:12px"><div style="font-size:34px;line-height:1">${lv.icon}</div>
    <div style="flex:1"><div style="font-weight:800;font-size:16px;color:var(--navy-text)">Lv.${lv.level} ${esc(lv.title)}</div><div class="muted" style="font-size:12px">${esc(lv.desc)}</div></div>
    <div style="text-align:right"><div style="font-weight:800;font-size:13px;color:var(--vio-text)">배지 ${earned.length}/${badges.length}</div></div></div>
@@ -1494,7 +1582,7 @@ async function go(page,arg){
   <div class="mjd"><p style="font-size:12.8px;line-height:1.7;margin-top:8px">${esc(m.explain)}</p>
   <div class="tipbox" style="margin-top:8px"><b>이런 학생에게 어울려요</b><p style="font-size:12px;line-height:1.6;margin-top:4px">${esc(m.talent)}</p></div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
-  <div style="background:#F1EEFF;border-radius:10px;padding:10px"><b style="font-size:10px;letter-spacing:.1em;color:var(--vio-text)">일반선택 권장</b><p style="font-size:11.5px;line-height:1.5;margin-top:3px">${esc(m.subj_normal)}</p></div>
+  <div style="background:var(--vio-soft);border-radius:10px;padding:10px"><b style="font-size:10px;letter-spacing:.1em;color:var(--vio-text)">일반선택 권장</b><p style="font-size:11.5px;line-height:1.5;margin-top:3px">${esc(m.subj_normal)}</p></div>
   <div style="background:#E8FFF8;border-radius:10px;padding:10px"><b style="font-size:10px;letter-spacing:.1em;color:#00997B">진로선택 권장</b><p style="font-size:11.5px;line-height:1.5;margin-top:3px">${esc(m.subj_career)}</p></div></div>
   ${m.jobs?`<p style="font-size:11.5px;color:#5B6270;line-height:1.6;margin-top:8px">🧑‍💼 <b>진출 분야</b> · ${esc(m.jobs)}</p>`:''}</div></div>`).join('')}
   <button class="btn navy noprint" onclick="print()">🖨️ 학과 자료 인쇄/PDF</button>
@@ -1584,7 +1672,7 @@ async function go(page,arg){
   else if(page==='pay'){
  if(!SALES_ENABLED){
     v.innerHTML=`<h1>학교·기관 도입 문의</h1><div class="sub">다학급 운영, 연수, 맞춤 콘텐츠가 필요한 경우 운영자에게 문의해 주세요.</div>
-    <div class="saleshold"><p><b>기관 운영 안내</b><br>20종 진단, 결과 리포트, 교사용 운영 화면, 신뢰도 고지, 보안 로그를 학교 현장에 맞게 구성합니다.</p></div>
+    <div class="saleshold"><p><b>기관 운영 안내</b><br>26종 진단, 결과 리포트, 교사용 운영 화면, 신뢰도 고지, 보안 로그를 학교 현장에 맞게 구성합니다.</p></div>
     <div class="qualitygrid"><div class="quality"><span class="qbadge ready">READY</span><h3>학급코드 운영</h3><p>학생들이 코드와 PIN으로 입장해 결과를 확인할 수 있습니다.</p></div>
     <div class="quality"><span class="qbadge build">EXPAND</span><h3>권한 구조</h3><p>기관관리자와 학급관리자 역할을 나누어 여러 학급을 안정적으로 운영합니다.</p></div></div>
     <a class="btn ghost" href="mailto:onlyjdw3831@gmail.com">학교 도입 문의하기</a>
@@ -1705,13 +1793,15 @@ async function startQuiz(slug){
  }catch(e){}
  go('quiz');
 }
-function planGateModal(msg){
+function planGateModal(msg,slug){
  const id='pgm'+Date.now();
  const ov=document.createElement('div');
  ov.id=id;
  ov.style.cssText='position:fixed;inset:0;background:rgba(20,20,35,.45);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px';
  ov.onclick=e=>{if(e.target===ov)ov.remove()};
- ov.innerHTML=`<div class="card" style="max-width:380px;margin:0"><div class="k">🔒 개인 무료 범위 밖 진단이에요</div><p style="font-size:13.5px;line-height:1.7;color:#4C5C4C;margin:6px 0 14px">${esc(msg)}</p><div style="display:flex;gap:8px"><button class="btn ghost" id="${id}c" style="flex:1">닫기</button><button class="btn navy" style="flex:1" onclick="document.getElementById('${id}').remove();go('pay')">학교 도입 안내</button></div></div>`;
+ ov.innerHTML=`<div class="card" style="max-width:380px;margin:0"><div class="k">🔒 개인 무료 범위 밖 진단이에요</div><p style="font-size:13.5px;line-height:1.7;color:#4C5C4C;margin:6px 0 14px">${esc(msg)}</p>
+ ${slug?`<button class="btn navy" style="width:100%;margin-bottom:8px" onclick="document.getElementById('${id}').remove();openBuyIndividual('${esc(slug)}')">💳 이 진단만 8,000원에 구매하기</button>`:''}
+ <div style="display:flex;gap:8px"><button class="btn ghost" id="${id}c" style="flex:1">닫기</button><button class="btn ghost" style="flex:1" onclick="document.getElementById('${id}').remove();go('pay')">학교 도입 안내</button></div></div>`;
  document.body.appendChild(ov);
  document.getElementById(id+'c').onclick=()=>ov.remove();
 }
@@ -1721,7 +1811,7 @@ function startQuizFx(slug){
  const plan=S.me&&S.me.plan;
  const td=S.tests&&S.tests[slug];
  if(plan&&plan!=='paid'&&td&&!td.free){
-  planGateModal('이 진단은 아직 개인 무료 이용에는 포함되지 않았어요. 지금 개인 무료로 이용 가능한 진단은 계열성향(고등·중학)·과목추천·학생부 로드맵·공부습관·면접 준비도·고교 유형·초등 진로탐험 8종이에요. 학교·학급으로 도입하면 전체 진단을 이용할 수 있어요.');
+  planGateModal('이 진단은 아직 개인 무료 이용에는 포함되지 않았어요. 지금 개인 무료로 이용 가능한 진단은 계열성향(고등·중학)·과목추천·학생부 로드맵·공부습관·면접 준비도·고교 유형·초등 진로탐험 8종이에요. 학교·학급으로 도입하면 전체 진단을 이용할 수 있어요.',slug);
   return;
  }
  const card=document.querySelector(`.vcard[data-slug="${slug}"]:not(.locked)`);
@@ -1893,7 +1983,7 @@ function relatedTestsHtml(slug){
 /* ===== 유료화 동선(B5) — 무료 vs 프리미엄 비교. PAID_LIVE=false면 결제·금액 미노출 ===== */
 function payPremiumHtml(){
  const rows=[
-  ['전체 진단 프로그램(20종+)','전체 무료','전체 무료',true,true],
+  ['전체 진단 프로그램(26종)','전체 무료','전체 무료',true,true],
   ['기본 결과·차트·요약','포함','포함',true,true],
   ['정식 A4 / B4 상담 보고서','미리보기','정식 다면 보고서',false,true],
   ['통합 포트폴리오(PDF)','요약','정식 발급',false,true],
@@ -2087,7 +2177,7 @@ function personaBannerHtml(d){
  const serLabel=(serAt&&serAt.result&&serAt.result.labels&&serAt.result.best!==undefined)?serAt.result.labels[serAt.result.best]+' 계열 성향':'';
  const parts=[gLabel,serLabel].filter(Boolean);
  if(!parts.length)return '';
- return `<div class="card" style="padding:9px 14px;margin-bottom:10px;background:#F1EEFF;border-color:#E0DAFB"><span class="tag" style="background:#fff">${parts.map(p=>esc(p)).join(' · ')} 맞춤 결과</span></div>`;
+ return `<div class="card" style="padding:9px 14px;margin-bottom:10px;background:var(--vio-soft);border-color:#E0DAFB"><span class="tag" style="background:#fff">${parts.map(p=>esc(p)).join(' · ')} 맞춤 결과</span></div>`;
 }
 function renderResult(d){
  window._shareCardD=d;

@@ -37,7 +37,9 @@ label{font-size:12px;font-weight:700;color:var(--muted);display:block;margin:0 0
 .stat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-lg);padding:14px;text-align:center;box-shadow:var(--shadow-1)}
 .stat .v{font-size:25px;font-weight:800;color:var(--navy)}
 .stat .l{font-size:11.5px;color:var(--muted);font-weight:700;margin-top:2px}
-.filters{display:grid;grid-template-columns:repeat(4,1fr) auto;gap:10px;align-items:end}
+.filters{display:flex;flex-wrap:wrap;gap:10px;align-items:end}
+.filters>div{flex:1 1 110px;min-width:100px}
+.filters>div:last-child{flex:0 0 auto}
 table{width:100%;border-collapse:collapse;font-size:13px}
 th{background:var(--tint-vio);color:var(--navy);text-align:left;padding:10px;font-size:12px;font-weight:800;position:sticky;top:0}
 td{padding:9px 10px;border-bottom:1px solid var(--line)}
@@ -96,7 +98,7 @@ tr:hover td{background:var(--bg)}
 .nudge .col h4{font-size:13px;color:var(--navy);margin-bottom:7px}
 .nudge .col h4 .cnt{font-size:11px;background:var(--danger-bg);color:var(--danger-text);border-radius:var(--radius-pill);padding:2px 8px;margin-left:6px;font-weight:800}
 .nudge .col.low h4 .cnt{background:var(--tint-gold);color:var(--gold-text)}
-@media(max-width:780px){.stats{grid-template-columns:repeat(2,1fr)}.kpi6{grid-template-columns:repeat(2,1fr)}.filters{grid-template-columns:1fr 1fr}.rstats{grid-template-columns:repeat(2,1fr)}.rbar .nm{width:80px}.nudge{flex-direction:column}}
+@media(max-width:780px){.stats{grid-template-columns:repeat(2,1fr)}.kpi6{grid-template-columns:repeat(2,1fr)}.filters>div{flex:1 1 45%}.rstats{grid-template-columns:repeat(2,1fr)}.rbar .nm{width:80px}.nudge{flex-direction:column}}
 @media print{
  @page{margin:14mm}
  .noprint{display:none!important}
@@ -206,8 +208,10 @@ async function viewDash(){
     <div class="repnote">※ 현재 조회 범위 전체 기준. 미응시(0종)·저참여(1~2종) 학생을 학급별로 묶어 표시합니다.</div>
   </div>
   <div class="card noprint"><div class="filters">
-    <div><label>학교</label><select id="fSchool"><option value="">전체 학교</option></select></div>
-    <div><label>학년</label><select id="fGrade"><option value="">전체 학년</option></select></div>
+    <div><label>지역</label><select id="fRegion" onchange="rebuildFilterCascade()"><option value="">전체 지역</option></select></div>
+    <div><label>학교급</label><select id="fLevel" onchange="rebuildFilterCascade()"><option value="">전체 학교급</option></select></div>
+    <div><label>학교</label><select id="fSchool" onchange="rebuildFilterCascade()"><option value="">전체 학교</option></select></div>
+    <div><label>학년</label><select id="fGrade" onchange="rebuildFilterCascade()"><option value="">전체 학년</option></select></div>
     <div><label>학급</label><select id="fClass"><option value="">전체 학급</option></select></div>
     <div><label>학생 검색</label><input id="fName" placeholder="이름 일부"></div>
     <div><button class="btn" onclick="loadDash()">조회</button></div>
@@ -226,9 +230,7 @@ async function viewDash(){
   return;
  }
  S.filters=f;
- $('#fSchool').innerHTML='<option value="">전체 학교</option>'+(f.schools||[]).map(s=>`<option>${esc(s)}</option>`).join('');
- $('#fGrade').innerHTML='<option value="">전체 학년</option>'+(f.grades||[]).map(g=>`<option>${esc(g)}</option>`).join('');
- $('#fClass').innerHTML='<option value="">전체 학급</option>'+(f.classes||[]).map(c=>`<option value="${esc(c.code)}">${esc(c.name)} (${esc(c.code)})</option>`).join('');
+ rebuildFilterCascade();
  // 2026-07-30: 새로고침(F5) 시 항상 기본(미필터) 대시보드로 시작하도록 이전 검색조건 자동복원을 제거.
  // (기존엔 localStorage의 myb_adm_filters를 여기서 복원해 "학생검색" 상태가 새로고침 후에도 남아있었음)
  loadDash();
@@ -260,6 +262,65 @@ async function exportResultCsv(){
  }
  const blob=new Blob(['﻿'+lines.join('\r\n')],{type:'text/csv;charset=utf-8'});
  const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='mybest_result_values_'+new Date().toISOString().slice(0,10)+'.csv';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+}
+// 2026-07-30: 계층형 필터(지역→학교급→학교→학년→학급). 상위 선택에 따라 하위 드롭다운 옵션을 좁힌다.
+// school_level/region/학년 정보가 없는(=미지정) 기존 학급도 "미지정" 옵션으로 항상 접근 가능(데이터가 사라진 것처럼 보이지 않게).
+// 강제 순서가 아니라 좁혀나가는 보조 도구 — 지역을 건너뛰고 바로 학교를 선택해도 정상 동작.
+function fCascadeSel(){
+ return { region:$('#fRegion')?.value||'', level:$('#fLevel')?.value||'', school:$('#fSchool')?.value||'', grade:$('#fGrade')?.value||'' };
+}
+function fCascadeCandidates(upto, sel){
+ const order=['region','level','school','grade'];
+ const idx=order.indexOf(upto);
+ const apply=idx<0?order.length:idx; // upto 이전 단계까지만 상위 조건 적용(자기 자신 제외)
+ return (S.filters&&S.filters.classes||[]).filter(c=>{
+  for(let i=0;i<apply;i++){
+   const k=order[i], v=sel[k];
+   if(!v) continue;
+   if(k==='region'){ if(v==='__none__'){ if(c.region) return false; } else if(c.region!==v) return false; }
+   else if(k==='level'){ if(v==='__none__'){ if(c.school_level) return false; } else if(c.school_level!==v) return false; }
+   else if(k==='school'){ if(c.school!==v) return false; }
+   else if(k==='grade'){ if(v==='__none__'){ if((c.grades||[]).length) return false; } else if(!(c.grades||[]).includes(v)) return false; }
+  }
+  return true;
+ });
+}
+function fOptsHtml(values,curVal,allLabel,hasNone){
+ const arr=[...values].sort((a,b)=>String(a).localeCompare(String(b),'ko'));
+ let html=`<option value="">${esc(allLabel)}</option>`+arr.map(v=>`<option${v===curVal?' selected':''}>${esc(v)}</option>`).join('');
+ if(hasNone) html+=`<option value="__none__"${curVal==='__none__'?' selected':''}>미지정</option>`;
+ return html;
+}
+function rebuildFilterCascade(){
+ if(!S.filters)return;
+ const sel=fCascadeSel();
+ const allCls=S.filters.classes||[];
+ const forLevel=fCascadeCandidates('level',sel);   // region 조건까지만 → 학교급 옵션
+ const forSchool=fCascadeCandidates('school',sel);  // region+학교급 → 학교 옵션
+ const forGrade=fCascadeCandidates('grade',sel);    // region+학교급+학교 → 학년 옵션
+ const forClass=fCascadeCandidates('class',sel);    // 전부 적용 → 학급 옵션
+
+ const rgSet=new Set(allCls.map(c=>c.region).filter(Boolean));
+ const rgHasNone=allCls.some(c=>!c.region);
+ const lvSet=new Set(forLevel.map(c=>c.school_level).filter(Boolean));
+ const lvHasNone=forLevel.some(c=>!c.school_level);
+ const scSet=new Set(forSchool.map(c=>c.school).filter(Boolean));
+ const grSet=new Set(); forGrade.forEach(c=>(c.grades||[]).forEach(g=>grSet.add(g)));
+ const grHasNone=forGrade.some(c=>!(c.grades||[]).length);
+
+ $('#fRegion').innerHTML=fOptsHtml(rgSet,sel.region,'전체 지역',rgHasNone);
+ $('#fLevel').innerHTML=fOptsHtml(lvSet,sel.level,'전체 학교급',lvHasNone);
+ $('#fSchool').innerHTML=fOptsHtml(scSet,sel.school,'전체 학교',false);
+ $('#fGrade').innerHTML=fOptsHtml(grSet,sel.grade,'전체 학년',grHasNone);
+ const curClassCode=$('#fClass')?.value||'';
+ const clsSorted=forClass.slice().sort((a,b)=>String(a.name).localeCompare(String(b.name),'ko'));
+ $('#fClass').innerHTML='<option value="">전체 학급</option>'+clsSorted.map(c=>`<option value="${esc(c.code)}"${c.code===curClassCode?' selected':''}>${esc(c.name)} (${esc(c.code)})${c.school?' · '+esc(c.school):''}</option>`).join('');
+ // 상위 조건 변경으로 더 이상 유효하지 않은 하위 선택값은 리셋
+ if(sel.region && sel.region!=='__none__' && !rgSet.has(sel.region)) $('#fRegion').value='';
+ if(sel.level && sel.level!=='__none__' && !lvSet.has(sel.level)) $('#fLevel').value='';
+ if(sel.school && !scSet.has(sel.school)) $('#fSchool').value='';
+ if(sel.grade && sel.grade!=='__none__' && !grSet.has(sel.grade)) $('#fGrade').value='';
+ if(curClassCode && !clsSorted.some(c=>c.code===curClassCode)) $('#fClass').value='';
 }
 async function loadDash(){
  const body={token:S.token,school:$('#fSchool')?.value||'',grade:$('#fGrade')?.value||'',code:$('#fClass')?.value||''};
@@ -314,16 +375,31 @@ function aggClasses(rows){
 // 2026-07-30: 학급별 비교 표 위 초/중/고·지역 필터(학교가 많아지면 찾기 불편하다는 신고). 3번(NEIS 저장) 데이터 재사용.
 function applyCmpFilter(){
  if(!S.cmp)return[];
- const lv=$('#cmpFilterLevel')?.value||'';
  const rg=$('#cmpFilterRegion')?.value||'';
+ const lv=$('#cmpFilterLevel')?.value||'';
+ const sc=$('#cmpFilterSchool')?.value||'';
  return S.cmp.allGroups.filter(g=>{
-  if(lv){ if(lv==='__none__'){ if(g.level) return false; } else if(g.level!==lv) return false; }
   if(rg){ if(rg==='__none__'){ if(g.region) return false; } else if(g.region!==rg) return false; }
+  if(lv){ if(lv==='__none__'){ if(g.level) return false; } else if(g.level!==lv) return false; }
+  if(sc && g.school!==sc) return false;
   return true;
  });
 }
+// 2026-07-30: 지역→학교급→학교 계층형 캐스케이딩 — 상위 선택에 따라 "학교" 옵션을 좁힌다.
 function updCmpFilter(){
  if(!S.cmp)return;
+ const rg=$('#cmpFilterRegion')?.value||'';
+ const lv=$('#cmpFilterLevel')?.value||'';
+ const passRegion=(g)=>{ if(!rg) return true; if(rg==='__none__') return !g.region; return g.region===rg; };
+ const passLevel=(g)=>{ if(!lv) return true; if(lv==='__none__') return !g.level; return g.level===lv; };
+ const forSchool=(S.cmp.allGroups||[]).filter(g=>passRegion(g)&&passLevel(g));
+ const scSet=[...new Set(forSchool.map(g=>g.school).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'ko'));
+ const scSel=$('#cmpFilterSchool');
+ if(scSel){
+  const cur=scSel.value;
+  scSel.innerHTML='<option value="">전체 학교</option>'+scSet.map(s=>`<option${s===cur?' selected':''}>${esc(s)}</option>`).join('');
+  if(cur&&!scSet.includes(cur))scSel.value='';
+ }
  S.cmp.groups=applyCmpFilter();
  sortCompare(S.cmp.sort.key,true);
 }
@@ -352,8 +428,11 @@ function renderCompare(rows,summary){
   const rgOpts=[...new Set(allGroups.map(g=>g.region).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'ko'));
   if(lvOpts.length||rgOpts.length){
    fw.style.display='flex';
-   fw.innerHTML=`<select id="cmpFilterLevel" onchange="updCmpFilter()" style="padding:6px 10px;border:1.5px solid var(--line);border-radius:8px;font-size:12.5px"><option value="">전체 학교급</option>${lvOpts.map(l=>`<option>${esc(l)}</option>`).join('')}<option value="__none__">미지정</option></select>
-    <select id="cmpFilterRegion" onchange="updCmpFilter()" style="padding:6px 10px;border:1.5px solid var(--line);border-radius:8px;font-size:12.5px"><option value="">전체 지역</option>${rgOpts.map(r=>`<option>${esc(r)}</option>`).join('')}<option value="__none__">미지정</option></select>`;
+   fw.innerHTML=`<select id="cmpFilterRegion" onchange="updCmpFilter()" style="padding:6px 10px;border:1.5px solid var(--line);border-radius:8px;font-size:12.5px"><option value="">전체 지역</option>${rgOpts.map(r=>`<option>${esc(r)}</option>`).join('')}<option value="__none__">미지정</option></select>
+    <select id="cmpFilterLevel" onchange="updCmpFilter()" style="padding:6px 10px;border:1.5px solid var(--line);border-radius:8px;font-size:12.5px"><option value="">전체 학교급</option>${lvOpts.map(l=>`<option>${esc(l)}</option>`).join('')}<option value="__none__">미지정</option></select>
+    <select id="cmpFilterSchool" onchange="updCmpFilter()" style="padding:6px 10px;border:1.5px solid var(--line);border-radius:8px;font-size:12.5px"><option value="">전체 학교</option></select>`;
+   updCmpFilter();
+   return;
   }else{fw.style.display='none';fw.innerHTML='';}
  }
  sortCompare(S.cmp.sort.key,true);
@@ -528,6 +607,15 @@ function exportReportCsv(){
  document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
 }
 // ── 학생 일괄 등록 (B4) ──
+// 2026-07-30: "새 학급 발급"에서 지역을 수동으로도 고를 수 있는 17개 시/도 드롭다운(NEIS 자동캡처 값으로 미리 채우되 수동 변경 허용).
+const REGIONS_17=['서울','부산','대구','인천','광주','대전','울산','세종','경기','강원','충북','충남','전북','전남','경북','경남','제주'];
+function normRegion(raw){
+ const s=String(raw||'').trim();
+ if(!s)return '';
+ const map=[['서울','서울'],['부산','부산'],['대구','대구'],['인천','인천'],['광주','광주'],['대전','대전'],['울산','울산'],['세종','세종'],['경기','경기'],['강원','강원'],['충청북','충북'],['충북','충북'],['충청남','충남'],['충남','충남'],['전라북','전북'],['전북','전북'],['전라남','전남'],['전남','전남'],['경상북','경북'],['경북','경북'],['경상남','경남'],['경남','경남'],['제주','제주']];
+ for(const [needle,short] of map){ if(s.includes(needle)) return short; }
+ return '';
+}
 function openCreateClass(){
  $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">🏫 새 학급 발급</h2><div class="spacer"></div><button class="btn navy sm" onclick="closeModal()">닫기</button></div>
  <div class="notice"><b>관리자 권한 확인</b><br>학급코드는 관리자 세션이 있는 경우에만 발급됩니다. 발급 후 학생은 학급코드와 PIN으로 입장합니다.</div>
@@ -540,7 +628,11 @@ function openCreateClass(){
   </div>
   <div><label>학급·교실명</label><input id="ccName" placeholder="예: 3학년 1반"></div>
  </div>
- <label>학급 관리자 PIN</label><input id="ccPin" type="password" placeholder="교사·강사용 4자리 이상 PIN">
+ <div class="grid2">
+  <div><label>지역(시/도)</label><select id="ccRegion"><option value="">선택 안함(미지정)</option>${REGIONS_17.map(r=>`<option>${r}</option>`).join('')}</select>
+   <div class="repnote" style="margin-top:4px">학교 검색 시 자동으로 채워지며, 직접 바꿀 수 있습니다.</div></div>
+  <div><label>학급 관리자 PIN</label><input id="ccPin" type="password" placeholder="교사·강사용 4자리 이상 PIN"></div>
+ </div>
  <div class="grid2">
   <div><label>정원(명)</label><input id="ccMax" type="number" value="40" min="5" max="200"></div>
   <div><label>만료일자</label><input id="ccExpires" type="date"></div>
@@ -582,7 +674,9 @@ function ccSchoolInit(){
  }
  function select(it){
   inp.value=it.name;
-  S.selectedSchoolInfo={name:it.name,schoolLevel:it.schoolLevel||'',region:parseRegion(it.addr)};
+  const rg=normRegion(it.addr)||parseRegion(it.addr);
+  S.selectedSchoolInfo={name:it.name,schoolLevel:it.schoolLevel||'',region:rg};
+  const rgSel=$('#ccRegion'); if(rgSel){ const norm=normRegion(it.addr); if(norm) rgSel.value=norm; }
   list.style.display='none';list.innerHTML='';
  }
  inp.addEventListener('input',()=>{
@@ -605,7 +699,9 @@ function ccSchoolInit(){
 }
 async function doCreateClass(){
  const body={admin_token:S.token,school:$('#ccSchool').value.trim(),name:$('#ccName').value.trim(),teacher_pin:$('#ccPin').value.trim(),max_students:+$('#ccMax').value,expires_at:$('#ccExpires').value||null,max_uses:$('#ccUses').value?+$('#ccUses').value:null,starts_at:$('#ccStart').value||null};
- if(S.selectedSchoolInfo&&S.selectedSchoolInfo.name===body.school){body.school_level=S.selectedSchoolInfo.schoolLevel||null;body.region=S.selectedSchoolInfo.region||null;}
+ if(S.selectedSchoolInfo&&S.selectedSchoolInfo.name===body.school){body.school_level=S.selectedSchoolInfo.schoolLevel||null;}
+ // 2026-07-30: 지역은 NEIS 자동캡처로 미리 채워지되, #ccRegion 드롭다운이 최종 소스(관리자가 수동으로 바꿀 수 있음).
+ body.region=$('#ccRegion')?.value||null;
  if(!body.name||!body.teacher_pin){$('#ccResult').innerHTML='<div class="err" style="display:block">학급명과 관리자 PIN을 입력하세요.</div>';return}
  $('#ccResult').innerHTML='<div class="muted" style="font-size:12.5px">발급 중…</div>';
  const r=await fetch(APP+'/api/teacher/class',{method:'POST',headers:{'Content-Type':'application/json',apikey:KEY},body:JSON.stringify(body)});
@@ -634,9 +730,10 @@ async function openBulk(){
   <div class="topbar"><h2 style="font-size:19px">➕ 학생 일괄 등록</h2><div class="spacer"></div>
    <button class="btn navy sm noprint" onclick="closeModal()">닫기</button></div>
   <div class="notice"><b>한 줄에 한 명씩</b> 이름을 붙여넣고 등록하세요. 접속 비밀번호(PIN)는 <b>0000</b>으로 생성됩니다 — 학생이 처음 접속할 때 안내하세요. 동명이인도 등록되며 결과 요약에 표시됩니다.</div>
-  ${(lvOpts.length||rgOpts.length)?`<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px">
-   <div><label>학교급 필터</label><select id="bkFilterLevel" onchange="updBkClassOptions()"><option value="">전체 학교급</option>${lvOpts.map(l=>`<option>${esc(l)}</option>`).join('')}<option value="__none__">미지정</option></select></div>
+  ${(lvOpts.length||rgOpts.length)?`<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:8px">
    <div><label>지역 필터</label><select id="bkFilterRegion" onchange="updBkClassOptions()"><option value="">전체 지역</option>${rgOpts.map(r=>`<option>${esc(r)}</option>`).join('')}<option value="__none__">미지정</option></select></div>
+   <div><label>학교급 필터</label><select id="bkFilterLevel" onchange="updBkClassOptions()"><option value="">전체 학교급</option>${lvOpts.map(l=>`<option>${esc(l)}</option>`).join('')}<option value="__none__">미지정</option></select></div>
+   <div><label>학교 필터</label><select id="bkFilterSchool" onchange="updBkClassOptions()"><option value="">전체 학교</option></select></div>
   </div>`:''}
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px">
    <div><label>대상 학급</label><select id="bkClass" onchange="updBkCode()">${opts}</select></div>
@@ -660,21 +757,30 @@ async function openBulk(){
   <div id="bkResult" style="margin-top:14px"></div>`;
  const ta=$('#bkNames');const upd=()=>{const n=ta.value.split(/\r?\n/).map(s=>s.trim()).filter(Boolean).length;$('#bkCount').textContent=n+'명 입력됨';};
  ta.addEventListener('input',upd);
- updBkCode();
+ updBkClassOptions();
 }
-// 2026-07-30: 지역/학교급 필터로 "대상 학급" 드롭다운 좁혀보기(학교가 많아지면 찾기 어렵다는 신고 반영).
+// 2026-07-30: 지역→학교급→학교 계층형 필터로 "대상 학급" 드롭다운 좁혀보기(학교가 많아지면 찾기 어렵다는 신고 반영).
 // 필터가 아직 저장되지 않은(school_level/region이 null인) 기존 학급은 "미지정"으로 표시 — 필터 미선택 시엔 항상 포함.
 function bkClassOptions(classes){
  return classes.map(c=>`<option value="${esc(c.id)}" data-code="${esc(c.code)}" data-level="${esc(c.school_level||'')}" data-region="${esc(c.region||'')}">${esc(c.name)} (${esc(c.code)})${c.school?' · '+esc(c.school):''}</option>`).join('');
 }
 function updBkClassOptions(){
- const lv=$('#bkFilterLevel')?.value||'';
  const rg=$('#bkFilterRegion')?.value||'';
- const classes=(S.bulkClasses||[]).filter(c=>{
-  if(lv){ if(lv==='__none__'){ if(c.school_level) return false; } else if(c.school_level!==lv) return false; }
-  if(rg){ if(rg==='__none__'){ if(c.region) return false; } else if(c.region!==rg) return false; }
-  return true;
- });
+ const lv=$('#bkFilterLevel')?.value||'';
+ const all=S.bulkClasses||[];
+ const passRegion=(c)=>{ if(!rg) return true; if(rg==='__none__') return !c.region; return c.region===rg; };
+ const passLevel=(c)=>{ if(!lv) return true; if(lv==='__none__') return !c.school_level; return c.school_level===lv; };
+ // 학교 옵션: 지역+학교급까지만 적용해 좁힌다
+ const forSchool=all.filter(c=>passRegion(c)&&passLevel(c));
+ const scSet=[...new Set(forSchool.map(c=>c.school).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'ko'));
+ const scSel=$('#bkFilterSchool');
+ if(scSel){
+  const cur=scSel.value;
+  scSel.innerHTML='<option value="">전체 학교</option>'+scSet.map(s=>`<option${s===cur?' selected':''}>${esc(s)}</option>`).join('');
+  if(cur&&!scSet.includes(cur))scSel.value='';
+ }
+ const scVal=$('#bkFilterSchool')?.value||'';
+ const classes=forSchool.filter(c=>!scVal||c.school===scVal);
  const sel=$('#bkClass');if(!sel)return;
  sel.innerHTML=classes.length?bkClassOptions(classes):'<option value="">조건에 맞는 학급이 없습니다</option>';
  updBkCode();

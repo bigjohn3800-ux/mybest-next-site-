@@ -129,7 +129,16 @@ const FUT=['리더십','창의성','문제해결','소통','프로젝트','전�
 const S={token:localStorage.getItem('myb_adm_token'),role:localStorage.getItem('myb_adm_role'),name:localStorage.getItem('myb_adm_name'),institutionId:localStorage.getItem('myb_adm_inst')||null,rows:[],filters:null};
 const $=s=>document.querySelector(s);
 const esc=t=>String(t==null?'':t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-async function api(path,bodyObj){const r=await fetch(EP+path,{method:'POST',headers:{'Content-Type':'application/json',apikey:KEY},body:JSON.stringify(bodyObj||{})});return r.json();}
+async function api(path,bodyObj){
+ try{
+  const r=await fetch(EP+path,{method:'POST',headers:{'Content-Type':'application/json',apikey:KEY},body:JSON.stringify(bodyObj||{})});
+  return await r.json();
+ }catch(e){
+  return {error:'네트워크 오류가 발생했습니다. 다시 시도해 주세요.'};
+ }
+}
+function isAuthErr(msg){return /로그인이\s*필요|세션.*만료/.test(String(msg||''));}
+function goHome(){if(S.token)viewDash();else viewLogin();}
 
 function viewLogin(msg){
  $('#app').innerHTML=`<div class="wrap"><div class="login card">
@@ -160,9 +169,11 @@ async function doLogin(){
 function logout(){api('/logout',{token:S.token});localStorage.removeItem('myb_adm_token');localStorage.removeItem('myb_adm_role');localStorage.removeItem('myb_adm_name');localStorage.removeItem('myb_adm_inst');S.token=null;viewLogin();}
 
 async function viewDash(){
+ try{
  $('#app').innerHTML=`<div class="wrap">
-  <div class="topbar noprint"><div class="logo">MY BEST <span>NEXT</span></div>
+  <div class="topbar noprint"><div class="logo" style="cursor:pointer" onclick="goHome()" title="대시보드 홈으로">MY BEST <span>NEXT</span></div>
    <span class="rolebadge">${esc(S.name||'관리자')}</span><div class="spacer"></div>
+   <button class="btn ghost sm" onclick="goHome()">🏠 홈</button>
    <button class="btn ghost sm" onclick="loadDash()">새로고침</button>
     <button class="btn ghost sm" onclick="openCreateClass()">🏫 새 학급 발급</button>
     <button class="btn ghost sm" onclick="openBulk()">➕ 학생 일괄 등록</button>
@@ -185,6 +196,7 @@ async function viewDash(){
      <span class="muted" style="font-size:11.5px" id="cmpHint"></span>
      <button class="btn ghost sm noprint" onclick="exportCompareCsv()">📥 비교 CSV</button>
      <button class="btn ghost sm noprint" onclick="window.print()">🖨 인쇄</button></div>
+    <div class="noprint" id="cmpFilterWrap" style="display:none;gap:8px;margin-bottom:10px;flex-wrap:wrap"></div>
     <div class="tablewrap" style="max-height:46vh"><table class="cmptbl" id="cmpTbl"></table></div>
     <div class="repnote">※ /overview 응답을 학급별로 집계 — 완료율=1종 이상 응시 학생 비율, 5종+율=5종 이상 완료 학생 비율, 평균완료=1인당 완료 진단 수. 머리글을 눌러 정렬.</div>
   </div>
@@ -208,13 +220,21 @@ async function viewDash(){
  <div class="modal" id="modal" onclick="if(event.target.id==='modal')closeModal()"><div class="sheet" id="sheet"></div></div>`;
  // load filter options
  const f=await api('/filters',{token:S.token});
- if(f.error){logout();return;}
+ if(f.error){
+  if(isAuthErr(f.error)){logout();return;}
+  $('#app').innerHTML=`<div class="wrap"><div class="card"><div class="err" style="display:block">${esc(f.error)}</div><button class="btn sm" style="margin-top:12px" onclick="goHome()">다시 시도</button> <button class="btn ghost sm" style="margin-top:12px" onclick="logout()">로그아웃</button></div></div>`;
+  return;
+ }
  S.filters=f;
  $('#fSchool').innerHTML='<option value="">전체 학교</option>'+(f.schools||[]).map(s=>`<option>${esc(s)}</option>`).join('');
  $('#fGrade').innerHTML='<option value="">전체 학년</option>'+(f.grades||[]).map(g=>`<option>${esc(g)}</option>`).join('');
  $('#fClass').innerHTML='<option value="">전체 학급</option>'+(f.classes||[]).map(c=>`<option value="${esc(c.code)}">${esc(c.name)} (${esc(c.code)})</option>`).join('');
- try{const sv=JSON.parse(localStorage.getItem('myb_adm_filters')||'null');if(sv){$('#fSchool').value=sv.school||'';$('#fGrade').value=sv.grade||'';$('#fClass').value=sv.code||'';$('#fName').value=sv.name||'';}}catch(e){}
+ // 2026-07-30: 새로고침(F5) 시 항상 기본(미필터) 대시보드로 시작하도록 이전 검색조건 자동복원을 제거.
+ // (기존엔 localStorage의 myb_adm_filters를 여기서 복원해 "학생검색" 상태가 새로고침 후에도 남아있었음)
  loadDash();
+ }catch(e){
+  $('#app').innerHTML=`<div class="wrap"><div class="card"><div class="err" style="display:block">화면을 불러오는 중 오류가 발생했습니다: ${esc(e&&e.message||e)}</div><button class="btn sm" style="margin-top:12px" onclick="goHome()">다시 시도</button> <button class="btn ghost sm" style="margin-top:12px" onclick="logout()">로그아웃</button></div></div>`;
+ }
 }
 function exportCsv(){
  const rows=S.rows||[];
@@ -244,7 +264,11 @@ async function exportResultCsv(){
 async function loadDash(){
  const body={token:S.token,school:$('#fSchool')?.value||'',grade:$('#fGrade')?.value||'',code:$('#fClass')?.value||''};
  const j=await api('/overview',body);
- if(j.error){logout();return;}
+ if(j.error){
+  if(isAuthErr(j.error)){logout();return;}
+  const cnt=$('#cnt');if(cnt)cnt.innerHTML=`<span style="color:#C62828">${esc(j.error)} · <a href="javascript:void(0)" onclick="loadDash()">다시 시도</a></span>`;
+  return;
+ }
  const nm=($('#fName')?.value||'').trim();
  let rows=j.students||[];if(nm)rows=rows.filter(r=>(r.name||'').includes(nm));
  S.rows=rows;
@@ -272,11 +296,13 @@ function aggClasses(rows){
  rows.forEach(r=>{
   const key=(r.school||'')+'|'+(r.class_name||'(미지정)');
   let g=m.get(key);
-  if(!g){g={key,school:r.school||'-',cls:r.class_name||'(미지정)',grade:r.grade||'',n:0,done:0,attempts:0,active:0,c5:0};m.set(key,g);}
+  if(!g){g={key,school:r.school||'-',cls:r.class_name||'(미지정)',grade:r.grade||'',level:r.school_level||'',region:r.region||'',n:0,done:0,attempts:0,active:0,c5:0};m.set(key,g);}
   g.n++; g.done+=(r.done||0); g.attempts+=(r.attempts||0);
   if((r.done||0)>=1)g.active++;
   if((r.done||0)>=5)g.c5++;
   if(!g.grade&&r.grade)g.grade=r.grade;
+  if(!g.level&&r.school_level)g.level=r.school_level;
+  if(!g.region&&r.region)g.region=r.region;
  });
  return [...m.values()].map(g=>({
   ...g,
@@ -285,12 +311,28 @@ function aggClasses(rows){
   c5rate:g.n?Math.round((g.c5/g.n)*100):0
  }));
 }
+// 2026-07-30: 학급별 비교 표 위 초/중/고·지역 필터(학교가 많아지면 찾기 불편하다는 신고). 3번(NEIS 저장) 데이터 재사용.
+function applyCmpFilter(){
+ if(!S.cmp)return[];
+ const lv=$('#cmpFilterLevel')?.value||'';
+ const rg=$('#cmpFilterRegion')?.value||'';
+ return S.cmp.allGroups.filter(g=>{
+  if(lv){ if(lv==='__none__'){ if(g.level) return false; } else if(g.level!==lv) return false; }
+  if(rg){ if(rg==='__none__'){ if(g.region) return false; } else if(g.region!==rg) return false; }
+  return true;
+ });
+}
+function updCmpFilter(){
+ if(!S.cmp)return;
+ S.cmp.groups=applyCmpFilter();
+ sortCompare(S.cmp.sort.key,true);
+}
 function renderCompare(rows,summary){
  const card=$('#cmpCard'),kc=$('#kpi6');
  if(!card)return;
  // school/super 만 노출 (teacher=단일학급이면 비교 의미 적음)
- const groups=aggClasses(rows);
- const multi=(S.role==='super'||S.role==='school')&&groups.length>=2;
+ const allGroups=aggClasses(rows);
+ const multi=(S.role==='super'||S.role==='school')&&allGroups.length>=2;
  if(!multi||!rows.length){card.style.display='none';if(kc)kc.style.display='none';S.cmp=null;return;}
  // KPI 6칸 (학교 전체 요약)
  const s=summary||{};
@@ -300,10 +342,20 @@ function renderCompare(rows,summary){
  const active=rows.filter(r=>(r.done||0)>=1).length;
  const c5=rows.filter(r=>(r.done||0)>=5).length;
  const avgDone=totalN?Math.round((totalDone/totalN)*10)/10:0;
- const kpi=[['학급 수',groups.length],['총 학생',totalN],['총 응시',totalAtt],['참여율(1종+)',(totalN?Math.round(active/totalN*100):0)+'%'],['평균 완료',avgDone],['5종+ 완료',c5]];
+ const kpi=[['학급 수',allGroups.length],['총 학생',totalN],['총 응시',totalAtt],['참여율(1종+)',(totalN?Math.round(active/totalN*100):0)+'%'],['평균 완료',avgDone],['5종+ 완료',c5]];
  if(kc){kc.style.display='grid';kc.innerHTML=kpi.map(([l,v])=>`<div class="stat"><div class="v">${v}</div><div class="l">${esc(l)}</div></div>`).join('');}
  card.style.display='';
- S.cmp={groups,sort:{key:'avgDone',dir:-1}};
+ S.cmp={allGroups,groups:allGroups,sort:{key:'avgDone',dir:-1}};
+ const fw=$('#cmpFilterWrap');
+ if(fw){
+  const lvOpts=[...new Set(allGroups.map(g=>g.level).filter(Boolean))].sort();
+  const rgOpts=[...new Set(allGroups.map(g=>g.region).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'ko'));
+  if(lvOpts.length||rgOpts.length){
+   fw.style.display='flex';
+   fw.innerHTML=`<select id="cmpFilterLevel" onchange="updCmpFilter()" style="padding:6px 10px;border:1.5px solid var(--line);border-radius:8px;font-size:12.5px"><option value="">전체 학교급</option>${lvOpts.map(l=>`<option>${esc(l)}</option>`).join('')}<option value="__none__">미지정</option></select>
+    <select id="cmpFilterRegion" onchange="updCmpFilter()" style="padding:6px 10px;border:1.5px solid var(--line);border-radius:8px;font-size:12.5px"><option value="">전체 지역</option>${rgOpts.map(r=>`<option>${esc(r)}</option>`).join('')}<option value="__none__">미지정</option></select>`;
+  }else{fw.style.display='none';fw.innerHTML='';}
+ }
  sortCompare(S.cmp.sort.key,true);
 }
 function sortCompare(key,keepDir){
@@ -480,13 +532,18 @@ function openCreateClass(){
  $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">🏫 새 학급 발급</h2><div class="spacer"></div><button class="btn navy sm" onclick="closeModal()">닫기</button></div>
  <div class="notice"><b>관리자 권한 확인</b><br>학급코드는 관리자 세션이 있는 경우에만 발급됩니다. 발급 후 학생은 학급코드와 PIN으로 입장합니다.</div>
  <div class="grid2">
-  <div><label>학교·기관명</label><input id="ccSchool" placeholder="예: 마이베스트고등학교"></div>
+  <div><label>학교·기관명</label>
+   <div style="position:relative">
+    <input id="ccSchool" placeholder="예: 마이베스트고등학교 (검색해 선택, 직접입력도 가능)" autocomplete="off">
+    <ul id="ccSchoolList" style="position:absolute;z-index:50;top:calc(100% + 4px);left:0;right:0;margin:0;padding:4px;list-style:none;background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:0 8px 20px rgba(15,23,42,.12);max-height:220px;overflow-y:auto;display:none"></ul>
+   </div>
+  </div>
   <div><label>학급·교실명</label><input id="ccName" placeholder="예: 3학년 1반"></div>
  </div>
  <label>학급 관리자 PIN</label><input id="ccPin" type="password" placeholder="교사·강사용 4자리 이상 PIN">
  <div class="grid2">
   <div><label>정원(명)</label><input id="ccMax" type="number" value="40" min="5" max="200"></div>
-  <div><label>이용 기간(개월)</label><input id="ccMonths" type="number" value="12" min="1" max="24"></div>
+  <div><label>만료일자</label><input id="ccExpires" type="date"></div>
  </div>
  <div class="grid2">
   <div><label>1인 이용 횟수</label><input id="ccUses" type="number" placeholder="비우면 제한 없음" min="1" max="50"></div>
@@ -495,9 +552,60 @@ function openCreateClass(){
  <button class="btn" style="width:100%" onclick="doCreateClass()">학급 코드 발급</button>
  <div id="ccResult" style="margin-top:10px"></div>`;
  $('#modal').classList.add('open');
+ // 만료일자 기본값 = 오늘부터 12개월 뒤
+ try{
+  const d=new Date();d.setMonth(d.getMonth()+12);
+  const iso=d.toISOString().slice(0,10);
+  const el=$('#ccExpires');if(el)el.value=iso;
+ }catch(e){}
+ S.selectedSchoolInfo=null;
+ try{ccSchoolInit()}catch(e){}
+}
+// 2026-07-30: NEIS 학교 검색 자동완성(myb-school /search 재사용, index.html의 mybswInit 패턴 축약판).
+// 직접 텍스트 입력도 계속 허용 — 검색 결과에 없는 학교/기관일 수 있으므로 선택을 강제하지 않음.
+function ccSchoolInit(){
+ const inp=$('#ccSchool'),list=$('#ccSchoolList');
+ if(!inp||!list||inp.dataset.bound)return;
+ inp.dataset.bound='1';
+ let items=[],timer=null,seq=0;
+ const API='https://onqisdgxwuvlxehjvoto.supabase.co/functions/v1/myb-school';
+ function parseRegion(addr){ if(!addr)return ''; return String(addr).trim().split(/\s+/)[0]||''; }
+ function render(){
+  if(!items.length){list.style.display='none';list.innerHTML='';return;}
+  list.innerHTML=items.map((it,i)=>`<li data-idx="${i}" style="padding:8px 10px;cursor:pointer;border-radius:6px;font-size:13px">${esc(it.name)} <span class="muted" style="font-size:11px">(${esc(it.schoolLevel||'')})</span><br><span class="muted" style="font-size:11px">${esc(it.addr||'')}</span></li>`).join('');
+  list.style.display='block';
+  [...list.children].forEach((el,i)=>{
+   el.addEventListener('mouseover',()=>{el.style.background='#F1EEFF'});
+   el.addEventListener('mouseout',()=>{el.style.background=''});
+   el.addEventListener('click',()=>select(items[i]));
+  });
+ }
+ function select(it){
+  inp.value=it.name;
+  S.selectedSchoolInfo={name:it.name,schoolLevel:it.schoolLevel||'',region:parseRegion(it.addr)};
+  list.style.display='none';list.innerHTML='';
+ }
+ inp.addEventListener('input',()=>{
+  S.selectedSchoolInfo=null;
+  const v=inp.value.trim();
+  if(timer)clearTimeout(timer);
+  if(v.length<2){items=[];render();return;}
+  timer=setTimeout(async ()=>{
+   const mySeq=++seq;
+   try{
+    const r=await fetch(API+'/search?name='+encodeURIComponent(v));
+    const d=await r.json();
+    if(mySeq!==seq)return;
+    items=(d&&d.ok!==false&&d.results)||[];
+    render();
+   }catch(e){items=[];render();}
+  },280);
+ });
+ document.addEventListener('click',(e)=>{if(list&&!list.contains(e.target)&&e.target!==inp)list.style.display='none';});
 }
 async function doCreateClass(){
- const body={admin_token:S.token,school:$('#ccSchool').value.trim(),name:$('#ccName').value.trim(),teacher_pin:$('#ccPin').value.trim(),max_students:+$('#ccMax').value,months:+$('#ccMonths').value,max_uses:$('#ccUses').value?+$('#ccUses').value:null,starts_at:$('#ccStart').value||null};
+ const body={admin_token:S.token,school:$('#ccSchool').value.trim(),name:$('#ccName').value.trim(),teacher_pin:$('#ccPin').value.trim(),max_students:+$('#ccMax').value,expires_at:$('#ccExpires').value||null,max_uses:$('#ccUses').value?+$('#ccUses').value:null,starts_at:$('#ccStart').value||null};
+ if(S.selectedSchoolInfo&&S.selectedSchoolInfo.name===body.school){body.school_level=S.selectedSchoolInfo.schoolLevel||null;body.region=S.selectedSchoolInfo.region||null;}
  if(!body.name||!body.teacher_pin){$('#ccResult').innerHTML='<div class="err" style="display:block">학급명과 관리자 PIN을 입력하세요.</div>';return}
  $('#ccResult').innerHTML='<div class="muted" style="font-size:12.5px">발급 중…</div>';
  const r=await fetch(APP+'/api/teacher/class',{method:'POST',headers:{'Content-Type':'application/json',apikey:KEY},body:JSON.stringify(body)});
@@ -519,11 +627,17 @@ async function openBulk(){
  const classes=(j.classes||[]).slice().sort((a,b)=>String(a.name).localeCompare(String(b.name),'ko'));
  if(!classes.length){$('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">➕ 학생 일괄 등록</h2><div class="spacer"></div><button class="btn navy sm" onclick="closeModal()">닫기</button></div><div class="repnote">등록 가능한 학급이 없습니다. 먼저 학급을 발급하세요.</div>`;return;}
  S.bulkClasses=classes;
- const opts=classes.map(c=>`<option value="${esc(c.id)}" data-code="${esc(c.code)}">${esc(c.name)} (${esc(c.code)})${c.school?' · '+esc(c.school):''}</option>`).join('');
+ const lvOpts=[...new Set(classes.map(c=>c.school_level).filter(Boolean))].sort();
+ const rgOpts=[...new Set(classes.map(c=>c.region).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'ko'));
+ const opts=bkClassOptions(classes);
  $('#sheet').innerHTML=`
   <div class="topbar"><h2 style="font-size:19px">➕ 학생 일괄 등록</h2><div class="spacer"></div>
    <button class="btn navy sm noprint" onclick="closeModal()">닫기</button></div>
   <div class="notice"><b>한 줄에 한 명씩</b> 이름을 붙여넣고 등록하세요. 접속 비밀번호(PIN)는 <b>0000</b>으로 생성됩니다 — 학생이 처음 접속할 때 안내하세요. 동명이인도 등록되며 결과 요약에 표시됩니다.</div>
+  ${(lvOpts.length||rgOpts.length)?`<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px">
+   <div><label>학교급 필터</label><select id="bkFilterLevel" onchange="updBkClassOptions()"><option value="">전체 학교급</option>${lvOpts.map(l=>`<option>${esc(l)}</option>`).join('')}<option value="__none__">미지정</option></select></div>
+   <div><label>지역 필터</label><select id="bkFilterRegion" onchange="updBkClassOptions()"><option value="">전체 지역</option>${rgOpts.map(r=>`<option>${esc(r)}</option>`).join('')}<option value="__none__">미지정</option></select></div>
+  </div>`:''}
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px">
    <div><label>대상 학급</label><select id="bkClass" onchange="updBkCode()">${opts}</select></div>
    <div><label>학년(선택)</label><input id="bkGrade" placeholder="예: 1학년 / 중3"></div>
@@ -546,6 +660,23 @@ async function openBulk(){
   <div id="bkResult" style="margin-top:14px"></div>`;
  const ta=$('#bkNames');const upd=()=>{const n=ta.value.split(/\r?\n/).map(s=>s.trim()).filter(Boolean).length;$('#bkCount').textContent=n+'명 입력됨';};
  ta.addEventListener('input',upd);
+ updBkCode();
+}
+// 2026-07-30: 지역/학교급 필터로 "대상 학급" 드롭다운 좁혀보기(학교가 많아지면 찾기 어렵다는 신고 반영).
+// 필터가 아직 저장되지 않은(school_level/region이 null인) 기존 학급은 "미지정"으로 표시 — 필터 미선택 시엔 항상 포함.
+function bkClassOptions(classes){
+ return classes.map(c=>`<option value="${esc(c.id)}" data-code="${esc(c.code)}" data-level="${esc(c.school_level||'')}" data-region="${esc(c.region||'')}">${esc(c.name)} (${esc(c.code)})${c.school?' · '+esc(c.school):''}</option>`).join('');
+}
+function updBkClassOptions(){
+ const lv=$('#bkFilterLevel')?.value||'';
+ const rg=$('#bkFilterRegion')?.value||'';
+ const classes=(S.bulkClasses||[]).filter(c=>{
+  if(lv){ if(lv==='__none__'){ if(c.school_level) return false; } else if(c.school_level!==lv) return false; }
+  if(rg){ if(rg==='__none__'){ if(c.region) return false; } else if(c.region!==rg) return false; }
+  return true;
+ });
+ const sel=$('#bkClass');if(!sel)return;
+ sel.innerHTML=classes.length?bkClassOptions(classes):'<option value="">조건에 맞는 학급이 없습니다</option>';
  updBkCode();
 }
 function updBkCode(){
@@ -731,7 +862,7 @@ async function doChangePassword(targetUsername){
 
 // ── 관리자 계정 관리 (super 전용) ──
 function adminTopbar(active){
- return `<div class="topbar noprint"><div class="logo">MY BEST <span>NEXT</span></div>
+ return `<div class="topbar noprint"><div class="logo" style="cursor:pointer" onclick="goHome()" title="대시보드 홈으로">MY BEST <span>NEXT</span></div>
   <span class="rolebadge">${esc(S.name||'관리자')}</span><div class="spacer"></div>
   <button class="btn ${active==='dash'?'':'ghost'} sm" onclick="viewDash()">📊 대시보드</button>
   ${S.role==='super'?`<button class="btn ${active==='admins'?'':'ghost'} sm" onclick="viewAdmins()">👤 관리자 계정</button>`:''}
@@ -1175,6 +1306,6 @@ async function doSaveClassEntitlements(){
  $('#entClassResult').innerHTML='<div class="notice ok">저장되었습니다.</div>';
 }
 
-if(S.token)viewDash();else viewLogin();
+try{ if(S.token)viewDash(); else viewLogin(); }catch(e){ try{viewDash()}catch(e2){viewLogin('일시적 오류가 발생했습니다. 다시 로그인해 주세요.')} }
 </script>
 </body></html>

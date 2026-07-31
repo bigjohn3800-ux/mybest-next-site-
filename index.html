@@ -904,7 +904,7 @@ function setWho(){$('#who').innerHTML=S.me?`<b>${esc(S.me.name)}</b> · ${esc(S.
 function logout(){localStorage.removeItem('myb_token');S.token=null;S.me=null;go('home')}
 function renderTabs(){var el=document.getElementById("tabbar");if(!el)return;var t=S.token?[["🏠","홈","dash0"],["🧭","진단","dash"],["🏅","마이","mypage"],["📋","리포트","profile"],["🚪","나가기","*logout"]]:[["🏠","홈","home"],["🧭","진단","consult"],["🏫","코칭","coaching"],["💎","요금","pricing"],["✨","샘플","*sample"]];el.innerHTML=t.map(function(x){var a=x[2]==="*logout"?"logout()":(x[2]==="*sample"?"location.href='/sample.html'":(x[2]==="dash0"?"go('home')":"go('"+x[2]+"')"));return "<a onclick=\""+a+"\"><span>"+x[0]+"</span>"+x[1]+"</a>";}).join("");}
 function updateBack(page){var b=document.getElementById('backBtn');if(!b)return;var root=(page==='home'||page==='dash'||page==='dash0');b.style.display=root?'none':'inline-flex';}
-function appBack(){var p=S.prevPage;if(p&&p!==S.page){go(p);return;}go(S.token?'dash':'home');}
+function appBack(){var p=S.prevPage,a=S.prevArg;if(p==='quiz'){p=S.token?'dash':'home';a=undefined;}if(p&&p!==S.page){go(p,a);return;}go(S.token?'dash':'home');}
 function proofHtml(){return `<div class="proofgrid">
  <div class="proof"><b>45,000명 활용 기반</b><span>기존 마이베스트 운영 경험을 NEXT 흐름으로 재설계</span></div>
  <div class="proof"><b>검증 규준 공개</b><span>고등 N=8,575 α0.951 · 중학 N=4,069 α0.930</span></div>
@@ -1282,7 +1282,8 @@ function gateDenyModal(gate){
 }
 async function go(page,arg){
  const v=$('#view');
- if(S.page!==page){S.prevPage=S.page;S.page=page;}
+ if(S.page!==page){S.prevPage=S.page;S.prevArg=S.curArg;S.page=page;}
+ S.curArg=arg;
  updateBack(page);
  try{renderTabs()}catch(e){}
  if(page==='home'){

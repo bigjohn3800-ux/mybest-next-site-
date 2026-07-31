@@ -541,7 +541,7 @@ if(window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches&&window.
 <script src="/assets/onae-theme.js" defer></script>
 </head><body><div class="app">
 <div class="topbar"><div class="brandwrap"><button id="backBtn" class="backlink noprint" onclick="appBack()" style="display:none">← 뒤로</button><div class="logo" onclick="go('home')">MY BEST <span>NEXT</span></div></div>
-<nav class="mnav noprint"><a onclick="go('home')">홈</a><a onclick="go('consult')">컨설팅 진단</a><a href="/sample.html">샘플 1분 확인</a><a onclick="go('coaching')">선생님 코칭</a><a onclick="go('pricing')">요금·도입</a><a href="/guide.html">도입 안내</a><a class="loginpill" onclick="go(S.token?'dash':'login')">로그인</a></nav>
+<nav class="mnav noprint"><a onclick="go('home')">홈</a><a class="mktg" onclick="go('consult')">컨설팅 진단</a><a class="mktg" href="/sample.html">샘플 1분 확인</a><a class="mktg" onclick="go('coaching')">선생님 코칭</a><a class="mktg" onclick="go('pricing')">요금·도입</a><a class="mktg" href="/guide.html">도입 안내</a><a class="authnav" style="display:none" onclick="go('dash')">진단</a><a class="authnav" style="display:none" onclick="go('mypage')">마이페이지</a><a class="authnav" style="display:none" onclick="go('profile')">통합리포트</a><a class="loginpill" onclick="go(S.token?'dash':'login')">로그인</a></nav>
 <div class="who" id="who"></div></div>
 <div id="view"></div>
 <div class="tabbar noprint" id="tabbar"></div>
@@ -624,7 +624,8 @@ function groupChipsHtml(repSlug,act,t){
  const chips=members.map(m=>{
   const done=window.__done&&window.__done[m];
   const label=DISPLAY_TITLE[m]||(t&&t[m]&&t[m].title)||m;
-  return `<span class="vchip${done?' done':''}" data-chip-slug="${m}" onclick="event.stopPropagation();${act}('${m}')">${done?'✓ ':''}${esc(label)}</span>`;
+  const clickFn=(act==='startQuizFx')?'cardClickFx':act;
+  return `<span class="vchip${done?' done':''}" data-chip-slug="${m}" onclick="event.stopPropagation();${clickFn}('${m}')">${done?'✓ ':''}${esc(label)}</span>`;
  }).join('');
  return `<div class="vchips" onclick="event.stopPropagation()"><span class="vchips-label">+ 함께 보기</span>${chips}</div>`;
 }
@@ -643,7 +644,10 @@ Object.assign(ARTC,{study_manage:['#2D9CDB','#56CCF2'],gifted_ready:['#F2994A','
 Object.assign(PHOTO,{study_manage:'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4',gifted_ready:'https://images.unsplash.com/photo-1531482615713-2afd69097998',mock_exam:'https://images.unsplash.com/photo-1434030216411-0b793f4b4173',admission_nav:'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40',story_writer:'https://images.unsplash.com/photo-1455390582262-044cdead277a',ai_inquiry:'https://images.unsplash.com/photo-1532094349884-543bc11b234d'});
 function gradeLv(g){g=String(g||'');if(g.includes('초'))return'es';if(g.includes('중'))return'ms';if(g.includes('고'))return'hs';return''}
 function vcardHtml(k,d,act,st,i,enabled=true,reason='',lvname='',t=null,plan=null){
- const onclick=enabled?` onclick="${act}('${k}')"`:' aria-disabled="true"';
+ // 2026-07-31: 완료한 진단 카드를 클릭했을 때 곧바로 재응시가 시작되지 않도록,
+ // startQuizFx로 연결되는 카드는 cardClickFx를 거쳐 "기존 결과 보기/새로 진단하기" 선택 모달을 띄운다.
+ const clickFn=(act==='startQuizFx')?'cardClickFx':act;
+ const onclick=enabled?` onclick="${clickFn}('${k}')"`:' aria-disabled="true"';
  const cls=enabled?'vcard':'vcard locked';
  const badge=lvname?esc(lvname)+st:'STEP '+st;
  const chipsHtml=enabled?groupChipsHtml(k,act,t):'';
@@ -900,8 +904,11 @@ async function askSubjectChat(attemptId){
  log.scrollTop=log.scrollHeight;
 }
 function showErr(m){const e=$('#err');if(e){e.textContent=m;e.style.display='block'}else alert(m)}
-function setWho(){$('#who').innerHTML=S.me?`<b>${esc(S.me.name)}</b> · ${esc(S.me.class_name||'')} <a style="color:#C62828;cursor:pointer;margin-left:6px" onclick="logout()">나가기</a>`:''}
-function logout(){localStorage.removeItem('myb_token');S.token=null;S.me=null;go('home')}
+function setWho(){$('#who').innerHTML=S.me?`<b>${esc(S.me.name)}</b> · ${esc(S.me.class_name||'')} <a style="color:#C62828;cursor:pointer;margin-left:6px" onclick="logout()">나가기</a>`:'';
+ document.querySelectorAll('.mnav .mktg').forEach(function(el){el.style.display=S.me?'none':''});
+ document.querySelectorAll('.mnav .authnav').forEach(function(el){el.style.display=S.me?'':'none'});
+}
+function logout(){localStorage.removeItem('myb_token');S.token=null;S.me=null;setWho();go('home')}
 function renderTabs(){var el=document.getElementById("tabbar");if(!el)return;var t=S.token?[["🏠","홈","dash0"],["🧭","진단","dash"],["🏅","마이","mypage"],["📋","리포트","profile"],["🚪","나가기","*logout"]]:[["🏠","홈","home"],["🧭","진단","consult"],["🏫","코칭","coaching"],["💎","요금","pricing"],["✨","샘플","*sample"]];el.innerHTML=t.map(function(x){var a=x[2]==="*logout"?"logout()":(x[2]==="*sample"?"location.href='/sample.html'":(x[2]==="dash0"?"go('home')":"go('"+x[2]+"')"));return "<a onclick=\""+a+"\"><span>"+x[0]+"</span>"+x[1]+"</a>";}).join("");}
 function updateBack(page){var b=document.getElementById('backBtn');if(!b)return;var root=(page==='home'||page==='dash'||page==='dash0');b.style.display=root?'none':'inline-flex';}
 function appBack(){var p=S.prevPage,a=S.prevArg;if(p==='quiz'){p=S.token?'dash':'home';a=undefined;}if(p&&p!==S.page){go(p,a);return;}go(S.token?'dash':'home');}
@@ -1365,7 +1372,9 @@ async function go(page,arg){
    <div class="actionbar noprint"><button class="btn" onclick="go('join')">10초 입장하고 결과 저장하기</button><button class="btn ghost" onclick="go('coaching')">선생님 코칭 보기</button></div>
    <div class="linkrow"><a onclick="go('home')">← 처음으로</a> · <a onclick="go('quality')">신뢰도</a> · <a href="/sample.html">샘플 1분 확인</a></div>`;
   const t=S.tests??(S.tests=(await api('/tests')).tests);
+  if(S.token&&!S.me){try{S.me=await api('/me?token='+S.token);setWho();}catch(e){}}
   $('#tlist').innerHTML=gridHtml(t, S.token?"startQuizFx":"goJoin", S.me&&S.me.grade, S.me&&S.me.plan);
+  if(S.me&&S.me.attempts)applyDoneBadges(S.me.attempts);
   window.goJoin=()=>go('join');
   window.scrollTo(0,0);
  }
@@ -1427,9 +1436,7 @@ async function go(page,arg){
    <div style="height:10px"></div><div style="display:flex;gap:8px;margin-bottom:8px"><button class="btn navy" style="flex:1" onclick="go('mypage')">🏅 마이페이지 (성장·배지)</button><button class="btn ghost" style="flex:1" onclick="go('profile')">📋 통합 성장 리포트</button></div>
    <div style="display:flex;gap:8px;margin-bottom:14px"><button class="btn ghost" style="flex:1" onclick="go('growth')">📈 성장 그래프</button><button class="btn ghost" style="flex:1" onclick="go('cs')">💬 의견·오류 보내기</button></div>
    <div class="k">내 진단 기록</div><div class="card" id="myats">${skeletonRows(3)}</div>`;
-  window.__done={};ats.forEach(a=>{if(!window.__done[a.test_slug])window.__done[a.test_slug]=a.result});
-  $('#tlist2')&&0; document.querySelectorAll('.vcard').forEach(()=>{});
-  setTimeout(()=>{document.querySelectorAll('.vcard[data-slug]').forEach(cd=>{const k=cd.dataset.slug;if(window.__done[k]){cd.classList.add('donecard');const m=cd.querySelector('.vtop');if(m&&!m.querySelector('.doneb')){const sp=document.createElement('span');sp.className='doneb';sp.textContent='✓ 완료';m.appendChild(sp);}}});document.querySelectorAll('.vchip[data-chip-slug]').forEach(ch=>{const mk=ch.dataset.chipSlug;if(window.__done[mk]&&!ch.classList.contains('done')){ch.classList.add('done');ch.textContent='✓ '+ch.textContent;}})},50);
+  applyDoneBadges(ats);
   const old30=d=>(Date.now()-new Date(d).getTime())>30*864e5;
   $('#myats').innerHTML=ats.length?ats.map(a=>`<div class="attrow"><span>${EMO[a.test_slug]||'📊'} ${esc(t[a.test_slug]?.title||a.test_slug)} ${old30(a.created_at)?'<span class="tag" style="background:#FFF4DC;color:#836728;font-size:10px">재진단 추천</span>':''}<br><span class="muted">${a.created_at.slice(0,10)}</span></span><span style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end"><button class="btn small ghost" onclick="retakeQuiz('${a.test_slug}')">다시 진단</button><button class="btn small navy" onclick="openAttempt('${a.id}')">결과 보기</button></span></div>`).join(''):'<div class="muted">아직 기록이 없어요. 첫 진단을 시작해보세요!</div>';
   try{mybswInit()}catch(e){}
@@ -1815,7 +1822,10 @@ async function go(page,arg){
   if(step===1){
    body=`<div class="card"><div class="k">1. 지금 학년대는?</div>${wizChipRow(WIZ_GRADES,'grade')}</div>`;
   }else if(step===2){
-   body=`<div class="card"><div class="k">2. 가장 관심 있는 건?</div>${wizChipRow(WIZ_INTERESTS,'interest')}</div>`;
+   // 2026-07-31: 로그인 학생이 초등이면 '계열·과목 선택'·'입시·진학 전략'은 아직 이르므로 숨긴다.
+   const _wizGlv=S.me?gradeLv(S.me.grade):'';
+   const _wizInterests=_wizGlv==='es'?WIZ_INTERESTS.filter(x=>x.v!=='track'&&x.v!=='admission'):WIZ_INTERESTS;
+   body=`<div class="card"><div class="k">2. 가장 관심 있는 건?</div>${wizChipRow(_wizInterests,'interest')}</div>`;
   }else if(step===3){
    body=`<div class="card"><div class="k">3. 지금 가장 큰 고민 하나는?</div>${wizChipRow(WIZ_WORRIES,'worry')}</div>`;
   }else{
@@ -2061,6 +2071,53 @@ function mypBadges(distinct,cats,retakes,grew){
 function retakeQuiz(slug){
  try{localStorage.removeItem('myb_q_'+slug)}catch(e){}
  if(confirm('기존 결과는 기록에 남기고, 새 응시 결과를 추가로 만들까요?'))startQuizFx(slug);
+}
+/* ===== 2026-07-31: 로드맵 카드 완료 표시 + 기존결과/재진단 선택 ===== */
+/* S.me.attempts(=/me API, created_at desc)를 바탕으로 슬러그별 완료여부(window.__done)와
+   전체 응시이력(window.__doneAll)을 만들고, 카드에 "✓ 완료" 배지를 붙인다. */
+function applyDoneBadges(ats){
+ window.__done={};window.__doneAll={};
+ (ats||[]).forEach(a=>{
+  if(!window.__done[a.test_slug])window.__done[a.test_slug]=a.result;
+  (window.__doneAll[a.test_slug]=window.__doneAll[a.test_slug]||[]).push(a);
+ });
+ setTimeout(()=>{
+  document.querySelectorAll('.vcard[data-slug]').forEach(cd=>{
+   const k=cd.dataset.slug;
+   if(window.__done[k]){
+    cd.classList.add('donecard');
+    const m=cd.querySelector('.vtop');
+    if(m&&!m.querySelector('.doneb')){const sp=document.createElement('span');sp.className='doneb';sp.textContent='✓ 완료';m.appendChild(sp);}
+   }
+  });
+  document.querySelectorAll('.vchip[data-chip-slug]').forEach(ch=>{
+   const mk=ch.dataset.chipSlug;
+   if(window.__done[mk]&&!ch.classList.contains('done')){ch.classList.add('done');ch.textContent='✓ '+ch.textContent;}
+  });
+ },50);
+}
+/* 카드/칩 클릭 진입점 — 완료 이력이 없으면 바로 진단 시작, 있으면 결과보기/재진단 선택 모달 */
+function cardClickFx(slug){
+ const list=(window.__doneAll&&window.__doneAll[slug])||[];
+ if(!list.length){startQuizFx(slug);return;}
+ historyModal(slug,list);
+}
+function historyModal(slug,list){
+ const t=(S.tests&&S.tests[slug])||{};
+ const ri=retestInfoFx(slug,list[0].created_at);
+ const cooldownHtml=ri?(ri.diff>0
+  ?`<p style="font-size:12px;color:#A8760B;margin:0 0 10px">⏰ 다음 재진단 권장 시기 ${ri.date} (D-${ri.diff}) — 지금 다시 해도 괜찮지만, 이 시기 이후에 하면 변화가 더 잘 보여요.</p>`
+  :`<p style="font-size:12px;color:#2E7D32;margin:0 0 10px">✅ 지금이 재진단하기 좋은 시기예요.</p>`):'';
+ const id='hm'+Date.now();
+ const ov=document.createElement('div');
+ ov.id=id;
+ ov.style.cssText='position:fixed;inset:0;background:rgba(20,20,35,.45);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px';
+ ov.onclick=function(e){if(e.target===ov)ov.remove()};
+ const rows=list.map((a,i)=>`<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px dashed #ECEAFB"><span style="flex:1;font-size:12.5px">${i===0?'<b>최근</b> · ':''}${esc((a.created_at||'').slice(0,10))}</span><button class="btn small navy" onclick="document.getElementById('${id}').remove();openAttempt('${a.id}')">결과 보기</button></div>`).join('');
+ ov.innerHTML=`<div class="card" style="max-width:400px;margin:0;max-height:80vh;overflow:auto"><div class="k">✓ ${esc(t.title||slug)} · 완료 ${list.length}회</div>${cooldownHtml}<div style="margin:6px 0 4px">${rows}</div><div style="display:flex;gap:8px;margin-top:10px"><button class="btn ghost" id="${id}c" style="flex:1">닫기</button><button class="btn navy" id="${id}r" style="flex:1">🔄 새로 진단하기</button></div></div>`;
+ document.body.appendChild(ov);
+ document.getElementById(id+'c').onclick=function(){ov.remove()};
+ document.getElementById(id+'r').onclick=function(){ov.remove();startQuizFx(slug);};
 }
 const RELATED_TESTS={
  es_dream:['es_habit','value_work','gifted_ready'],

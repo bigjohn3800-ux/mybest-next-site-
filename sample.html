@@ -114,7 +114,7 @@ h1{font-size:25px;margin:10px 0 4px}.sub{font-size:14px;color:var(--muted);margi
  <div id="sections"></div>
  <div class="stickycta"><span><b>샘플을 확인했다면</b><br>학생 결과함에 저장되는 실제 진단으로 이어가세요.</span><a class="btn" href="/?view=consult">진단 시작하기</a><a class="btn ghost" href="/?view=join">입장 후 저장</a></div>
 </div>
-<div class="modal" id="modal" onclick="if(event.target.id==='modal')close_()"><div class="sheet" id="sheet"></div></div>
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="sampleDialogTitle" onclick="if(event.target.id==='modal')close_()"><div class="sheet" id="sheet"></div></div>
 
 <script>
 const API='https://onqisdgxwuvlxehjvoto.supabase.co/functions/v1/mybest';
@@ -189,6 +189,7 @@ const PLACEMENTS=[
 const GTAG={'초등':'#00B894','중등':'#6C5CE7','고등':'#0984E3'};
 
 let TESTS={},chart=null,GRADE='전체',PURPOSE='전체';
+let sampleOpener=null;
 
 async function init(){
  const j=await fetch(API+'/api/tests',{headers:{apikey:KEY}}).then(r=>r.json()).catch(()=>({tests:{}}));
@@ -249,6 +250,7 @@ function sampleMeaningHtml(slug,r,t){
 }
 
 async function openSample(slug){
+ sampleOpener=document.activeElement;
  const t=TESTS[slug]||{};
  $('#sheet').innerHTML='<div style="padding:34px;text-align:center" class="muted">샘플 불러오는 중…</div>';
  $('#modal').classList.add('open');
@@ -264,7 +266,7 @@ async function openSample(slug){
  else if(r.kind==='pick'){bodyHtml=`<div style="text-align:center;font-size:18px"><b>${esc((r.labels||SER)[(r.pick||1)-1])}</b> 계열 추천 과목 조합 샘플</div>`;}
  else bodyHtml=`<div class="muted">샘플 결과</div>`;
 
- $('#sheet').innerHTML=`<div class="top"><h2 style="font-size:18px">${EMO[slug]||'📊'} ${esc(t.title||slug)} · 샘플</h2><div class="spacer"></div><button class="btn ghost sm" onclick="close_()">닫기</button></div>
+ $('#sheet').innerHTML=`<div class="top"><h2 id="sampleDialogTitle" style="font-size:18px">${EMO[slug]||'📊'} ${esc(t.title||slug)} · 샘플</h2><div class="spacer"></div><button id="sampleClose" class="btn ghost sm" onclick="close_()">닫기</button></div>
   <div class="hero"><h2>${esc(t.title||'')}</h2><p>${esc(t.audience||'')} · 샘플 결과 미리보기</p></div>
   <div class="previewcard">${bodyHtml}</div>
   ${sampleMeaningHtml(slug,r,t)}
@@ -275,8 +277,10 @@ async function openSample(slug){
    <div class="lockitem">전국 규준 백분위(신뢰도 0.95) · 통합 성장 리포트(학부모용)</div>
    <div class="lockitem">A4 인쇄 · 상담 자료</div></div>
   <a class="btn" style="width:100%;text-align:center;margin-top:14px" href="/?view=consult">내 결과 받고 다음 행동 저장하기 →</a>`;
+ requestAnimationFrame(()=>document.getElementById('sampleClose')?.focus());
 }
-function close_(){$('#modal').classList.remove('open');if(chart){chart.destroy();chart=null;}}
+function close_(){$('#modal').classList.remove('open');if(chart){chart.destroy();chart=null;}if(sampleOpener&&sampleOpener.focus)sampleOpener.focus();}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#modal').classList.contains('open'))close_()});
 init();
 </script>
 </body></html>

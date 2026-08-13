@@ -80,4 +80,7 @@ test('public result samples explain reason, evidence, limitation, and saved next
   assert.match(sample, /보고서 형식 예시이며 개인의 실제 결과나 진로 판정이 아닙니다/);
   assert.match(sample, /공개 샘플 데이터가 아직 준비되지 않아 현재는 보고서 구조만 보여드립니다/);
   assert.match(sample, /내 결과 받고 다음 행동 저장하기/);
+  assert.match(sample, /role="dialog" aria-modal="true" aria-labelledby="sampleDialogTitle"/);
+  assert.match(sample, /sampleClose'\)\?\.focus\(\)/);
+  assert.match(sample, /e\.key==='Escape'/);
 });

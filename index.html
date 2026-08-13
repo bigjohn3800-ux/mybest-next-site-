@@ -2288,9 +2288,17 @@ function actionPlanHtml(d,opts){
   '이번 주: 결과 화면을 보호자·선생님과 함께 보고 질문 1개 적기',
   '다음 주: 같은 행동을 다시 점검하고 필요하면 관련 진단 이어가기'
  ];
- return `<section class="card actionplan noprint" aria-labelledby="actionTitle"><div class="k">마지막 2분 · 추천 행동 저장</div><h3 id="actionTitle">지금 할 한 가지를 골라 저장하세요</h3><p>작고 구체적인 행동 하나만 정하면 결과가 실제 변화로 이어지기 쉬워요. 선택은 이 브라우저에 저장되며 다른 기기에는 자동 동기화되지 않습니다.</p><fieldset style="border:0;margin-top:8px"><legend class="muted" style="margin-bottom:4px">추천 행동 1개 선택</legend>${actions.map((a,i)=>`<label class="actionchoice"><input type="radio" name="nextAction" value="${esc(a)}" ${saved===a?'checked':''}><span>${esc(a)}</span></label>`).join('')}</fieldset><button class="btn" style="margin-top:14px" onclick="saveRecommendedAction('${esc(id)}')">추천 행동 저장</button><div class="savestatus" id="actionStatus" role="status" aria-live="polite">${saved?'저장됨 · 언제든 다른 행동으로 바꿀 수 있어요.':''}</div></section>`;
+ return `<section class="card actionplan noprint" aria-labelledby="actionTitle"><div class="k">마지막 2분 · 추천 행동 저장</div><h3 id="actionTitle">지금 할 한 가지를 골라 저장하세요</h3><p>작고 구체적인 행동 하나만 정하면 결과가 실제 변화로 이어지기 쉬워요. 선택은 이 브라우저에 저장되며 다른 기기에는 자동 동기화되지 않습니다.</p><fieldset style="border:0;margin-top:8px" onkeydown="handleActionKeys(event,'${esc(id)}')"><legend class="muted" style="margin-bottom:4px">추천 행동 1개 선택 · 방향키로 선택, Enter로 저장</legend>${actions.map((a,i)=>`<label class="actionchoice"><input type="radio" name="nextAction" value="${esc(a)}" ${saved===a?'checked':''}><span>${esc(a)}</span></label>`).join('')}</fieldset><button class="btn" style="margin-top:14px" onclick="saveRecommendedAction('${esc(id)}')">추천 행동 저장</button><div class="savestatus" id="actionStatus" role="status" aria-live="polite">${saved?'저장됨 · 언제든 다른 행동으로 바꿀 수 있어요.':''}</div></section>`;
 }
 function readSavedAction(id){try{return (JSON.parse(localStorage.getItem('myb_action_'+id)||'null')||{}).action||''}catch(e){return ''}}
+function handleActionKeys(e,id){
+ if(e.key==='Enter'){e.preventDefault();saveRecommendedAction(id);return;}
+ if(!['ArrowDown','ArrowRight','ArrowUp','ArrowLeft'].includes(e.key))return;
+ const radios=[...document.querySelectorAll('input[name="nextAction"]')],current=radios.indexOf(document.activeElement);
+ if(!radios.length||current<0)return;
+ e.preventDefault();const delta=(e.key==='ArrowDown'||e.key==='ArrowRight')?1:-1,next=radios[(current+delta+radios.length)%radios.length];
+ next.checked=true;next.focus();
+}
 function saveRecommendedAction(id){
  const picked=document.querySelector('input[name="nextAction"]:checked'),status=$('#actionStatus');
  if(!picked){if(status){status.textContent='먼저 추천 행동 하나를 선택해 주세요.';status.style.color='#C62828';}return;}

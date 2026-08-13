@@ -39,6 +39,9 @@ test('loading, empty, and error states are announced and retryable', () => {
 
 test('keyboard focus and mobile result readability have explicit contracts', () => {
   assert.match(html, /:focus-visible/);
+  assert.match(html, /function handleActionKeys\(e,id\)/);
+  assert.match(html, /e\.key==='Enter'.*saveRecommendedAction\(id\)/s);
+  assert.match(html, /ArrowDown.*ArrowRight.*ArrowUp.*ArrowLeft/s);
   assert.match(html, /e\.key==='Escape'/);
   assert.match(html, /@media\(max-width:480px\)/);
   assert.match(html, /prefers-reduced-motion:reduce/);

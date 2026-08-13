@@ -85,6 +85,7 @@ h1{font-size:25px;margin:10px 0 4px}.sub{font-size:14px;color:var(--muted);margi
 .samplehero h1{font-size:31px;line-height:1.18;margin:8px 0 9px;color:#fff}.samplehero p{font-size:14px;line-height:1.7;color:rgba(255,255,255,.9);max-width:760px}.samplehero .eyebrow{display:inline-flex;border:1px solid rgba(255,255,255,.32);border-radius:var(--radius-pill);padding:6px 12px;font-size:12px;font-weight:900;color:#fff}.heroactions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.heroactions .btn.ghost{background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.35)}
 .quickbar{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin:14px 0 18px}.quickbar a{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:12px 13px;color:var(--ink);font-size:12.5px;font-weight:900;text-decoration:none;box-shadow:var(--shadow-1)}
 .sampleguide{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-lg);padding:17px;margin:14px 0 16px;display:grid;grid-template-columns:1.1fr .9fr;gap:14px;align-items:start}.sampleguide h2{font-size:18px;color:var(--navy);margin-bottom:8px}.sampleguide p,.sampleguide li{font-size:13px;line-height:1.7;color:var(--muted)}.sampleguide ul{padding-left:18px}.sampleguide .mini{background:var(--bg);border-radius:var(--radius-md);padding:14px}.sampleguide .mini b{display:block;color:var(--vio);margin-bottom:6px}.stickycta{position:sticky;bottom:10px;z-index:20;background:var(--card);opacity:.97;backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:var(--radius-lg);padding:10px;display:flex;gap:10px;align-items:center;box-shadow:var(--shadow-3);margin-top:18px}.stickycta span{flex:1;font-size:12.5px;color:var(--muted);line-height:1.45}.stickycta b{color:var(--navy)}
+.samplemeaning{margin-top:14px;background:linear-gradient(120deg,#F5F2FF,#F1FBF7);border:1px solid #E0DAFB;border-radius:var(--radius-lg);padding:15px}.samplemeaning h3{font-size:16px;color:var(--navy);margin-bottom:8px}.samplemeaning ul{margin:0;padding-left:18px}.samplemeaning li{font-size:12.8px;line-height:1.65;color:#4C5263;margin:4px 0}.samplemeaning .next{margin-top:10px;padding:10px 12px;background:#fff;border-radius:var(--radius-sm);color:#075E5B;font-size:12.8px;font-weight:800;line-height:1.55}
 @media(max-width:760px){.sampleguide,.quickbar{grid-template-columns:1fr}.samplehero h1{font-size:25px}.stickycta{display:block}.stickycta .btn{width:100%;text-align:center;margin-top:8px}}
 @media(max-width:760px){.grid{grid-template-columns:1fr 1fr}}
 @media(max-width:480px){.grid,.proof,.reportformats{grid-template-columns:1fr}}
@@ -226,6 +227,27 @@ function radar(labels,scores,best){
 }
 function bars(labels,vals,max){return `<div class="bars">${labels.map((l,i)=>`<div class="brow"><span class="lab">${esc(l)}</span><span class="bar"><i style="width:${Math.round(vals[i]/max*100)}%"></i></span><b>${vals[i]}</b></div>`).join('')}</div>`;}
 
+function sampleMeaningHtml(slug,r,t){
+ const kind=r&&r.kind;
+ let reason='실제 응답이 입력되면 가장 높은 경향과 우선 보완 영역을 연결해 추천합니다.';
+ let evidence='공개 샘플 데이터가 아직 준비되지 않아 현재는 보고서 구조만 보여드립니다.';
+ if(kind==='series'||kind==='future'){
+  const labels=kind==='future'?FUT:(r.labels||SER),best=labels[r.best]||'가장 높은';
+  reason=`문항 응답을 영역별로 합산했을 때 ${best} 경향이 가장 높게 나타났습니다.`;
+  evidence=kind==='series'?'계열별 문항 점수와 공개된 규준·신뢰도 기준을 함께 참고합니다.':'6개 역량별 문항 점수를 비교해 강점과 성장 우선순위를 정합니다.';
+ }else if(kind==='grades'){
+  reason='입력한 과목별 등급의 강약을 비교해 먼저 보완할 과목을 추천합니다.';
+  evidence='학생이 직접 입력한 과목별 등급과 과목 간 상대 차이를 기준으로 합니다.';
+ }else if(kind==='bucketcheck'||kind==='checklist'){
+  reason='준비된 항목과 부족한 항목을 비교해 가장 먼저 보완할 영역을 추천합니다.';
+  evidence='이번 체크에서 선택한 항목 수와 영역별 준비 비율을 기준으로 합니다.';
+ }else if(kind==='pick'){
+  reason='선택한 관심 계열을 학과와 2022 개정 교육과정 과목 조합에 연결합니다.';
+  evidence='관심 계열 선택과 학교별 개설 과목을 함께 확인하도록 설계했습니다.';
+ }
+ return `<section class="samplemeaning" aria-labelledby="sampleMeaningTitle"><h3 id="sampleMeaningTitle">이 결과를 이렇게 이해하세요</h3><ul><li><b>추천 이유:</b> ${esc(reason)}</li><li><b>근거:</b> ${esc(evidence)}</li><li><b>한계:</b> 이 화면은 보고서 형식 예시이며 개인의 실제 결과나 진로 판정이 아닙니다. 실제 응답과 학교 자료, 보호자·교사 상담을 함께 확인하세요.</li></ul><div class="next">다음 행동 · 실제 진단을 마치면 오늘·이번 주·다음 주 행동 중 한 가지를 골라 이 브라우저에 저장할 수 있어요.</div></section>`;
+}
+
 async function openSample(slug){
  const t=TESTS[slug]||{};
  $('#sheet').innerHTML='<div style="padding:34px;text-align:center" class="muted">샘플 불러오는 중…</div>';
@@ -245,13 +267,14 @@ async function openSample(slug){
  $('#sheet').innerHTML=`<div class="top"><h2 style="font-size:18px">${EMO[slug]||'📊'} ${esc(t.title||slug)} · 샘플</h2><div class="spacer"></div><button class="btn ghost sm" onclick="close_()">닫기</button></div>
   <div class="hero"><h2>${esc(t.title||'')}</h2><p>${esc(t.audience||'')} · 샘플 결과 미리보기</p></div>
   <div class="previewcard">${bodyHtml}</div>
+  ${sampleMeaningHtml(slug,r,t)}
   ${DEMO_RPT[slug]?`<a class="btn" style="display:block;width:100%;text-align:center;margin-top:14px;background:linear-gradient(90deg,#1E8E4E,#00B5B0)" target="_blank" rel="noopener" href="${rptHref(slug)}">📄 정식 A4 세부 보고서 미리보기 →</a>`:''}
   <div class="lock"><b>정식 리포트에서는 이렇게 더 깊어집니다</b>
    <div class="lockitem">영역별 상세 성장 가이드 (6~8문장) + 이번 주 미션</div>
    <div class="lockitem">계열 심층 8쪽 리포트 · 대표 학과 6 · 권장 과목</div>
    <div class="lockitem">전국 규준 백분위(신뢰도 0.95) · 통합 성장 리포트(학부모용)</div>
    <div class="lockitem">A4 인쇄 · 상담 자료</div></div>
-  <a class="btn" style="width:100%;text-align:center;margin-top:14px" href="/?view=consult">이 진단 지금 해보기 →</a>`;
+  <a class="btn" style="width:100%;text-align:center;margin-top:14px" href="/?view=consult">내 결과 받고 다음 행동 저장하기 →</a>`;
 }
 function close_(){$('#modal').classList.remove('open');if(chart){chart.destroy();chart=null;}}
 init();

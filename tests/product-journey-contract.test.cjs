@@ -62,3 +62,12 @@ test('every local asset referenced by the main journey exists in the deploy bund
     assert.ok(fs.existsSync(assetPath), `missing deploy asset: ${ref}`);
   }
 });
+
+test('diagnosis selection progressively reveals one grade with time and value guidance', () => {
+  assert.match(html, /먼저 현재 학년대를 선택하세요/);
+  assert.match(html, /각 진단은 10~20분/);
+  assert.match(html, /완료 즉시 결과와 다음 행동/);
+  assert.match(html, /id="gradeFilterStatus"[^>]*role="status"[^>]*aria-live="polite"/);
+  assert.match(html, /aria-pressed=/);
+  assert.match(html, /style="display:\$\{target===lv\?'':'none'\}"/);
+});

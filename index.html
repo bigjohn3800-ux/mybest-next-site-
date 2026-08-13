@@ -251,6 +251,9 @@ td{padding:7px 8px;border-bottom:1px solid #EEE}
 .wizrec-why{font-size:12px;line-height:1.5;color:#1E8E4E;background:#F1FBF4;border-radius:var(--r-sm);padding:8px 10px;margin-bottom:10px}
 @media(max-width:560px){.wizchip{flex:1 1 100%}}
 .vgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.gradepick{background:linear-gradient(120deg,#F4F1FF,#F2FBF8);border:1px solid #E2DDF8;border-radius:var(--r-lg);padding:14px 16px;margin:10px 0 14px;color:#4C5263;font-size:12.8px;line-height:1.6}
+.gradepick b{color:var(--navy-text)}
+.gradepick-status{display:block;margin-top:7px;color:var(--vio-text);font-weight:800}
 .vcard{background:#fff;border-radius:var(--r-lg);overflow:hidden;box-shadow:0 6px 22px rgba(108,92,231,.10);cursor:pointer;transition:.18s;animation:rise .5s both}
 .vcard:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(108,92,231,.22)}
 .vcard.locked{cursor:default;filter:grayscale(1);opacity:.54;box-shadow:var(--shadow-sm)}
@@ -687,8 +690,10 @@ function skeletonGrid(n){n=n||6;let c='';for(let i=0;i<n;i++)c+='<div class="ske
 function skeletonRows(n){n=n||3;let c='';for(let i=0;i<n;i++)c+='<div class="skel-row"><div class="skel skel-line" style="width:55%"></div><div class="skel skel-line" style="width:22%"></div></div>';return c}
 function gridHtml(t,act,grade,plan){
  let LV=[['es','초등','🌈'],['ms','중학','🌱'],['hs','고등','🎓']];
- let h=`<div class="chips noprint">${['전체','초등','중학','고등'].map((c,i)=>`<button class="chip${i===0?' on':''}" onclick="filterLv(this,'${c}')">${c}</button>`).join('')}</div>`;
  const target=gradeLv(grade);
+ const targetName={es:'초등',ms:'중학',hs:'고등'}[target]||'';
+ const choices=['초등','중학','고등','전체'];
+ let h=`<div class="gradepick"><b>먼저 현재 학년대를 선택하세요.</b> 진로·공부·진학 목적에 맞는 카드만 간단히 비교할 수 있어요. 각 진단은 10~20분이며 완료 즉시 결과와 다음 행동을 확인합니다.<span id="gradeFilterStatus" class="gradepick-status" role="status" aria-live="polite">${targetName?`${targetName} 추천 진단을 먼저 보여드려요.`:'학년을 고르면 맞는 진단만 보여드려요.'}</span></div><div class="chips noprint" aria-label="학년대별 진단 필터">${choices.map(c=>`<button class="chip${targetName===c?' on':''}" aria-pressed="${targetName===c?'true':'false'}" onclick="filterLv(this,'${c}')">${c==='전체'?'전체 보기':c}</button>`).join('')}</div>`;
  if(target){const ti=LV.findIndex(x=>x[0]===target);if(ti>0){const[picked]=LV.splice(ti,1);LV.unshift(picked);}}
  for(const[lv,nm,em]of LV){
   const items=Object.entries(t).filter(([k,d])=>!DISPLAY_HIDDEN.has(k)&&displayStep(k,d,lv)).sort((a,b)=>displayStep(a[0],a[1],lv)-displayStep(b[0],b[1],lv));
@@ -696,13 +701,15 @@ function gridHtml(t,act,grade,plan){
   const active=!target||target===lv;
   const extra = lv==='hs' ? `<div class="${active?'vcard':'vcard locked'}" ${active?`onclick="go('majors')"`:'aria-disabled="true"'}><div class="vtop" style="background:linear-gradient(135deg,#0F1530,#3E5C8A)"><div class="vmed">${ART('subject_rec')}</div><span class="stepb">탐색관</span><span class="catb">진학</span>${active?'':'<span class="lockb">다른 학년</span>'}</div><div class="vbody"><h3>학과 탐색관 🏛️</h3><p>7계열 56개 학과 — 설명·인재상·권장과목·진로를 한곳에서</p><span class="aud2">중3·고등</span></div></div><div class="${active?'vcard':'vcard locked'}" ${active?`onclick="go('subjexp')"`:'aria-disabled="true"'}><div class="vtop" style="background:linear-gradient(135deg,#1B2A4A,#00997B)"><div class="vmed">${ART('subject_rec')}</div><span class="stepb">탐색관</span><span class="catb">진학</span>${active?'':'<span class="lockb">다른 학년</span>'}</div><div class="vbody"><h3>2022 과목 탐색 🗂</h3><p>계열 → 학과 선택 → 일반·진로·융합선택 과목 비교</p><span class="aud2">중3·고등</span></div></div>` : '';
   const recBadge = (target&&target===lv) ? '<span class="tag" style="margin-left:6px;background:#FFF3D6;color:#836728">✨ 내 학년 추천</span>' : '';
-   h+=`<div class="lvsec" data-lv="${nm}"><div class="wk">${em} ${nm} 로드맵${recBadge} <span>${active?'나의 학년에 맞는 프로그램':'다른 학년 프로그램은 참고용으로 잠겨 있어요'}</span></div><div class="vgrid">${items.map(([k,d],i)=>vcardHtml(k,d,act,displayStep(k,d,lv),i,active,'다른 학년',nm==='중학'?'중등':nm,t,plan)).join('')}${extra}</div></div>`;
+   h+=`<div class="lvsec" data-lv="${nm}" style="display:${target===lv?'':'none'}"><div class="wk">${em} ${nm} 로드맵${recBadge} <span>${active?'나의 학년에 맞는 프로그램':'다른 학년 프로그램은 참고용으로 잠겨 있어요'}</span></div><div class="vgrid">${items.map(([k,d],i)=>vcardHtml(k,d,act,displayStep(k,d,lv),i,active,'다른 학년',nm==='중학'?'중등':nm,t,plan)).join('')}${extra}</div></div>`;
   }
   return h;
 }
 function filterLv(el,c){
- [...el.parentElement.children].forEach(b=>b.classList.remove('on'));el.classList.add('on');
+ [...el.parentElement.children].forEach(b=>{b.classList.remove('on');b.setAttribute('aria-pressed','false')});el.classList.add('on');el.setAttribute('aria-pressed','true');
  document.querySelectorAll('.lvsec').forEach(sx=>{sx.style.display=(c==='전체'||sx.dataset.lv===c)?'':'none'});
+ const status=document.getElementById('gradeFilterStatus');
+ if(status)status.textContent=c==='전체'?'초등·중학·고등 전체 진단을 보여드려요.':`${c} 추천 진단만 보여드려요.`;
 }
 function qrImg(code){const u=location.origin+location.pathname+'?code='+code;return `<img src="https://api.qrserver.com/v1/create-qr-code/?size=170x170&margin=8&data=${encodeURIComponent(u)}" width="150" height="150" style="border-radius:12px;background:#fff;padding:6px" alt="QR">`}
 function confetti(){const c=document.createElement('canvas');c.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:99';document.body.appendChild(c);c.width=innerWidth;c.height=innerHeight;const x=c.getContext('2d'),P=[...Array(110)].map(()=>({x:Math.random()*c.width,y:-20-Math.random()*c.height*.4,v:2+Math.random()*3,r:3+Math.random()*5,h:Math.random()*360,w:Math.random()*2-1}));let t=0;(function f(){x.clearRect(0,0,c.width,c.height);P.forEach(p=>{p.y+=p.v;p.x+=p.w;x.fillStyle=`hsl(${p.h},80%,60%)`;x.fillRect(p.x,p.y,p.r,p.r)});if(++t<150)requestAnimationFrame(f);else c.remove()})()}

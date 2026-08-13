@@ -50,3 +50,15 @@ test('result explanation names reason, evidence, limitations, and local-only sco
   assert.match(html, /다른 기기에는 자동 동기화되지 않습니다/);
   assert.match(html, /이 브라우저에 별도로 저장됩니다/);
 });
+
+test('every local asset referenced by the main journey exists in the deploy bundle', () => {
+  const refs = [...html.matchAll(/<(?:link|script)\b[^>]*(?:href|src)=["']([^"']+)["']/gi)]
+    .map((match) => match[1])
+    .filter((ref) => ref.startsWith('/assets/'));
+
+  assert.ok(refs.length > 0);
+  for (const ref of refs) {
+    const assetPath = path.join(__dirname, '..', ref.replace(/^\//, ''));
+    assert.ok(fs.existsSync(assetPath), `missing deploy asset: ${ref}`);
+  }
+});

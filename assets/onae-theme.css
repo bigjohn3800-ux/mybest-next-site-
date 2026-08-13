@@ -1,0 +1,261 @@
+/* ============================================================================
+   onae-theme.css — 테마 3종 + 언어 전환 위젯 v1.0.0
+   ----------------------------------------------------------------------------
+   위치(정본) : 0.core-info/22.book-module/14.design-mo/onae-theme.css
+   작성       : 2026-07-29 (관제센터 세션 · 회장님 지시)
+   짝 파일    : onae-theme.js (위젯 생성·저장·적용) / onae-responsive.css (반응형)
+
+   ■ 테마 3종
+     default  — 사이트 원본 그대로. 아무 것도 덮어쓰지 않는다. (기본값)
+     contrast — 「기본과 반대되는 색」. 밝은 네이비/코럴 → 어두운 배경 + 민트·골드.
+     cute     — 「귀여운 디자인」. 파스텔 핑크·라벤더, 큰 라운드, 말랑한 그림자.
+
+   ■ 어떻게 덮어쓰나
+     사이트마다 CSS 변수 이름이 제각각이라(--bg / --background / --color-bg …),
+     흔히 쓰이는 이름을 모두 나열해 한꺼번에 값을 준다. 그 사이트에 없는 변수는
+     선언만 되고 참조되지 않으므로 부작용이 없다(onae-overlay.css 와 같은 원리).
+     변수를 전혀 안 쓰고 색을 직접 박아둔 사이트는 §4 의 요소 단위 보정이 받는다.
+
+   ■ 되돌리기
+     테마를 「기본」으로 고르면 즉시 원본. 위젯 자체를 없애려면 <script> 한 줄 삭제.
+   ========================================================================== */
+
+/* ==========================================================================
+   1. contrast — 「반대색」 테마
+   기본 정본이 흰 배경 + 네이비 + 코럴이므로, 반대는
+   어두운 배경 + 밝은 민트(코럴의 보색 계열) + 골드 포인트로 잡았다.
+   ========================================================================== */
+html[data-onae-theme="contrast"]{
+  color-scheme: dark;
+
+  --bg:#0D1420 !important;            --background:#0D1420 !important;
+  --color-bg:#0D1420 !important;      --body-bg:#0D1420 !important;
+  --surface:#151F30 !important;       --surface-2:#1D2A3F !important;
+  --card:#151F30 !important;          --card-bg:#151F30 !important;
+  --panel:#151F30 !important;         --box:#151F30 !important;
+
+  --text:#DCE5F0 !important;          --color-text:#DCE5F0 !important;
+  --text-strong:#F4F8FD !important;   --fg:#DCE5F0 !important;
+  --text-muted:#93A6C0 !important;    --muted:#93A6C0 !important;
+  --sub:#93A6C0 !important;           --gray:#93A6C0 !important;
+
+  --border:#2B3A52 !important;        --line:#2B3A52 !important;
+  --divider:#2B3A52 !important;
+
+  /* 브랜드/포인트 — 네이비 → 민트, 코럴 → 골드 */
+  --brand:#3FD9C0 !important;         --brand-strong:#22B8A0 !important;
+  --brand-600:#4FE3CB !important;     --brand-link:#7BE9D6 !important;
+  --brand-tint:#12312C !important;
+  --primary:#3FD9C0 !important;       --point:#3FD9C0 !important;
+  --main:#3FD9C0 !important;          --theme:#3FD9C0 !important;
+
+  --accent:#FFC24D !important;        --accent-strong:#F0A91F !important;
+  --accent-tint:#3A2E11 !important;   --secondary:#FFC24D !important;
+  --cta:#FFC24D !important;           --highlight:#FFC24D !important;
+
+  --success:#4ADE96 !important;       --success-tint:#12301F !important;
+  --warning:#FFCB5E !important;       --warning-tint:#3A2E11 !important;
+  --danger:#FF7B7B !important;        --danger-tint:#3A1A1A !important;
+  --info:#7BB0FF !important;          --info-tint:#152740 !important;
+
+  --shadow-1:0 1px 2px rgba(0,0,0,.5) !important;
+  --shadow-2:0 4px 16px rgba(0,0,0,.55) !important;
+  --shadow-3:0 12px 32px rgba(0,0,0,.6) !important;
+}
+
+/* ==========================================================================
+   2. cute — 「귀여운」 테마
+   파스텔 핑크·라벤더·크림. 라운드를 키우고 그림자를 부드럽게.
+   ========================================================================== */
+html[data-onae-theme="cute"]{
+  color-scheme: light;
+
+  --bg:#FFF7FB !important;            --background:#FFF7FB !important;
+  --color-bg:#FFF7FB !important;      --body-bg:#FFF7FB !important;
+  --surface:#FFFFFF !important;       --surface-2:#FDEDF5 !important;
+  --card:#FFFFFF !important;          --card-bg:#FFFFFF !important;
+  --panel:#FFFFFF !important;         --box:#FFFFFF !important;
+
+  --text:#5B4A57 !important;          --color-text:#5B4A57 !important;
+  --text-strong:#3A2E38 !important;   --fg:#5B4A57 !important;
+  --text-muted:#9B8794 !important;    --muted:#9B8794 !important;
+  --sub:#9B8794 !important;           --gray:#9B8794 !important;
+
+  --border:#F6DCE8 !important;        --line:#F6DCE8 !important;
+  --divider:#F6DCE8 !important;
+
+  --brand:#8B6FD4 !important;         --brand-strong:#7458C2 !important;
+  --brand-600:#9C84DC !important;     --brand-link:#7458C2 !important;
+  --brand-tint:#F1EAFC !important;
+  --primary:#8B6FD4 !important;       --point:#8B6FD4 !important;
+  --main:#8B6FD4 !important;          --theme:#8B6FD4 !important;
+
+  --accent:#E8548E !important;        --accent-strong:#CE3F77 !important;
+  --accent-tint:#FDE7F0 !important;   --secondary:#E8548E !important;
+  --cta:#E8548E !important;           --highlight:#E8548E !important;
+
+  --success:#3E9E7A !important;       --success-tint:#E3F5EE !important;
+  --warning:#B8791B !important;       --warning-tint:#FDF0DC !important;
+  --danger:#D6456B !important;        --danger-tint:#FCE7EC !important;
+  --info:#5A7FD4 !important;          --info-tint:#E8EEFC !important;
+
+  --radius-sm:14px !important;  --radius:20px !important;
+  --radius-lg:28px !important;  --radius-pill:999px !important;
+  --shadow-1:0 2px 6px rgba(232,84,142,.10) !important;
+  --shadow-2:0 8px 22px rgba(232,84,142,.14) !important;
+  --shadow-3:0 16px 40px rgba(232,84,142,.18) !important;
+}
+
+/* cute 테마에서만 — 모서리를 실제로 둥글게 (변수를 안 쓰는 사이트 대비) */
+html[data-onae-theme="cute"] .card,
+html[data-onae-theme="cute"] .box,
+html[data-onae-theme="cute"] .panel,
+html[data-onae-theme="cute"] .onae-card,
+html[data-onae-theme="cute"] button,
+html[data-onae-theme="cute"] .btn,
+html[data-onae-theme="cute"] input,
+html[data-onae-theme="cute"] select,
+html[data-onae-theme="cute"] textarea{
+  border-radius: 18px;
+}
+
+/* ==========================================================================
+   3. 공통 — 두 테마 모두에서 배경/글자색을 요소 단위로도 한 번 더 잡아준다
+   (색을 CSS 변수 없이 직접 박아둔 옛 사이트 대비. 아주 얕은 선택자만 쓴다)
+   ========================================================================== */
+html[data-onae-theme="contrast"] body,
+html[data-onae-theme="cute"] body{
+  background: var(--bg);
+  color: var(--text);
+  transition: background-color .25s ease, color .25s ease;
+}
+
+/* ★ 색을 변수 없이 흰색으로 박아둔 옛 카드 보정
+   변수를 쓰는 사이트는 §1 에서 이미 해결되고, 아래는 "background:#fff" 가
+   CSS 에 리터럴로 박힌 사이트를 위한 보정이다. 흔한 컨테이너 클래스명만 짚는다
+   (section/article/div 같은 태그 선택자는 쓰지 않는다 — 전면 회귀 위험). */
+html[data-onae-theme="contrast"] .card,
+html[data-onae-theme="contrast"] .box,
+html[data-onae-theme="contrast"] .panel,
+html[data-onae-theme="contrast"] .tile,
+html[data-onae-theme="contrast"] .item,
+html[data-onae-theme="contrast"] .modal,
+html[data-onae-theme="contrast"] .popup,
+html[data-onae-theme="contrast"] .sheet,
+html[data-onae-theme="contrast"] .onae-card{
+  background: var(--surface);
+  color: var(--text);
+  border-color: var(--border);
+}
+html[data-onae-theme="contrast"] input,
+html[data-onae-theme="contrast"] select,
+html[data-onae-theme="contrast"] textarea{
+  background: var(--surface-2);
+  color: var(--text);
+  border-color: var(--border);
+}
+html[data-onae-theme="contrast"] input::placeholder,
+html[data-onae-theme="contrast"] textarea::placeholder{ color: var(--text-muted); }
+
+html[data-onae-theme="contrast"] [style*="background:#fff"],
+html[data-onae-theme="contrast"] [style*="background: #fff"],
+html[data-onae-theme="contrast"] [style*="background:#FFF"],
+html[data-onae-theme="contrast"] [style*="background-color:#fff"]{
+  background: var(--surface) !important;
+}
+
+/* cute 테마도 같은 자리에서 카드 톤을 살짝 눌러 준다 */
+html[data-onae-theme="cute"] input,
+html[data-onae-theme="cute"] select,
+html[data-onae-theme="cute"] textarea{
+  background: #fff; color: var(--text); border-color: var(--border);
+}
+
+/* ==========================================================================
+   4. 전환 위젯 — 화면 왼쪽 아래 (오른쪽 아래는 채널톡·문의버튼 자리라 비워둔다)
+   ========================================================================== */
+.onae-switcher{
+  position: fixed;
+  left: max(12px, env(safe-area-inset-left));
+  bottom: max(12px, env(safe-area-inset-bottom));
+  z-index: 2147483000;
+  font-family: var(--font-sans, -apple-system, "Malgun Gothic", system-ui, sans-serif);
+  display: flex; flex-direction: column; align-items: flex-start; gap: 8px;
+}
+.onae-switcher *{ box-sizing: border-box; }
+
+.onae-switcher__toggle{
+  width: 46px; height: 46px; border-radius: 999px;
+  border: 1px solid rgba(15,23,42,.14);
+  background: #fff; color: #334155;
+  font-size: 20px; line-height: 1; cursor: pointer;
+  box-shadow: 0 4px 14px rgba(15,23,42,.16);
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: transform .18s ease;
+}
+.onae-switcher__toggle:hover{ transform: scale(1.06); }
+.onae-switcher__toggle:focus-visible{ outline: 3px solid #2E5FD0; outline-offset: 2px; }
+
+.onae-switcher__panel{
+  display: none;
+  min-width: 208px; padding: 12px;
+  border-radius: 16px; border: 1px solid rgba(15,23,42,.12);
+  background: #fff; color: #334155;
+  box-shadow: 0 12px 34px rgba(15,23,42,.20);
+}
+.onae-switcher.is-open .onae-switcher__panel{ display: block; }
+
+.onae-switcher__label{
+  font-size: 11.5px; font-weight: 700; letter-spacing: .02em;
+  color: #64748B; margin: 0 0 6px; text-transform: none;
+}
+.onae-switcher__row{ display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+.onae-switcher__row:last-child{ margin-bottom: 0; }
+
+.onae-switcher__btn{
+  flex: 1 1 auto; min-width: 58px; min-height: 38px; padding: 0 10px;
+  border-radius: 11px; border: 1.5px solid #E2E5EB;
+  background: #F7F8FA; color: #334155;
+  font-size: 13px; font-weight: 600; line-height: 1;
+  cursor: pointer; white-space: nowrap;
+  display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+  transition: border-color .15s ease, background-color .15s ease;
+}
+.onae-switcher__btn:hover{ background: #EFF1F5; }
+.onae-switcher__btn[aria-pressed="true"]{
+  border-color: #143A6B; background: #EAF0FA; color: #0E2A50; font-weight: 800;
+}
+.onae-switcher__btn:focus-visible{ outline: 3px solid #2E5FD0; outline-offset: 2px; }
+
+.onae-switcher__dot{
+  width: 12px; height: 12px; border-radius: 999px; display: inline-block;
+  border: 1px solid rgba(0,0,0,.12);
+}
+.onae-switcher__note{
+  margin: 8px 0 0; font-size: 11px; line-height: 1.5; color: #94A3B8;
+}
+
+/* 위젯 자체는 테마 영향을 받아 어두워지도록 */
+html[data-onae-theme="contrast"] .onae-switcher__toggle,
+html[data-onae-theme="contrast"] .onae-switcher__panel{
+  background: #151F30; color: #DCE5F0; border-color: #2B3A52;
+}
+html[data-onae-theme="contrast"] .onae-switcher__btn{
+  background: #1D2A3F; color: #DCE5F0; border-color: #2B3A52;
+}
+html[data-onae-theme="contrast"] .onae-switcher__btn[aria-pressed="true"]{
+  border-color: #3FD9C0; background: #12312C; color: #7BE9D6;
+}
+html[data-onae-theme="cute"] .onae-switcher__toggle,
+html[data-onae-theme="cute"] .onae-switcher__panel{
+  background: #fff; color: #5B4A57; border-color: #F6DCE8;
+}
+html[data-onae-theme="cute"] .onae-switcher__btn[aria-pressed="true"]{
+  border-color: #E8548E; background: #FDE7F0; color: #CE3F77;
+}
+
+/* 모바일에서는 패널이 화면을 넘지 않게 */
+@media (max-width: 420px){
+  .onae-switcher__panel{ min-width: 0; width: calc(100vw - 24px); }
+}
+@media print{ .onae-switcher{ display: none !important; } }

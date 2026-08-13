@@ -69,5 +69,7 @@ test('diagnosis selection progressively reveals one grade with time and value gu
   assert.match(html, /완료 즉시 결과와 다음 행동/);
   assert.match(html, /id="gradeFilterStatus"[^>]*role="status"[^>]*aria-live="polite"/);
   assert.match(html, /aria-pressed=/);
+  assert.match(html, /onkeydown="gradeFilterKey\(event,this/);
+  assert.match(html, /e\.key==='Enter'\|\|e\.key===' '/);
   assert.match(html, /style="display:\$\{target===lv\?'':'none'\}"/);
 });

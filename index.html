@@ -693,7 +693,7 @@ function gridHtml(t,act,grade,plan){
  const target=gradeLv(grade);
  const targetName={es:'초등',ms:'중학',hs:'고등'}[target]||'';
  const choices=['초등','중학','고등','전체'];
- let h=`<div class="gradepick"><b>먼저 현재 학년대를 선택하세요.</b> 진로·공부·진학 목적에 맞는 카드만 간단히 비교할 수 있어요. 각 진단은 10~20분이며 완료 즉시 결과와 다음 행동을 확인합니다.<span id="gradeFilterStatus" class="gradepick-status" role="status" aria-live="polite">${targetName?`${targetName} 추천 진단을 먼저 보여드려요.`:'학년을 고르면 맞는 진단만 보여드려요.'}</span></div><div class="chips noprint" aria-label="학년대별 진단 필터">${choices.map(c=>`<button class="chip${targetName===c?' on':''}" aria-pressed="${targetName===c?'true':'false'}" onclick="filterLv(this,'${c}')">${c==='전체'?'전체 보기':c}</button>`).join('')}</div>`;
+ let h=`<div class="gradepick"><b>먼저 현재 학년대를 선택하세요.</b> 진로·공부·진학 목적에 맞는 카드만 간단히 비교할 수 있어요. 각 진단은 10~20분이며 완료 즉시 결과와 다음 행동을 확인합니다.<span id="gradeFilterStatus" class="gradepick-status" role="status" aria-live="polite">${targetName?`${targetName} 추천 진단을 먼저 보여드려요.`:'학년을 고르면 맞는 진단만 보여드려요.'}</span></div><div class="chips noprint" aria-label="학년대별 진단 필터">${choices.map(c=>`<button type="button" class="chip${targetName===c?' on':''}" aria-pressed="${targetName===c?'true':'false'}" onclick="filterLv(this,'${c}')" onkeydown="gradeFilterKey(event,this,'${c}')">${c==='전체'?'전체 보기':c}</button>`).join('')}</div>`;
  if(target){const ti=LV.findIndex(x=>x[0]===target);if(ti>0){const[picked]=LV.splice(ti,1);LV.unshift(picked);}}
  for(const[lv,nm,em]of LV){
   const items=Object.entries(t).filter(([k,d])=>!DISPLAY_HIDDEN.has(k)&&displayStep(k,d,lv)).sort((a,b)=>displayStep(a[0],a[1],lv)-displayStep(b[0],b[1],lv));
@@ -710,6 +710,9 @@ function filterLv(el,c){
  document.querySelectorAll('.lvsec').forEach(sx=>{sx.style.display=(c==='전체'||sx.dataset.lv===c)?'':'none'});
  const status=document.getElementById('gradeFilterStatus');
  if(status)status.textContent=c==='전체'?'초등·중학·고등 전체 진단을 보여드려요.':`${c} 추천 진단만 보여드려요.`;
+}
+function gradeFilterKey(e,el,c){
+ if(e.key==='Enter'||e.key===' '){e.preventDefault();filterLv(el,c)}
 }
 function qrImg(code){const u=location.origin+location.pathname+'?code='+code;return `<img src="https://api.qrserver.com/v1/create-qr-code/?size=170x170&margin=8&data=${encodeURIComponent(u)}" width="150" height="150" style="border-radius:12px;background:#fff;padding:6px" alt="QR">`}
 function confetti(){const c=document.createElement('canvas');c.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:99';document.body.appendChild(c);c.width=innerWidth;c.height=innerHeight;const x=c.getContext('2d'),P=[...Array(110)].map(()=>({x:Math.random()*c.width,y:-20-Math.random()*c.height*.4,v:2+Math.random()*3,r:3+Math.random()*5,h:Math.random()*360,w:Math.random()*2-1}));let t=0;(function f(){x.clearRect(0,0,c.width,c.height);P.forEach(p=>{p.y+=p.v;p.x+=p.w;x.fillStyle=`hsl(${p.h},80%,60%)`;x.fillRect(p.x,p.y,p.r,p.r)});if(++t<150)requestAnimationFrame(f);else c.remove()})()}

@@ -1,0 +1,256 @@
+/* ============================================================================
+   onae-responsive.css — 모바일·태블릿 화면 최적화 오버레이 v1.0.0
+   ----------------------------------------------------------------------------
+   위치(정본) : 0.core-info/22.book-module/14.design-mo/onae-responsive.css
+   작성       : 2026-07-29 (관제센터 세션)
+   함께 볼 것 : onae-tokens.css (토큰) · onae-overlay.css (사이트별 색 오버레이)
+
+   ■ 무엇을 고치나 — 회장님이 지적하신 3가지
+     1) 한글이 단어 중간에서 끊겨 두 줄로 내려가는 것  → word-break:keep-all
+     2) 모바일에서 글자가 너무 커서 촌스러워 보이는 것  → clamp() 유동 타이포
+     3) 태블릿에서 데스크톱 레이아웃이 어정쩡하게 눌리는 것 → 768~1024 구간 규칙
+
+   ■ 안전장치 (이게 핵심이다)
+     - 모든 규칙이 `html.onae-rwd` 아래에만 있다. <link> 만 걸면 **아무 것도 안 바뀐다.**
+       onae-theme.js 가 로드되면서 html 에 .onae-rwd 를 붙일 때 비로소 적용된다.
+     - 되돌리기: <script> 한 줄만 지우면 즉시 원상복구. 파일을 지울 필요도 없다.
+     - !important 를 쓰지 않는다. 사이트 자체 CSS 가 더 구체적이면 사이트가 이긴다
+       (= 의도적으로 만든 디자인은 이 파일이 덮어쓰지 못한다).
+     - 색을 건드리지 않는다. 이 파일은 오직 크기·간격·줄바꿈만 다룬다.
+   ========================================================================== */
+
+/* ---------------------------------------------------------------------------
+   0. 유동 타이포 변수 — 화면폭에 따라 자동으로 커지고 작아진다
+   360px(작은폰) ~ 1280px(데스크톱) 사이를 선형 보간한다.
+   기존 사이트가 px 로 박아둔 값보다 우선하지 않으므로(같은 특이도),
+   아래 §2 에서 명시적으로 지정한 요소에만 적용된다.
+--------------------------------------------------------------------------- */
+html.onae-rwd{
+  --onae-fs-hero:  clamp(26px, 5.2vw + 8px, 52px);
+  --onae-fs-h1:    clamp(23px, 3.4vw + 10px, 40px);
+  --onae-fs-h2:    clamp(20px, 2.2vw + 11px, 30px);
+  --onae-fs-h3:    clamp(17px, 1.2vw + 12px, 23px);
+  --onae-fs-body:  clamp(15px, 0.5vw + 13.5px, 17px);
+  --onae-fs-small: clamp(13px, 0.3vw + 12px, 14px);
+  --onae-gut:      clamp(14px, 3.4vw, 28px);   /* 좌우 여백 */
+}
+
+/* ---------------------------------------------------------------------------
+   1. ★ 한글 줄바꿈 — 이 파일에서 가장 값어치 있는 3줄
+   -------------------------------------------------------------------------
+   브라우저 기본값(word-break:normal)은 한글을 "글자 단위"로 끊는다.
+   그래서 "무료 회원가입" 이 "무료 회원가"+"입" 처럼 갈라져 두 줄이 된다.
+   keep-all 은 어절(띄어쓰기) 단위로만 끊는다 — 한글 사이트의 사실상 표준.
+   대신 URL·긴 영단어가 넘칠 수 있어 overflow-wrap:anywhere 로 보완한다.
+--------------------------------------------------------------------------- */
+html.onae-rwd body,
+html.onae-rwd h1, html.onae-rwd h2, html.onae-rwd h3,
+html.onae-rwd h4, html.onae-rwd h5, html.onae-rwd h6,
+html.onae-rwd p,  html.onae-rwd li, html.onae-rwd td, html.onae-rwd th,
+html.onae-rwd button, html.onae-rwd label, html.onae-rwd a,
+html.onae-rwd figcaption, html.onae-rwd summary{
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+/* 제목은 줄 길이를 고르게 — "제목 세 줄 + 마지막 줄에 한 글자" 를 막는다 */
+html.onae-rwd h1, html.onae-rwd h2, html.onae-rwd h3,
+html.onae-rwd .hero h1, html.onae-rwd .hero h2{
+  text-wrap: balance;
+}
+html.onae-rwd p, html.onae-rwd li{ text-wrap: pretty; }
+
+/* ---------------------------------------------------------------------------
+   2. 모바일 타이포 — "글자가 커서 세련미가 떨어지는" 문제
+   640px 이하에서만 작동한다. 데스크톱은 손대지 않는다.
+--------------------------------------------------------------------------- */
+@media (max-width: 640px){
+  html.onae-rwd h1{ font-size: var(--onae-fs-h1); line-height:1.28; letter-spacing:-.02em; }
+  html.onae-rwd h2{ font-size: var(--onae-fs-h2); line-height:1.32; letter-spacing:-.015em; }
+  html.onae-rwd h3{ font-size: var(--onae-fs-h3); line-height:1.38; letter-spacing:-.01em; }
+  html.onae-rwd .hero h1,
+  html.onae-rwd .hero-title,
+  html.onae-rwd [class*="hero"] h1{ font-size: var(--onae-fs-hero); line-height:1.22; }
+
+  html.onae-rwd body,
+  html.onae-rwd p, html.onae-rwd li{ font-size: var(--onae-fs-body); line-height:1.65; }
+  html.onae-rwd small,
+  html.onae-rwd .muted, html.onae-rwd .sub, html.onae-rwd .caption{ font-size: var(--onae-fs-small); }
+
+  /* 큰 숫자·지표가 화면을 삼키는 것 방지 */
+  html.onae-rwd .metric, html.onae-rwd .stat, html.onae-rwd .num,
+  html.onae-rwd .onae-metric{ font-size: clamp(22px, 7vw, 34px); }
+
+  /* 좌우 여백 통일 — 글자가 화면 가장자리에 붙는 것 방지 */
+  html.onae-rwd .container, html.onae-rwd .wrap, html.onae-rwd .inner,
+  html.onae-rwd .onae-container{ padding-left: var(--onae-gut); padding-right: var(--onae-gut); }
+
+  /* ★ 3~4열 그리드가 모바일에서 그대로 남아 칸마다 글자가 세로로 쌓이는 문제
+     ("학습/진도", "마이/페이/지" 처럼 한 칸에 한 글자씩 떨어지는 현상)
+     → 칸 최소폭을 주어 자동으로 2열로 접히게 한다. */
+  html.onae-rwd .grid, html.onae-rwd .cards, html.onae-rwd .card-grid,
+  html.onae-rwd .card-list, html.onae-rwd .tiles, html.onae-rwd .items,
+  html.onae-rwd [class*="grid-2"], html.onae-rwd [class*="grid-3"], html.onae-rwd [class*="grid-4"],
+  html.onae-rwd [class*="cols-2"], html.onae-rwd [class*="cols-3"], html.onae-rwd [class*="cols-4"]{
+    grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr));
+  }
+  /* 아주 좁은 폰(≤360px)에서는 1열까지 허용 */
+  @media (max-width: 360px){
+    html.onae-rwd .grid, html.onae-rwd .cards, html.onae-rwd .card-grid{
+      grid-template-columns: repeat(auto-fit, minmax(min(132px, 100%), 1fr));
+    }
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   3. 태블릿(아이패드) — 641~1024px
+   데스크톱 3~4열 그리드가 태블릿에서 눌려 글자가 세로로 쌓이는 문제를 푼다.
+   auto-fit/auto-fill 를 쓰는 그리드에만 안전하게 개입한다.
+--------------------------------------------------------------------------- */
+@media (min-width: 641px) and (max-width: 1024px){
+  html.onae-rwd .grid, html.onae-rwd .cards, html.onae-rwd .card-grid,
+  html.onae-rwd [class*="grid-3"], html.onae-rwd [class*="grid-4"],
+  html.onae-rwd [class*="cols-3"], html.onae-rwd [class*="cols-4"]{
+    grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+  }
+  /* 읽기 본문은 태블릿에서 한 줄이 너무 길어진다 — 45~75자 유지 */
+  html.onae-rwd article p, html.onae-rwd .prose p, html.onae-rwd .content p{
+    max-width: 68ch;
+  }
+  html.onae-rwd h1{ font-size: clamp(28px, 3.6vw, 38px); }
+}
+
+/* ---------------------------------------------------------------------------
+   4. 터치 기기 — 손가락으로 누르는 화면에서만 적용 (마우스 화면은 그대로)
+   WCAG 2.5.5 권장 44x44px. pointer:coarse 로 걸어 데스크톱 회귀를 원천 차단.
+--------------------------------------------------------------------------- */
+@media (pointer: coarse){
+  html.onae-rwd button,
+  html.onae-rwd [role="button"],
+  html.onae-rwd input[type="button"],
+  html.onae-rwd input[type="submit"],
+  html.onae-rwd .btn, html.onae-rwd .button, html.onae-rwd .tbtn,
+  html.onae-rwd .chip, html.onae-rwd .tab,
+  html.onae-rwd nav a, html.onae-rwd .nav a{
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+  /* 아이콘만 있는 작은 버튼 */
+  html.onae-rwd .icon-btn, html.onae-rwd [class*="close"]{ min-width:44px; min-height:44px; }
+
+  /* iOS 는 입력칸 글자가 16px 미만이면 포커스 시 화면을 확대해버린다 */
+  html.onae-rwd input, html.onae-rwd select, html.onae-rwd textarea{
+    font-size: max(16px, 1em);
+  }
+  /* 붙어 있는 버튼들 사이 최소 간격 — 오터치 방지 */
+  html.onae-rwd .btn + .btn, html.onae-rwd button + button{ margin-left: 6px; }
+}
+
+/* ---------------------------------------------------------------------------
+   4-b. ★ 링크가 많은 상단 내비가 모바일에서 4~5줄로 접히는 문제
+   -------------------------------------------------------------------------
+   실측 사례: 경남교육CEO 는 내비 링크 11개가 390px 화면에서 5줄로 접혀
+   상단 고정 내비가 화면 높이의 36%(영어 모드에서는 45%)를 차지했다.
+   본문이 시작되기도 전에 화면 절반이 메뉴였다.
+
+   :has() 로 "자식 링크가 7개 이상인 내비"만 정확히 골라, 여러 줄로 접히는 대신
+   **한 줄로 옆으로 미는 방식**으로 바꾼다. 링크가 6개 이하인 내비는 손대지 않는다.
+   (:has() 미지원 브라우저에서는 이 블록 전체가 무시되므로 기존 동작 그대로다)
+--------------------------------------------------------------------------- */
+@media (max-width: 640px){
+  html.onae-rwd nav:has(> a:nth-child(7)),
+  html.onae-rwd .nav:has(> a:nth-child(7)),
+  html.onae-rwd .links:has(> a:nth-child(7)),
+  html.onae-rwd .menu:has(> a:nth-child(7)),
+  html.onae-rwd [class*="navbar"]:has(> a:nth-child(7)){
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;                 /* Firefox */
+    -ms-overflow-style: none;              /* 구 Edge */
+    /* 오른쪽에 더 있다는 것을 알려주는 옅은 그라디언트 */
+    mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 20px), transparent 100%);
+  }
+  html.onae-rwd nav:has(> a:nth-child(7))::-webkit-scrollbar,
+  html.onae-rwd .nav:has(> a:nth-child(7))::-webkit-scrollbar,
+  html.onae-rwd .links:has(> a:nth-child(7))::-webkit-scrollbar,
+  html.onae-rwd .menu:has(> a:nth-child(7))::-webkit-scrollbar,
+  html.onae-rwd [class*="navbar"]:has(> a:nth-child(7))::-webkit-scrollbar{
+    display: none;
+  }
+  /* 칸이 줄어들어 글자가 세로로 쌓이는 것을 막는다 */
+  html.onae-rwd nav:has(> a:nth-child(7)) > a,
+  html.onae-rwd .nav:has(> a:nth-child(7)) > a,
+  html.onae-rwd .links:has(> a:nth-child(7)) > a,
+  html.onae-rwd .menu:has(> a:nth-child(7)) > a,
+  html.onae-rwd [class*="navbar"]:has(> a:nth-child(7)) > a{
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   5. 넘침 방지 — 모바일에서 가로 스크롤이 생기는 흔한 원인들
+--------------------------------------------------------------------------- */
+html.onae-rwd img, html.onae-rwd video, html.onae-rwd canvas,
+html.onae-rwd svg, html.onae-rwd iframe{ max-width:100%; height:auto; }
+
+/* 표는 숨기지 말고 그 표만 가로로 밀리게 한다 */
+html.onae-rwd table{ display:block; max-width:100%; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+@media (min-width:1025px){ html.onae-rwd table{ display:table; } }
+
+/* pre/code 가 화면을 밀어내는 것 방지 */
+html.onae-rwd pre{ max-width:100%; overflow-x:auto; }
+
+/* ---------------------------------------------------------------------------
+   6. 노치·홈바 (아이폰 X 이후) — 하단 고정 바가 홈바에 가리는 문제
+--------------------------------------------------------------------------- */
+@supports (padding: max(0px)){
+  html.onae-rwd .fixed-bottom, html.onae-rwd .bottom-bar,
+  html.onae-rwd [class*="sticky-bottom"]{
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   7. 인쇄 — 학습지·리포트를 뽑는 서비스가 많아 기본값을 정리해 둔다
+--------------------------------------------------------------------------- */
+@media print{
+  html.onae-rwd .onae-switcher, html.onae-rwd nav,
+  html.onae-rwd .fixed-bottom{ display:none !important; }
+  html.onae-rwd body{ font-size:11pt; }
+}
+
+/* ============================================================================
+   접근성 기본값 — 2026-08-08 추가 (정본: 14.design-mo\onae-responsive.css)
+   ----------------------------------------------------------------------------
+   여기에 넣은 이유 — 2026-08-08 실측
+     onae-tokens.css 는 어느 사이트에도 <link> 되어 있지 않았다(0곳).
+     실제로 로드되는 것은 각 사이트 assets\ 안의 onae-theme.css + onae-responsive.css 사본이다.
+     그중 responsive 에만 접근성 규칙이 하나도 없었으므로 여기에 둔다.
+   화면이 달라지는 경우는 두 가지뿐이다 — ① OS 「동작 줄이기」 ② 키보드 Tab.
+   ========================================================================== */
+
+/* 1) 동작 줄이기 — 멀미·전정기관 장애 이용자 보호 (WCAG 2.3.3) */
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* 2) 키보드 포커스 링 (WCAG 2.4.7)
+      :where() 라서 우선순위 0 — 사이트가 자기 포커스 스타일을 갖고 있으면 그쪽이 이긴다.
+      마우스 클릭에는 나타나지 않는다. */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible{
+  outline: 2px solid var(--onae-brand, #5b4bd6);
+  outline-offset: 2px;
+}

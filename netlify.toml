@@ -41,6 +41,10 @@
   to = "/sitemap.xml"
   status = 200
 
+[[redirects]]
+  from = "/auth-callback.html"
+  to = "/auth-callback.html"
+  status = 200
 # 단일 파일 정적 SPA — 나머지 경로는 index.html로
 [[redirects]]
   from = "/*"

@@ -62,6 +62,23 @@ a.btn{text-decoration:none}
 @media(min-width:560px){.actionbar{flex-direction:row;flex-wrap:wrap}.actionbar .btn{flex:1 1 calc(50% - 5px)}}
 input,select{width:100%;padding:13px 14px;border:2px solid #ECEAFB;border-radius:var(--r-md);font-family:inherit;font-size:15px;margin-bottom:10px;background:#fff}
 input:focus{outline:none;border-color:var(--vio)}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:3px solid #0B6E6B;outline-offset:3px}
+.linkbtn{border:0;background:transparent;color:var(--vio-text);font:inherit;font-weight:700;cursor:pointer;padding:8px 5px;text-decoration:underline;text-underline-offset:3px}
+.journey{background:#fff;border:1px solid #DDD8F7;border-radius:var(--r-md);padding:13px 14px;margin-bottom:14px;box-shadow:var(--shadow-sm)}
+.journeytop{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;font-size:12px;font-weight:800;color:var(--navy-text)}
+.journeysteps{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;list-style:none}
+.journeysteps li{font-size:11px;line-height:1.35;color:#686D84;text-align:center;padding-top:8px;border-top:4px solid #E3E0F4}
+.journeysteps li.done{border-color:var(--mint-text);color:#075E5B}.journeysteps li.now{border-color:var(--vio);color:var(--vio-text);font-weight:800}
+.statecard{text-align:center;padding:38px 22px}.statecard h2{font-size:20px;margin:8px 0}.statecard p{font-size:13.5px;line-height:1.65;color:var(--muted)}
+.spinner{width:34px;height:34px;border:4px solid #E7E3FA;border-top-color:var(--vio);border-radius:50%;margin:0 auto;animation:spinload .8s linear infinite}@keyframes spinload{to{transform:rotate(360deg)}}
+.resumeoverlay{position:fixed;inset:0;background:rgba(20,20,35,.52);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px}
+.resumedialog{width:100%;max-width:420px;background:#fff;border-radius:var(--r-lg);padding:22px;box-shadow:var(--shadow-modal)}
+.resultmeaning{border-left:5px solid var(--vio)}.resultmeaning h3,.actionplan h3{font-size:17px;margin-bottom:8px}.resultmeaning p,.actionplan p{font-size:13px;line-height:1.65;color:#4C536A}
+.evidencelist{margin:10px 0 0 18px;color:#4C536A;font-size:12.5px;line-height:1.65}
+.actionchoice{display:flex;align-items:flex-start;gap:10px;padding:12px;border:2px solid #E8E5F5;border-radius:var(--r-md);margin-top:9px;cursor:pointer}.actionchoice:has(input:checked){border-color:var(--vio);background:var(--vio-soft)}
+.actionchoice input{width:auto;margin:3px 0 0;flex:0 0 auto}.actionchoice span{font-size:13px;line-height:1.5}.savestatus{min-height:22px;margin-top:9px;color:#075E5B;font-size:13px;font-weight:700}
+@media(max-width:480px){.app{padding-left:14px;padding-right:14px}.hero{padding:22px 16px}.hero h2{font-size:21px}.chartwrap{height:230px}.resultmeaning,.actionplan,.resultsave{padding:17px}.journeysteps li{font-size:10px}.actionbar .btn{min-height:48px}.block{padding:15px}.blockpic{height:108px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 label{font-size:12px;font-weight:700;color:#7A7E9A;display:block;margin:4px 0 4px 2px}
 .k{font-size:11px;font-weight:800;letter-spacing:.16em;color:var(--vio-text);margin-bottom:10px}
 .tcard{display:flex;gap:14px;align-items:center;cursor:pointer;transition:.15s}
@@ -234,6 +251,9 @@ td{padding:7px 8px;border-bottom:1px solid #EEE}
 .wizrec-why{font-size:12px;line-height:1.5;color:#1E8E4E;background:#F1FBF4;border-radius:var(--r-sm);padding:8px 10px;margin-bottom:10px}
 @media(max-width:560px){.wizchip{flex:1 1 100%}}
 .vgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.gradepick{background:linear-gradient(120deg,#F4F1FF,#F2FBF8);border:1px solid #E2DDF8;border-radius:var(--r-lg);padding:14px 16px;margin:10px 0 14px;color:#4C5263;font-size:12.8px;line-height:1.6}
+.gradepick b{color:var(--navy-text)}
+.gradepick-status{display:block;margin-top:7px;color:var(--vio-text);font-weight:800}
 .vcard{background:#fff;border-radius:var(--r-lg);overflow:hidden;box-shadow:0 6px 22px rgba(108,92,231,.10);cursor:pointer;transition:.18s;animation:rise .5s both}
 .vcard:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(108,92,231,.22)}
 .vcard.locked{cursor:default;filter:grayscale(1);opacity:.54;box-shadow:var(--shadow-sm)}
@@ -670,8 +690,10 @@ function skeletonGrid(n){n=n||6;let c='';for(let i=0;i<n;i++)c+='<div class="ske
 function skeletonRows(n){n=n||3;let c='';for(let i=0;i<n;i++)c+='<div class="skel-row"><div class="skel skel-line" style="width:55%"></div><div class="skel skel-line" style="width:22%"></div></div>';return c}
 function gridHtml(t,act,grade,plan){
  let LV=[['es','초등','🌈'],['ms','중학','🌱'],['hs','고등','🎓']];
- let h=`<div class="chips noprint">${['전체','초등','중학','고등'].map((c,i)=>`<button class="chip${i===0?' on':''}" onclick="filterLv(this,'${c}')">${c}</button>`).join('')}</div>`;
  const target=gradeLv(grade);
+ const targetName={es:'초등',ms:'중학',hs:'고등'}[target]||'';
+ const choices=['초등','중학','고등','전체'];
+ let h=`<div class="gradepick"><b>먼저 현재 학년대를 선택하세요.</b> 진로·공부·진학 목적에 맞는 카드만 간단히 비교할 수 있어요. 각 진단은 10~20분이며 완료 즉시 결과와 다음 행동을 확인합니다.<span id="gradeFilterStatus" class="gradepick-status" role="status" aria-live="polite">${targetName?`${targetName} 추천 진단을 먼저 보여드려요.`:'학년을 고르면 맞는 진단만 보여드려요.'}</span></div><div class="chips noprint" aria-label="학년대별 진단 필터">${choices.map(c=>`<button type="button" class="chip${targetName===c?' on':''}" aria-pressed="${targetName===c?'true':'false'}" onclick="filterLv(this,'${c}')" onkeydown="gradeFilterKey(event,this,'${c}')">${c==='전체'?'전체 보기':c}</button>`).join('')}</div>`;
  if(target){const ti=LV.findIndex(x=>x[0]===target);if(ti>0){const[picked]=LV.splice(ti,1);LV.unshift(picked);}}
  for(const[lv,nm,em]of LV){
   const items=Object.entries(t).filter(([k,d])=>!DISPLAY_HIDDEN.has(k)&&displayStep(k,d,lv)).sort((a,b)=>displayStep(a[0],a[1],lv)-displayStep(b[0],b[1],lv));
@@ -679,13 +701,18 @@ function gridHtml(t,act,grade,plan){
   const active=!target||target===lv;
   const extra = lv==='hs' ? `<div class="${active?'vcard':'vcard locked'}" ${active?`onclick="go('majors')"`:'aria-disabled="true"'}><div class="vtop" style="background:linear-gradient(135deg,#0F1530,#3E5C8A)"><div class="vmed">${ART('subject_rec')}</div><span class="stepb">탐색관</span><span class="catb">진학</span>${active?'':'<span class="lockb">다른 학년</span>'}</div><div class="vbody"><h3>학과 탐색관 🏛️</h3><p>7계열 56개 학과 — 설명·인재상·권장과목·진로를 한곳에서</p><span class="aud2">중3·고등</span></div></div><div class="${active?'vcard':'vcard locked'}" ${active?`onclick="go('subjexp')"`:'aria-disabled="true"'}><div class="vtop" style="background:linear-gradient(135deg,#1B2A4A,#00997B)"><div class="vmed">${ART('subject_rec')}</div><span class="stepb">탐색관</span><span class="catb">진학</span>${active?'':'<span class="lockb">다른 학년</span>'}</div><div class="vbody"><h3>2022 과목 탐색 🗂</h3><p>계열 → 학과 선택 → 일반·진로·융합선택 과목 비교</p><span class="aud2">중3·고등</span></div></div>` : '';
   const recBadge = (target&&target===lv) ? '<span class="tag" style="margin-left:6px;background:#FFF3D6;color:#836728">✨ 내 학년 추천</span>' : '';
-   h+=`<div class="lvsec" data-lv="${nm}"><div class="wk">${em} ${nm} 로드맵${recBadge} <span>${active?'나의 학년에 맞는 프로그램':'다른 학년 프로그램은 참고용으로 잠겨 있어요'}</span></div><div class="vgrid">${items.map(([k,d],i)=>vcardHtml(k,d,act,displayStep(k,d,lv),i,active,'다른 학년',nm==='중학'?'중등':nm,t,plan)).join('')}${extra}</div></div>`;
+   h+=`<div class="lvsec" data-lv="${nm}" style="display:${target===lv?'':'none'}"><div class="wk">${em} ${nm} 로드맵${recBadge} <span>${active?'나의 학년에 맞는 프로그램':'다른 학년 프로그램은 참고용으로 잠겨 있어요'}</span></div><div class="vgrid">${items.map(([k,d],i)=>vcardHtml(k,d,act,displayStep(k,d,lv),i,active,'다른 학년',nm==='중학'?'중등':nm,t,plan)).join('')}${extra}</div></div>`;
   }
   return h;
 }
 function filterLv(el,c){
- [...el.parentElement.children].forEach(b=>b.classList.remove('on'));el.classList.add('on');
+ [...el.parentElement.children].forEach(b=>{b.classList.remove('on');b.setAttribute('aria-pressed','false')});el.classList.add('on');el.setAttribute('aria-pressed','true');
  document.querySelectorAll('.lvsec').forEach(sx=>{sx.style.display=(c==='전체'||sx.dataset.lv===c)?'':'none'});
+ const status=document.getElementById('gradeFilterStatus');
+ if(status)status.textContent=c==='전체'?'초등·중학·고등 전체 진단을 보여드려요.':`${c} 추천 진단만 보여드려요.`;
+}
+function gradeFilterKey(e,el,c){
+ if(e.key==='Enter'||e.key===' '){e.preventDefault();filterLv(el,c)}
 }
 function qrImg(code){const u=location.origin+location.pathname+'?code='+code;return `<img src="https://api.qrserver.com/v1/create-qr-code/?size=170x170&margin=8&data=${encodeURIComponent(u)}" width="150" height="150" style="border-radius:12px;background:#fff;padding:6px" alt="QR">`}
 function confetti(){const c=document.createElement('canvas');c.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:99';document.body.appendChild(c);c.width=innerWidth;c.height=innerHeight;const x=c.getContext('2d'),P=[...Array(110)].map(()=>({x:Math.random()*c.width,y:-20-Math.random()*c.height*.4,v:2+Math.random()*3,r:3+Math.random()*5,h:Math.random()*360,w:Math.random()*2-1}));let t=0;(function f(){x.clearRect(0,0,c.width,c.height);P.forEach(p=>{p.y+=p.v;p.x+=p.w;x.fillStyle=`hsl(${p.h},80%,60%)`;x.fillRect(p.x,p.y,p.r,p.r)});if(++t<150)requestAnimationFrame(f);else c.remove()})()}
@@ -936,7 +963,11 @@ function conversionWhyHtml(){return `<div class="convgrid">
  </div>`}
 function saveValueHtml(){return `<div class="savebox"><h3>진단 후 바로 저장되는 개인 결과함</h3><p>회원가입을 길게 요구하지 않습니다. 학급코드·이름·4자리 PIN만 있으면 결과 저장, 다시 진단, 성장 그래프, A4·B4 보고서 보기가 이어집니다.</p><div class="savechips"><span>결과 누적</span><span>재진단 비교</span><span>보고서 다시보기</span><span>추천 진단</span></div></div>`}
 function seoLinksHtml(){return `<div class="seolinks noprint"><a href="/career-test-middle.html">중학생 진로검사</a><a href="/highschool-subject-choice.html">고교학점제 과목선택</a><a href="/study-habit-test.html">공부습관 진단</a><a href="/student-record-roadmap.html">학생부 로드맵</a><a href="/content-quality.html">보고서 품질 기준</a></div>`}
-function resultSaveHtml(){return `<div class="resultsave noprint"><h3>이 결과를 성장 기록으로 남겨두세요</h3><p>이미 개인 결과함에 저장되었습니다. 다음에는 같은 이름과 PIN으로 들어오면 오늘 결과, 다시 진단, 성장 그래프, 정식 보고서를 계속 볼 수 있습니다.</p><div class="actionbar" style="margin-top:0"><button class="btn navy" onclick="go('mypage')">내 결과함 보기</button><button class="btn ghost" onclick="go('profile')">통합 성장 리포트</button></div></div>`}
+function journeyHtml(step,detail){
+ const labels=['진단 선택','진단 완료','결과 이해','행동 저장'];
+ return `<nav class="journey noprint" data-journey aria-label="진단 여정"><div class="journeytop"><span>10분 결과 이해 여정</span><span data-journey-label>${step}/4 · ${esc(detail||labels[step-1])}</span></div><ol class="journeysteps">${labels.map((x,i)=>`<li class="${i+1<step?'done':i+1===step?'now':''}"${i+1===step?' aria-current="step"':''}>${esc(x)}</li>`).join('')}</ol></nav>`;
+}
+function resultSaveHtml(){return `<div class="resultsave noprint"><h3>결과 원본은 이미 안전하게 저장됐어요</h3><p>개인 결과함에는 진단 결과가 저장되어 있습니다. 다음에는 같은 이름과 PIN으로 들어오면 다시 진단, 성장 그래프, 정식 보고서를 이어서 볼 수 있습니다. 아래에서 고른 추천 행동은 이 브라우저에 별도로 저장됩니다.</p><div class="actionbar" style="margin-top:0"><button class="btn navy" onclick="go('mypage')">내 결과함 보기</button><button class="btn ghost" onclick="go('profile')">통합 성장 리포트</button></div></div>`}
 function methodNote(slug){
  const series=slug==='hs_series'||slug==='ms_series';
  if(series)return `<div class="methodnote"><b>신뢰도 기준</b> · 이 계열성향 결과는 전국 규준과 내적일관도 검증을 함께 표시합니다. 고등 α0.951(N=8,575), 중학 α0.930(N=4,069) 기준입니다.</div>`;
@@ -1304,7 +1335,7 @@ async function go(page,arg){
    <h1><span class="lp-grad">학년·결과별 초개별화</span><br>진로·진학 성장 보고서</h1>
    <p class="lp-lead">초등·중학·고등 학생의 자기이해를 학년별 진단으로 돕고,<br>학년과 결과에 맞춰 한 명 한 명 다른 맞춤 성장 보고서를 만듭니다.</p>
    <div class="lp-cta">
-    <button class="btn ghost" onclick="go('consult')">3분 진단 시작</button>
+    <button class="btn ghost" onclick="go('consult')">나에게 맞는 진단 찾기</button>
     <a class="btn" style="background:rgba(255,255,255,.16);box-shadow:none" href="/sample.html">실제 결과 먼저 보기</a>
    </div>
    <div class="lp-stats"><div><b>45,000+</b><span>누적 활용 · 구 마이베스트 포함</span></div><div><b>초·중·고</b><span>학년별 진단</span></div><div><b>A4·B4·10쪽</b><span>맞춤 보고서</span></div></div>
@@ -1343,7 +1374,7 @@ async function go(page,arg){
   <div class="lp-sectk">시작은 이렇게</div>
   <div class="cstep">
    <div class="hstep"><b>1</b><h4>입장</h4><p>학급코드·이름·PIN으로 간편하게</p></div>
-   <div class="hstep"><b>2</b><h4>3분 진단</h4><p>카드를 고르고 솔직하게 답하면 즉시 분석</p></div>
+   <div class="hstep"><b>2</b><h4>10~20분 진단</h4><p>중간 저장과 이어하기를 지원하고 완료 즉시 분석</p></div>
    <div class="hstep"><b>3</b><h4>맞춤 보고서</h4><p>차트+맞춤 가이드+A4 한장 보고서까지</p></div>
   </div>
   <div class="linkrow"><a onclick="go('join','individual')">학급코드 없이 개인으로 시작하기 →</a></div>
@@ -1358,7 +1389,7 @@ async function go(page,arg){
   try{mybswInit()}catch(e){}
  }
   else if(page==='consult'){
-   v.innerHTML=`<h1>컨설팅 진단 🧭</h1><div class="sub">학년대(초·중·고)와 목적별로 정리한 진단 프로그램이에요. 카드를 골라 시작하고, 결과는 개인 결과함에 누적하세요.</div>
+   v.innerHTML=`${journeyHtml(1,'나에게 맞는 진단 선택')}<h1>컨설팅 진단 🧭</h1><div class="sub">먼저 학년대를 고른 뒤 목적에 맞는 코스를 선택하세요. 진단은 보통 10~20분이며, 중단해도 이 브라우저에서 이어갈 수 있어요.</div>
    ${saveValueHtml()}
    ${wizEntryCard()}
    <div class="wk">진단 프로그램 <span>학년대를 골라보세요</span></div>
@@ -1367,7 +1398,7 @@ async function go(page,arg){
    <div class="wk">이용 방법</div>
   <div class="how">
    <div class="hstep"><b>1</b><h4>학급코드 입장</h4><p>선생님께 받은 코드와 이름, 나만의 PIN으로 간편하게</p></div>
-   <div class="hstep"><b>2</b><h4>3분 진단</h4><p>카드를 고르고 솔직하게 답하면 즉시 분석</p></div>
+   <div class="hstep"><b>2</b><h4>10~20분 진단</h4><p>중간 저장과 이어하기를 지원하고 완료 즉시 분석</p></div>
    <div class="hstep"><b>3</b><h4>성장 솔루션</h4><p>차트 + 맞춤 가이드 + A4 한장 보고서까지</p></div>
    </div>
    <div class="actionbar noprint"><button class="btn" onclick="go('join')">10초 입장하고 결과 저장하기</button><button class="btn ghost" onclick="go('coaching')">선생님 코칭 보기</button></div>
@@ -1900,6 +1931,7 @@ function onIndGradeChange(){
  box.checked=/^초/.test(g.value);
 }
 async function startQuiz(slug){
+ showJourneyState('loading','진단을 준비하고 있어요','문항과 저장된 진행 기록을 확인하고 있습니다.');
  let q;
  try{
   // 2026-08-01: 백엔드 entitlement 게이트(mybest /api/questions)는 token 쿼리파라미터가 있을 때만
@@ -1922,13 +1954,31 @@ async function startQuiz(slug){
    {q_text:'3단계. 우리 학교 교육과정표 확인 상태를 선택하세요. 최종 과목 선택은 학교 개설 과목 기준으로 조정됩니다.'}
   ];
  }
- S.quiz={slug,scale:q.scale,questions,answers:[],i:0,t:S.tests[slug],majors};
+ S.quiz={slug,scale:q.scale,questions,answers:[],i:0,t:S.tests[slug],majors,submitting:false};
  try{
   const sv=JSON.parse(localStorage.getItem('myb_q_'+slug)||'null');
-  if(sv&&sv.i>0&&sv.i<questions.length&&confirm(`이전에 ${sv.i}번까지 답한 기록이 있어요.\n이어서 할까요? (취소=처음부터)`)){S.quiz.answers=sv.answers;S.quiz.i=sv.i;}
-  else localStorage.removeItem('myb_q_'+slug);
+  if(sv&&sv.i>0&&sv.i<questions.length){showResumeDialog(sv,questions.length);return;}
+  localStorage.removeItem('myb_q_'+slug);
  }catch(e){}
  go('quiz');
+}
+function showJourneyState(kind,title,body,retry){
+ const v=$('#view');if(!v)return;
+ const icon=kind==='loading'?'<div class="spinner" aria-hidden="true"></div>':kind==='empty'?'🗂️':'⚠️';
+ const role=kind==='error'?'alert':'status';
+ v.innerHTML=`${journeyHtml(kind==='loading'?1:2,title)}<section class="card statecard" role="${role}" aria-live="polite">${icon}<h2 tabindex="-1">${esc(title)}</h2><p>${esc(body)}</p>${retry?`<button class="btn" style="margin-top:18px" onclick="${retry}">다시 시도</button>`:''}</section>`;
+ const h=v.querySelector('h2');if(h)h.focus();
+}
+function showResumeDialog(sv,total){
+ const old=$('#resumeDialog');if(old)old.remove();
+ const ov=document.createElement('div');ov.id='resumeDialog';ov.className='resumeoverlay';
+ const saved=sv.savedAt?new Date(sv.savedAt).toLocaleString('ko-KR'):'이전 방문';
+ ov.innerHTML=`<div class="resumedialog" role="dialog" aria-modal="true" aria-labelledby="resumeTitle" aria-describedby="resumeDesc"><div class="k">진행 기록 발견</div><h2 id="resumeTitle" style="font-size:20px;margin-bottom:8px">${sv.i}/${total} 문항부터 이어갈까요?</h2><p id="resumeDesc" style="font-size:13.5px;line-height:1.65;color:var(--muted)">${esc(saved)}에 이 브라우저에 저장된 기록입니다. 이어하기를 선택하면 답변을 복원합니다.</p><div class="actionbar"><button class="btn" data-resume>이어서 하기</button><button class="btn ghost" data-restart>처음부터 시작</button></div></div>`;
+ document.body.appendChild(ov);const resume=ov.querySelector('[data-resume]'),restart=ov.querySelector('[data-restart]');
+ const close=(useSaved)=>{if(useSaved){S.quiz.answers=Array.isArray(sv.answers)?sv.answers:[];S.quiz.i=sv.i;}else{try{localStorage.removeItem('myb_q_'+S.quiz.slug)}catch(e){}}ov.remove();go('quiz');};
+ resume.onclick=()=>close(true);restart.onclick=()=>close(false);
+ ov.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();close(true)}if(e.key==='Tab'){const f=[resume,restart],i=f.indexOf(document.activeElement);if(e.shiftKey&&i===0){e.preventDefault();restart.focus()}else if(!e.shiftKey&&i===1){e.preventDefault();resume.focus()}}});
+ resume.focus();
 }
 function planGateModal(msg,slug){
  const id='pgm'+Date.now();
@@ -1954,7 +2004,7 @@ function startQuizFx(slug){
  const card=document.querySelector(`.vcard[data-slug="${slug}"]:not(.locked)`);
  if(card)card.classList.add('launch');
  try{confetti()}catch(e){}
- setTimeout(()=>startQuiz(slug),260);
+ setTimeout(()=>startQuiz(slug).catch(e=>showJourneyState('error','진단을 불러오지 못했어요',e.message||'네트워크 연결을 확인하고 다시 시도해 주세요.',`startQuiz('${slug}')`)),260);
 }
 function quizPrev(){const z=S.quiz;if(z&&z.i>0){z.i--;renderQuiz();}}
 function subjectRecQText(z,q){
@@ -1991,24 +2041,33 @@ function renderQuiz(){
   opts=`<div class="ynrow"><button class="yn yes" onclick="answer(1)"><span>⭕</span>네, 맞아요</button><button class="yn no" onclick="answer(0)"><span>❌</span>아니요, 아니에요</button></div>`;
  }
  const pct=Math.round(z.i/total*100);
- v.innerHTML=`<div class="qnum">${esc(z.t.title)}</div>
+ v.innerHTML=`${journeyHtml(2,'진단 진행 중')}<div class="qnum">${esc(z.t.title)}</div>
  <div class="qprog noprint"><span>${z.i+1} / ${total} 문항</span><span>${pct}% 진행</span></div>
  <div class="bar"><i style="width:${pct}%"></i></div>
   <div class="card"><div class="qnum">Q${z.i+1} / ${total}</div><div class="qtext">${esc(z.slug==='subject_rec'?subjectRecQText(z,q):q.q_text)}</div>${opts}</div>
- <div class="linkrow noprint">${z.i>0?'<a onclick="quizPrev()">← 이전 문항</a> · ':''}<a onclick="go('dash')">중단하고 돌아가기 (진행 자동저장)</a></div>`;
+ <div class="linkrow noprint">${z.i>0?'<button class="linkbtn" onclick="quizPrev()">← 이전 문항</button> · ':''}<button class="linkbtn" onclick="pauseQuiz()">중단하고 돌아가기 (진행 자동저장)</button></div>`;
+}
+function pauseQuiz(){
+ const z=S.quiz;if(z){try{localStorage.setItem('myb_q_'+z.slug,JSON.stringify({i:z.i,answers:z.answers,savedAt:new Date().toISOString()}))}catch(e){}}
+ go('dash');
 }
 async function answer(val){
  const z=S.quiz;z.answers[z.i]=val;z.i++;
- try{localStorage.setItem('myb_q_'+z.slug,JSON.stringify({i:z.i,answers:z.answers}))}catch(e){}
+ try{localStorage.setItem('myb_q_'+z.slug,JSON.stringify({i:z.i,answers:z.answers,savedAt:new Date().toISOString()}))}catch(e){}
  if(z.i<z.questions.length){renderQuiz();return}
- try{localStorage.removeItem('myb_q_'+z.slug)}catch(e){}
- $('#view').innerHTML='<div class="card" style="text-align:center;padding:50px">분석 중… 🔮</div>';
+ await submitQuiz();
+}
+async function submitQuiz(){
+ const z=S.quiz;if(!z||z.submitting)return;z.submitting=true;
+ showJourneyState('loading','결과를 분석하고 있어요','답변을 안전하게 제출하고 맞춤 결과를 만들고 있습니다. 창을 닫지 않아도 곧 완료됩니다.');
  try{
   const r=await api('/submit',{token:S.token,slug:z.slug,answers:z.answers});
-  S.me=null;openAttempt(r.attempt_id);
+  try{localStorage.removeItem('myb_q_'+z.slug)}catch(e){}
+  S.me=null;await openAttempt(r.attempt_id);
  }catch(e){
+  z.submitting=false;
   if(e.data&&e.data.gate){gateDenyModal(e.data.gate);go('dash');}
-  else{alert(e.message);go('dash')}
+  else showJourneyState('error','제출이 완료되지 않았어요','답변은 이 브라우저에 그대로 남아 있습니다. 연결을 확인한 뒤 다시 제출해 주세요.','submitQuiz()');
  }
 }
 async function openSolution(id){
@@ -2021,8 +2080,9 @@ async function openSolution(id){
  }catch(e){alert(e.message)}
 }
 async function openAttempt(id){
- const d=await api(`/attempt?id=${id}&token=${S.token}`);
- go('result',d);
+ showJourneyState('loading','저장된 결과를 여는 중이에요','결과 설명과 추천 행동을 준비하고 있습니다.');
+ try{const d=await api(`/attempt?id=${id}&token=${S.token}`);go('result',d);}
+ catch(e){showJourneyState('error','결과를 열지 못했어요',e.message||'잠시 후 다시 시도해 주세요.',`openAttempt('${id}')`)}
 }
 const BLOCK_PHOTOS=[
  ['면접|발표|말하기','https://images.unsplash.com/photo-1556761175-b413da4baf72'],
@@ -2199,7 +2259,7 @@ function payNotify(){
 function resultActions(d,opts){
  opts=opts||{};
  const RB='report.html?token='+encodeURIComponent(S.token||'')+'&id='+encodeURIComponent(d.attempt.id);
- return `${resultSaveHtml()}<div class="actionbar noprint">
+ return `<div data-result-lead>${journeyHtml(3,'결과 이해하기')}${resultMeaningHtml(d,opts)}${actionPlanHtml(d,opts)}</div>${resultSaveHtml()}<div class="actionbar noprint">
   ${opts.solution?`<button class="btn" onclick="openSolution('${d.attempt.id}')">📚 심층 솔루션 (학과·과목·4주플랜)</button>`:''}
   <a class="btn navy" href="${RB}" target="_blank" rel="noopener">📄 정식 보고서(A4 다면)</a>
   <a class="btn navy" href="${RB}&mode=b4" target="_blank" rel="noopener">🗂 B4 한장 요약</a>
@@ -2210,6 +2270,42 @@ function resultActions(d,opts){
   <button class="btn ghost" onclick="go('premium')">학교·기관 도입 안내</button>
   <button class="btn ghost" onclick="go('dash')">다음 진단 고르기</button>
  </div>${relatedTestsHtml(d.attempt.test_slug)}`;
+}
+function resultMeaningHtml(d,opts){
+ const slug=d.attempt.test_slug,summary=opts.summary||'입력한 답변에서 현재 가장 두드러진 경향과 보완 순서를 찾았어요.';
+ const series=slug==='hs_series'||slug==='ms_series';
+ const evidence=series
+  ? ['문항별 응답을 7개 계열 점수로 합산했습니다.','전국 규준과 내적일관도 기준을 함께 참고합니다.']
+  : ['이 결과는 이번에 직접 입력한 답변을 기준으로 계산했습니다.','점수보다 강점·보완 영역과 실천 순서를 중심으로 해석합니다.'];
+ const limit=series?'성향은 진로 가능성을 좁히는 판정이 아닙니다. 관심 경험과 상담에 따라 달라질 수 있어요.':'자가점검 결과이며 진단명이나 합격 가능성 판정이 아닙니다. 학교 자료와 교사·보호자 상담을 함께 확인하세요.';
+ return `<section class="card resultmeaning" aria-labelledby="meaningTitle"><div class="k">결과를 3분 안에 이해하기</div><h3 id="meaningTitle">이 결과가 뜻하는 것</h3><p><b>${esc(summary)}</b> 이 결과는 정답이나 낙인이 아니라, 다음 대화를 시작하기 위한 현재의 단서입니다.</p><ul class="evidencelist"><li><b>추천 이유:</b> 가장 높은 응답 경향과 우선 보완 영역을 연결했습니다.</li>${evidence.map(x=>`<li><b>근거:</b> ${esc(x)}</li>`).join('')}<li><b>한계:</b> ${esc(limit)}</li></ul></section>`;
+}
+function actionPlanHtml(d,opts){
+ const id=String(d.attempt.id),summary=opts.summary||'이번 결과';
+ const saved=readSavedAction(id);
+ const actions=[
+  `오늘: ${summary}의 첫 번째 성장 가이드를 10분 실행하기`,
+  '이번 주: 결과 화면을 보호자·선생님과 함께 보고 질문 1개 적기',
+  '다음 주: 같은 행동을 다시 점검하고 필요하면 관련 진단 이어가기'
+ ];
+ return `<section class="card actionplan noprint" aria-labelledby="actionTitle"><div class="k">마지막 2분 · 추천 행동 저장</div><h3 id="actionTitle">지금 할 한 가지를 골라 저장하세요</h3><p>작고 구체적인 행동 하나만 정하면 결과가 실제 변화로 이어지기 쉬워요. 선택은 이 브라우저에 저장되며 다른 기기에는 자동 동기화되지 않습니다.</p><fieldset style="border:0;margin-top:8px" onkeydown="handleActionKeys(event,'${esc(id)}')"><legend class="muted" style="margin-bottom:4px">추천 행동 1개 선택 · 방향키로 선택, Enter로 저장</legend>${actions.map((a,i)=>`<label class="actionchoice"><input type="radio" name="nextAction" value="${esc(a)}" ${saved===a?'checked':''}><span>${esc(a)}</span></label>`).join('')}</fieldset><button class="btn" style="margin-top:14px" onclick="saveRecommendedAction('${esc(id)}')">추천 행동 저장</button><div class="savestatus" id="actionStatus" role="status" aria-live="polite">${saved?'저장됨 · 언제든 다른 행동으로 바꿀 수 있어요.':''}</div></section>`;
+}
+function readSavedAction(id){try{return (JSON.parse(localStorage.getItem('myb_action_'+id)||'null')||{}).action||''}catch(e){return ''}}
+function handleActionKeys(e,id){
+ if(e.key==='Enter'){e.preventDefault();saveRecommendedAction(id);return;}
+ if(!['ArrowDown','ArrowRight','ArrowUp','ArrowLeft'].includes(e.key))return;
+ const radios=[...document.querySelectorAll('input[name="nextAction"]')],current=radios.indexOf(document.activeElement);
+ if(!radios.length||current<0)return;
+ e.preventDefault();const delta=(e.key==='ArrowDown'||e.key==='ArrowRight')?1:-1,next=radios[(current+delta+radios.length)%radios.length];
+ next.checked=true;next.focus();
+}
+function saveRecommendedAction(id){
+ const picked=document.querySelector('input[name="nextAction"]:checked'),status=$('#actionStatus');
+ if(!picked){if(status){status.textContent='먼저 추천 행동 하나를 선택해 주세요.';status.style.color='#C62828';}return;}
+ try{localStorage.setItem('myb_action_'+id,JSON.stringify({action:picked.value,savedAt:new Date().toISOString()}));
+  if(status){status.textContent='저장 완료 · 이 브라우저에서 다음 방문에도 확인할 수 있어요.';status.style.color='#075E5B';}
+  const nav=document.querySelector('[data-journey]'),label=document.querySelector('[data-journey-label]');if(nav){nav.outerHTML=journeyHtml(4,'추천 행동 저장 완료');}
+ }catch(e){if(status){status.textContent='저장 공간을 사용할 수 없어요. 행동 문구를 메모해 주세요.';status.style.color='#C62828';}}
 }
 function resultLink(id){
  const url=new URL(location.origin+location.pathname);
@@ -2365,6 +2461,7 @@ function personaBannerHtml(d){
  return `<div class="card" style="padding:9px 14px;margin-bottom:10px;background:var(--vio-soft);border-color:#E0DAFB"><span class="tag" style="background:#fff">${parts.map(p=>esc(p)).join(' · ')} 맞춤 결과</span></div>`;
 }
 function renderResult(d){
+ if(!d||!d.attempt||!d.attempt.result){showJourneyState('empty','표시할 결과가 없어요','완료된 진단 결과를 찾지 못했습니다. 결과함에서 다른 기록을 선택하거나 새 진단을 시작해 주세요.',"go('dash')");return;}
  window._shareCardD=d;
  const v=$('#view'),r=d.attempt.result,slug=d.attempt.test_slug,t=S.tests[slug],st=d.student;
  const dt=d.attempt.created_at.slice(0,10);
@@ -2427,7 +2524,9 @@ function renderResult(d){
   ${resultActions(d,{summary:esc(t.title)+' 결과를 받았어요'})}`;
  }
  const pbh=personaBannerHtml(d);if(pbh)v.insertAdjacentHTML('afterbegin',pbh);
+ const lead=v.querySelector('[data-result-lead]'),hero=v.querySelector('.hero');if(lead&&hero)hero.insertAdjacentElement('afterend',lead);
  window.scrollTo(0,0);
+ const resultHeading=v.querySelector('.hero h2');if(resultHeading){resultHeading.tabIndex=-1;resultHeading.focus();}
  countUp();confetti();
 }
 async function makeClass(){

@@ -46,6 +46,16 @@ test('keyboard focus and mobile result readability have explicit contracts', () 
   assert.match(html, /@media\(max-width:480px\)/);
   assert.match(html, /prefers-reduced-motion:reduce/);
   assert.match(html, /resultHeading\.focus\(\)/);
+  assert.match(html, /function scrollToResultLead\(\)/);
+  assert.match(html, /결과 이유와 다음 행동 보기/);
+  assert.match(html, /\.topbar \.who\{[^}]*text-overflow:ellipsis/);
+});
+
+test('legal consent widget is loaded once and the built-in footer remains the single footer', () => {
+  assert.equal((html.match(/legal-safety widget \(11\.legal-safety module v1\.0\)/g) || []).length, 1);
+  assert.equal((html.match(/function renderFooter\(\)/g) || []).length, 1);
+  assert.match(html, /if \(document\.querySelector\("\.foot"\)\) return/);
+  assert.equal((html.match(/consent-capture\.js/g) || []).length, 1);
 });
 
 test('result explanation names reason, evidence, limitations, and local-only scope', () => {

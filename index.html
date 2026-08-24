@@ -411,6 +411,10 @@ td{padding:7px 8px;border-bottom:1px solid #EEE}
 @media(max-width:640px){
  body{background-attachment:scroll}
  .topbar{position:sticky;top:0;z-index:38;background:rgba(247,246,255,.92);backdrop-filter:blur(12px);padding:10px 0;margin:-8px 0 14px}
+ .topbar .brandwrap{min-width:0}.topbar .logo{white-space:nowrap}
+ .topbar .who{min-width:0;max-width:112px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+ .topbar .who b{display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+ .mnav{min-width:0;overflow-x:auto;scrollbar-width:none}.mnav::-webkit-scrollbar{display:none}
  .lp-hero{border-radius:var(--r-lg);padding:30px 18px 26px;margin-left:-2px;margin-right:-2px}
  .lp-cta{display:grid;grid-template-columns:1fr}
  .lp-cta .btn{width:100%;min-width:0}
@@ -2271,6 +2275,7 @@ function resultActions(d,opts){
   <button class="btn ghost" onclick="go('dash')">다음 진단 고르기</button>
  </div>${relatedTestsHtml(d.attempt.test_slug)}`;
 }
+function scrollToResultLead(){const lead=document.querySelector('[data-result-lead]');if(lead){lead.scrollIntoView({behavior:'smooth',block:'start'});const h=lead.querySelector('h3');if(h){h.tabIndex=-1;setTimeout(()=>h.focus(),350);}}}
 function resultMeaningHtml(d,opts){
  const slug=d.attempt.test_slug,summary=opts.summary||'입력한 답변에서 현재 가장 두드러진 경향과 보완 순서를 찾았어요.';
  const series=slug==='hs_series'||slug==='ms_series';
@@ -2524,7 +2529,7 @@ function renderResult(d){
   ${resultActions(d,{summary:esc(t.title)+' 결과를 받았어요'})}`;
  }
  const pbh=personaBannerHtml(d);if(pbh)v.insertAdjacentHTML('afterbegin',pbh);
- const lead=v.querySelector('[data-result-lead]'),hero=v.querySelector('.hero');if(lead&&hero)hero.insertAdjacentElement('afterend',lead);
+ const lead=v.querySelector('[data-result-lead]'),hero=v.querySelector('.hero');if(lead&&hero){hero.insertAdjacentElement('afterend',lead);hero.insertAdjacentHTML('beforeend','<button class="btn noprint" style="margin-top:14px;background:#fff;color:#283593" onclick="scrollToResultLead()">결과 이유와 다음 행동 보기 ↓</button>');}
  window.scrollTo(0,0);
  const resultHeading=v.querySelector('.hero h2');if(resultHeading){resultHeading.tabIndex=-1;resultHeading.focus();}
  countUp();confetti();
@@ -2711,6 +2716,7 @@ window.LEGAL_CONFIG = {
 
   /* ---------- 푸터 법적 고지 ---------- */
   function renderFooter() {
+    if (document.querySelector(".foot")) return;
     if (document.getElementById("ls-footer")) return;
     var L = CFG.links || {};
     var f = document.createElement("footer");
@@ -2800,172 +2806,7 @@ window.LEGAL_CONFIG = {
 })();
 
 </script>
-<!-- legal-safety widget (11.legal-safety module v1.0) -->
-<style>
-/* legal-widget.css — 11.legal-safety v1.0 */
-#ls-footer{margin-top:48px;padding:20px 16px 28px;border-top:1px solid rgba(128,128,128,.25);font-size:12.5px;line-height:1.7;color:#8a8f98;background:transparent}
-#ls-footer .ls-footer-in{max-width:1080px;margin:0 auto}
-#ls-footer a{color:inherit;text-decoration:none}
-#ls-footer a:hover{text-decoration:underline}
-#ls-footer .ls-links a b{font-weight:700}
-#ls-footer .ls-sep{margin:0 7px;opacity:.5}
-#ls-footer .ls-biz{margin-top:6px;opacity:.85}
-#ls-footer .ls-copy{margin-top:2px;opacity:.7}
-
-#ls-banner{position:fixed;left:0;right:0;bottom:0;z-index:99999;padding:12px;pointer-events:none}
-#ls-banner .ls-banner-in{pointer-events:auto;max-width:560px;margin:0 auto;background:#fff;color:#222;border:1px solid #e3e6ea;border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.18);padding:18px 20px;font-size:14px;line-height:1.6}
-#ls-banner .ls-banner-title{font-weight:700;font-size:15px;margin-bottom:6px}
-#ls-banner .ls-banner-desc{margin:0 0 10px;font-size:13px;color:#555}
-#ls-banner .ls-banner-desc a{color:#2563eb}
-#ls-banner .ls-check{display:block;margin:4px 0;font-size:13.5px;cursor:pointer}
-#ls-banner .ls-check input{margin-right:7px;accent-color:#2563eb}
-#ls-banner .ls-disabled{color:#999;cursor:default}
-#ls-banner .ls-banner-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap}
-#ls-banner .ls-btn{border-radius:9px;padding:8px 14px;font-size:13.5px;cursor:pointer;border:1px solid #d6dae0;background:#fff;color:#333}
-#ls-banner .ls-btn:hover{background:#f4f6f8}
-#ls-banner .ls-btn-primary{background:#2563eb;border-color:#2563eb;color:#fff}
-#ls-banner .ls-btn-primary:hover{background:#1d4fd7}
-@media (max-width:600px){#ls-banner .ls-banner-btns{justify-content:stretch}#ls-banner .ls-btn{flex:1}}
-@media (prefers-color-scheme:dark){
-  #ls-banner .ls-banner-in{background:#1d2129;color:#e6e8ec;border-color:#333a45}
-  #ls-banner .ls-banner-desc{color:#aab1bb}
-  #ls-banner .ls-btn{background:#262c36;border-color:#3a424e;color:#dbe0e7}
-  #ls-banner .ls-btn:hover{background:#2e3542}
-  #ls-banner .ls-btn-primary{background:#3b82f6;border-color:#3b82f6;color:#fff}
-}
-
-</style>
-<script>
-window.LEGAL_CONFIG = {
-  consentVersion: "v1.mybest.2026",
-  links: {
-    privacy: "/legal/privacy.html",
-    terms: "/legal/terms.html",
-    cookies: "/legal/cookies.html",
-    copyright: "/legal/copyright.html",
-    youth: "/legal/youth.html"
-  },
-  company: {
-    name: "오늘과내일의학교 연구소",
-    contact_email: "legal@mybest.example"
-  }
-};
-</script>
-<script>
-/*!
- * legal-widget.js — 11.legal-safety 공통 법적 고지 위젯 v1.0
- * 기능: ① 푸터 법적 고지 자동 삽입 ② 쿠키·행태정보 동의 배너(기본값 미동의)
- * 사용: window.LEGAL_CONFIG 정의 후 이 스크립트 로드. CSS(legal-widget.css) 함께 로드.
- * 동의 조회: window.LegalSafety.getConsent() → {essential:true, analytics:bool, learning:bool}
- * 동의 변경 이벤트: window 'legal-consent-changed' (detail=consent)
- */
-(function () {
-  "use strict";
-  var CFG = window.LEGAL_CONFIG || {};
-  var KEY = "ls_consent_" + (CFG.consentVersion || "v1");
-
-  function getConsent() {
-    try { var raw = localStorage.getItem(KEY); return raw ? JSON.parse(raw) : null; }
-    catch (e) { return null; }
-  }
-  function setConsent(c) {
-    c.ts = new Date().toISOString();
-    c.version = CFG.consentVersion || "v1";
-    try { localStorage.setItem(KEY, JSON.stringify(c)); } catch (e) {}
-    try { window.dispatchEvent(new CustomEvent("legal-consent-changed", { detail: c })); } catch (e) {}
-  }
-
-  /* ---------- 푸터 법적 고지 ---------- */
-  function renderFooter() {
-    if (document.getElementById("ls-footer")) return;
-    var L = CFG.links || {};
-    var f = document.createElement("footer");
-    f.id = "ls-footer";
-    var bizLine = [];
-    if (CFG.corpName) bizLine.push(CFG.corpName);
-    if (CFG.ceo) bizLine.push("대표: " + CFG.ceo);
-    if (CFG.bizRegNo) bizLine.push("사업자등록번호: " + CFG.bizRegNo);
-    if (CFG.ecomRegNo) bizLine.push("통신판매업: " + CFG.ecomRegNo);
-    if (CFG.contact) bizLine.push("문의: " + CFG.contact);
-    var links = [];
-    if (L.terms) links.push('<a href="' + L.terms + '">이용약관</a>');
-    if (L.privacy) links.push('<a href="' + L.privacy + '"><b>개인정보 처리방침</b></a>');
-    if (L.refund) links.push('<a href="' + L.refund + '">유료서비스·환불약관</a>');
-    if (L.cookies) links.push('<a href="' + L.cookies + '">쿠키·행태정보</a>');
-    if (L.copyright) links.push('<a href="' + L.copyright + '">저작권 고지</a>');
-    if (L.youth) links.push('<a href="' + L.youth + '">아동·청소년 보호</a>');
-    links.push('<a href="#" id="ls-open-settings">쿠키 설정</a>');
-    f.innerHTML =
-      '<div class="ls-footer-in">' +
-      '<div class="ls-links">' + links.join('<span class="ls-sep">·</span>') + "</div>" +
-      (bizLine.length ? '<div class="ls-biz">' + bizLine.join(" | ") + "</div>" : "") +
-      '<div class="ls-copy">© ' + new Date().getFullYear() + " " + (CFG.corpName || CFG.serviceName || "") + ". All rights reserved.</div>" +
-      "</div>";
-    document.body.appendChild(f);
-    var btn = document.getElementById("ls-open-settings");
-    if (btn) btn.addEventListener("click", function (e) { e.preventDefault(); showBanner(true); });
-  }
-
-  /* ---------- 쿠키 동의 배너 ---------- */
-  function showBanner(force) {
-    if (CFG.cookieBanner === false) return;
-    var existing = getConsent();
-    if (existing && !force) return;
-    var old = document.getElementById("ls-banner");
-    if (old) old.remove();
-
-    var b = document.createElement("div");
-    b.id = "ls-banner";
-    b.setAttribute("role", "dialog");
-    b.setAttribute("aria-label", "쿠키 및 행태정보 수집 동의");
-    var cur = existing || {};
-    b.innerHTML =
-      '<div class="ls-banner-in">' +
-      '<div class="ls-banner-title">쿠키·행태정보 수집 동의</div>' +
-      '<p class="ls-banner-desc">필수 항목은 서비스 기본 기능 유지에만 사용됩니다. 선택 항목은 동의한 경우에만 수집되며, 동의하지 않아도 서비스 이용에 제한이 없습니다. 맞춤형 광고에는 사용하지 않습니다.' +
-      (CFG.links && CFG.links.cookies ? ' <a href="' + CFG.links.cookies + '">자세히 보기</a>' : "") + "</p>" +
-      '<label class="ls-check ls-disabled"><input type="checkbox" checked disabled> 필수 — 로그인 세션·동의 상태 저장</label>' +
-      '<label class="ls-check"><input type="checkbox" id="ls-c-learning"' + (cur.learning ? " checked" : "") + "> 선택 — 학습 이력(진도·풀이 기록) 수집</label>" +
-      '<label class="ls-check"><input type="checkbox" id="ls-c-analytics"' + (cur.analytics ? " checked" : "") + "> 선택 — 이용 통계(방문·클릭) 수집</label>" +
-      '<div class="ls-banner-btns">' +
-      '<button type="button" class="ls-btn ls-btn-ghost" id="ls-reject">모두 거부</button>' +
-      '<button type="button" class="ls-btn ls-btn-ghost" id="ls-save">선택 저장</button>' +
-      '<button type="button" class="ls-btn ls-btn-primary" id="ls-accept">모두 동의</button>' +
-      "</div></div>";
-    document.body.appendChild(b);
-
-    function close() { b.remove(); }
-    document.getElementById("ls-reject").onclick = function () {
-      setConsent({ essential: true, learning: false, analytics: false }); close();
-    };
-    document.getElementById("ls-save").onclick = function () {
-      setConsent({
-        essential: true,
-        learning: document.getElementById("ls-c-learning").checked,
-        analytics: document.getElementById("ls-c-analytics").checked
-      }); close();
-    };
-    document.getElementById("ls-accept").onclick = function () {
-      setConsent({ essential: true, learning: true, analytics: true }); close();
-    };
-  }
-
-  window.LegalSafety = {
-    getConsent: getConsent,
-    openSettings: function () { showBanner(true); },
-    /* 선택 수집 실행 전 가드: LegalSafety.allowed('learning') */
-    allowed: function (cat) {
-      if (cat === "essential") return true;
-      var c = getConsent(); return !!(c && c[cat]);
-    }
-  };
-
-  function init() { renderFooter(); showBanner(false); }
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
-  else init();
-})();
-
-</script>
+<!-- legal-safety guardian-consent extension -->
 <script>
 /*!
  * consent-capture.js — 동의 캡처·로그 v1.0 (11.legal-safety 표준, mybest-next 이식)

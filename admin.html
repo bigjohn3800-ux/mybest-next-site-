@@ -1,6 +1,7 @@
 <!doctype html><!-- build:2026-07-23a-feedback -->
 <html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>마이베스트 NEXT — 관리자 대시보드</title>
+<meta name="robots" content="noindex,nofollow,noarchive">
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link rel="dns-prefetch" href="https://onqisdgxwuvlxehjvoto.supabase.co">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
@@ -11,7 +12,7 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:Pretendard,-apple-system,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
 .wrap{max-width:1180px;margin:0 auto;padding:18px}
-.topbar{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.topbar{display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap}.topbar .btn{white-space:nowrap;flex:0 0 auto}.topbar .spacer{flex:1 1 100%;height:0}@media(max-width:820px){.topbar{gap:6px}.topbar .btn.sm{font-size:12.5px;padding:6px 9px}}
 .logo{font-weight:800;letter-spacing:.08em;color:var(--vio)}.logo span{color:var(--mint-text)}
 .rolebadge{font-size:12px;font-weight:800;background:var(--tint-vio);color:var(--vio);border-radius:var(--radius-pill);padding:5px 12px}
 .spacer{flex:1}
@@ -76,6 +77,15 @@ tr:hover td{background:var(--bg)}
 .chips{display:flex;flex-wrap:wrap;gap:7px;margin:6px 0}
 .chip{background:var(--tint-gold);color:var(--gold-text);border:1px solid #F0E2BC;border-radius:var(--radius-pill);padding:4px 11px;font-size:12px;font-weight:700}
 .chip.warn{background:var(--danger-bg);color:var(--danger-text);border-color:#F3CFCB}
+/* 2026-08-03 문의 관리 상태 배지 — 12px 이상 유지 */
+.cstag{display:inline-block;font-size:12px;font-weight:800;border-radius:var(--radius-pill);padding:3px 10px;white-space:nowrap}
+.cstag.pending{background:var(--danger-bg);color:var(--danger-text)}
+.cstag.contacted{background:var(--tint-vio);color:var(--vio)}
+.cstag.in_progress{background:var(--tint-gold);color:var(--gold-text)}
+.cstag.done{background:var(--success-bg);color:var(--success-text)}
+.cstag.spam{background:var(--bg);color:var(--muted);border:1px solid var(--line)}
+.csrow{cursor:pointer}
+.csrow:hover{background:var(--tint-vio)}
 .repnote{font-size:11.5px;color:var(--muted);line-height:1.6;margin-top:4px}
 .rtbl td,.rtbl th{font-size:12px;padding:7px 8px}
 /* multi-class comparison */
@@ -116,7 +126,51 @@ tr:hover td{background:var(--bg)}
  .repnote{break-inside:avoid}
 }
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
-</style></head>
+
+/* [F-PATCH 2026-08-03 · R11] A7 표 모바일 반응형
+   관리자 표 14개가 좁은 화면에서 가로로 터졌다. 표 구조를 바꾸면 인쇄가 깨지므로
+   래퍼로 가로 스크롤을 주고 첫 열(이름)만 고정한다. 인쇄 시에는 원래대로. */
+.tblwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:10px}
+.tblwrap table{min-width:600px}
+@media(max-width:760px){
+  .tblwrap{box-shadow:inset -14px 0 12px -12px rgba(0,0,0,.10)}
+  .tblwrap th:first-child,.tblwrap td:first-child{
+    position:sticky;left:0;background:#fff;z-index:2;
+    box-shadow:2px 0 0 0 var(--line)}
+  .tblwrap th:first-child{background:var(--tint-vio);z-index:3}
+  table{font-size:12.5px}
+  th,td{padding:8px 9px}
+}
+.tblhint{display:none;font-size:11.5px;color:var(--muted);margin:2px 2px 6px}
+@media(max-width:760px){.tblhint{display:block}}
+@media print{
+  .tblwrap{overflow:visible}
+  .tblwrap table{min-width:0}
+  .tblwrap th:first-child,.tblwrap td:first-child{position:static;box-shadow:none}
+  .tblhint{display:none}
+}
+
+/* [F-PATCH 2026-08-03 · R11] A8 접근성
+   키보드로 이동할 때 어디에 있는지 보이지 않았다. 마우스 클릭에는 테두리가 안 생기도록
+   :focus-visible 만 쓴다. */
+.btn:focus-visible,button:focus-visible,a:focus-visible,
+input:focus-visible,select:focus-visible,textarea:focus-visible,
+[tabindex]:focus-visible{
+  outline:3px solid #1B4B8F;outline-offset:2px;border-radius:6px}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--vio)}
+.sronly{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.stx{font-size:11px;font-weight:800;margin-left:4px}
+
+/* [F-PATCH 2026-08-03 · R11] A10 비밀번호 강도 막대 */
+.pwbar{height:6px;border-radius:999px;background:#EDEFF5;margin-top:6px;overflow:hidden}
+.pwbar i{display:block;height:100%;width:0;border-radius:999px;transition:width .18s}
+.pwbar.s0 i,.pwbar.s1 i{background:#C0392B}
+.pwbar.s2 i{background:#D9A21B}
+.pwbar.s3 i{background:#2E8B57}
+.pwbar.s4 i{background:#1B6B3A}
+</style><script src="assets/ev-gate.js" data-ev-service="mybest-next" defer></script>
+</head>
 <body>
 <div id="app"></div>
 
@@ -125,16 +179,72 @@ const EP='https://onqisdgxwuvlxehjvoto.supabase.co/functions/v1/myb-admin';
 const APP='https://onqisdgxwuvlxehjvoto.supabase.co/functions/v1/mybest';
 const REP='report.html';
 const KEY='sb_publishable_z3KmGPFA4RKka5e_tDWD5A_-CUDC7t8';
-const TITLES={es_dream:'초등1. 계열·직업 탐색',es_habit:'초등2. 공부습관',value_work:'직업&능력 진단',gifted_ready:'초등 영재진단&준비',story_writer:'AI 동화작가',ai_inquiry:'AI 과제탐구',hs_series:'고등1. 계열·학과·직업',ms_series:'중등1. 계열·직업·학과',subject_rec:'고등2. 고교학점제 과목추천',study:'고등3. 대학합격 공부진단',ms_study:'중등2. 중학 공부습관',roadmap:'고등4. 학생부 로드맵',inquiry:'고등5. 과제탐구',future:'고등9. 미래·AI 활용역량',hs_essay:'중등4·고등6. 소개서 준비도',interview:'고등7. 대입 면접 준비도',track_fit:'고등10. 전형적합도',ms_hsfit:'중등3. 고교 유형 적합도'};
+const TITLES={es_dream:'초등1. 계열·직업 탐색',es_habit:'초등2. 공부습관',value_work:'직업&능력 진단',gifted_ready:'초등 영재진단&준비',story_writer:'AI 동화작가',ai_inquiry:'AI 과제탐구',hs_series:'고등1. 계열·학과·직업',ms_series:'중등1. 계열·직업·학과',subject_rec:'고등2. 고교학점제 과목추천',study:'고등3. 대학합격 공부진단',ms_study:'중등2. 중학 공부습관',roadmap:'고등4. 학생부 로드맵',inquiry:'고등5. 과제탐구',future:'고등9. 미래·AI 활용역량',hs_essay:'중등4·고등6. 소개서 준비도',interview:'고등7. 대입 면접 준비도',track_fit:'고등10. 전형적합도',ms_hsfit:'중등3. 고교 유형 적합도',subject_pick:'고등3. 고교학점제 과목 선택',reading:'고등8. 독서역량',ai_skill:'공통2. AI 활용역량',career_mature:'중등8. 진로성숙도',study_emotion:'중등7. 학습정서·시험불안',multi_iq:'중등6. 다중지능',study_manage:'중등9. 공부관리',mock_exam:'고등12. 모의고사 성적 분석',admission_nav:'고등11. 입시전형 내비게이터'};
 const SER=['인문','사회','자연','공학','의생명','교육','예체능'];
 const FUT=['리더십','창의성','문제해결','소통','프로젝트','전략적사고'];
-const S={token:localStorage.getItem('myb_adm_token'),role:localStorage.getItem('myb_adm_role'),name:localStorage.getItem('myb_adm_name'),institutionId:localStorage.getItem('myb_adm_inst')||null,rows:[],filters:null};
+/* A stored bearer token may be resumed, but role/name/scope are never trusted from
+   browser storage. They are populated only by a successful server response. */
+const S={token:localStorage.getItem('myb_adm_token'),role:null,name:null,institutionId:null,rows:[],filters:null};
+localStorage.removeItem('myb_adm_role');
+localStorage.removeItem('myb_adm_name');
+localStorage.removeItem('myb_adm_inst');
 const $=s=>document.querySelector(s);
+
+/* [F-PATCH 2026-08-03 · R11] A7 표 래핑
+   innerHTML 대입이 121곳이라 마크업을 일일이 고치는 대신,
+   화면이 바뀔 때마다 감싸지 않은 표를 찾아 래퍼를 씌운다. 표 내용은 건드리지 않는다. */
+function wrapTables(root){
+  try{
+    (root||document).querySelectorAll('table').forEach(function(tb){
+      if(tb.parentElement && tb.parentElement.classList.contains('tblwrap')) return;
+      var w=document.createElement('div'); w.className='tblwrap';
+      w.setAttribute('role','region');
+      w.setAttribute('tabindex','0');
+      w.setAttribute('aria-label','표 · 좌우로 밀어 더 볼 수 있습니다');
+      tb.parentNode.insertBefore(w,tb); w.appendChild(tb);
+      var h=document.createElement('div'); h.className='tblhint';
+      h.textContent='← 표를 좌우로 밀어보세요';
+      w.parentNode.insertBefore(h,w);
+    });
+  }catch(e){}
+}
+/* [F-PATCH 2026-08-03 · R11] A8 아이콘 버튼에 이름 붙이기
+   ✏️ 🗑 처럼 그림만 있는 버튼은 화면낭독기에서 읽히지 않는다.
+   title 값이 있으면 그것을 aria-label 로 그대로 쓴다. */
+function labelIconButtons(root){
+  try{
+    (root||document).querySelectorAll('button[title]:not([aria-label])').forEach(function(b){
+      var t=(b.getAttribute('title')||'').trim(); if(t) b.setAttribute('aria-label',t);
+    });
+    (root||document).querySelectorAll('button:not([aria-label])').forEach(function(b){
+      var t=(b.textContent||'').trim();
+      if(t && !/[가-힣A-Za-z0-9]/.test(t)) b.setAttribute('aria-label','기능 버튼');
+    });
+  }catch(e){}
+}
+function a11yPass(){ wrapTables(); labelIconButtons(); }
+/* 화면이 바뀔 때마다 한 번씩 돌린다. 렌더 함수가 121곳이라 관찰자로 잡는다. */
+(function(){
+  try{
+    var t=null;
+    new MutationObserver(function(){
+      clearTimeout(t); t=setTimeout(a11yPass,60);
+    }).observe(document.documentElement,{childList:true,subtree:true});
+    document.addEventListener('DOMContentLoaded',a11yPass);
+  }catch(e){}
+})();
+
 const esc=t=>String(t==null?'':t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 async function api(path,bodyObj){
  try{
   const r=await fetch(EP+path,{method:'POST',headers:{'Content-Type':'application/json',apikey:KEY},body:JSON.stringify(bodyObj||{})});
-  return await r.json();
+  const j=await r.json();
+  /* [FIX-A5 2026-08-02] 세션 만료 처리가 /filters·/overview 두 곳에만 있어
+     학생 등록·리포트·기관관리 등에서는 원문 에러만 뜨고 재로그인 유도가 없던 문제. 공통 적용. */
+  if(j && j.error && isAuthErr(j.error) && path!=='/logout'){
+   try{ logout('세션이 만료되었습니다. 다시 로그인해 주세요.'); }catch(e){}
+  }
+  return j;
  }catch(e){
   return {error:'네트워크 오류가 발생했습니다. 다시 시도해 주세요.'};
  }
@@ -145,7 +255,7 @@ function goHome(){if(S.token)viewDash();else viewLogin();}
 function viewLogin(msg){
  $('#app').innerHTML=`<div class="wrap"><div class="login card">
   <div class="logo" style="margin-bottom:14px">MY BEST <span>NEXT</span> · 관리자</div>
-  <h1>관리자 로그인 🔐</h1><div class="sub">진단 진행, 상담 자료, A4·B4 보고서 운영</div>
+  <h1>관리자 로그인</h1><div class="sub">진단 진행, 상담 자료, A4·B4 보고서 운영</div>
   <div class="notice"><b>학교·기관 운영 화면</b><br>학교장·기관관리자와 담임·학급관리자가 학생 진행 현황과 상담 자료를 안정적으로 확인하는 화면입니다.</div>
   <div class="err" id="err" style="${msg?'display:block':''}">${esc(msg||'')}</div>
   <label>아이디</label><input id="u" autocomplete="username" placeholder="아이디 또는 이메일">
@@ -163,48 +273,68 @@ async function doLogin(){
  // myb-admin v13 /login 응답={token,role,display_name,scope} — institution_id는 포함되지 않음(백엔드 세션이 institution_id를 담지 않음).
  // school/teacher 역할은 institution_id를 서버가 자체 조회(myInstitutionId)해 admin_create·class_create_inst에는 자동 반영되지만,
  // ent_inst_get/save처럼 institution_id를 필수 파라미터로 요구하는 API는 클라이언트가 알아야 함 → class_create_inst 응답에서 기회적으로 캡처(아래 doCreateClassInst 참고).
- S.token=j.token;S.role=j.role;S.name=j.display_name;S.institutionId=j.institution_id||j.institutionId||localStorage.getItem('myb_adm_inst')||null;
- localStorage.setItem('myb_adm_token',j.token);localStorage.setItem('myb_adm_role',j.role);localStorage.setItem('myb_adm_name',j.display_name);
- if(S.institutionId)localStorage.setItem('myb_adm_inst',S.institutionId);else localStorage.removeItem('myb_adm_inst');
+ if(!j.token||!['super','school','teacher','internal'].includes(j.role)){viewLogin('관리자 권한을 확인할 수 없습니다.');return;}
+ S.token=j.token;S.role=j.role;S.name=j.display_name;S.institutionId=j.institution_id||j.institutionId||null;
+ localStorage.setItem('myb_adm_token',j.token);
  viewDash();
 }
-function logout(){api('/logout',{token:S.token});localStorage.removeItem('myb_adm_token');localStorage.removeItem('myb_adm_role');localStorage.removeItem('myb_adm_name');localStorage.removeItem('myb_adm_inst');S.token=null;viewLogin();}
+function clearStoredAdminSession(){
+ localStorage.removeItem('myb_adm_token');localStorage.removeItem('myb_adm_role');localStorage.removeItem('myb_adm_name');localStorage.removeItem('myb_adm_inst');
+ S.token=null;S.role=null;S.name=null;S.institutionId=null;
+}
+function logout(msg){api('/logout',{token:S.token});clearStoredAdminSession();viewLogin(typeof msg==='string'?msg:'');}
+
+async function restoreStoredSession(){
+ if(!S.token)return false;
+ const j=await api('/overview',{token:S.token});
+ if(j.error||!['super','school','teacher','internal'].includes(j.role)){
+  clearStoredAdminSession();
+  return false;
+ }
+ S.role=j.role;
+ S.name='관리자';
+ S.institutionId=null;
+ return true;
+}
 
 async function viewDash(){
  try{
  $('#app').innerHTML=`<div class="wrap">
   <div class="topbar noprint"><div class="logo" style="cursor:pointer" onclick="goHome()" title="대시보드 홈으로">MY BEST <span>NEXT</span></div>
    <span class="rolebadge">${esc(S.name||'관리자')}</span><div class="spacer"></div>
-   <button class="btn ghost sm" onclick="goHome()">🏠 홈</button>
+   <button class="btn ghost sm" onclick="goHome()">홈</button>
    <button class="btn ghost sm" onclick="loadDash()">새로고침</button>
-    <button class="btn ghost sm" onclick="openCreateClass()">🏫 새 학급 발급</button>
-    <button class="btn ghost sm" onclick="openClassManage()">🏫 학급 관리</button>
-    <button class="btn ghost sm" onclick="openBulk()">➕ 학생 일괄 등록</button>
-    <button class="btn ghost sm" onclick="openReport()">🏫 학급 종합 리포트</button>
-    <button class="btn ghost sm" onclick="exportCsv()">📥 명단 CSV</button>
-    <button class="btn ghost sm" onclick="exportResultCsv()">📊 결과값 CSV</button>
-    ${S.role==='super'?'<button class="btn ghost sm" onclick="viewAdmins()">👤 관리자 계정</button>':''}
-    ${S.role==='super'?'<button class="btn ghost sm" onclick="viewInstitutions()">🏢 기관 관리</button>':''}
-    ${S.role==='school'?'<button class="btn ghost sm" onclick="viewInstAdmin()">🏢 기관 설정</button>':''}
-    ${S.role==='teacher'?'<button class="btn ghost sm" onclick="openClassEntitlements()">📋 진단 설정</button>':''}
-    ${(S.role==='super'||S.role==='school')?'<button class="btn ghost sm" onclick="viewAccounts()">👪 학부모 회원</button>':''}
-    <button class="btn ghost sm" onclick="openChangePassword()">🔑 비밀번호</button>
-    <button class="btn ghost sm" onclick="openFeedback()">💬 의견·오류 보내기</button>
+    <button class="btn ghost sm" onclick="openCreateClass()">새 학급 발급</button>
+    <button class="btn ghost sm" onclick="openClassManage()">학급 관리</button>
+    <button class="btn ghost sm" onclick="openBulk()">학생 일괄 등록</button>
+    <button class="btn ghost sm" onclick="openReport()">학급 종합 리포트</button>
+    <button class="btn ghost sm" onclick="exportCsv()">명단 CSV</button>
+    <button class="btn ghost sm" onclick="exportResultCsv()">결과값 CSV</button>
+    ${S.role==='super'?'<button class="btn ghost sm" onclick="viewAdmins()">관리자 계정</button>':''}
+    ${S.role==='super'?'<button class="btn ghost sm" onclick="viewInstitutions()">기관 관리</button>':''}
+    ${S.role==='school'?'<button class="btn ghost sm" onclick="viewInstAdmin()">기관 설정</button>':''}
+    ${S.role==='teacher'?'<button class="btn ghost sm" onclick="openClassEntitlements()">진단 설정</button>':''}
+    ${(S.role==='super'||S.role==='school')?'<button class="btn ghost sm" onclick="viewAccounts()">학부모 회원</button>':''}
+    ${S.role==='super'?'<button class="btn ghost sm" onclick="viewConsults()">문의 관리<span id="csTabBadge"></span></button>':''}
+    <button class="btn ghost sm" onclick="viewSchoolSubjects()">학교 편제표</button>
+    <button class="btn ghost sm" onclick="openChangePassword()">비밀번호</button>
+    <button class="btn ghost sm" onclick="openFeedback()">의견·오류 보내기</button>
     <button class="btn navy sm" onclick="logout()">로그아웃</button></div>
    <div class="notice noprint"><b>운영 기준</b> · 학생별 결과는 상담 자료로만 활용하고, 계열성향은 전국 규준 기반·체크형은 자가점검 기준으로 구분해 안내하세요.</div>
+   <div class="card noprint" id="csDashAlert" style="display:none"></div>
    <div class="stats" id="stats"></div>
   <div class="kpi6" id="kpi6" style="display:none"></div>
   <div class="card cmpwrap" id="cmpCard" style="display:none">
-    <div class="sechead"><h3>🏫 학급별 비교</h3><div class="spacer"></div>
+    <div class="sechead"><h3>학급별 비교</h3><div class="spacer"></div>
      <span class="muted" style="font-size:11.5px" id="cmpHint"></span>
-     <button class="btn ghost sm noprint" onclick="exportCompareCsv()">📥 비교 CSV</button>
-     <button class="btn ghost sm noprint" onclick="window.print()">🖨 인쇄</button></div>
+     <button class="btn ghost sm noprint" onclick="exportCompareCsv()">비교 CSV</button>
+     <button class="btn ghost sm noprint" onclick="window.print()">인쇄</button></div>
     <div class="noprint" id="cmpFilterWrap" style="display:none;gap:8px;margin-bottom:10px;flex-wrap:wrap"></div>
     <div class="tablewrap" style="max-height:46vh"><table class="cmptbl" id="cmpTbl"></table></div>
     <div class="repnote">※ /overview 응답을 학급별로 집계 — 완료율=1종 이상 응시 학생 비율, 5종+율=5종 이상 완료 학생 비율, 평균완료=1인당 완료 진단 수. 머리글을 눌러 정렬.</div>
   </div>
   <div class="card noprint" id="nudgeCard" style="display:none">
-    <div class="sechead" style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><h3 style="font-size:15px;color:var(--navy)">📣 진행 독려 대상 (학급 교차)</h3></div>
+    <div class="sechead" style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><h3 style="font-size:15px;color:var(--navy)">진행 독려 대상 (학급 교차)</h3></div>
     <div class="nudge" id="nudge"></div>
     <div class="repnote">※ 현재 조회 범위 전체 기준. 미응시(0종)·저참여(1~2종) 학생을 학급별로 묶어 표시합니다.</div>
   </div>
@@ -218,7 +348,7 @@ async function viewDash(){
     <div><button class="btn" onclick="loadDash()">조회</button></div>
   </div></div>
   <div class="tablewrap"><table><thead><tr>
-    <th>학번</th><th>학생</th><th>학교</th><th>학급</th><th>학년</th><th>진행(완료/14)</th><th>응시</th><th>최근활동</th><th>상태</th><th></th>
+    <th>번호</th><th>학생</th><th>학교</th><th>학급</th><th>학년</th><th>진행(완료/14)</th><th>응시</th><th>최근활동</th><th>상태</th><th></th>
   </tr></thead><tbody id="tbody"></tbody></table></div>
   <div class="muted" style="font-size:12px;margin-top:8px" id="cnt"></div>
  </div>
@@ -235,6 +365,7 @@ async function viewDash(){
  // 2026-07-30: 새로고침(F5) 시 항상 기본(미필터) 대시보드로 시작하도록 이전 검색조건 자동복원을 제거.
  // (기존엔 localStorage의 myb_adm_filters를 여기서 복원해 "학생검색" 상태가 새로고침 후에도 남아있었음)
  loadDash();
+ csDashCheck();
  }catch(e){
   $('#app').innerHTML=`<div class="wrap"><div class="card"><div class="err" style="display:block">화면을 불러오는 중 오류가 발생했습니다: ${esc(e&&e.message||e)}</div><button class="btn sm" style="margin-top:12px" onclick="goHome()">다시 시도</button> <button class="btn ghost sm" style="margin-top:12px" onclick="logout()">로그아웃</button></div></div>`;
  }
@@ -242,7 +373,7 @@ async function viewDash(){
 function exportCsv(){
  const rows=S.rows||[];
  const studentNo=(r,i)=>r.student_no||r.no||r.number||String(i+1).padStart(2,'0');
- const head=['학번','이름','학교','학급','학년','진행(완료/14)','총응시','최근활동','상태'];
+ const head=['번호','이름','학교','학급','학년','진행(완료/14)','총응시','최근활동','상태'];
  const esc2=x=>'"'+String(x==null?'':x).replace(/"/g,'""')+'"';
  const lines=[head.map(esc2).join(',')].concat(rows.map((r,i)=>[studentNo(r,i),r.name,r.school||'',r.class_name||'',r.grade||'',r.done+'/'+r.total,r.attempts,r.last_at?r.last_at.slice(0,10):'',r.plan==='paid'?'운영':'기본'].map(esc2).join(',')));
  const blob=new Blob(['﻿'+lines.join('\r\n')],{type:'text/csv;charset=utf-8'});
@@ -252,15 +383,24 @@ async function exportResultCsv(){
  const rows=S.rows||[];if(!rows.length){alert('내보낼 학생이 없습니다.');return}
  const esc2=x=>'"'+String(x==null?'':x).replace(/"/g,'""')+'"';
  const studentNo=(r,i)=>r.student_no||r.no||r.number||String(i+1).padStart(2,'0');
- const head=['학번','이름','학교','학급','학년','진단','응시일','핵심결과','진행상태'];
+ const head=['번호','이름','학교','학급','학년','진단','응시일','핵심결과','진행상태'];
  const lines=[head.map(esc2).join(',')];
+ /* [FIX-A2 2026-08-02] 학생별 조회 실패를 catch(e){}로 삼켜 일부 학생이 조용히 누락되던 문제.
+    실패를 집계해 완료 시 알리고, 순차 왕복을 6건 배치 병렬로 바꿔 대기 시간을 줄인다. */
+ const __fail=[]; const __res=new Array(rows.length); const __B=6;
+ for(let b0=0;b0<rows.length;b0+=__B){
+  const seg=rows.slice(b0,b0+__B);
+  const got=await Promise.all(seg.map(r=>api('/student',{token:S.token,student_id:r.id}).catch(()=>({error:'요청 실패'}))));
+  got.forEach((g,k)=>{__res[b0+k]=g;});
+ }
  for(let i=0;i<rows.length;i++){
   const r=rows[i];
   try{
-   const j=await api('/student',{token:S.token,student_id:r.id});
+   const j=__res[i]||{error:'응답 없음'}; if(j.error)__fail.push(r.name||('학생'+(i+1)));
    (j.attempts||[]).forEach(a=>lines.push([studentNo(r,i),r.name,r.school||'',r.class_name||'',r.grade||'',TITLES[a.test_slug]||a.test_slug,a.created_at?a.created_at.slice(0,10):'',summarize(a.test_slug,a.result).replace(/<[^>]+>/g,''),(r.done||0)+'/'+(r.total||14)].map(esc2).join(',')));
-  }catch(e){}
+  }catch(e){__fail.push(r.name||('학생'+(i+1)));}
  }
+ if(__fail.length)alert('일부 학생의 결과를 불러오지 못해 CSV에서 빠졌습니다 ('+__fail.length+'명)\n'+__fail.slice(0,8).join(', ')+(__fail.length>8?' 외':'')+'\n\n네트워크 상태를 확인하고 다시 시도해 주세요.');
  const blob=new Blob(['﻿'+lines.join('\r\n')],{type:'text/csv;charset=utf-8'});
  const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='mybest_result_values_'+new Date().toISOString().slice(0,10)+'.csv';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
 }
@@ -328,6 +468,8 @@ async function loadDash(){
   const cnt=$('#cnt');if(cnt)cnt.innerHTML=`<span style="color:#C62828">${esc(j.error)} · <a href="javascript:void(0)" onclick="loadDash()">다시 시도</a></span>`;
   return;
  }
+ if(!['super','school','teacher','internal'].includes(j.role)){logout('관리자 권한을 확인할 수 없습니다.');return;}
+ if(S.role!==j.role){S.role=j.role;viewDash();return;}
  const nm=($('#fName')?.value||'').trim();
  let rows=j.students||[];if(nm)rows=rows.filter(r=>(r.name||'').includes(nm));
  S.rows=rows;
@@ -341,8 +483,8 @@ async function loadDash(){
    <td>${r.attempts}</td><td class="muted">${r.last_at?r.last_at.slice(0,10):'-'}</td>
    <td><span class="tag ${r.plan==='paid'?'paid':'free'}">${r.plan==='paid'?'운영':'기본'}</span></td>
    <td style="white-space:nowrap"><button class="btn ghost sm" onclick="openStudent('${r.id}')">결과·상담</button>
-    <button class="btn ghost sm" onclick="openEditStudent('${r.id}','${esc(r.name).replace(/'/g,"\\'")}','${esc(r.grade||'').replace(/'/g,"\\'")}')" title="수정">✏️</button>
-    <button class="btn ghost sm" onclick="deleteStudent('${r.id}','${esc(r.name).replace(/'/g,"\\'")}')" title="삭제">🗑</button></td></tr>`).join('')
+    <button class="btn ghost sm" onclick="openEditStudent('${r.id}','${esc(r.name).replace(/'/g,"\\'")}','${esc(r.grade||'').replace(/'/g,"\\'")}')" title="수정"></button>
+    <button class="btn ghost sm" onclick="deleteStudent('${r.id}','${esc(r.name).replace(/'/g,"\\'")}')" title="삭제"></button></td></tr>`).join('')
    :`<tr><td colspan="10" class="muted" style="text-align:center;padding:30px">조건에 맞는 학생이 없습니다</td></tr>`;
  $('#cnt').textContent=`총 ${rows.length}명 표시`;
  renderCompare(rows,s);
@@ -353,7 +495,9 @@ function aggClasses(rows){
  // /overview students[] 를 학급(class_name+school) 단위로 집계
  const m=new Map();
  rows.forEach(r=>{
-  const key=(r.school||'')+'|'+(r.class_name||'(미지정)');
+  // [FIX 2026-08-03 · B2] 학교명+학급명으로 묶으면 동명 학급이 한 줄로 합쳐진다.
+  // 실제로 '마베테스트' 학급 2개(13명/2명), '3학년2반' 2개가 합쳐져 완료율이 어긋났다.
+  const key=r.class_id?('id:'+r.class_id):((r.school||'')+'|'+(r.class_name||'(미지정)'));
   let g=m.get(key);
   if(!g){g={key,school:r.school||'-',cls:r.class_name||'(미지정)',grade:r.grade||'',level:r.school_level||'',region:r.region||'',n:0,done:0,attempts:0,active:0,c5:0};m.set(key,g);}
   g.n++; g.done+=(r.done||0); g.attempts+=(r.attempts||0);
@@ -482,11 +626,13 @@ function exportCompareCsv(){
 }
 function renderNudge(rows){
  const card=$('#nudgeCard');if(!card)return;
- const multi=(S.role==='super'||S.role==='school');
+ /* [FIX-A3 2026-08-02] 담임(teacher)에게 독려 카드가 숨겨져 있어
+    "누가 아직 안 했는지"를 학급 리포트를 열어야만 볼 수 있던 문제. 담임에게도 노출. */
+ const multi=true;
  const none=rows.filter(r=>(r.done||0)===0);
  const low=rows.filter(r=>{const d=r.done||0;return d>=1&&d<=2;});
  if(!multi||(!none.length&&!low.length)){card.style.display='none';return;}
- const byClass=(arr)=>{const m=new Map();arr.forEach(r=>{const k=r.class_name||'(미지정)';(m.get(k)||m.set(k,[]).get(k)).push(r);});return m;};
+ const byClass=(arr)=>{const m=new Map();arr.forEach(r=>{const k=(r.class_name||'(미지정)')+(r.school?(' · '+r.school):'');(m.get(k)||m.set(k,[]).get(k)).push(r);});return m;};
  const col=(title,cls,arr)=>{
   if(!arr.length)return '';
   const m=byClass(arr);
@@ -513,11 +659,11 @@ async function openStudent(id){
  const st=j.student||{},ats=j.attempts||[];
  $('#sheet').innerHTML=`
   <div class="topbar"><h2 style="font-size:19px">${esc(st.name)} · 상담 자료</h2><div class="spacer"></div>
-   <button class="btn ghost sm noprint" onclick="window.print()">🖨 인쇄</button>
+   <button class="btn ghost sm noprint" onclick="window.print()">인쇄</button>
    <button class="btn navy sm noprint" onclick="closeModal()">닫기</button></div>
   <div class="muted" style="font-size:12.5px;margin-bottom:14px">${esc(st.school||'')} ${esc(st.class_name||'')} · ${esc(st.grade||'')} · 응시 ${ats.length}건</div>
   ${ats.length?ats.map(a=>`<div class="atrow"><div style="display:flex;align-items:center;gap:8px"><h4 style="margin:0">${esc(TITLES[a.test_slug]||a.test_slug)}</h4><div class="spacer"></div>
-     <a class="btn ghost sm noprint" href="${REP}?atoken=${encodeURIComponent(S.token)}&id=${encodeURIComponent(a.id)}" target="_blank" rel="noopener">🖨 A4·B4 보고서</a></div>
+     <a class="btn ghost sm noprint" href="${REP}?atoken=${encodeURIComponent(S.token)}&id=${encodeURIComponent(a.id)}" target="_blank" rel="noopener">A4·B4 보고서</a></div>
      <div class="meta">${a.created_at.slice(0,10)}</div>
      <div class="kv">${summarize(a.test_slug,a.result)}</div></div>`).join(''):'<div class="muted">아직 응시 기록이 없습니다.</div>'}
   <div class="muted" style="font-size:11px;margin-top:10px">※ 각 진단의 <b>A4·B4 보고서</b>를 새 창에서 열어 바로 인쇄/PDF 저장할 수 있습니다(상담 배포용).</div>`;
@@ -549,14 +695,14 @@ async function openReport(){
  const none=j.lowParticipation||[],low=j.lowActive||[];
  const noneHtml=none.length?`<div class="repnote" style="margin-bottom:5px"><b>미응시(0종) ${none.length}명</b> — 독려 대상</div><div class="chips"><span class="chip warn" style="background:var(--danger-text);color:#fff;border-color:var(--danger-text)">${none.length}명</span>${none.map(r=>`<span class="chip warn">${esc(r.name)}${r.grade?' ('+esc(r.grade)+')':''}</span>`).join('')}</div>`:'';
  const lowHtml=low.length?`<div class="repnote" style="margin:9px 0 5px"><b>저참여(1~2종) ${low.length}명</b></div><div class="chips"><span class="chip" style="background:var(--gold-text);color:#fff;border-color:var(--gold-text)">${low.length}명</span>${low.map(r=>`<span class="chip">${esc(r.name)} · ${r.done}종</span>`).join('')}</div>`:'';
- const dunHtml=(none.length||low.length)?noneHtml+lowHtml:'<div class="repnote">모든 학생이 3종 이상 응시했습니다. 👏</div>';
+ const dunHtml=(none.length||low.length)?noneHtml+lowHtml:'<div class="repnote">모든 학생이 3종 이상 응시했습니다.</div>';
  // student summary table
  const rows=j.students||[];
  const stuHtml=rows.length?`<div class="tablewrap" style="max-height:none"><table class="rtbl"><thead><tr><th>학생</th><th>학년</th><th>완료</th><th>대표계열</th><th>평균 준비도</th><th>최근활동</th></tr></thead><tbody>${rows.map(r=>`<tr><td><b>${esc(r.name)}</b></td><td>${esc(r.grade||'-')}</td><td>${r.done}/${r.total}</td><td>${r.series?esc(r.series):'<span class="muted">-</span>'}</td><td>${r.avg_pct!=null?r.avg_pct+'%':'<span class="muted">-</span>'}</td><td class="muted">${r.last_at?r.last_at.slice(0,10):'-'}</td></tr>`).join('')}</tbody></table></div>`:'<div class="repnote">학생이 없습니다.</div>';
  $('#sheet').innerHTML=`<div class="rep">
-  <div class="topbar noprint"><h2 style="font-size:18px">🏫 학급 종합 리포트</h2><div class="spacer"></div>
-   <button class="btn ghost sm" onclick="exportReportCsv()">📥 학생요약 CSV</button>
-   <button class="btn ghost sm" onclick="window.print()">🖨 인쇄 / PDF</button>
+  <div class="topbar noprint"><h2 style="font-size:18px">학급 종합 리포트</h2><div class="spacer"></div>
+   <button class="btn ghost sm" onclick="exportReportCsv()">학생요약 CSV</button>
+   <button class="btn ghost sm" onclick="window.print()">인쇄 / PDF</button>
    <button class="btn navy sm" onclick="closeModal()">닫기</button></div>
   <div class="rhead"><div style="flex:1"><h2>학급 종합 리포트</h2>
     <div class="rsub"><b>${esc(scopeName)}</b> · ${esc(gradeName)} · 생성일 ${dateStr}<br>
@@ -633,7 +779,7 @@ function fOptsHtmlFixed(values,curVal,allLabel,hasNone){
  return html;
 }
 function openCreateClass(){
- $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">🏫 새 학급 발급</h2><div class="spacer"></div><button class="btn navy sm" onclick="closeModal()">닫기</button></div>
+ $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">새 학급 발급</h2><div class="spacer"></div><button class="btn navy sm" onclick="closeModal()">닫기</button></div>
  <div class="notice"><b>관리자 권한 확인</b><br>학급코드는 관리자 세션이 있는 경우에만 발급됩니다. 발급 후 학생은 학급코드와 PIN으로 입장합니다.</div>
  <div class="grid2">
   <div><label>학교·기관명</label>
@@ -655,12 +801,12 @@ function openCreateClass(){
   <div><label>정원(명)</label><input id="ccMax" type="number" value="40" min="5" max="200"></div>
  </div>
  <div class="grid2">
-  <div><label>만료일자</label><input id="ccExpires" type="date"></div>
-  <div></div>
+  <div><label>이용 시작일</label><input id="ccStart" type="date"></div>
+  <div><label>1인 이용 횟수</label><input id="ccUses" type="number" placeholder="비우면 제한 없음" min="1" max="50"></div>
  </div>
  <div class="grid2">
-  <div><label>1인 이용 횟수</label><input id="ccUses" type="number" placeholder="비우면 제한 없음" min="1" max="50"></div>
-  <div><label>이용 시작일</label><input id="ccStart" type="date"></div>
+  <div><label>만료일자</label><input id="ccExpires" type="date"></div>
+  <div></div>
  </div>
  <button class="btn" style="width:100%" onclick="doCreateClass()">학급 코드 발급</button>
  <div id="ccResult" style="margin-top:10px"></div>`;
@@ -734,7 +880,25 @@ async function doCreateClass(){
   <div style="font-size:30px;font-weight:900;letter-spacing:.18em;color:var(--navy);margin:8px 0">${esc(j.code)}</div>
   ${esc(j.name||'')} · 정원 ${esc(j.max_students||'')}명 · ${esc(j.expires_at||'')}까지<br>
   <a href="${esc(link)}" target="_blank" rel="noopener" style="color:var(--vio);word-break:break-all">${esc(link)}</a>
-  <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost sm" onclick="navigator.clipboard&&navigator.clipboard.writeText('${esc(link)}')">링크 복사</button><button class="btn ghost sm" onclick="loadDash();closeModal()">대시보드 새로고침</button></div></div>`;
+  <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost sm" onclick="navigator.clipboard&&navigator.clipboard.writeText('${esc(link)}')">링크 복사</button><button class="btn ghost sm" onclick="showClassQr('${esc(j.code)}')">QR 보기</button><button class="btn ghost sm" onclick="loadDash();closeModal()">대시보드 새로고침</button></div></div>`;
+}
+// 2026-08-17: 학급코드 QR 보기 — 교실 인쇄·배포용(외부 라이브러리 없이 QR 이미지 생성 API 사용).
+function showClassQr(code){
+ const c=String(code||'').trim();
+ if(!c){alert('학급코드가 없습니다.');return}
+ const qrLink='https://mybest-next-edu.netlify.app/?code='+encodeURIComponent(c);
+ const qrImg='https://api.qrserver.com/v1/create-qr-code/?size=280x280&data='+encodeURIComponent(qrLink);
+ $('#sheet').innerHTML=`<div class="topbar noprint"><h2 style="font-size:19px">학급코드 QR</h2><div class="spacer"></div><button class="btn navy sm" onclick="closeModal()">닫기</button></div>
+  <div style="text-align:center;padding:6px 0 10px">
+   <img src="${esc(qrImg)}" alt="학급코드 QR" width="280" height="280" style="border:1px solid var(--line);border-radius:12px;background:#fff">
+   <div style="font-size:38px;font-weight:900;letter-spacing:.2em;color:var(--navy);margin:16px 0 6px">${esc(c)}</div>
+   <div class="muted" style="font-size:12px;word-break:break-all">${esc(qrLink)}</div>
+   <div class="noprint" style="margin-top:16px;display:flex;gap:8px;justify-content:center">
+    <button class="btn ghost sm" onclick="window.print()">인쇄</button>
+    <button class="btn ghost sm" onclick="navigator.clipboard&&navigator.clipboard.writeText('${esc(qrLink)}')">링크 복사</button>
+   </div>
+  </div>`;
+ $('#modal').classList.add('open');
 }
 // 2026-07-31: 학급 관리 목록 + 지역/학교급 수동 수정 모달(신규 — 기존엔 학급 생성 후 지역/학교급을 고칠 방법이 전혀 없었음).
 async function openClassManage(){
@@ -745,16 +909,16 @@ async function openClassManage(){
  S.filters=f;
  const classes=(f.classes||[]).slice().sort((a,b)=>String(a.name).localeCompare(String(b.name),'ko'));
  S.mgmtClasses=classes;
- $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">🏫 학급 관리</h2><div class="spacer"></div><button class="btn navy sm noprint" onclick="closeModal()">닫기</button></div>
+ $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">학급 관리</h2><div class="spacer"></div><button class="btn navy sm noprint" onclick="closeModal()">닫기</button></div>
   <div class="repnote" style="margin-bottom:10px">지역·학교급이 비어 있는(미지정) 학급은 ✏️로 채워 넣으면 대시보드 필터·학생 일괄등록 대상학급 필터에 정확히 반영됩니다.</div>
   <div class="tablewrap"><table><thead><tr><th>학급</th><th>학교</th><th>코드</th><th>지역</th><th>학교급</th><th></th></tr></thead>
    <tbody>${classes.length?classes.map(c=>`<tr><td>${esc(c.name)}</td><td>${esc(c.school||'-')}</td><td>${esc(c.code)}</td><td>${esc(c.region||'미지정')}</td><td>${esc(c.school_level||'미지정')}</td>
-    <td><button class="btn ghost sm" onclick="openClassEdit('${esc(c.id)}')" title="수정">✏️</button></td></tr>`).join(''):'<tr><td colspan="6" class="muted" style="text-align:center;padding:20px">등록된 학급이 없습니다</td></tr>'}</tbody></table></div>`;
+    <td><button class="btn ghost sm" onclick="openClassEdit('${esc(c.id)}')" title="수정">수정</button> <button class="btn ghost sm" onclick="showClassQr('${esc(c.code)}')" title="QR 보기">QR</button>${(S.role==='super'||S.role==='school')?` <button class="btn ghost sm" onclick="openAssignTeacher('${esc(c.id)}')" title="담당교사 지정">담당교사</button>`:''}</td></tr>`).join(''):'<tr><td colspan="6" class="muted" style="text-align:center;padding:20px">등록된 학급이 없습니다</td></tr>'}</tbody></table></div>`;
 }
 function openClassEdit(id){
  const c=(S.mgmtClasses||[]).find(x=>String(x.id)===String(id));
  if(!c){alert('학급 정보를 찾을 수 없습니다.');return}
- $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">✏️ 학급 수정 — ${esc(c.name)}</h2><div class="spacer"></div><button class="btn navy sm" onclick="openClassManage()">← 목록</button></div>
+ $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">학급 수정 — ${esc(c.name)}</h2><div class="spacer"></div><button class="btn navy sm" onclick="openClassManage()">목록</button></div>
   <label>학교·기관명</label><input id="ceSchool" value="${esc(c.school||'')}">
   <div style="height:8px"></div>
   <div class="grid2">
@@ -775,6 +939,29 @@ async function doClassMetaSave(id){
  if(!f.error)S.filters=f;
  setTimeout(openClassManage,500);
 }
+async function openAssignTeacher(id){
+ const c=(S.mgmtClasses||[]).find(x=>String(x.id)===String(id));
+ if(!c){alert('학급 정보를 찾을 수 없습니다.');return}
+ $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">담당교사 지정 — ${esc(c.name)}</h2><div class="spacer"></div><button class="btn navy sm" onclick="openClassManage()">목록</button></div>
+  <div class="repnote" style="margin-bottom:10px">지정하면 그 교사 계정의 "학생 일괄 등록" 대상학급 목록에 이 학급이 나타납니다. 여러 교사에게 함께 지정할 수 있고, 이미 있는 지정은 지워지지 않습니다.</div>
+  <div id="atBody" class="muted" style="font-size:12.5px">교사 목록을 불러오는 중…</div>`;
+ const j=await api('/teachers_list',{token:S.token});
+ if(j.error){$('#atBody').innerHTML=`<div class="err" style="display:block">${esc(j.error)}</div>`;return}
+ const list=j.teachers||[];
+ if(!list.length){$('#atBody').innerHTML='<div class="repnote">등록된 담임/학급관리자 계정이 없습니다. "관리자 계정"에서 먼저 담임 계정을 만들어 주세요.</div>';return}
+ $('#atBody').innerHTML=`<label>담당교사</label><select id="atSel">${list.map(t=>`<option value="${esc(t.id)}">${esc(t.display_name||t.username)} (${esc(t.username)})</option>`).join('')}</select>
+  <div style="height:14px"></div>
+  <button class="btn" style="width:100%" onclick="doAssignTeacher('${esc(c.id)}')">지정</button>
+  <div id="atResult" style="margin-top:10px"></div>`;
+}
+async function doAssignTeacher(classId){
+ const teacherId=$('#atSel')?.value;
+ if(!teacherId){return}
+ $('#atResult').innerHTML='<div class="muted" style="font-size:12.5px">지정 중…</div>';
+ const j=await api('/class_assign_teacher',{token:S.token,class_id:classId,teacher_id:teacherId});
+ if(j.error){$('#atResult').innerHTML=`<div class="err" style="display:block">${esc(j.error)}</div>`;return}
+ $('#atResult').innerHTML='<div class="notice ok">지정되었습니다.</div>';
+}
 async function openBulk(){
  $('#sheet').innerHTML='<div style="padding:30px;text-align:center" class="muted"><span class="spinner"></span>학급 목록을 불러오는 중…</div>';
  $('#modal').classList.add('open');
@@ -782,11 +969,11 @@ async function openBulk(){
  // (과거엔 /overview 응답을 별도로 다시 불러왔고, school_level/region이 전부 null이라 필터 조건 자체가 화면에 안 뜨는 문제가 있었음 — 마스터 리스트로 고정해 해결)
  if(!S.filters){const f=await api('/filters',{token:S.token});if(!f.error)S.filters=f;}
  const classes=(S.filters&&S.filters.classes||[]).slice().sort((a,b)=>String(a.name).localeCompare(String(b.name),'ko'));
- if(!classes.length){$('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">➕ 학생 일괄 등록</h2><div class="spacer"></div><button class="btn navy sm" onclick="closeModal()">닫기</button></div><div class="repnote">등록 가능한 학급이 없습니다. 먼저 학급을 발급하세요.</div>`;return;}
+ if(!classes.length){$('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">학생 일괄 등록</h2><div class="spacer"></div><button class="btn navy sm" onclick="closeModal()">닫기</button></div><div class="repnote">등록 가능한 학급이 없습니다. 먼저 학급을 발급하세요.</div>`;return;}
  S.bulkClasses=classes;
  const opts=bkClassOptions(classes);
  $('#sheet').innerHTML=`
-  <div class="topbar"><h2 style="font-size:19px">➕ 학생 일괄 등록</h2><div class="spacer"></div>
+  <div class="topbar"><h2 style="font-size:19px">학생 일괄 등록</h2><div class="spacer"></div>
    <button class="btn navy sm noprint" onclick="closeModal()">닫기</button></div>
   <div class="notice"><b>한 줄에 한 명씩</b> 이름을 붙여넣고 등록하세요. 접속 비밀번호(PIN)는 <b>0000</b>으로 생성됩니다 — 학생이 처음 접속할 때 안내하세요. 동명이인도 등록되며 결과 요약에 표시됩니다.</div>
   <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:8px">
@@ -802,13 +989,13 @@ async function openBulk(){
   <div id="bkCodeBox" style="display:flex;align-items:center;gap:10px;background:#F1EEFF;border:1.5px solid #DCD5FA;border-radius:10px;padding:10px 14px;margin-bottom:14px">
    <span class="muted" style="font-size:12px">이 학급 코드</span>
    <b id="bkCodeVal" style="font-size:20px;letter-spacing:.14em;color:var(--vio)">-</b>
-   <button class="btn ghost sm" style="margin-left:auto" onclick="copyBkCode()">📋 코드 복사</button>
+   <button class="btn ghost sm" style="margin-left:auto" onclick="copyBkCode()">코드 복사</button>
   </div>
   <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
    <label style="margin:0">학생 이름 (한 줄에 한 명)</label>
    <div style="margin-left:auto;display:flex;gap:6px">
-    <button class="btn ghost sm" onclick="downloadBulkTemplate()">📥 엑셀 양식 다운로드</button>
-    <label class="btn ghost sm" style="cursor:pointer;margin:0">📤 엑셀 업로드<input type="file" id="bkExcelFile" accept=".xlsx,.xls,.csv" style="display:none" onchange="uploadBulkExcel(event)"></label>
+    <button class="btn ghost sm" onclick="downloadBulkTemplate()">엑셀 양식 다운로드</button>
+    <label class="btn ghost sm" style="cursor:pointer;margin:0">엑셀 업로드<input type="file" id="bkExcelFile" accept=".xlsx,.xls,.csv" style="display:none" onchange="uploadBulkExcel(event)"></label>
    </div>
   </div>
   <textarea id="bkNames" rows="9" style="width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:10px;font-family:inherit;font-size:14px;resize:vertical;line-height:1.7" placeholder="김민준&#10;이서연&#10;박도윤&#10;…"></textarea>
@@ -926,12 +1113,12 @@ async function doBulk(){
   <div style="display:flex;align-items:center;gap:10px;background:#F1EEFF;border:1.5px solid #DCD5FA;border-radius:10px;padding:10px 14px;margin-bottom:8px">
    <span class="muted" style="font-size:12px">이 학급 코드 (학생 재로그인 시 필요)</span>
    <b style="font-size:22px;letter-spacing:.14em;color:var(--vio)">${esc((j.class&&j.class.code)||'-')}</b>
-   <button class="btn ghost sm" style="margin-left:auto" onclick="navigator.clipboard&&navigator.clipboard.writeText('${esc((j.class&&j.class.code)||'')}')">📋 코드 복사</button>
+   <button class="btn ghost sm" style="margin-left:auto" onclick="navigator.clipboard&&navigator.clipboard.writeText('${esc((j.class&&j.class.code)||'')}')">코드 복사</button>
   </div>${dupNote}
   <div class="topbar" style="margin:8px 0 6px"><b style="font-size:13px">생성된 학생 · 접속 링크</b><div class="spacer"></div>
-   <button class="btn ghost sm" onclick="copyBulk()">📋 링크 복사</button>
-   <button class="btn ghost sm" onclick="exportBulkCsv()">📥 명단·링크 CSV</button>
-   <button class="btn ghost sm" onclick="printBulk()">🖨 인쇄</button></div>
+   <button class="btn ghost sm" onclick="copyBulk()">링크 복사</button>
+   <button class="btn ghost sm" onclick="exportBulkCsv()">명단·링크 CSV</button>
+   <button class="btn ghost sm" onclick="printBulk()">인쇄</button></div>
   <div class="tablewrap" style="max-height:42vh"><table class="rtbl"><thead><tr><th>#</th><th>이름</th><th>접속토큰</th><th>접속 링크</th></tr></thead><tbody>${rows}</tbody></table></div>
   <div class="repnote" style="margin-top:8px">※ 접속 링크/토큰은 학생 본인에게만 전달하세요. 링크로 접속하면 별도 코드 입력 없이 진단을 시작합니다(PIN 0000).</div>
   <div style="margin-top:10px"><button class="btn ghost sm" onclick="openBulk()">＋ 이어서 더 등록</button> <button class="btn ghost sm" onclick="loadDash();closeModal()">대시보드 새로고침</button></div>`;
@@ -956,7 +1143,7 @@ function closeModal(){$('#modal').classList.remove('open');}
 
 // ── 의견·오류 피드백(교사·관리자용, 2026-07-23 추가) ──
 function openFeedback(){
- $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">💬 의견·오류 보내기</h2><div class="spacer"></div><button class="btn navy sm" onclick="closeModal()">닫기</button></div>
+ $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">의견·오류 보내기</h2><div class="spacer"></div><button class="btn navy sm" onclick="closeModal()">닫기</button></div>
  <div class="err" id="fbErr"></div>
  <label>유형</label><select id="fbType">
   <option value="product_feedback">제품 피드백·오류 신고</option>
@@ -991,7 +1178,7 @@ async function submitFeedback(){
 
 // ── 학생 개별 수정/삭제 ──
 function openEditStudent(id,name,grade){
- $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">✏️ 학생 정보 수정</h2><div class="spacer"></div><button class="btn navy sm" onclick="closeModal()">닫기</button></div>
+ $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">학생 정보 수정</h2><div class="spacer"></div><button class="btn navy sm" onclick="closeModal()">닫기</button></div>
   <label>이름</label><input id="esName" value="${esc(name)}">
   <div style="height:8px"></div>
   <label>학년(선택)</label><input id="esGrade" value="${esc(grade||'')}" placeholder="예: 1학년 / 중3">
@@ -1018,14 +1205,47 @@ async function deleteStudent(id,name){
 }
 
 // ── 비밀번호 변경 (본인 / super는 타인 초기화) ──
+
+/* [F-PATCH 2026-08-03 · R11] A10 비밀번호 강도 표시
+   색만으로 알려주면 색각 이상인 분이 구분하지 못한다. 글자를 함께 적는다. */
+function pwScore(v){
+  var n=0;
+  if(v.length>=8)n++; if(v.length>=12)n++;
+  if(/[A-Za-z]/.test(v)&&/\d/.test(v))n++;
+  if(/[^A-Za-z0-9]/.test(v))n++;
+  return Math.min(n,4);
+}
+function pwMeter(){
+  var el=document.getElementById('pwNew'); if(!el)return;
+  var v=el.value||'', sc=pwScore(v);
+  var nm=['너무 짧아요','약함','보통','안전','매우 안전'][sc];
+  var cl=['s0','s1','s2','s3','s4'][sc];
+  var bar=document.getElementById('pwBar');
+  if(bar){ bar.className='pwbar '+cl; var i=bar.querySelector('i'); if(i)i.style.width=(sc*25)+'%'; }
+  var h=document.getElementById('pwHint');
+  if(h){
+    var m=document.getElementById('pwNew2');
+    var same=(m&&m.value)?(m.value===v?' · 확인 일치':' · 확인 불일치'):'';
+    h.textContent=(v?('안전도: '+nm):'8자 이상 · 영문과 숫자를 섞으면 더 안전합니다')+same;
+  }
+}
+function pwReveal(on){
+  ['pwOld','pwNew','pwNew2'].forEach(function(id){
+    var e=document.getElementById(id); if(e)e.type=on?'text':'password';
+  });
+}
 function openChangePassword(targetUsername){
  const isReset=!!targetUsername;
- $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">🔑 비밀번호 ${isReset?'초기화':'변경'}</h2><div class="spacer"></div><button class="btn navy sm" onclick="closeModal()">닫기</button></div>
+ $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">비밀번호 ${isReset?'초기화':'변경'}</h2><div class="spacer"></div><button class="btn navy sm" onclick="closeModal()">닫기</button></div>
   ${isReset?`<div class="notice"><b>${esc(targetUsername)}</b> 계정의 비밀번호를 초기화합니다.</div>`:''}
   ${isReset?'':'<label>현재 비밀번호</label><input id="pwOld" type="password"><div style="height:8px"></div>'}
-  <label>새 비밀번호</label><input id="pwNew" type="password" placeholder="4자 이상">
+  <label>새 비밀번호</label><input id="pwNew" type="password" placeholder="8자 이상" autocomplete="new-password" aria-describedby="pwHint" oninput="pwMeter()">
+  <div id="pwBar" class="pwbar" aria-hidden="true"><i></i></div>
+  <div id="pwHint" class="muted" style="font-size:12px;margin-top:4px">8자 이상 · 영문과 숫자를 섞으면 더 안전합니다</div>
   <div style="height:8px"></div>
-  <label>새 비밀번호 확인</label><input id="pwNew2" type="password">
+  <label>새 비밀번호 확인</label><input id="pwNew2" type="password" autocomplete="new-password" oninput="pwMeter()">
+  <div style="height:6px"></div>
+  <label style="display:flex;align-items:center;gap:6px;font-weight:600;font-size:12.5px;cursor:pointer"><input type="checkbox" onchange="pwReveal(this.checked)" style="width:auto;margin:0"> 비밀번호 보기</label>
   <div style="height:14px"></div>
   <button class="btn" style="width:100%" onclick="doChangePassword(${isReset?`'${targetUsername}'`:'null'})">저장</button>
   <div id="pwResult" style="margin-top:10px"></div>`;
@@ -1033,7 +1253,10 @@ function openChangePassword(targetUsername){
 }
 async function doChangePassword(targetUsername){
  const n1=$('#pwNew')?.value||'',n2=$('#pwNew2')?.value||'';
- if(n1.length<4){$('#pwResult').innerHTML='<div class="err" style="display:block">새 비밀번호는 4자 이상이어야 합니다.</div>';return}
+ // [F-PATCH 2026-08-03 · R11] A10 최소 길이 4 → 8. 기존 비밀번호로 로그인하는 것은 그대로 되고,
+ //  '바꿀 때'만 8자 이상을 요구한다. 서버(/change_password)도 같은 기준으로 맞추는 것이 좋다.
+ if(n1.length<8){$('#pwResult').innerHTML='<div class="err" style="display:block">새 비밀번호는 8자 이상이어야 합니다.</div>';return}
+ if(/^(\d)\1+$/.test(n1)||/^(0123|1234|2345|3456|4567|5678|6789|abcd|qwer)/i.test(n1)){$('#pwResult').innerHTML='<div class="err" style="display:block">같은 숫자 반복이나 연속된 문자는 쓸 수 없습니다.</div>';return}
  if(n1!==n2){$('#pwResult').innerHTML='<div class="err" style="display:block">새 비밀번호가 일치하지 않습니다.</div>';return}
  const body={token:S.token,new_password:n1};
  if(targetUsername)body.target_username=targetUsername;else body.old_password=$('#pwOld')?.value||'';
@@ -1047,14 +1270,16 @@ async function doChangePassword(targetUsername){
 function adminTopbar(active){
  return `<div class="topbar noprint"><div class="logo" style="cursor:pointer" onclick="goHome()" title="대시보드 홈으로">MY BEST <span>NEXT</span></div>
   <span class="rolebadge">${esc(S.name||'관리자')}</span><div class="spacer"></div>
-  <button class="btn ${active==='dash'?'':'ghost'} sm" onclick="viewDash()">📊 대시보드</button>
-  ${S.role==='super'?`<button class="btn ${active==='admins'?'':'ghost'} sm" onclick="viewAdmins()">👤 관리자 계정</button>`:''}
-  ${S.role==='super'?`<button class="btn ${active==='inst'?'':'ghost'} sm" onclick="viewInstitutions()">🏢 기관 관리</button>`:''}
-  ${S.role==='school'?`<button class="btn ${active==='inst'?'':'ghost'} sm" onclick="viewInstAdmin()">🏢 기관 설정</button>`:''}
-  ${S.role==='teacher'?`<button class="btn ghost sm" onclick="openClassEntitlements()">📋 진단 설정</button>`:''}
-  ${(S.role==='super'||S.role==='school')?`<button class="btn ${active==='accounts'?'':'ghost'} sm" onclick="viewAccounts()">👪 학부모 회원</button>`:''}
-  ${(S.role==='super'||S.role==='school')?`<button class="btn ${active==='billing'?'':'ghost'} sm" onclick="viewBilling()">💳 매출·구독</button>`:''}
-  <button class="btn ghost sm" onclick="openChangePassword()">🔑 비밀번호</button>
+  <button class="btn ${active==='dash'?'':'ghost'} sm" onclick="viewDash()">대시보드</button>
+  ${S.role==='super'?`<button class="btn ${active==='admins'?'':'ghost'} sm" onclick="viewAdmins()">관리자 계정</button>`:''}
+  ${S.role==='super'?`<button class="btn ${active==='inst'?'':'ghost'} sm" onclick="viewInstitutions()">기관 관리</button>`:''}
+  ${S.role==='school'?`<button class="btn ${active==='inst'?'':'ghost'} sm" onclick="viewInstAdmin()">기관 설정</button>`:''}
+  ${S.role==='teacher'?`<button class="btn ghost sm" onclick="openClassEntitlements()">진단 설정</button>`:''}
+  ${(S.role==='super'||S.role==='school')?`<button class="btn ${active==='accounts'?'':'ghost'} sm" onclick="viewAccounts()">학부모 회원</button>`:''}
+  ${(S.role==='super'||S.role==='school')?`<button class="btn ${active==='billing'?'':'ghost'} sm" onclick="viewBilling()">매출·구독</button>`:''}
+  ${S.role==='super'?`<button class="btn ${active==='consult'?'':'ghost'} sm" onclick="viewConsults()">문의 관리<span id="csTabBadge">${csBadgeText()}</span></button>`:''}
+  <button class="btn ${active==='schsub'?'':'ghost'} sm" onclick="viewSchoolSubjects()">학교 편제표</button>
+  <button class="btn ghost sm" onclick="openChangePassword()">비밀번호</button>
   <button class="btn navy sm" onclick="logout()">로그아웃</button></div>`;
 }
 async function viewAdmins(){
@@ -1062,7 +1287,7 @@ async function viewAdmins(){
  $('#app').innerHTML=`<div class="wrap">${adminTopbar('admins')}
   <div class="card noprint" style="display:flex;justify-content:space-between;align-items:center">
    <div><b>관리자 계정 관리</b><div class="muted" style="font-size:12px;margin-top:3px">최고관리자(super)·기관관리자(school)·담임(teacher) 계정을 추가·수정·삭제합니다.</div></div>
-   <button class="btn sm" onclick="openAdminForm()">➕ 새 관리자 추가</button></div>
+   <button class="btn sm" onclick="openAdminForm()">새 관리자 추가</button></div>
   <div class="tablewrap"><table><thead><tr><th>아이디</th><th>이름</th><th>역할</th><th>범위</th><th>생성일</th><th></th></tr></thead><tbody id="admTbody"><tr><td colspan="6" class="muted" style="text-align:center;padding:20px"><span class="spinner"></span>불러오는 중…</td></tr></tbody></table></div>
  </div>
  <div class="modal" id="modal" onclick="if(event.target.id==='modal')closeModal()"><div class="sheet" id="sheet"></div></div>`;
@@ -1085,7 +1310,7 @@ async function loadAdmins(){
 function openAdminForm(id){
  const admin=id?(S.admins||[]).find(x=>String(x.id)===String(id)):null;
  const isEdit=!!admin;
- $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">${isEdit?'✏️ 관리자 수정':'➕ 새 관리자 추가'}</h2><div class="spacer"></div><button class="btn navy sm" onclick="closeModal()">닫기</button></div>
+ $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">${isEdit?' 관리자 수정':' 새 관리자 추가'}</h2><div class="spacer"></div><button class="btn navy sm" onclick="closeModal()">닫기</button></div>
   ${isEdit?'':'<label>아이디</label><input id="admUser" placeholder="로그인 아이디"><div style="height:8px"></div><label>초기 비밀번호</label><input id="admPass" type="password"><div style="height:8px"></div>'}
   <label>이름(표시명)</label><input id="admName" value="${isEdit?esc(admin.display_name||''):''}">
   <div style="height:8px"></div>
@@ -1120,7 +1345,11 @@ async function doAdminSave(id){
  loadAdmins();
 }
 async function doAdminDelete(id,username){
- if(!confirm(`관리자 '${username}' 계정을 삭제하시겠습니까?`))return;
+ // [F-PATCH 2026-08-03 · R11] A9 되돌릴 수 없는 삭제라 아이디를 다시 입력받는다.
+ const typed=prompt(`관리자 '${username}' 계정을 삭제합니다. 되돌릴 수 없습니다.\n`
+  +`정말 삭제하려면 아래에 아이디를 그대로 입력하세요.\n\n${username}`);
+ if(typed===null)return;
+ if(String(typed).trim()!==String(username).trim()){alert('아이디가 일치하지 않아 삭제하지 않았습니다.');return}
  const j=await api('/admin_delete',{token:S.token,id});
  if(j.error){alert('삭제 실패: '+j.error);return}
  loadAdmins();
@@ -1191,7 +1420,7 @@ async function loadTaxInvoices(){
   :`<tr><td colspan="7" class="muted" style="text-align:center;padding:24px">결제완료 주문이 없습니다</td></tr>`;
 }
 function openTaxRequestForm(orderId){
- $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">🧾 세금계산서 요청 등록</h2><div class="spacer"></div><button class="btn navy sm" onclick="closeModal()">닫기</button></div>
+ $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">세금계산서 요청 등록</h2><div class="spacer"></div><button class="btn navy sm" onclick="closeModal()">닫기</button></div>
   <label>사업자명(상호)</label><input id="taxBizName" placeholder="예: OO중학교">
   <div style="height:8px"></div>
   <label>사업자등록번호</label><input id="taxBizRegNo" placeholder="000-00-00000">
@@ -1248,7 +1477,7 @@ async function viewInstitutions(){
  $('#app').innerHTML=`<div class="wrap">${adminTopbar('inst')}
   <div class="card noprint" style="display:flex;justify-content:space-between;align-items:center">
    <div><b>기관 관리</b><div class="muted" style="font-size:12px;margin-top:3px">학교·기관 단위 계정, 학급, 진단 이용범위를 관리합니다.</div></div>
-   <button class="btn sm" onclick="openInstForm()">➕ 새 기관 추가</button></div>
+   <button class="btn sm" onclick="openInstForm()">새 기관 추가</button></div>
   <div class="tablewrap"><table><thead><tr><th>기관명</th><th>유형</th><th>학년그룹</th><th>학급수</th><th>학생수</th><th>이용기간</th><th></th></tr></thead>
    <tbody id="instTbody"><tr><td colspan="7" class="muted" style="text-align:center;padding:20px"><span class="spinner"></span>불러오는 중…</td></tr></tbody></table></div>
  </div>
@@ -1266,14 +1495,14 @@ async function loadInstitutions(){
    <td class="muted" style="font-size:11.5px">${esc(o.usage_start||'-')} ~ ${esc(o.usage_end||'-')}</td>
    <td style="white-space:nowrap">
     <button class="btn ghost sm" onclick="openInstForm('${o.id}')">수정</button>
-    <button class="btn ghost sm" onclick="openInstStats('${o.id}')">📊 통계</button></td></tr>`).join('')
+    <button class="btn ghost sm" onclick="openInstStats('${o.id}')">통계</button></td></tr>`).join('')
   :`<tr><td colspan="7" class="muted" style="text-align:center;padding:24px">등록된 기관이 없습니다</td></tr>`;
 }
 function openInstForm(id){
  const inst=id?(S.insts||[]).find(x=>String(x.id)===String(id)):null;
  const isEdit=!!inst;
  const gg=new Set(inst?.school_level_groups||[]);
- $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">${isEdit?'✏️ 기관 수정':'➕ 새 기관 추가'}</h2><div class="spacer"></div><button class="btn navy sm" onclick="closeModal()">닫기</button></div>
+ $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">${isEdit?' 기관 수정':' 새 기관 추가'}</h2><div class="spacer"></div><button class="btn navy sm" onclick="closeModal()">닫기</button></div>
   <label>기관명</label><input id="iName" value="${isEdit?esc(inst.name||''):''}" placeholder="예: 마이베스트고등학교">
   <div style="height:8px"></div>
   <label>유형</label><select id="iType">
@@ -1319,7 +1548,7 @@ async function doInstSave(id){
 }
 async function openInstStats(id){
  const inst=(S.insts||[]).find(x=>String(x.id)===String(id));
- $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">📊 ${esc(inst?.name||'기관')} 통계</h2><div class="spacer"></div><button class="btn navy sm" onclick="closeModal()">닫기</button></div><div class="muted" style="padding:20px;text-align:center"><span class="spinner"></span>불러오는 중…</div>`;
+ $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">${esc(inst?.name||'기관')} 통계</h2><div class="spacer"></div><button class="btn navy sm" onclick="closeModal()">닫기</button></div><div class="muted" style="padding:20px;text-align:center"><span class="spinner"></span>불러오는 중…</div>`;
  $('#modal').classList.add('open');
  const j=await api('/inst_stats',{token:S.token,id});
  if(j.error){$('#sheet').innerHTML+=`<div class="err" style="display:block;margin-top:10px">${esc(j.error)}</div>`;return}
@@ -1329,7 +1558,7 @@ async function openInstStats(id){
  const totals=s.totals||{};
  const perTest=s.per_test||[];
  const stats=[['학급',classes.length||'-'],['학생',totals.students??'-'],['총 응시',totals.attempts??'-']];
- $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">📊 ${esc(inst?.name||'기관')} 통계</h2><div class="spacer"></div><button class="btn navy sm" onclick="closeModal()">닫기</button></div>
+ $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">${esc(inst?.name||'기관')} 통계</h2><div class="spacer"></div><button class="btn navy sm" onclick="closeModal()">닫기</button></div>
   <div class="stats" style="grid-template-columns:repeat(3,1fr)">${stats.map(([l,v])=>`<div class="stat"><div class="v">${esc(v)}</div><div class="l">${esc(l)}</div></div>`).join('')}</div>
   ${classes.length?`<div class="tablewrap" style="margin-top:12px"><table><thead><tr><th>학급</th><th>학생수</th><th>응시</th></tr></thead><tbody>${classes.map(c=>`<tr><td>${esc(c.name||'-')}</td><td>${c.student_count??'-'}</td><td>${c.attempt_count??'-'}</td></tr>`).join('')}</tbody></table></div>`:''}
   ${perTest.length?`<div class="tablewrap" style="margin-top:12px"><table><thead><tr><th>진단</th><th>응시수</th></tr></thead><tbody>${perTest.map(p=>`<tr><td>${esc(TITLES[p.test_slug]||p.test_slug)}</td><td>${p.count??'-'}</td></tr>`).join('')}</tbody></table></div>`:''}`;
@@ -1341,7 +1570,7 @@ async function viewInstAdmin(){
  $('#app').innerHTML=`<div class="wrap">${adminTopbar('inst')}
   <div class="card noprint"><b>기관 설정</b><div class="muted" style="font-size:12px;margin-top:3px">담임 초대, 학급 발급, 진단별 이용 설정을 관리합니다.</div></div>
   <div class="card">
-   <div style="margin-bottom:10px"><b>👤 담임 초대</b></div>
+   <div style="margin-bottom:10px"><b>담임 초대</b></div>
    <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:end">
     <div><label>아이디</label><input id="tiUser" placeholder="로그인 아이디"></div>
     <div><label>이름(표시명)</label><input id="tiName" placeholder="예: 김담임"></div>
@@ -1351,7 +1580,7 @@ async function viewInstAdmin(){
    <div id="tiResult" style="margin-top:10px"></div>
   </div>
   <div class="card">
-   <div style="margin-bottom:10px"><b>🏫 학급 생성</b></div>
+   <div style="margin-bottom:10px"><b>학급 생성</b></div>
    <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end">
     <div><label>학급명</label><input id="ciName" placeholder="예: 3학년 1반"></div>
     <div><label>학년</label><input id="ciGrade" placeholder="예: 3학년"></div>
@@ -1360,13 +1589,13 @@ async function viewInstAdmin(){
    <div id="ciResult" style="margin-top:10px"></div>
   </div>
   <div class="card">
-   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><b>📋 진단별 설정</b><span class="muted" style="font-size:11.5px">기관 전체에 적용되는 허용·횟수·이용기간 상한입니다.</span></div>
+   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><b>진단별 설정</b><span class="muted" style="font-size:11.5px">기관 전체에 적용되는 허용·횟수·이용기간 상한입니다.</span></div>
    <div class="tablewrap" id="entInstWrap"><div class="muted" style="text-align:center;padding:20px"><span class="spinner"></span>불러오는 중…</div></div>
    <button class="btn sm" style="margin-top:10px" onclick="doSaveInstEntitlements()">저장</button>
    <div id="entInstResult" style="margin-top:10px"></div>
   </div>
   <div class="card">
-   <div style="margin-bottom:10px"><b>📊 학급별 통계</b></div>
+   <div style="margin-bottom:10px"><b>학급별 통계</b></div>
    <div class="tablewrap" id="instClassStatsWrap"><div class="muted" style="text-align:center;padding:20px"><span class="spinner"></span>불러오는 중…</div></div>
   </div>
  </div>
@@ -1385,7 +1614,7 @@ async function doInviteTeacher(){
  if(j.error){$('#tiResult').innerHTML=`<div class="err" style="display:block">${esc(j.error)}</div>`;return}
  $('#tiResult').innerHTML=`<div class="notice ok"><b>초대 완료</b> — 아래 계정 정보를 담임에게 전달하세요.<br>
   아이디 <b>${esc(username)}</b> · 초기 비밀번호 <b>${esc(password)}</b>
-  <div style="margin-top:8px"><button class="btn ghost sm" onclick="navigator.clipboard&&navigator.clipboard.writeText('아이디: ${esc(username)} / 초기비밀번호: ${esc(password)}')">📋 복사</button></div></div>`;
+  <div style="margin-top:8px"><button class="btn ghost sm" onclick="navigator.clipboard&&navigator.clipboard.writeText('아이디: ${esc(username)} / 초기비밀번호: ${esc(password)}')">복사</button></div></div>`;
  $('#tiUser').value='';$('#tiName').value='';$('#tiPass').value='';
 }
 async function doCreateClassInst(){
@@ -1404,7 +1633,7 @@ async function doCreateClassInst(){
    <div><span class="muted" style="font-size:11.5px">학급코드</span><div style="font-size:26px;font-weight:900;letter-spacing:.14em;color:var(--navy)">${esc(c.code||'-')}</div></div>
    <div><span class="muted" style="font-size:11.5px">교사 PIN</span><div style="font-size:26px;font-weight:900;letter-spacing:.14em;color:var(--vio)">${esc(pin||'-')}</div></div>
   </div>
-  <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost sm" onclick="navigator.clipboard&&navigator.clipboard.writeText('학급코드: ${esc(c.code||'')} / PIN: ${esc(pin)}')">📋 복사</button></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost sm" onclick="navigator.clipboard&&navigator.clipboard.writeText('학급코드: ${esc(c.code||'')} / PIN: ${esc(pin)}')">복사</button></div>
   <div class="repnote">※ PIN은 이 화면에서 1회만 표시됩니다. 담임에게 즉시 전달하세요.</div></div>`;
  $('#ciName').value='';$('#ciGrade').value='';
  loadInstClassStats();
@@ -1412,8 +1641,24 @@ async function doCreateClassInst(){
 }
 async function loadInstEntitlements(){
  const wrap=$('#entInstWrap');if(!wrap)return;
- if(!S.institutionId){wrap.innerHTML='<div class="muted" style="text-align:center;padding:20px">기관 ID를 아직 확인할 수 없습니다. 먼저 위에서 학급을 1개 발급하면 자동으로 확인됩니다.</div>';return}
- const j=await api('/ent_inst_get',{token:S.token,institution_id:S.institutionId});
+ /* [FIX-A1 2026-08-02] /login 응답에 institution_id가 없어, 기존 학급이 있는 기관 담당자가
+    새 브라우저로 로그인하면 "학급을 먼저 만들라"며 화면이 잠기던 문제.
+    ① 학급 목록에서 기관 ID를 회수하고 ② 그래도 없으면 서버가 role로 강제하도록 그냥 요청한다. */
+ wrap.innerHTML='<div class="muted" style="text-align:center;padding:20px">불러오는 중…</div>';
+ if(!S.institutionId){
+  try{
+   const f=await api('/filters',{token:S.token});
+   const cls=(f&&(f.classes||f.class_list||f.rows||[]))||[];
+   const found=cls.map(c=>c&&c.institution_id).find(Boolean);
+   if(found){S.institutionId=found;try{localStorage.setItem('myb_adm_inst',found)}catch(e){}}
+  }catch(e){}
+ }
+ const j=await api('/ent_inst_get', S.institutionId
+   ? {token:S.token,institution_id:S.institutionId}
+   : {token:S.token});
+ if(j && j.institution_id && !S.institutionId){
+  S.institutionId=j.institution_id; try{localStorage.setItem('myb_adm_inst',j.institution_id)}catch(e){}
+ }
  if(j.error){wrap.innerHTML=`<div class="err" style="display:block">${esc(j.error)}</div>`;return}
  const list=j.entitlements||[];
  const map=new Map(list.map(e=>[e.test_slug,e]));
@@ -1442,7 +1687,7 @@ async function loadInstClassStats(){
 async function openClassEntitlements(){
  const classes=S.filters?.classes||[];
  if(!classes.length){alert('학급 정보를 찾을 수 없습니다.');return}
- $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">📋 진단별 설정</h2><div class="spacer"></div><button class="btn navy sm" onclick="closeModal()">닫기</button></div>
+ $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">진단별 설정</h2><div class="spacer"></div><button class="btn navy sm" onclick="closeModal()">닫기</button></div>
   ${classes.length>1?`<label>학급 선택</label><select id="ceClass" onchange="loadClassEntitlements(this.value)">${classes.map(c=>`<option value="${esc(c.id)}">${esc(c.name)} (${esc(c.code)})</option>`).join('')}</select><div style="height:10px"></div>`:''}
   <div class="tablewrap" id="entClassWrap"><div class="muted" style="text-align:center;padding:20px"><span class="spinner"></span>불러오는 중…</div></div>
   <button class="btn sm" style="margin-top:10px" onclick="doSaveClassEntitlements()">저장</button>
@@ -1489,6 +1734,483 @@ async function doSaveClassEntitlements(){
  $('#entClassResult').innerHTML='<div class="notice ok">저장되었습니다.</div>';
 }
 
-try{ if(S.token)viewDash(); else viewLogin(); }catch(e){ try{viewDash()}catch(e2){viewLogin('일시적 오류가 발생했습니다. 다시 로그인해 주세요.')} }
+
+/* ── [N-03 2026-08-03] 학교 교육과정 편제표 ──────────────────────────────
+   "추천받은 과목이 우리 학교에 없다" 가 과목추천의 가장 흔한 실패였다.
+   학교가 개설 과목을 한 번 등록해두면 결과지에서 개설/미개설이 자동으로 갈린다.
+   서버: mybest v43 GET/POST /api/school_subjects.
+   POST 는 그 학교 편제표를 통째로 교체한다(편제표는 해마다 통으로 바뀐다) —
+   그래서 저장 전에 반드시 현재 개수를 먼저 보여주고 학교명 재입력을 받는다. */
+const SS_CATS=['공통','일반선택','진로선택','융합선택','기타'];
+const SS_MAX=400;
+const SSX={rows:[],dups:0,header:'',existing:null,exKey:'',exOpen:false};
+// 서버 norm() 과 같은 규칙 — 공백·괄호 제거 후 소문자.
+function ssKey(v){return String(v==null?'':v).replace(/[\s()（）]/g,'').toLowerCase();}
+function ssVal(id){const e=$(id);return e?String(e.value||'').trim():'';}
+
+function ssCat(v){
+ const s=String(v==null?'':v).replace(/\s/g,'');
+ if(!s)return '';
+ if(SS_CATS.indexOf(s)>=0)return s;
+ if(/^공통(과목)?$/.test(s))return '공통';
+ if(/^일반(선택)?(과목)?$/.test(s))return '일반선택';
+ if(/^진로(선택)?(과목)?$/.test(s))return '진로선택';
+ if(/^융합(선택)?(과목)?$/.test(s))return '융합선택';
+ if(/^기타/.test(s))return '기타';
+ return s; /* 표준 분류가 아니면 그대로 두고 표에서 눈에 띄게 표시한다(서버는 빈값으로 저장). */
+}
+/* 1 · 1,2 · 2-3 · 2~3 · 1학년 · 전학년 · 공통 … 을 모두 받는다. */
+function ssGrades(v){
+ const raw=String(v==null?'':v).replace(/\s/g,'');
+ if(!raw)return '';
+ /* '전학년' 은 '학년' 을 떼기 전에 먼저 본다 — 떼고 나면 '전' 만 남는다. */
+ if(/전학년|전체|모든/.test(raw))return '1,2,3';
+ if(/공통/.test(raw))return '공통';
+ const s=raw.replace(/학년/g,'').replace(/[·ㆍ‧・/]/g,',').replace(/[~∼〜–—]/g,'-');
+ const out=[];
+ s.split(',').forEach(function(tok){
+  if(!tok)return;
+  const m=tok.match(/^(\d)-(\d)$/);
+  if(m){let a=+m[1],b=+m[2];if(a>b){const t=a;a=b;b=t;}for(let i=a;i<=b;i++){if(out.indexOf(String(i))<0)out.push(String(i));}return;}
+  if(out.indexOf(tok)<0)out.push(tok);
+ });
+ return out.join(',').slice(0,20);
+}
+const SS_HEAD=/^(과목|과목명|교과목|교과목명|교과|교과영역|영역|계열|학년|이수학년|개설학년|비고|메모|참고|개설|개설여부|subject|category|grade|grades|note|remark)$/i;
+function ssIsHeader(cells){
+ const first=String(cells[0]||'').replace(/\s/g,'');
+ return SS_HEAD.test(first);
+}
+/* 탭(엑셀 복사)·쉼표 둘 다 받는다. 열이 1개뿐이면 나머지는 빈값 — 가장 흔한 케이스다. */
+function ssParse(text){
+ const lines=String(text||'').split(/\r?\n/);
+ const rows=[];const seen=Object.create(null);let dups=0;let header='';
+ for(let i=0;i<lines.length;i++){
+  const raw=lines[i];
+  if(!String(raw).replace(/[\s,\t]/g,''))continue;
+  let cells=(raw.indexOf('\t')>=0?raw.split('\t'):raw.split(','));
+  cells=cells.map(function(c){return String(c).replace(/^\s*["']|["']\s*$/g,'').trim();});
+  while(cells.length>1&&!cells[cells.length-1])cells.pop();
+  if(!cells[0])continue;
+  if(!rows.length&&!header&&ssIsHeader(cells)){header=cells.join(' | ');continue;}
+  let subject=cells[0].slice(0,60),category='',grades='',note='',isOpen=true;
+  if(cells.length===2){
+   const c2=cells[1].replace(/\s/g,'');
+   if(SS_CATS.indexOf(ssCat(c2))>=0)category=cells[1];
+   else if(/[0-9]|학년|전학년|전체|공통/.test(c2))grades=cells[1];
+   else category=cells[1];
+  }else if(cells.length>=3){
+   category=cells[1]||'';grades=cells[2]||'';note=cells[3]||'';
+   if(cells.length>=5)isOpen=!/^(n|no|false|0|x|미개설|폐강|미개|아니오|없음)$/i.test(cells[4].replace(/\s/g,''));
+  }
+  if(seen[subject]){dups++;continue;}
+  seen[subject]=1;
+  rows.push({subject:subject,category:ssCat(category),grades:ssGrades(grades),note:String(note||'').slice(0,120),is_open:isOpen});
+ }
+ return {rows:rows,dups:dups,header:header};
+}
+
+// ── 📩 문의 관리 (super 전용) ─────────────────────────────────────────
+// 2026-08-03 추가. 홈페이지 문의 폼(consultations)에 "연락했다"를 기록할 자리가 없어
+// 들어온 문의를 놓치던 문제를 막는다. 서버는 myb-admin 의 /consultations_list ·
+// /consultation_update · /consultations_bulk_status 세 라우트를 쓴다(super 전용).
+const CS_LABEL={pending:'대기',contacted:'연락완료',in_progress:'진행중',done:'종결',spam:'테스트·무효'};
+const CS_TABS=[['','전체'],['pending','대기'],['contacted','연락완료'],['in_progress','진행중'],['done','종결'],['spam','테스트·무효']];
+const CS_FIELDS=[['consultation_type','문의 유형'],['name','이름'],['phone','연락처'],['email','이메일'],
+ ['student_name','학생 이름'],['grade','학년'],['parent_name','학부모 이름'],['target_school','목표 학교'],['services','관심 서비스'],
+ ['institution_name','기관명'],['institution_location','기관 소재지'],['institution_scale','기관 규모'],['current_status','현재 상황'],
+ ['experience','경력'],['specialization','전문 분야'],['education','학력'],['career','경력 사항'],['availability','가능 시간'],
+ ['organization_type','기관 유형'],['organization_name','기관·단체명'],['contact_person','담당자'],['contact_department','담당 부서'],
+ ['inquiry_purpose','문의 목적'],['message','문의 내용']];
+// consultations.created_at 은 타임존 없는 UTC 값, responded_at 은 timestamptz —
+// 둘 다 한국시각으로 맞춰 보여준다(그냥 new Date 로 읽으면 9시간 어긋난다).
+function csKst(v){
+ if(!v)return '-';
+ const s=String(v);
+ const d=/[Zz]$|[+\-]\d\d:?\d\d$/.test(s)?new Date(s):new Date(s.replace(' ','T')+'Z');
+ if(isNaN(d))return s.slice(0,16).replace('T',' ');
+ const p={};new Intl.DateTimeFormat('ko-KR',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(d).forEach(x=>p[x.type]=x.value);
+ return `${p.year}-${p.month}-${p.day} ${p.hour}:${p.minute}`;
+}
+// 자동 인증요청·테스트 건 판정 — 서버(isNoiseRow)와 같은 규칙
+function csIsNoise(r){
+ const t=String(r.consultation_type||''),m=String(r.message||''),n=String(r.name||'');
+ return t.startsWith('[온내회원 인증요청]')||m.startsWith('[온내회원 인증요청]')||n.includes('테스트');
+}
+function csBadgeText(){return S.csPending?` (${S.csPending})`:''}
+function csSyncBadge(){const b=document.getElementById('csTabBadge');if(b)b.textContent=S.csPending?` (${S.csPending})`:'';}
+// 대시보드 한 줄 알림 — 만들어 놓고 안 보는 일을 막는 장치
+async function csDashCheck(){
+ if(S.role!=='super')return;
+ const box=$('#csDashAlert');if(!box)return;
+ const j=await api('/consultations_list',{token:S.token,status:'pending',limit:1});
+ if(j&&j.error){S.csPending=0;csSyncBadge();return}
+ S.csPending=Number(j&&j.pending_real||0);
+ csSyncBadge();
+ if(!S.csPending){box.style.display='none';box.innerHTML='';return}
+ box.style.display='';
+ box.innerHTML=`<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+  <b style="color:var(--danger-text);font-size:14.5px">미응답 문의 <span style="font-variant-numeric:tabular-nums">${S.csPending}</span>건</b>
+  <span class="muted" style="font-size:12.5px">연락을 마친 건은 상태를 <b>연락완료</b>로 바꿔 두면 이 줄이 사라집니다.</span>
+  <div class="spacer"></div>
+  <button class="btn sm" onclick="viewConsults()">문의 관리 열기</button></div>`;
+}
+async function viewConsults(){
+ if(S.role!=='super'){alert('권한이 없습니다.');return}
+ S.csSel=new Set();S.csStatus=S.csStatus||'';
+ $('#app').innerHTML=`<div class="wrap">${adminTopbar('consult')}
+  <div class="card noprint">
+   <b>문의 관리</b>
+   <div class="muted" style="font-size:12.5px;margin-top:5px;line-height:1.7">홈페이지 문의 폼으로 들어온 내용입니다. 연락을 마친 건은 <b>연락완료</b>로 바꿔 두세요. 바꾼 시각과 처리한 계정이 함께 기록되고, 최초 응답 시각은 나중에 상태를 또 바꿔도 그대로 남습니다.<br>
+   자동으로 쌓이는 <b>[온내회원 인증요청]</b>과 이름에 <b>테스트</b>가 든 건은 기본 목록에서 빠집니다. 아래 <b>자동·테스트 포함</b>을 켜면 보입니다.</div>
+  </div>
+  <div class="card noprint">
+   <div id="csTabs" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px"></div>
+   <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap">
+    <div style="flex:1 1 240px"><label>검색</label><input id="csQ" placeholder="이름·연락처·내용 일부" onkeydown="if(event.key==='Enter')loadConsults()"></div>
+    <div><label>문의 유형</label><select id="csType" onchange="loadConsults()"><option value="">전체 유형</option></select></div>
+    <div><label style="margin:0;display:flex;align-items:center;gap:6px;font-size:13px;padding-bottom:11px"><input type="checkbox" id="csNoise" onchange="renderConsults()" style="width:auto;margin:0"> 자동·테스트 포함</label></div>
+    <div><button class="btn sm" onclick="loadConsults()">조회</button></div>
+   </div>
+  </div>
+  <div class="card noprint" id="csBulkBar" style="display:none;padding:12px 18px">
+   <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+    <b style="font-variant-numeric:tabular-nums">선택 <span id="csSelN">0</span>건</b>
+    <button class="btn sm" onclick="csBulk('contacted')">연락완료로 일괄 변경</button>
+    <button class="btn ghost sm" onclick="csBulk('done')">종결로 일괄 변경</button>
+    <button class="btn ghost sm" onclick="csBulk('spam')">테스트·무효로 일괄 변경</button>
+    <div class="spacer"></div>
+    <button class="btn ghost sm" onclick="csClearSel()">선택 해제</button>
+   </div>
+  </div>
+  <div class="tablewrap"><table style="font-variant-numeric:tabular-nums"><thead><tr>
+   <th style="width:34px"><input type="checkbox" id="csAll" onclick="csToggleAll(this.checked)" style="width:auto;margin:0" title="전체 선택"></th>
+   <th style="width:132px">접수일</th><th style="width:96px">이름</th><th>유형</th><th style="width:126px">연락처</th><th>내용 요약</th><th style="width:92px">상태</th><th style="width:132px">응답일</th>
+  </tr></thead><tbody id="csTbody"><tr><td colspan="8" class="muted" style="text-align:center;padding:20px"><span class="spinner"></span>불러오는 중…</td></tr></tbody></table></div>
+  <div class="muted" style="font-size:12px;margin-top:8px;font-variant-numeric:tabular-nums" id="csCnt"></div>
+ </div>
+ <div class="modal" id="modal" onclick="if(event.target.id==='modal')closeModal()"><div class="sheet" id="sheet"></div></div>`;
+ loadConsults();
+}
+async function loadConsults(){
+ const body={token:S.token,status:S.csStatus||'',limit:500};
+ const q=$('#csQ')?$('#csQ').value.trim():'';if(q)body.q=q;
+ const ty=$('#csType')?$('#csType').value:'';if(ty)body.type=ty;
+ $('#csTbody').innerHTML='<tr><td colspan="8" class="muted" style="text-align:center;padding:20px"><span class="spinner"></span>불러오는 중…</td></tr>';
+ const j=await api('/consultations_list',body);
+ if(j.error){$('#csTbody').innerHTML=`<tr><td colspan="8" class="err" style="display:table-cell">${esc(j.error)}</td></tr>`;return}
+ S.csRows=j.rows||[];S.csCounts=j.counts||{};S.csPending=Number(j.pending_real||0);
+ csSyncBadge();
+ const sel=$('#csType');
+ if(sel&&sel.options.length<=1){(j.types||[]).forEach(t=>{const o=document.createElement('option');o.value=t;o.textContent=t;sel.appendChild(o);});sel.value=ty||'';}
+ renderConsults();
+}
+function csRenderTabs(){
+ const c=S.csCounts||{};
+ $('#csTabs').innerHTML=CS_TABS.map(([k,lab])=>{
+  const n=k?(c[k]||0):(c.all||0);
+  return `<button class="btn ${S.csStatus===k?'':'ghost'} sm" style="font-variant-numeric:tabular-nums" onclick="csSetStatus('${k}')">${esc(lab)} ${n}</button>`;
+ }).join('');
+}
+function csSetStatus(k){S.csStatus=k;S.csSel=new Set();loadConsults();}
+function csVisibleRows(){
+ const showNoise=$('#csNoise')&&$('#csNoise').checked;
+ return (S.csRows||[]).filter(r=>showNoise||!csIsNoise(r));
+}
+function renderConsults(){
+ csRenderTabs();
+ const rows=csVisibleRows();
+ const hidden=(S.csRows||[]).length-rows.length;
+ $('#csTbody').innerHTML=rows.length?rows.map(r=>{
+  const st=String(r.status||'pending');
+  const sum=String(r.message||'').replace(/\s+/g,' ').trim();
+  return `<tr class="csrow" onclick="csOpen('${esc(String(r.id))}')">
+   <td onclick="event.stopPropagation()"><input type="checkbox" style="width:auto;margin:0" ${S.csSel.has(String(r.id))?'checked':''} onclick="csToggle('${esc(String(r.id))}',this.checked)"></td>
+   <td class="muted">${csKst(r.created_at)}</td>
+   <td><b>${esc(r.name||'-')}</b></td>
+   <td>${esc(r.consultation_type||'-')}</td>
+   <td>${esc(r.phone||'-')}</td>
+   <td class="muted">${esc(sum.length>44?sum.slice(0,44)+'…':(sum||'-'))}</td>
+   <td><span class="cstag ${st}">${esc(CS_LABEL[st]||st)}</span></td>
+   <td class="muted">${r.responded_at?csKst(r.responded_at):'-'}</td></tr>`;
+ }).join('')
+ :`<tr><td colspan="8" class="muted" style="text-align:center;padding:30px">해당하는 문의가 없습니다.</td></tr>`;
+ $('#csCnt').textContent=`표시 ${rows.length}건`+(hidden>0?` · 자동·테스트 ${hidden}건 숨김`:'')+` · 미응답(실제 문의) ${S.csPending||0}건`;
+ csUpdateBulkBar();
+}
+function csToggle(id,on){if(on)S.csSel.add(String(id));else S.csSel.delete(String(id));csUpdateBulkBar();}
+function csToggleAll(on){S.csSel=new Set();if(on)csVisibleRows().forEach(r=>S.csSel.add(String(r.id)));renderConsults();}
+function csClearSel(){S.csSel=new Set();const a=$('#csAll');if(a)a.checked=false;renderConsults();}
+function csUpdateBulkBar(){
+ const n=S.csSel?S.csSel.size:0;
+ const bar=$('#csBulkBar');if(!bar)return;
+ bar.style.display=n?'':'none';
+ const el=$('#csSelN');if(el)el.textContent=n;
+}
+async function csBulk(status){
+ const ids=[...(S.csSel||[])];
+ if(!ids.length){alert('선택된 문의가 없습니다.');return}
+ if(!confirm(`선택한 ${ids.length}건을 «${CS_LABEL[status]||status}» 상태로 바꿉니다. 진행할까요?`))return;
+ const j=await api('/consultations_bulk_status',{token:S.token,ids,status});
+ if(j.error){alert(j.error);return}
+ S.csSel=new Set();const a=$('#csAll');if(a)a.checked=false;
+ await loadConsults();
+ alert(`${j.updated}건을 «${CS_LABEL[status]||status}»(으)로 바꿨습니다.`+(j.stamped?`\n응답 시각을 새로 기록한 건: ${j.stamped}건`:''));
+}
+function csOpen(id){
+ const r=(S.csRows||[]).find(x=>String(x.id)===String(id));if(!r)return;
+ const st=String(r.status||'pending');
+ const detail=CS_FIELDS.filter(([k])=>String(r[k]||'').trim()).map(([k,lab])=>
+  `<tr><th style="text-align:left;white-space:nowrap;vertical-align:top;color:var(--muted);font-weight:700;padding:6px 12px 6px 0">${esc(lab)}</th><td style="padding:6px 0;white-space:pre-wrap;line-height:1.7">${esc(r[k])}</td></tr>`).join('');
+ $('#sheet').innerHTML=`<div class="topbar"><h2 style="font-size:19px">문의 상세</h2><div class="spacer"></div><button class="btn navy sm" onclick="closeModal()">닫기</button></div>
+  <div class="notice" style="font-variant-numeric:tabular-nums">접수 <b>${csKst(r.created_at)}</b> · 현재 상태 <span class="cstag ${st}">${esc(CS_LABEL[st]||st)}</span>${r.responded_at?` · 최초 응답 <b>${csKst(r.responded_at)}</b>${r.responded_by?' ('+esc(r.responded_by)+')':''}`:''}</div>
+  <div class="tablewrap" style="max-height:40vh;margin-bottom:12px"><table style="width:100%">${detail||'<tr><td class="muted">표시할 내용이 없습니다.</td></tr>'}</table></div>
+  <label>처리 메모</label>
+  <textarea id="csNote" rows="3" style="width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:10px;font-family:inherit;font-size:13.5px;resize:vertical;line-height:1.7" placeholder="예: 8/3 통화 완료, 다음 주 방문 상담 예정">${esc(r.admin_note||'')}</textarea>
+  <div style="height:12px"></div>
+  <label>상태 변경</label>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">
+   ${CS_TABS.filter(([k])=>k).map(([k,lab])=>`<button class="btn ${st===k?'':'ghost'} sm" onclick="csSave('${esc(String(r.id))}','${k}')">${esc(lab)}</button>`).join('')}
+  </div>
+  <div style="height:12px"></div>
+  <button class="btn" style="width:100%" onclick="csSave('${esc(String(r.id))}','')">메모만 저장</button>
+  <div id="csResult" style="margin-top:10px"></div>`;
+ $('#modal').classList.add('open');
+}
+async function csSave(id,status){
+ const note=$('#csNote')?$('#csNote').value:undefined;
+ const body={token:S.token,id};
+ if(status)body.status=status;
+ if(note!==undefined)body.admin_note=note;
+ $('#csResult').innerHTML='<div class="muted" style="font-size:12.5px">저장 중…</div>';
+ const j=await api('/consultation_update',body);
+ if(j.error){$('#csResult').innerHTML=`<div class="err" style="display:block">${esc(j.error)}</div>`;return}
+ $('#csResult').innerHTML='<div class="notice ok">저장되었습니다.</div>';
+ closeModal();
+ loadConsults();
+}
+
+function viewSchoolSubjects(){
+ if(!S.token){viewLogin();return}
+ $('#app').innerHTML=`<div class="wrap">${adminTopbar('schsub')}
+  <div class="card noprint">
+   <b>학교 교육과정 편제표</b>
+   <div class="muted" style="font-size:12.5px;margin-top:5px;line-height:1.7">학교가 실제로 개설한 과목을 등록해 두면 과목추천 결과에서 <b>우리 학교 개설</b>과 <b>미개설(공동교육과정 문의)</b>을 구분해 안내합니다.
+   저장은 <b>학교 단위 전체 교체</b> 방식입니다 — 저장하는 순간 그 학교의 기존 편제표는 새 목록으로 완전히 바뀝니다. 한 학교당 최대 ${SS_MAX}개.</div>
+  </div>
+  <div class="card noprint">
+   <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap">
+    <div style="flex:1 1 280px"><label>학교명</label>
+     <input id="ssSchool" placeholder="예: 마이베스트고등학교" autocomplete="off" oninput="ssSchoolChanged()" onkeydown="if(event.key==='Enter')ssLoad()"></div>
+    <button class="btn ghost sm" onclick="ssLoad()">현재 편제표 조회</button>
+   </div>
+   <div class="muted" style="font-size:12px;margin-top:6px">띄어쓰기·괄호는 무시하고 찾습니다. 학급 발급 때 쓴 학교명과 같게 적어 주세요.</div>
+   <div id="ssExBox" style="margin-top:12px"></div>
+  </div>
+  <div class="card noprint">
+   <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap">
+    <label style="margin:0">엑셀·한글 표에서 복사해 그대로 붙여넣기 (Ctrl+V)</label>
+    <button class="btn ghost sm" style="margin-left:auto" onclick="ssClear()">비우기</button>
+   </div>
+   <textarea id="ssText" rows="10" style="width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:10px;font-family:inherit;font-size:13.5px;resize:vertical;line-height:1.7" placeholder="공통국어1&#9;공통&#9;1&#10;독서와 작문&#9;일반선택&#9;2&#10;주제 탐구 독서&#9;진로선택&#9;2-3&#9;격년 개설"></textarea>
+   <div class="muted" style="font-size:12px;margin:7px 0 12px;line-height:1.7">탭(엑셀 복사)과 쉼표를 모두 인식합니다. 열 순서는 <b>과목명 · 교과 · 학년 · 비고</b>이고, <b>과목명만 한 줄에 하나씩</b> 붙여넣어도 됩니다.
+   첫 줄이 머리글(과목·교과·학년…)이면 자동으로 건너뜁니다. 학년은 <b>1 · 1,2 · 2-3 · 공통 · 전학년</b> 같은 표기를 알아서 정리합니다.</div>
+   <button class="btn" onclick="ssConvert()">표로 변환</button>
+  </div>
+  <div id="ssPreview"></div>
+  <div id="ssSave"></div>
+ </div>`;
+ SSX.rows=[];SSX.dups=0;SSX.header='';SSX.existing=null;SSX.exKey='';SSX.exOpen=false;
+}
+function ssClear(){const t=$('#ssText');if(t)t.value='';SSX.rows=[];SSX.dups=0;SSX.header='';ssRenderPreview();}
+function ssSchoolChanged(){
+ /* 학교명이 바뀌면 앞서 조회한 개수는 더 이상 이 학교 것이 아니다. 저장을 다시 잠근다. */
+ if(SSX.existing&&SSX.exKey!==ssKey(ssVal('#ssSchool'))){SSX.existing=null;SSX.exKey='';const b=$('#ssExBox');if(b)b.innerHTML='';}
+ ssRenderSave();
+}
+async function ssLoad(){
+ const name=ssVal('#ssSchool');const box=$('#ssExBox');if(!box)return;
+ if(!name){box.innerHTML='<div class="err" style="display:block">학교명을 입력하세요.</div>';return}
+ box.innerHTML='<div class="muted" style="font-size:12.5px"><span class="spinner"></span>조회 중…</div>';
+ let j;
+ try{
+  const r=await fetch(APP+'/api/school_subjects?school='+encodeURIComponent(name),{headers:{apikey:KEY}});
+  j=await r.json();
+ }catch(e){j={error:'네트워크 오류가 발생했습니다. 다시 시도해 주세요.'}}
+ if(j&&j.error){box.innerHTML=`<div class="err" style="display:block">${esc(j.error)}</div>`;return}
+ SSX.existing=j;SSX.exKey=ssKey(name);
+ ssRenderExisting();ssRenderSave();
+}
+function ssToggleExTbl(){SSX.exOpen=!SSX.exOpen;ssRenderExisting();}
+function ssRenderExisting(){
+ const box=$('#ssExBox');if(!box)return;
+ const j=SSX.existing;
+ if(!j){box.innerHTML='';return}
+ const list=j.subjects||[];
+ if(!list.length){box.innerHTML='<div class="notice">이 학교로 등록된 편제표가 <b>아직 없습니다</b>. 아래에 붙여넣어 처음 등록하시면 됩니다.</div>';return}
+ const openN=list.filter(function(r){return r.is_open!==false}).length;
+ box.innerHTML=`<div class="notice ok" style="font-variant-numeric:tabular-nums">등록명 <b>${esc(j.school||'')}</b> · 현재 <b>${list.length}</b>개 (개설 ${openN} · 미개설 ${list.length-openN})</div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+   <button class="btn ghost sm" onclick="ssToEditor()">편집용으로 불러오기</button>
+   <button class="btn ghost sm" onclick="ssToggleExTbl()">현재 목록 ${SSX.exOpen?'접기':'펼쳐 보기'}</button></div>
+  <div id="ssExTbl" style="display:${SSX.exOpen?'block':'none'}">${ssExTable(list)}</div>`;
+}
+function ssExTable(list){
+ return `<div class="tablewrap"><table style="font-variant-numeric:tabular-nums">
+  <thead><tr><th style="width:44px">#</th><th>과목명</th><th style="width:96px">교과</th><th style="width:82px">학년</th><th>비고</th><th style="width:72px">개설</th></tr></thead>
+  <tbody>${list.map(function(r,i){
+   return `<tr><td class="muted" style="font-size:12px">${i+1}</td><td style="font-weight:700">${esc(r.subject||'')}</td>
+   <td style="font-size:12px">${esc(r.category||'-')}</td><td style="font-size:12px">${esc(r.grades||'-')}</td>
+   <td class="muted" style="font-size:12px">${esc(r.note||'')}</td>
+   <td style="font-size:12px">${r.is_open===false?'<span style="color:var(--danger-text);font-weight:800">미개설</span>':'개설'}</td></tr>`;
+  }).join('')}</tbody></table></div>`;
+}
+function ssToEditor(){
+ const list=(SSX.existing&&SSX.existing.subjects)||[];
+ const ta=$('#ssText');if(!ta)return;
+ const rows=[['과목명','교과','학년','비고','개설'].join('\t')];
+ list.forEach(function(r){rows.push([r.subject||'',r.category||'',r.grades||'',r.note||'',r.is_open===false?'N':'Y'].join('\t'));});
+ ta.value=rows.join('\n');
+ ssConvert();
+ try{ta.scrollIntoView({behavior:'smooth',block:'center'})}catch(e){}
+}
+function ssConvert(){
+ const t=$('#ssText');
+ const r=ssParse(t?t.value:'');
+ SSX.rows=r.rows;SSX.dups=r.dups;SSX.header=r.header;
+ ssRenderPreview();
+}
+function ssCatSelect(i,v){
+ const bad=!!v&&SS_CATS.indexOf(v)<0;
+ let o=`<option value=""${v?'':' selected'}>(없음)</option>`;
+ SS_CATS.forEach(function(c){o+=`<option${v===c?' selected':''}>${c}</option>`;});
+ if(bad)o+=`<option value="${esc(v)}" selected>${esc(v)} · 표준 분류 아님</option>`;
+ return `<select style="width:auto;min-width:118px;padding:6px 8px;font-size:12px${bad?';border-color:var(--danger-text)':''}" onchange="ssSet(${i},'category',this.value)">${o}</select>`;
+}
+function ssRenderPreview(){
+ const box=$('#ssPreview');if(!box)return;
+ const rows=SSX.rows;
+ if(!rows.length){box.innerHTML='';ssRenderSave();return}
+ const bad=rows.filter(function(r){return r.category&&SS_CATS.indexOf(r.category)<0}).length;
+ box.innerHTML=`<div class="card noprint">
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px">
+   <b>붙여넣기 미리보기</b>
+   <span class="muted" id="ssCounts" style="font-size:12.5px;font-variant-numeric:tabular-nums">${ssCountText()}</span>
+   <button class="btn ghost sm" style="margin-left:auto" onclick="ssConvert()">다시 변환</button></div>
+  ${SSX.header?`<div class="muted" style="font-size:12px;margin-bottom:6px">머리글로 보고 건너뛴 줄 — ${esc(SSX.header)}</div>`:''}
+  ${SSX.dups?`<div class="muted" style="font-size:12px;margin-bottom:6px">같은 과목명 ${SSX.dups}줄은 중복이라 제외했습니다.</div>`:''}
+  ${bad?`<div class="notice" style="margin-bottom:10px">교과 값 <b>${bad}</b>개가 표준 분류(${SS_CATS.join(' · ')})가 아닙니다. 그대로 저장하면 <b>교과가 빈값</b>으로 들어갑니다. 표에서 직접 골라 주세요.</div>`:''}
+  <div class="tablewrap"><table style="font-variant-numeric:tabular-nums">
+   <thead><tr><th style="width:44px">#</th><th>과목명</th><th style="width:150px">교과</th><th style="width:82px">학년</th><th>비고</th><th style="width:64px">개설</th><th style="width:64px"></th></tr></thead>
+   <tbody>${rows.map(function(r,i){
+    return `<tr><td class="muted" style="font-size:12px">${i+1}</td>
+    <td style="font-weight:700">${esc(r.subject)}</td>
+    <td>${ssCatSelect(i,r.category)}</td>
+    <td style="font-size:12px">${esc(r.grades||'-')}</td>
+    <td class="muted" style="font-size:12px">${esc(r.note||'')}</td>
+    <td style="text-align:center"><input type="checkbox" style="width:auto;margin:0" ${r.is_open===false?'':'checked'} title="개설 여부" aria-label="${esc(r.subject)} 개설 여부" onchange="ssSet(${i},'is_open',this.checked)"></td>
+    <td><button class="btn ghost sm" title="이 줄 삭제" onclick="ssDel(${i})">삭제</button></td></tr>`;
+   }).join('')}</tbody></table></div>
+  <div class="muted" style="font-size:12px;margin-top:8px;line-height:1.7">개설 체크를 끄면 <b>미개설로 등록</b>됩니다(목록에서 빼는 것과 다릅니다 — 학생에게 "우리 학교에는 없는 과목"이라고 알려 줍니다).</div>
+ </div>`;
+ ssRenderSave();
+}
+function ssCountText(){
+ const n=SSX.rows.length;
+ const openN=SSX.rows.filter(function(r){return r.is_open!==false}).length;
+ return `${n}개 인식 · 개설 ${openN} · 미개설 ${n-openN}`;
+}
+function ssSet(i,k,v){
+ if(!SSX.rows[i])return;
+ SSX.rows[i][k]=v;
+ /* 교과를 고치면 "표준 분류 아님" 경고 수가 달라지므로 표를 다시 그린다. */
+ if(k==='category'){ssRenderPreview();return}
+ const c=$('#ssCounts');if(c)c.textContent=ssCountText();
+ ssRenderSave();
+}
+function ssDel(i){
+ if(!SSX.rows[i])return;
+ SSX.rows.splice(i,1);
+ ssRenderPreview();
+}
+/* 저장 패널 — 여기가 이 화면의 안전장치다.
+   ① 기존 개수를 조회하기 전에는 저장 버튼 자체를 만들지 않는다.
+   ② 400개 초과는 서버까지 가기 전에 막는다.
+   ③ 기존보다 절반 아래로 줄면 크게 경고한다(붙여넣기가 잘린 사고가 가장 흔하다).
+   ④ 마지막에 학교명을 손으로 다시 입력해야 버튼이 열린다. confirm() 은 쓰지 않는다. */
+function ssRenderSave(){
+ const box=$('#ssSave');if(!box)return;
+ const rows=SSX.rows,n=rows.length,name=ssVal('#ssSchool');
+ if(!n){box.innerHTML='';return}
+ if(n>SS_MAX){
+  box.innerHTML=`<div class="card noprint"><div class="err" style="display:block;font-size:13px">
+   과목이 <b style="font-variant-numeric:tabular-nums">${n}</b>개입니다. 한 번에 최대 ${SS_MAX}개까지만 저장할 수 있어 <b>${n-SS_MAX}개 초과</b>했습니다.
+   표에서 ${n-SS_MAX}줄을 지운 뒤 다시 시도해 주세요.</div></div>`;
+  return;
+ }
+ const loaded=!!name&&!!SSX.existing&&SSX.exKey===ssKey(name);
+ if(!loaded){
+  box.innerHTML=`<div class="card noprint"><div class="notice">저장은 이 학교의 편제표를 <b>통째로 교체</b>합니다. 먼저 위에서 <b>현재 편제표 조회</b>를 눌러 지금 몇 개가 들어 있는지 확인해 주세요.</div></div>`;
+  return;
+ }
+ const cur=((SSX.existing.subjects)||[]).length;
+ const shrink=cur>0&&n<cur;
+ const bigDrop=cur>0&&n<cur/2;
+ box.innerHTML=`<div class="card noprint">
+  <b>저장 — 편제표 전체 교체</b>
+  <div class="notice ${bigDrop?'':'ok'}" style="margin-top:8px;font-variant-numeric:tabular-nums;font-size:13px">
+   <b>${esc(name)}</b> · 현재 <b>${cur}</b>개 &nbsp;→&nbsp; 새로 <b>${n}</b>개
+   ${shrink?` (${cur-n}개 줄어듦)`:(cur?` (${n-cur}개 늘어남)`:'')}
+   ${cur?'<div style="margin-top:5px">저장하면 기존 '+cur+'개는 모두 지워지고 새 '+n+'개로 바뀝니다.</div>':'<div style="margin-top:5px">이 학교의 첫 등록입니다.</div>'}</div>
+  ${bigDrop?`<div class="err" style="display:block;font-size:13px;font-variant-numeric:tabular-nums">
+   <b>확인해 주세요.</b> 새 목록(${n}개)이 지금 등록된 것(${cur}개)의 절반도 되지 않습니다.
+   엑셀에서 일부만 복사됐거나 붙여넣기가 잘린 것은 아닌지 다시 보시고, 맞다면 그대로 진행하셔도 됩니다.</div>`:''}
+  <label style="margin-top:10px">확인 — 저장할 학교명을 그대로 입력하세요</label>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+   <input id="ssConfirm" style="flex:1 1 240px" autocomplete="off" placeholder="${esc(name)}" oninput="ssCheckConfirm()">
+   <button class="btn" id="ssSaveBtn" disabled style="opacity:.45;cursor:not-allowed" onclick="ssSave()">편제표 ${n}개로 교체 저장</button></div>
+  <div class="muted" style="font-size:12px;margin-top:6px">표를 고치면 확인 입력이 초기화됩니다. 마지막으로 본 내용 그대로 저장되도록 하기 위해서입니다.</div>
+  <div id="ssSaveResult" style="margin-top:12px"></div>
+ </div>`;
+ ssCheckConfirm();
+}
+function ssCheckConfirm(){
+ const b=$('#ssSaveBtn');if(!b)return;
+ const name=ssVal('#ssSchool');
+ const ok=!!name&&ssKey(ssVal('#ssConfirm'))===ssKey(name);
+ b.disabled=!ok;b.style.opacity=ok?'1':'.45';b.style.cursor=ok?'pointer':'not-allowed';
+}
+async function ssSave(){
+ const name=ssVal('#ssSchool'),rows=SSX.rows,n=rows.length;
+ if(!name||!n||n>SS_MAX)return;
+ if(ssKey(ssVal('#ssConfirm'))!==ssKey(name))return;
+ const b=$('#ssSaveBtn');if(b){b.disabled=true;b.style.opacity='.45';b.style.cursor='not-allowed'}
+ const res=$('#ssSaveResult');if(res)res.innerHTML='<div class="muted" style="font-size:12.5px"><span class="spinner"></span>저장 중…</div>';
+ const subjects=rows.map(function(r){
+  return {subject:r.subject,category:SS_CATS.indexOf(r.category)>=0?r.category:'',grades:r.grades||'',note:r.note||'',is_open:r.is_open!==false};
+ });
+ let j;
+ try{
+  const r=await fetch(APP+'/api/school_subjects',{method:'POST',headers:{'Content-Type':'application/json',apikey:KEY},body:JSON.stringify({admin_token:S.token,school:name,subjects:subjects})});
+  j=await r.json();
+ }catch(e){j={error:'네트워크 오류가 발생했습니다. 다시 시도해 주세요.'}}
+ if(j&&j.error){
+  if(isAuthErr(j.error)){logout('세션이 만료되었습니다. 다시 로그인해 주세요.');return}
+  const r2=$('#ssSaveResult');if(r2)r2.innerHTML=`<div class="err" style="display:block">${esc(j.error)}</div>`;
+  ssCheckConfirm();return;
+ }
+ const saved=j.saved||0,skipped=j.skipped||0;
+ await ssLoad();
+ const done=`<div class="notice ok" style="font-variant-numeric:tabular-nums"><b>저장 완료</b> · ${esc(j.school||name)} 편제표가 <b>${saved}</b>개로 교체되었습니다.${skipped?' (빈 과목·중복 '+skipped+'개 제외)':''}</div>`;
+ const slot=$('#ssSaveResult')||$('#ssExBox');
+ if(slot)slot.innerHTML=done+(slot.id==='ssExBox'?slot.innerHTML:'');
+}
+
+(async function boot(){
+ try{
+  if(S.token&&await restoreStoredSession())await viewDash();
+  else viewLogin();
+ }catch(e){clearStoredAdminSession();viewLogin('세션 확인 중 오류가 발생했습니다. 다시 로그인해 주세요.');}
+})();
 </script>
 </body></html>

@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>에듀버스 관리 콘솔 — 기관·학급·학생</title>
+<style>
+:root{--ink:#221D33;--mid:#4A4361;--mut:#635C7B;--line:#E9E5F6;--bg:#F8F7FC;
+--card:#fff;--vio:#4A2ED4;--vio-t:#EFEBFF;--red:#B71C1C;--amb:#96450A;--grn:#136B36;--gry:#57516E}
+@media (prefers-color-scheme:dark){:root{--ink:#F2EFFA;--mid:#CFC8E4;--mut:#A79FC2;
+--line:#332C4A;--bg:#161228;--card:#1E1932;--vio:#BCA9FF;--vio-t:#2A2246;--red:#FFA9A9;--amb:#F5C77A;--grn:#8FE0AC;--gry:#BDB6D2}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+font:15px/1.65 Pretendard,-apple-system,"Segoe UI","Malgun Gothic",sans-serif}
+header{background:var(--card);border-bottom:1px solid var(--line);padding:14px 16px;
+position:sticky;top:0;z-index:20;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+h1{font-size:17px;margin:0;font-weight:700}
+.sub{color:var(--mut);font-size:13px}
+.spacer{flex:1}
+main{max-width:1180px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:0 0 16px}
+.card h2{font-size:15px;margin:0 0 12px;font-weight:700}
+button{font:inherit;cursor:pointer;border-radius:9px;border:1px solid var(--line);
+background:var(--card);color:var(--ink);padding:8px 13px}
+button:hover{border-color:var(--vio)}
+button:focus-visible{outline:2px solid var(--vio);outline-offset:2px}
+button.pri{background:var(--vio);border-color:var(--vio);color:#fff;font-weight:600}
+@media (prefers-color-scheme:dark){button.pri{color:#1A1430}}
+button.dim{color:var(--mut)}
+button[disabled]{opacity:.5;cursor:not-allowed}
+input,select,textarea{font:inherit;background:var(--card);color:var(--ink);
+border:1px solid var(--line);border-radius:9px;padding:7px 9px;width:100%}
+input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--vio);outline-offset:1px}
+label{display:block;font-size:13px;color:var(--mid);margin:0 0 4px;font-weight:600}
+.row{display:grid;gap:10px;margin:0 0 10px}
+@media(min-width:640px){.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr 1fr}}
+nav.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 16px}
+nav.tabs button{border-radius:999px}
+nav.tabs button[aria-current="page"]{background:var(--vio-t);border-color:var(--vio);color:var(--vio);font-weight:700}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{color:var(--mut);font-size:12px;font-weight:700;white-space:nowrap}
+.wrap{overflow-x:auto}
+.tag{display:inline-block;font-size:12px;padding:2px 8px;border-radius:999px;
+background:var(--vio-t);color:var(--vio);font-weight:600}
+.muted{color:var(--mut);font-size:13px}
+.err{color:var(--red);font-weight:600}
+.ok{color:var(--grn);font-weight:600}
+.warn{color:var(--amb)}
+.hide{display:none}
+code{background:var(--vio-t);color:var(--vio);padding:1px 6px;border-radius:5px;font-size:13px}
+.note{background:var(--vio-t);border-radius:10px;padding:11px 13px;font-size:13.5px;color:var(--mid);margin:0 0 14px}
+td input[type=number],td input[type=date]{min-width:104px}
+td input[type=checkbox]{width:20px;height:20px;accent-color:var(--vio)}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 0}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>에듀버스 관리 콘솔</h1>
+  <span class="sub" id="scopeLabel">기관 · 학급 · 학생</span>
+  <span class="spacer"></span>
+  <span class="sub" id="who"></span>
+  <button id="btnOut" class="dim hide">로그아웃</button>
+</header>
+
+<main>
+
+<section id="vLogin" class="card">
+  <h2>로그인</h2>
+  <p class="muted">에듀버스 계정으로 들어옵니다. 기관 관리자는 자기 기관만, 본부 관리자는 전체가 보입니다.</p>
+  <div class="row g2">
+    <div><label for="em">이메일</label><input id="em" type="email" autocomplete="username"></div>
+    <div><label for="pw">비밀번호</label><input id="pw" type="password" autocomplete="current-password"></div>
+  </div>
+  <div class="acts"><button class="pri" id="btnIn">로그인</button></div>
+  <p id="loginMsg" class="err" role="alert"></p>
+</section>
+
+<div id="vApp" class="hide">
+
+  <nav class="tabs" aria-label="화면 선택">
+    <button data-tab="org"     aria-current="page">기관·단체</button>
+    <button data-tab="group">학급·그룹</button>
+    <button data-tab="learner">학생·구성원</button>
+    <button data-tab="grant">이용권한 설정</button>
+  </nav>
+
+  <!-- 기관 -->
+  <section id="tOrg" class="card">
+    <h2>기관·단체</h2>
+    <p class="note">학교·학원·기관을 여기 등록합니다. 이용기간을 넣으면 그 기간 밖에서는 아래 학급·학생의 권한이 전부 닫힙니다.</p>
+    <div class="row g3">
+      <div><label for="oName">기관명</label><input id="oName" placeholder="○○중학교"></div>
+      <div><label for="oKind">유형</label><select id="oKind">
+        <option value="school">학교</option><option value="academy">학원</option>
+        <option value="org">단체</option><option value="company">기업</option>
+        <option value="public">공공</option><option value="etc">기타</option></select></div>
+      <div><label for="oRegion">지역</label><input id="oRegion" placeholder="경기"></div>
+    </div>
+    <div class="row g3">
+      <div><label for="oFrom">이용 시작일</label><input id="oFrom" type="date"></div>
+      <div><label for="oUntil">이용 종료일</label><input id="oUntil" type="date"></div>
+      <div><label for="oMail">담당자 이메일</label><input id="oMail" type="email"></div>
+    </div>
+    <div class="acts">
+      <button class="pri" id="oSave">기관 추가</button>
+      <button class="dim" id="oClear">입력 지우기</button>
+      <span id="oMsg" class="muted"></span>
+    </div>
+    <div class="wrap"><table id="oTbl"><thead><tr>
+      <th>기관명</th><th>유형</th><th>지역</th><th>이용기간</th><th>학급</th><th>학생</th><th>상태</th><th></th>
+    </tr></thead><tbody></tbody></table></div>
+
+    <h2 style="margin-top:22px">기관 관리자 지정</h2>
+    <p class="note">지정한 사람은 <b>자기 기관만</b> 보고 고칠 수 있습니다. 먼저 그 사람이 에듀버스에 회원가입을 해야 합니다.</p>
+    <div class="row g3">
+      <div><label for="aOrg">기관</label><select id="aOrg"></select></div>
+      <div><label for="aMail">담당자 이메일</label><input id="aMail" type="email" placeholder="teacher@school.kr"></div>
+      <div><label for="aRole">역할</label><select id="aRole">
+        <option value="admin">관리자</option><option value="owner">대표 관리자</option><option value="teacher">교사</option>
+      </select></div>
+    </div>
+    <div class="acts"><button class="pri" id="aSave">지정</button><span id="aMsg" class="muted"></span></div>
+    <div class="wrap"><table id="aTbl"><thead><tr>
+      <th>이메일</th><th>역할</th><th>지정일</th><th></th>
+    </tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <!-- 학급 -->
+  <section id="tGroup" class="card hide">
+    <h2>학급·그룹</h2>
+    <p class="note">기관 아래에 학급·반·그룹을 만듭니다. 코드는 비워 두면 자동으로 만들어집니다.</p>
+    <div class="row g3">
+      <div><label for="gOrg">소속 기관</label><select id="gOrg"></select></div>
+      <div><label for="gName">학급·그룹명</label><input id="gName" placeholder="3학년 2반"></div>
+      <div><label for="gGrade">학년</label><input id="gGrade" placeholder="3"></div>
+    </div>
+    <div class="row g3">
+      <div><label for="gCap">정원</label><input id="gCap" type="number" min="1" placeholder="40"></div>
+      <div><label for="gFrom">이용 시작일</label><input id="gFrom" type="date"></div>
+      <div><label for="gUntil">이용 종료일</label><input id="gUntil" type="date"></div>
+    </div>
+    <div class="acts">
+      <button class="pri" id="gSave">학급 추가</button>
+      <span id="gMsg" class="muted"></span>
+    </div>
+    <div class="wrap"><table id="gTbl"><thead><tr>
+      <th>학급·그룹</th><th>기관</th><th>코드</th><th>학년</th><th>정원</th><th>인원</th><th>이용기간</th><th></th>
+    </tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <!-- 학생 -->
+  <section id="tLearner" class="card hide">
+    <h2>학생·구성원</h2>
+    <p class="note">이름만 넣으면 등록됩니다. 계정이 없어도 <b>접속 토큰</b>으로 들어올 수 있고, 나중에 회원가입하면 계정과 이어집니다.</p>
+    <div class="row g2">
+      <div><label for="lGroup">소속 학급·그룹</label><select id="lGroup"></select></div>
+      <div><label for="lGrade">학년 (선택)</label><input id="lGrade" placeholder="3"></div>
+    </div>
+    <div class="row">
+      <div><label for="lNames">이름 — 한 줄에 한 명</label>
+      <textarea id="lNames" rows="5" placeholder="김민준&#10;이서연&#10;박도윤"></textarea></div>
+    </div>
+    <div class="acts">
+      <button class="pri" id="lSave">일괄 등록</button>
+      <button class="dim" id="lCsv">명단 CSV 내려받기</button>
+      <span id="lMsg" class="muted"></span>
+    </div>
+    <div class="wrap"><table id="lTbl"><thead><tr>
+      <th>이름</th><th>학년</th><th>학급</th><th>접속 토큰</th><th>계정</th><th>상태</th><th></th>
+    </tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <!-- 권한 -->
+  <section id="tGrant" class="card hide">
+    <h2>이용권한 · 기간 · 횟수 · 에그</h2>
+    <p class="note">대상을 고르고 서비스마다 <b>허용</b>을 켠 뒤 기간·횟수·에그를 정합니다.
+      기관에 준 값이 상한이고, 학급·학생은 그 안에서만 유효합니다. <b>결제로 산 것은 그대로 남습니다</b> — 여기서 주는 것은 기관·단체 배정분입니다.</p>
+    <div class="row g3">
+      <div><label for="sType">대상 종류</label><select id="sType">
+        <option value="org">기관 전체</option><option value="group">학급·그룹</option><option value="learner">학생 개인</option>
+      </select></div>
+      <div><label for="sId">대상</label><select id="sId"></select></div>
+      <div><label for="sFilter">서비스 찾기</label><input id="sFilter" placeholder="이름으로 거르기"></div>
+    </div>
+    <div class="wrap"><table id="grTbl"><thead><tr>
+      <th>서비스</th><th>허용</th><th>시작일</th><th>종료일</th><th>총 횟수</th><th>1인당 횟수</th><th>에그 지급</th><th>지급</th>
+    </tr></thead><tbody></tbody></table></div>
+    <div class="acts">
+      <button class="pri" id="grSave">이 대상의 설정 저장</button>
+      <span id="grMsg" class="muted"></span>
+    </div>
+    <p class="muted">횟수를 비우면 제한 없음입니다. 에그는 <b>지급</b> 버튼을 눌러야 실제로 들어가고, 같은 줄에서 두 번 지급되지 않습니다.</p>
+  </section>
+
+</div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+(function(){
+'use strict';
+var URL_ = 'https://onqisdgxwuvlxehjvoto.supabase.co';
+var KEY_ = 'sb_publishable_z3KmGPFA4RKka5e_tDWD5A_-CUDC7t8';
+if(!window.supabase || !window.supabase.createClient){
+  document.getElementById('vLogin').innerHTML =
+    '<h2>연결 도구를 불러오지 못했습니다</h2>'
+   +'<p class="err">supabase-js 를 CDN 에서 받지 못했습니다. 인터넷 연결 또는 사내 방화벽을 확인하고 새로고침해 주세요.</p>'
+   +'<p class="muted">계속 안 되면 이 파일을 서비스 사이트에 올려 같은 도메인에서 여십시오.</p>';
+  return;
+}
+var sb = window.supabase.createClient(URL_, KEY_, {auth:{flowType:'implicit',persistSession:true}});
+
+var qs = new URLSearchParams(location.search);
+var ONLY = qs.get('service') || '';      // 서비스별 모드
+var state = {hq:false, orgs:[], groups:[], learners:[], services:[], grants:[]};
+
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){
+  return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function msg(el,t,cls){var e=$(el); e.textContent=t||''; e.className=cls||'muted';}
+function period(a,b){ if(!a&&!b) return '제한 없음'; return (a||'—')+' ~ '+(b||'—'); }
+
+/* ---------- 로그인 ---------- */
+async function boot(){
+  var s = await sb.auth.getSession();
+  if(s.data && s.data.session){ await afterLogin(s.data.session); }
+}
+$('btnIn').addEventListener('click', async function(){
+  msg('loginMsg','','muted');
+  var r = await sb.auth.signInWithPassword({email:$('em').value.trim(), password:$('pw').value});
+  if(r.error){ msg('loginMsg','로그인하지 못했습니다. '+r.error.message,'err'); return; }
+  await afterLogin(r.data.session);
+});
+$('btnOut').addEventListener('click', async function(){ await sb.auth.signOut(); location.reload(); });
+
+async function afterLogin(session){
+  var u = session.user || {};
+  var meta = u.app_metadata || {};
+  state.hq = ['super_admin','admin'].indexOf(meta.ev_role) >= 0;
+  $('who').textContent = (u.email||'') + (state.hq ? ' · 본부 관리자' : ' · 기관 관리자');
+  $('btnOut').classList.remove('hide');
+  $('vLogin').classList.add('hide');
+  $('vApp').classList.remove('hide');
+  await loadAll();
+}
+
+/* ---------- 자료 읽기 ---------- */
+async function loadAll(){
+  var a = await sb.from('otn_orgs').select('*').order('name');
+  state.orgs = a.data || [];
+  var b = await sb.from('otn_groups').select('*').order('name');
+  state.groups = b.data || [];
+  var c = await sb.from('otn_learners').select('*').order('name');
+  state.learners = c.data || [];
+  var d = await sb.from('sso_services').select('service_code,name,status').order('name');
+  state.services = (d.data||[]).filter(function(s){ return s.status !== 'planned'; });
+  if(ONLY){
+    state.services = state.services.filter(function(s){ return s.service_code === ONLY; });
+    var nm = state.services.length ? state.services[0].name : ONLY;
+    $('scopeLabel').textContent = nm + ' 전용';
+    document.title = nm + ' 관리 콘솔';
+  }
+  renderOrgs(); fillSelects(); renderGroups(); renderLearners(); renderSubjects();
+}
+
+/* ---------- 기관 ---------- */
+function renderOrgs(){
+  var tb = $('oTbl').querySelector('tbody'); tb.innerHTML='';
+  if(!state.orgs.length){ tb.innerHTML='<tr><td colspan="8" class="muted">등록된 기관이 없습니다.</td></tr>'; return; }
+  state.orgs.forEach(function(o){
+    var gs = state.groups.filter(function(g){return g.org_id===o.id;});
+    var ls = state.learners.filter(function(l){ return gs.some(function(g){return g.id===l.group_id;}); });
+    var tr = document.createElement('tr');
+    tr.innerHTML = '<td><b>'+esc(o.name)+'</b></td><td>'+esc(o.kind)+'</td><td>'+esc(o.region||'—')+'</td>'
+      + '<td>'+esc(period(o.valid_from,o.valid_until))+'</td><td>'+gs.length+'</td><td>'+ls.length+'</td>'
+      + '<td><span class="tag">'+esc(o.status)+'</span></td>'
+      + '<td><button data-del-org="'+o.id+'" class="dim">중지</button></td>';
+    tb.appendChild(tr);
+  });
+  tb.querySelectorAll('[data-del-org]').forEach(function(btn){
+    btn.addEventListener('click', async function(){
+      var id = btn.getAttribute('data-del-org');
+      if(!confirm('이 기관을 중지 상태로 바꿉니다. 자료는 지우지 않습니다. 계속할까요?')) return;
+      var r = await sb.from('otn_orgs').update({status:'ended', updated_at:new Date().toISOString()}).eq('id',id);
+      if(r.error){ alert('바꾸지 못했습니다. '+r.error.message); return; }
+      await loadAll();
+    });
+  });
+}
+$('oClear').addEventListener('click', function(){
+  ['oName','oRegion','oFrom','oUntil','oMail'].forEach(function(i){ $(i).value=''; });
+});
+$('oSave').addEventListener('click', async function(){
+  var name = $('oName').value.trim();
+  if(!name){ msg('oMsg','기관명을 넣어 주세요.','err'); return; }
+  msg('oMsg','저장하는 중…');
+  var row = {name:name, kind:$('oKind').value, region:$('oRegion').value.trim()||null,
+    valid_from:$('oFrom').value||null, valid_until:$('oUntil').value||null,
+    contact_email:$('oMail').value.trim()||null};
+  var r = await sb.from('otn_orgs').insert(row).select();
+  if(r.error){ msg('oMsg','저장하지 못했습니다. '+r.error.message,'err'); return; }
+  msg('oMsg','기관을 추가했습니다.','ok');
+  $('oClear').click();
+  await loadAll();
+});
+
+/* ---------- 학급 ---------- */
+function fillSelects(){
+  var ao = $('aOrg'); ao.innerHTML='';
+  state.orgs.forEach(function(o){
+    var op=document.createElement('option'); op.value=o.id; op.textContent=o.name; ao.appendChild(op);
+  });
+  loadOrgAdmins();
+  var go = $('gOrg'); go.innerHTML='';
+  state.orgs.filter(function(o){return o.status==='active';}).forEach(function(o){
+    var op=document.createElement('option'); op.value=o.id; op.textContent=o.name; go.appendChild(op);
+  });
+  var lg = $('lGroup'); lg.innerHTML='';
+  state.groups.filter(function(g){return g.status==='active';}).forEach(function(g){
+    var o = state.orgs.find(function(x){return x.id===g.org_id;});
+    var op=document.createElement('option'); op.value=g.id;
+    op.textContent=(o?o.name+' · ':'')+g.name; lg.appendChild(op);
+  });
+}
+function renderGroups(){
+  var tb = $('gTbl').querySelector('tbody'); tb.innerHTML='';
+  if(!state.groups.length){ tb.innerHTML='<tr><td colspan="8" class="muted">등록된 학급이 없습니다.</td></tr>'; return; }
+  state.groups.forEach(function(g){
+    var o = state.orgs.find(function(x){return x.id===g.org_id;});
+    var n = state.learners.filter(function(l){return l.group_id===g.id;}).length;
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td><b>'+esc(g.name)+'</b></td><td>'+esc(o?o.name:'—')+'</td>'
+      +'<td><code>'+esc(g.code||'—')+'</code></td><td>'+esc(g.grade||'—')+'</td>'
+      +'<td>'+esc(g.capacity||'—')+'</td><td>'+n+'</td>'
+      +'<td>'+esc(period(g.valid_from,g.valid_until))+'</td>'
+      +'<td><button data-del-grp="'+g.id+'" class="dim">중지</button></td>';
+    tb.appendChild(tr);
+  });
+  tb.querySelectorAll('[data-del-grp]').forEach(function(btn){
+    btn.addEventListener('click', async function(){
+      if(!confirm('이 학급을 중지 상태로 바꿉니다. 계속할까요?')) return;
+      var r = await sb.from('otn_groups').update({status:'ended', updated_at:new Date().toISOString()})
+                      .eq('id', btn.getAttribute('data-del-grp'));
+      if(r.error){ alert('바꾸지 못했습니다. '+r.error.message); return; }
+      await loadAll();
+    });
+  });
+}
+function newCode(){
+  var s='ABCDEFGHJKLMNPQRSTUVWXYZ23456789', out='';
+  for(var i=0;i<6;i++) out += s[Math.floor(Math.random()*s.length)];
+  return out;
+}
+$('gSave').addEventListener('click', async function(){
+  var org=$('gOrg').value, name=$('gName').value.trim();
+  if(!org){ msg('gMsg','기관을 먼저 등록해 주세요.','err'); return; }
+  if(!name){ msg('gMsg','학급명을 넣어 주세요.','err'); return; }
+  msg('gMsg','저장하는 중…');
+  var row={org_id:org, name:name, code:newCode(), grade:$('gGrade').value.trim()||null,
+    capacity:$('gCap').value?parseInt($('gCap').value,10):null,
+    valid_from:$('gFrom').value||null, valid_until:$('gUntil').value||null};
+  var r=null;
+  for(var attempt=0; attempt<5; attempt++){
+    r = await sb.from('otn_groups').insert(row).select();
+    if(!r.error || String(r.error.message).indexOf('otn_groups_code_key')<0) break;
+    row.code = newCode();
+  }
+  if(r.error){ msg('gMsg','저장하지 못했습니다. '+r.error.message,'err'); return; }
+  msg('gMsg','학급을 추가했습니다. 코드 '+row.code,'ok');
+  $('gName').value=''; $('gGrade').value=''; $('gCap').value='';
+  await loadAll();
+});
+
+/* ---------- 학생 ---------- */
+function renderLearners(){
+  var tb=$('lTbl').querySelector('tbody'); tb.innerHTML='';
+  if(!state.learners.length){ tb.innerHTML='<tr><td colspan="7" class="muted">등록된 학생이 없습니다.</td></tr>'; return; }
+  state.learners.forEach(function(l){
+    var g=state.groups.find(function(x){return x.id===l.group_id;});
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td><b>'+esc(l.name)+'</b></td><td>'+esc(l.grade||'—')+'</td>'
+      +'<td>'+esc(g?g.name:'—')+'</td>'
+      +'<td><code>'+esc(String(l.token).slice(0,8))+'…</code></td>'
+      +'<td>'+(l.user_id?'<span class="ok">연결됨</span>':'<span class="muted">미연결</span>')+'</td>'
+      +'<td>'+esc(l.status)+'</td>'
+      +'<td><button data-del-lnr="'+l.id+'" class="dim">중지</button></td>';
+    tb.appendChild(tr);
+  });
+  tb.querySelectorAll('[data-del-lnr]').forEach(function(btn){
+    btn.addEventListener('click', async function(){
+      if(!confirm('이 학생을 중지 상태로 바꿉니다. 계속할까요?')) return;
+      var r = await sb.from('otn_learners').update({status:'ended'}).eq('id', btn.getAttribute('data-del-lnr'));
+      if(r.error){ alert('바꾸지 못했습니다. '+r.error.message); return; }
+      await loadAll();
+    });
+  });
+}
+$('lSave').addEventListener('click', async function(){
+  var gid=$('lGroup').value;
+  if(!gid){ msg('lMsg','학급을 먼저 만들어 주세요.','err'); return; }
+  var names=$('lNames').value.split('\n').map(function(s){return s.trim();}).filter(Boolean);
+  if(!names.length){ msg('lMsg','이름을 한 줄에 한 명씩 넣어 주세요.','err'); return; }
+  msg('lMsg','저장하는 중…');
+  var grade=$('lGrade').value.trim()||null;
+  var rows=names.map(function(n){ return {group_id:gid, name:n, grade:grade}; });
+  var r = await sb.from('otn_learners').insert(rows).select();
+  if(r.error){ msg('lMsg','저장하지 못했습니다. '+r.error.message,'err'); return; }
+  msg('lMsg', names.length+'명을 등록했습니다.','ok');
+  $('lNames').value='';
+  await loadAll();
+});
+$('lCsv').addEventListener('click', function(){
+  var head='이름,학년,학급,접속토큰\n';
+  var body=state.learners.map(function(l){
+    var g=state.groups.find(function(x){return x.id===l.group_id;});
+    return [l.name, l.grade||'', g?g.name:'', l.token].join(',');
+  }).join('\n');
+  var blob=new Blob(['﻿'+head+body],{type:'text/csv;charset=utf-8'});
+  var a=document.createElement('a');
+  a.href=window.URL.createObjectURL(blob); a.download='명단.csv'; a.click();
+});
+
+
+async function loadOrgAdmins(){
+  var tb=$('aTbl').querySelector('tbody'); tb.innerHTML='';
+  var org=$('aOrg').value;
+  if(!org){ tb.innerHTML='<tr><td colspan="4" class="muted">기관을 먼저 등록하세요.</td></tr>'; return; }
+  var r = await sb.rpc('otn_list_org_admins', {p_org: org});
+  if(r.error){ tb.innerHTML='<tr><td colspan="4" class="err">'+esc(r.error.message)+'</td></tr>'; return; }
+  var list = r.data||[];
+  if(!list.length){ tb.innerHTML='<tr><td colspan="4" class="muted">지정된 관리자가 없습니다.</td></tr>'; return; }
+  list.forEach(function(a){
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td>'+esc(a.email)+'</td><td><span class="tag">'+esc(a.role)+'</span></td>'
+      +'<td>'+esc(String(a.created_at).slice(0,10))+'</td>'
+      +'<td><button class="dim" data-rm="'+a.user_id+'">해제</button></td>';
+    tb.appendChild(tr);
+  });
+  tb.querySelectorAll('[data-rm]').forEach(function(b){
+    b.addEventListener('click', async function(){
+      if(!confirm('이 사람의 기관 관리자 권한을 해제합니다. 계속할까요?')) return;
+      var x = await sb.rpc('otn_remove_org_admin', {p_org:$('aOrg').value, p_user:b.getAttribute('data-rm')});
+      if(x.error){ alert(x.error.message); return; }
+      loadOrgAdmins();
+    });
+  });
+}
+document.getElementById('aOrg').addEventListener('change', loadOrgAdmins);
+document.getElementById('aSave').addEventListener('click', async function(){
+  var org=$('aOrg').value, mail=$('aMail').value.trim();
+  if(!org){ msg('aMsg','기관을 먼저 등록하세요.','err'); return; }
+  if(!mail){ msg('aMsg','이메일을 넣어 주세요.','err'); return; }
+  msg('aMsg','지정하는 중…');
+  var r = await sb.rpc('otn_add_org_admin', {p_org:org, p_email:mail, p_role:$('aRole').value});
+  if(r.error){ msg('aMsg', r.error.message,'err'); return; }
+  var out=(r.data&&r.data[0])||{};
+  msg('aMsg', out.message||'', out.ok?'ok':'err');
+  if(out.ok){ $('aMail').value=''; loadOrgAdmins(); }
+});
+
+/* ---------- 권한 ---------- */
+function renderSubjects(){
+  var t=$('sType').value, sel=$('sId'); sel.innerHTML='';
+  var list=[];
+  if(t==='org')     list=state.orgs.map(function(o){return {id:o.id,label:o.name};});
+  if(t==='group')   list=state.groups.map(function(g){
+      var o=state.orgs.find(function(x){return x.id===g.org_id;});
+      return {id:g.id,label:(o?o.name+' · ':'')+g.name};});
+  if(t==='learner') list=state.learners.map(function(l){
+      var g=state.groups.find(function(x){return x.id===l.group_id;});
+      return {id:l.id,label:(g?g.name+' · ':'')+l.name};});
+  list.forEach(function(x){var op=document.createElement('option');op.value=x.id;op.textContent=x.label;sel.appendChild(op);});
+  loadGrants();
+}
+$('sType').addEventListener('change', renderSubjects);
+$('sId').addEventListener('change', loadGrants);
+$('sFilter').addEventListener('input', function(){ renderGrantRows(); });
+
+async function loadGrants(){
+  var t=$('sType').value, id=$('sId').value;
+  state.grants=[];
+  if(id){
+    var r = await sb.from('otn_grants').select('*').eq('subject_type',t).eq('subject_id',id);
+    state.grants = r.data || [];
+  }
+  renderGrantRows();
+}
+function grantOf(code){
+  return state.grants.find(function(g){return g.service_code===code && g.feature_code==='*';}) || {};
+}
+function renderGrantRows(){
+  var tb=$('grTbl').querySelector('tbody'); tb.innerHTML='';
+  var f=$('sFilter').value.trim();
+  var list=state.services.filter(function(s){ return !f || s.name.indexOf(f)>=0 || s.service_code.indexOf(f)>=0; });
+  if(!$('sId').value){ tb.innerHTML='<tr><td colspan="8" class="muted">대상을 먼저 고르세요.</td></tr>'; return; }
+  if(!list.length){ tb.innerHTML='<tr><td colspan="8" class="muted">해당하는 서비스가 없습니다.</td></tr>'; return; }
+  list.forEach(function(s){
+    var g=grantOf(s.service_code);
+    var tr=document.createElement('tr');
+    tr.setAttribute('data-code', s.service_code);
+    tr.innerHTML =
+      '<td><b>'+esc(s.name)+'</b><br><span class="muted">'+esc(s.service_code)+'</span></td>'
+     +'<td><input type="checkbox" class="cAllow" aria-label="'+esc(s.name)+' 허용"'+(g.allowed?' checked':'')+'></td>'
+     +'<td><input type="date" class="cFrom" value="'+esc(g.starts_at||'')+'"></td>'
+     +'<td><input type="date" class="cTo" value="'+esc(g.ends_at||'')+'"></td>'
+     +'<td><input type="number" min="0" class="cMax" placeholder="제한없음" value="'+esc(g.max_uses==null?'':g.max_uses)+'"></td>'
+     +'<td><input type="number" min="0" class="cPer" placeholder="제한없음" value="'+esc(g.max_uses_per_learner==null?'':g.max_uses_per_learner)+'"></td>'
+     +'<td><input type="number" min="0" class="cEgg" placeholder="0" value="'+esc(g.egg_grant||'')+'"></td>'
+     +'<td>'+(g.id
+        ? (g.egg_granted_at ? '<span class="ok">지급됨</span>'
+                            : '<button class="pay" data-gid="'+g.id+'">지급</button>')
+        : '<span class="muted">저장 후</span>')+'</td>';
+    tb.appendChild(tr);
+  });
+  tb.querySelectorAll('.pay').forEach(function(btn){
+    btn.addEventListener('click', async function(){
+      if(!confirm('이 줄의 에그를 대상자에게 지급합니다. 되돌릴 수 없습니다. 계속할까요?')) return;
+      btn.disabled = true;
+      var r = await sb.rpc('otn_grant_eggs', {p_grant: btn.getAttribute('data-gid')});
+      if(r.error){ alert('지급하지 못했습니다. '+r.error.message); btn.disabled=false; return; }
+      var out = (r.data && r.data[0]) || {};
+      alert((out.paid_users||0)+'명에게 모두 '+(out.total_eggs||0)+'에그를 지급했습니다.');
+      await loadGrants();
+    });
+  });
+}
+$('grSave').addEventListener('click', async function(){
+  var t=$('sType').value, id=$('sId').value;
+  if(!id){ msg('grMsg','대상을 고르세요.','err'); return; }
+  msg('grMsg','저장하는 중…');
+  var rows=[];
+  $('grTbl').querySelectorAll('tbody tr[data-code]').forEach(function(tr){
+    var num=function(sel){ var v=tr.querySelector(sel).value; return v===''?null:parseInt(v,10); };
+    var code = tr.getAttribute('data-code');
+    var on   = tr.querySelector('.cAllow').checked;
+    var had  = !!grantOf(code).id;
+    // 켜지지도 않았고 원래 저장된 적도 없는 줄은 건드리지 않습니다.
+    if(!on && !had) return;
+    rows.push({
+      subject_type:t, subject_id:id, service_code:code, feature_code:'*',
+      allowed: on,
+      starts_at: tr.querySelector('.cFrom').value||null,
+      ends_at:   tr.querySelector('.cTo').value||null,
+      max_uses: num('.cMax'), max_uses_per_learner: num('.cPer'),
+      egg_grant: num('.cEgg')||0, updated_at:new Date().toISOString()
+    });
+  });
+  if(!rows.length){ msg('grMsg','바뀐 것이 없습니다.','muted'); return; }
+  var r = await sb.from('otn_grants')
+    .upsert(rows, {onConflict:'subject_type,subject_id,service_code,feature_code'}).select();
+  if(r.error){ msg('grMsg','저장하지 못했습니다. '+r.error.message,'err'); return; }
+  msg('grMsg', rows.length+'개 서비스 설정을 저장했습니다.','ok');
+  await loadGrants();
+});
+
+/* ---------- 탭 ---------- */
+document.querySelectorAll('nav.tabs button').forEach(function(b){
+  b.addEventListener('click', function(){
+    document.querySelectorAll('nav.tabs button').forEach(function(x){x.removeAttribute('aria-current');});
+    b.setAttribute('aria-current','page');
+    var map={org:'tOrg',group:'tGroup',learner:'tLearner',grant:'tGrant'};
+    Object.keys(map).forEach(function(k){ $(map[k]).classList.toggle('hide', k!==b.dataset.tab); });
+  });
+});
+
+boot();
+})();
+</script>
+</body>
+</html>

@@ -173,6 +173,14 @@ Deno.serve(async (req) => {
       if (!live || (liveRole !== "super" && !liveScope && !live.institution_id)) {
         return err("이 계정에는 담당 기관/학급이 지정되어 있지 않습니다. 최고관리자에게 문의하세요.", 403);
       }
+      // [FIX 2026-08-24 · 회장님 신고 1,2] me.scope/me.role 은 /login 시점 세션 스냅샷이라, 로그인
+      // 이후 /class_assign_teacher 등으로 담임 scope 가 바뀌어도(=새 학급 배정) 이미 로그인해 있던
+      // 담임 세션은 계속 옛 scope 를 써서 scoped()·teacherScopeClassIds() 가 새 학급을 걸러냈다.
+      // (재로그인해야만 반영되던 문제.) 여기서부터는 방금 조회한 myb_admins 현재 행(live)으로
+      // me 를 갱신해, 이 지점 이후의 모든 scoped() 필터링이 최신 권한을 즉시 반영하게 한다.
+      // adminRow() 는 메모이즈돼 있어 추가 DB 호출은 없다. 승급/강등도 같은 이유로 즉시 반영된다.
+      me.role = liveRole || me.role;
+      me.scope = live.scope ?? me.scope;
     }
 
  if (path === "/filters") {

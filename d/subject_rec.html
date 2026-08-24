@@ -48,7 +48,22 @@ h1{font-size:26px;font-weight:800;line-height:1.32;margin:14px 0 8px}
 .foot{text-align:center;font-size:11.5px;color:#9499AD;margin-top:30px;line-height:1.7}
 .foot a{color:#7A7E9A;text-decoration:none}
 @media(min-width:560px){.cta{flex-direction:row}.cta .btn{flex:1}}
+
+.ul{margin:8px 0 0;padding-left:20px}.ul li{font-size:15px;line-height:1.85;color:#555B72;margin-bottom:4px}
+.fq{border:1px solid var(--line,#E8E4F8);border-radius:12px;padding:12px 14px;margin:8px 0;background:#fff}
+.fq summary{font-weight:800;font-size:15px;cursor:pointer;color:#242842}
+.fq p{margin:9px 0 0;font-size:14.5px;line-height:1.8;color:#555B72}
+.relg{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:8px}
+.relc{display:block;border:1px solid var(--line,#E8E4F8);border-radius:14px;padding:13px 14px;background:#fff}
+.relc b{display:block;font-size:14.5px;color:#242842}
+.relc span{display:block;font-size:11.5px;color:#8489A3;margin-top:3px;font-weight:700}
 </style>
+<link rel="stylesheet" href="/assets/onae-responsive.css">
+<link rel="stylesheet" href="/assets/onae-theme.css">
+<script src="/assets/onae-i18n.mybest-next-edu.js"></script>
+<script src="/assets/onae-theme.js" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "고교학점제 과목 선택은 언제 정하나요?", "acceptedAnswer": {"@type": "Answer", "text": "보통 고1 2학기에 2학년 과목을, 고2에 3학년 과목을 정합니다. 그 전에 계열 방향을 한 번 확인해두면 훨씬 수월합니다."}}, {"@type": "Question", "name": "학과가 정해지지 않아도 쓸 수 있나요?", "acceptedAnswer": {"@type": "Answer", "text": "네. 계열 수준의 방향만 있어도 과목 조합을 좁힐 수 있습니다."}}, {"@type": "Question", "name": "추천 과목이 학교에 없으면요?", "acceptedAnswer": {"@type": "Answer", "text": "대체 가능한 과목과 학교 밖 이수(공동교육과정 등) 방향을 함께 안내합니다."}}, {"@type": "Question", "name": "성적이 낮아도 상위 과목을 선택해도 되나요?", "acceptedAnswer": {"@type": "Answer", "text": "이수 자체보다 그 과목에서 무엇을 했는지가 중요합니다. 감당 가능한 범위에서 도전 과목을 하나 넣는 전략을 권합니다."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "홈", "item": "https://mybest-next-edu.netlify.app/"}, {"@type": "ListItem", "position": 2, "name": "진단 소개", "item": "https://mybest-next-edu.netlify.app/d/"}, {"@type": "ListItem", "position": 3, "name": "고교학점제 과목 추천", "item": "https://mybest-next-edu.netlify.app/d/subject_rec.html"}]}</script>
 </head>
 <body>
 <div class="wrap">
@@ -63,7 +78,7 @@ h1{font-size:26px;font-weight:800;line-height:1.32;margin:14px 0 8px}
     <h1>고교학점제 과목 추천</h1>
     <p class="lead">계열 선택 → 2022 개정 교육과정 추천 과목 조합</p>
     <div class="cta">
-      <a class="btn go" href="/">지금 진단 시작 →</a>
+      <a class="btn go" href="/?view=quiz&amp;slug=subject_rec">지금 진단 시작 →</a>
       <a class="btn ghost" href="/sample.html">결과 샘플 보기</a>
     </div>
     <p class="note">100% 무료 · 별도 설치 없이 바로 진행</p>
@@ -85,8 +100,13 @@ h1{font-size:26px;font-weight:800;line-height:1.32;margin:14px 0 8px}
     <p>마이베스트 NEXT의 결과 보고서는 또래·전국 비교와 영역별 해설을 담아, 단순한 점수가 아니라 '무엇을 어떻게 해볼지'를 안내합니다. 실제 결과지가 궁금하다면 <a href="/sample.html" style="color:var(--vio);font-weight:700">결과 샘플</a>을 먼저 살펴보세요.</p>
   </div>
 
-  <div class="cta">
-    <a class="btn go" href="/">지금 진단 시작 →</a>
+  
+<div class="sec"><h2>이런 고민이 있다면</h2><ul class="ul"><li>고교학점제 선택과목을 무엇으로 채워야 할지 모르겠다</li><li>가고 싶은 학과가 요구하는 과목을 모르겠다</li><li>우리 학교에 원하는 과목이 개설되지 않았다</li><li>선배 말과 선생님 말이 달라 혼란스럽다</li><li>선택을 잘못하면 되돌릴 수 없을까 봐 두렵다</li></ul></div>
+<div class="sec"><h2>결과를 이렇게 활용해요</h2><ul class="ul"><li>계열·학과와 연결된 과목 조합을 근거와 함께 받는다</li><li>미개설 과목의 대체 경로를 미리 확인한다</li><li>선택 과목을 학생부 활동·탐구 주제로 이어 붙인다</li><li>선택 근거를 문서로 남겨 나중에 설명할 수 있게 한다</li><li>2학년 선택이 3학년 선택으로 어떻게 이어지는지 본다</li></ul></div>
+<div class="sec"><h2>자주 묻는 질문</h2><details class="fq"><summary>고교학점제 과목 선택은 언제 정하나요?</summary><p>보통 고1 2학기에 2학년 과목을, 고2에 3학년 과목을 정합니다. 그 전에 계열 방향을 한 번 확인해두면 훨씬 수월합니다.</p></details><details class="fq"><summary>학과가 정해지지 않아도 쓸 수 있나요?</summary><p>네. 계열 수준의 방향만 있어도 과목 조합을 좁힐 수 있습니다.</p></details><details class="fq"><summary>추천 과목이 학교에 없으면요?</summary><p>대체 가능한 과목과 학교 밖 이수(공동교육과정 등) 방향을 함께 안내합니다.</p></details><details class="fq"><summary>성적이 낮아도 상위 과목을 선택해도 되나요?</summary><p>이수 자체보다 그 과목에서 무엇을 했는지가 중요합니다. 감당 가능한 범위에서 도전 과목을 하나 넣는 전략을 권합니다.</p></details></div>
+<div class="sec"><h2>함께 보면 좋은 진단</h2><div class="relg"><a class="relc" href="/d/hs_series.html"><b>고등 계열성향 진단</b><span>함께 보면 좋아요</span></a><a class="relc" href="/d/roadmap.html"><b>학생부 로드맵 진단</b><span>함께 보면 좋아요</span></a><a class="relc" href="/d/inquiry.html"><b>과제탐구 준비도 진단</b><span>함께 보면 좋아요</span></a></div></div>
+<div class="cta">
+    <a class="btn go" href="/?view=quiz&amp;slug=subject_rec">지금 진단 시작 →</a>
     <a class="btn ghost" href="/d/">다른 진단 둘러보기</a>
   </div>
 

@@ -48,7 +48,22 @@ h1{font-size:26px;font-weight:800;line-height:1.32;margin:14px 0 8px}
 .foot{text-align:center;font-size:11.5px;color:#9499AD;margin-top:30px;line-height:1.7}
 .foot a{color:#7A7E9A;text-decoration:none}
 @media(min-width:560px){.cta{flex-direction:row}.cta .btn{flex:1}}
+
+.ul{margin:8px 0 0;padding-left:20px}.ul li{font-size:15px;line-height:1.85;color:#555B72;margin-bottom:4px}
+.fq{border:1px solid var(--line,#E8E4F8);border-radius:12px;padding:12px 14px;margin:8px 0;background:#fff}
+.fq summary{font-weight:800;font-size:15px;cursor:pointer;color:#242842}
+.fq p{margin:9px 0 0;font-size:14.5px;line-height:1.8;color:#555B72}
+.relg{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:8px}
+.relc{display:block;border:1px solid var(--line,#E8E4F8);border-radius:14px;padding:13px 14px;background:#fff}
+.relc b{display:block;font-size:14.5px;color:#242842}
+.relc span{display:block;font-size:11.5px;color:#8489A3;margin-top:3px;font-weight:700}
 </style>
+<link rel="stylesheet" href="/assets/onae-responsive.css">
+<link rel="stylesheet" href="/assets/onae-theme.css">
+<script src="/assets/onae-i18n.mybest-next-edu.js"></script>
+<script src="/assets/onae-theme.js" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "이 진단은 심리검사인가요?", "acceptedAnswer": {"@type": "Answer", "text": "아닙니다. 입력한 등급과 학습 전략 체크를 바탕으로 한 참고용 전략 도구입니다."}}, {"@type": "Question", "name": "등급을 정확히 몰라도 되나요?", "acceptedAnswer": {"@type": "Answer", "text": "대략의 등급대만 알아도 방향은 나옵니다. 정확할수록 처방이 구체적입니다."}}, {"@type": "Question", "name": "합격 가능성을 알려주나요?", "acceptedAnswer": {"@type": "Answer", "text": "합격 확률은 제공하지 않습니다. 대신 지금 무엇을 보완하면 위치가 달라지는지를 알려줍니다."}}, {"@type": "Question", "name": "고1도 해도 되나요?", "acceptedAnswer": {"@type": "Answer", "text": "네. 오히려 일찍 할수록 남은 학기가 많아 효과가 큽니다."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "홈", "item": "https://mybest-next-edu.netlify.app/"}, {"@type": "ListItem", "position": 2, "name": "진단 소개", "item": "https://mybest-next-edu.netlify.app/d/"}, {"@type": "ListItem", "position": 3, "name": "대학합격 공부 진단", "item": "https://mybest-next-edu.netlify.app/d/study.html"}]}</script>
 </head>
 <body>
 <div class="wrap">
@@ -63,7 +78,7 @@ h1{font-size:26px;font-weight:800;line-height:1.32;margin:14px 0 8px}
     <h1>대학합격 공부 진단</h1>
     <p class="lead">과목별 등급 입력 → 맞춤 공부 전략 + 2026 입시 환경</p>
     <div class="cta">
-      <a class="btn go" href="/">지금 진단 시작 →</a>
+      <a class="btn go" href="/?view=quiz&amp;slug=study">지금 진단 시작 →</a>
       <a class="btn ghost" href="/sample.html">결과 샘플 보기</a>
     </div>
     <p class="note">100% 무료 · 별도 설치 없이 바로 진행</p>
@@ -85,8 +100,13 @@ h1{font-size:26px;font-weight:800;line-height:1.32;margin:14px 0 8px}
     <p>마이베스트 NEXT의 결과 보고서는 또래·전국 비교와 영역별 해설을 담아, 단순한 점수가 아니라 '무엇을 어떻게 해볼지'를 안내합니다. 실제 결과지가 궁금하다면 <a href="/sample.html" style="color:var(--vio);font-weight:700">결과 샘플</a>을 먼저 살펴보세요.</p>
   </div>
 
-  <div class="cta">
-    <a class="btn go" href="/">지금 진단 시작 →</a>
+  
+<div class="sec"><h2>이런 고민이 있다면</h2><ul class="ul"><li>공부 시간은 많은데 성적이 안 오른다</li><li>어느 과목부터 손대야 할지 우선순위를 모르겠다</li><li>목표 대학 대비 지금 위치를 모르겠다</li><li>열심히는 하는데 방법이 맞는지 모르겠다</li><li>친구와 같은 시간을 써도 결과가 다르다</li></ul></div>
+<div class="sec"><h2>결과를 이렇게 활용해요</h2><ul class="ul"><li>과목별 등급 분포에서 가장 효율 높은 한 과목을 고른다</li><li>약한 과목의 원인을 학습 전략 축과 교차해 확인한다</li><li>4주 단위 실행 계획으로 바꿔 바로 시작한다</li><li>학습 시간이 아니라 학습 방식을 바꿀 지점을 찾는다</li><li>다음 시험까지 남은 주차를 역산해 계획을 짠다</li></ul></div>
+<div class="sec"><h2>자주 묻는 질문</h2><details class="fq"><summary>이 진단은 심리검사인가요?</summary><p>아닙니다. 입력한 등급과 학습 전략 체크를 바탕으로 한 참고용 전략 도구입니다.</p></details><details class="fq"><summary>등급을 정확히 몰라도 되나요?</summary><p>대략의 등급대만 알아도 방향은 나옵니다. 정확할수록 처방이 구체적입니다.</p></details><details class="fq"><summary>합격 가능성을 알려주나요?</summary><p>합격 확률은 제공하지 않습니다. 대신 지금 무엇을 보완하면 위치가 달라지는지를 알려줍니다.</p></details><details class="fq"><summary>고1도 해도 되나요?</summary><p>네. 오히려 일찍 할수록 남은 학기가 많아 효과가 큽니다.</p></details></div>
+<div class="sec"><h2>함께 보면 좋은 진단</h2><div class="relg"><a class="relc" href="/d/track_fit.html"><b>전형 적합도 진단</b><span>함께 보면 좋아요</span></a><a class="relc" href="/d/roadmap.html"><b>학생부 로드맵 진단</b><span>함께 보면 좋아요</span></a><a class="relc" href="/d/study_manage.html"><b>공부관리 진단</b><span>함께 보면 좋아요</span></a></div></div>
+<div class="cta">
+    <a class="btn go" href="/?view=quiz&amp;slug=study">지금 진단 시작 →</a>
     <a class="btn ghost" href="/d/">다른 진단 둘러보기</a>
   </div>
 

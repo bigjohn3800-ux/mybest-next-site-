@@ -48,7 +48,22 @@ h1{font-size:26px;font-weight:800;line-height:1.32;margin:14px 0 8px}
 .foot{text-align:center;font-size:11.5px;color:#9499AD;margin-top:30px;line-height:1.7}
 .foot a{color:#7A7E9A;text-decoration:none}
 @media(min-width:560px){.cta{flex-direction:row}.cta .btn{flex:1}}
+
+.ul{margin:8px 0 0;padding-left:20px}.ul li{font-size:15px;line-height:1.85;color:#555B72;margin-bottom:4px}
+.fq{border:1px solid var(--line,#E8E4F8);border-radius:12px;padding:12px 14px;margin:8px 0;background:#fff}
+.fq summary{font-weight:800;font-size:15px;cursor:pointer;color:#242842}
+.fq p{margin:9px 0 0;font-size:14.5px;line-height:1.8;color:#555B72}
+.relg{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:8px}
+.relc{display:block;border:1px solid var(--line,#E8E4F8);border-radius:14px;padding:13px 14px;background:#fff}
+.relc b{display:block;font-size:14.5px;color:#242842}
+.relc span{display:block;font-size:11.5px;color:#8489A3;margin-top:3px;font-weight:700}
 </style>
+<link rel="stylesheet" href="/assets/onae-responsive.css">
+<link rel="stylesheet" href="/assets/onae-theme.css">
+<script src="/assets/onae-i18n.mybest-next-edu.js"></script>
+<script src="/assets/onae-theme.js" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "고교 유형 적합도는 무엇을 보나요?", "acceptedAnswer": {"@type": "Answer", "text": "학습 밀도 선호, 자기주도성, 관심 분야 집중도 등을 종합해 유형별 적합도를 봅니다."}}, {"@type": "Question", "name": "결과가 특목고 합격을 보장하나요?", "acceptedAnswer": {"@type": "Answer", "text": "아닙니다. 성향 적합도이지 합격 예측이 아닙니다."}}, {"@type": "Question", "name": "중3에 하면 늦나요?", "acceptedAnswer": {"@type": "Answer", "text": "중2 겨울~중3 초를 권하지만 중3에도 준비 방향을 잡는 데 도움이 됩니다."}}, {"@type": "Question", "name": "특성화고도 다루나요?", "acceptedAnswer": {"@type": "Answer", "text": "네. 일반고 외 진로도 함께 확인할 수 있습니다."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "홈", "item": "https://mybest-next-edu.netlify.app/"}, {"@type": "ListItem", "position": 2, "name": "진단 소개", "item": "https://mybest-next-edu.netlify.app/d/"}, {"@type": "ListItem", "position": 3, "name": "고교 유형 적합도 진단", "item": "https://mybest-next-edu.netlify.app/d/ms_hsfit.html"}]}</script>
 </head>
 <body>
 <div class="wrap">
@@ -63,7 +78,7 @@ h1{font-size:26px;font-weight:800;line-height:1.32;margin:14px 0 8px}
     <h1>고교 유형 적합도 진단</h1>
     <p class="lead">일반고·과학고·외고·자사고 적합도와 진학 로드맵</p>
     <div class="cta">
-      <a class="btn go" href="/">지금 진단 시작 →</a>
+      <a class="btn go" href="/?view=quiz&amp;slug=ms_hsfit">지금 진단 시작 →</a>
       <a class="btn ghost" href="/sample.html">결과 샘플 보기</a>
     </div>
     <p class="note">100% 무료 · 별도 설치 없이 바로 진행</p>
@@ -85,8 +100,13 @@ h1{font-size:26px;font-weight:800;line-height:1.32;margin:14px 0 8px}
     <p>마이베스트 NEXT의 결과 보고서는 또래·전국 비교와 영역별 해설을 담아, 단순한 점수가 아니라 '무엇을 어떻게 해볼지'를 안내합니다. 실제 결과지가 궁금하다면 <a href="/sample.html" style="color:var(--vio);font-weight:700">결과 샘플</a>을 먼저 살펴보세요.</p>
   </div>
 
-  <div class="cta">
-    <a class="btn go" href="/">지금 진단 시작 →</a>
+  
+<div class="sec"><h2>이런 고민이 있다면</h2><ul class="ul"><li>일반고·특목고·자사고 중 어디가 맞을지 모르겠다</li><li>특성화고를 고민하는데 정보가 부족하다</li><li>아이 성향과 학교 분위기가 맞을지 걱정된다</li><li>집 근처 학교와 원하는 학교가 다르다</li><li>아이가 원하는 학교와 부모 생각이 다르다</li></ul></div>
+<div class="sec"><h2>결과를 이렇게 활용해요</h2><ul class="ul"><li>학교 유형별 적합도를 성향·학습 스타일과 함께 본다</li><li>지원 전 준비해야 할 항목을 확인한다</li><li>고입 소개서 준비도와 이어 계획을 세운다</li><li>학교 이름이 아니라 학습 환경 조건으로 비교한다</li><li>가족이 각자 중요하게 보는 기준을 맞춰본다</li></ul></div>
+<div class="sec"><h2>자주 묻는 질문</h2><details class="fq"><summary>고교 유형 적합도는 무엇을 보나요?</summary><p>학습 밀도 선호, 자기주도성, 관심 분야 집중도 등을 종합해 유형별 적합도를 봅니다.</p></details><details class="fq"><summary>결과가 특목고 합격을 보장하나요?</summary><p>아닙니다. 성향 적합도이지 합격 예측이 아닙니다.</p></details><details class="fq"><summary>중3에 하면 늦나요?</summary><p>중2 겨울~중3 초를 권하지만 중3에도 준비 방향을 잡는 데 도움이 됩니다.</p></details><details class="fq"><summary>특성화고도 다루나요?</summary><p>네. 일반고 외 진로도 함께 확인할 수 있습니다.</p></details></div>
+<div class="sec"><h2>함께 보면 좋은 진단</h2><div class="relg"><a class="relc" href="/d/hs_essay.html"><b>고입 자기소개서 준비도</b><span>함께 보면 좋아요</span></a><a class="relc" href="/d/ms_series.html"><b>중학 계열성향 진단</b><span>함께 보면 좋아요</span></a><a class="relc" href="/d/ms_study.html"><b>중학 공부습관 진단</b><span>함께 보면 좋아요</span></a></div></div>
+<div class="cta">
+    <a class="btn go" href="/?view=quiz&amp;slug=ms_hsfit">지금 진단 시작 →</a>
     <a class="btn ghost" href="/d/">다른 진단 둘러보기</a>
   </div>
 

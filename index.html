@@ -4,12 +4,12 @@
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-3CGHX7BVM9"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-3CGHX7BVM9');</script>
 <title>마이베스트 NEXT — 나의 가능성 진단</title>
-<meta name="description" content="초·중·고 학생을 위한 진로·진학·공부·미래역량 진단 26종 + 맞춤 성장 가이드와 A4·B4 상담 보고서. 45,000명이 활용한 마이베스트의 다음 진단.">
+<meta name="description" content="초·중·고 학생을 위한 진로·진학·공부·미래역량 진단 27종 + 맞춤 성장 가이드와 A4·B4 상담 보고서. 구 마이베스트 누적 45,000명 운영 경험을 이어받은 후속 진단.">
 <!-- og:* (B7) 카카오톡·페이스북·스레드 링크 미리보기 -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="마이베스트 NEXT">
 <meta property="og:title" content="마이베스트 NEXT — 나의 가능성 진단">
-<meta property="og:description" content="초·중·고 학생을 위한 진로·진학·공부·미래역량 진단 26종 + 맞춤 성장 가이드와 상담 보고서. 무료로 시작하세요.">
+<meta property="og:description" content="초·중·고 학생을 위한 진로·진학·공부·미래역량 진단 27종 + 맞춤 성장 가이드와 상담 보고서. 무료로 시작하세요.">
 <meta property="og:url" content="https://mybest-next-edu.netlify.app/">
 <meta property="og:image" content="https://mybest-next-edu.netlify.app/og-default.png">
 <meta property="og:image:width" content="1200">
@@ -17,7 +17,7 @@
 <meta property="og:locale" content="ko_KR">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="마이베스트 NEXT — 나의 가능성 진단">
-<meta name="twitter:description" content="초·중·고 진로·진학·공부·미래역량 진단 26종 + 맞춤 성장 가이드. 무료로 시작하세요.">
+<meta name="twitter:description" content="초·중·고 진로·진학·공부·미래역량 진단 27종 + 맞춤 성장 가이드. 무료로 시작하세요.">
 <meta name="twitter:image" content="https://mybest-next-edu.netlify.app/og.png">
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link rel="preconnect" href="https://images.unsplash.com">
@@ -41,6 +41,14 @@ body{font-family:Pretendard,-apple-system,sans-serif;background:radial-gradient(
 .app{max-width:640px;margin:0 auto;padding:24px 18px 70px}
 .logo{font-weight:800;letter-spacing:.1em;font-size:14px;color:var(--vio-text);cursor:pointer}
 .logo span{color:var(--mint-text)}
+/* [F-PATCH 2026-08-02 · M-20] 모바일 상단 로고 줄바꿈 방지 */
+.topbar .logo{white-space:nowrap}
+.brandwrap{min-width:0;display:flex;align-items:center;gap:8px;flex:0 1 auto}
+@media(max-width:430px){
+ .topbar .logo{font-size:12.5px;letter-spacing:.05em}
+ .topbar .backlink{padding:5px 8px;font-size:11.5px}
+}
+@media(max-width:360px){ .topbar .logo{font-size:11.5px;letter-spacing:.02em} }
 .topbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:18px}
 .topbar .who{text-align:right}
 .topbar .who{font-size:12px;color:#7A7E9A}
@@ -191,6 +199,199 @@ td{padding:7px 8px;border-bottom:1px solid #EEE}
 .wk{font-size:15px;font-weight:800;color:var(--text);margin:20px 2px 12px}
 .wk span{font-size:11.5px;color:#A9ACC4;font-weight:600;margin-left:6px}
 .chips{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+/* [F-PATCH 2026-08-01] 학년 게이트 · 진행 스트립 */
+.gradeGate{border:2px solid #ECEAFB;border-radius:18px;padding:18px 18px 16px;margin:0 0 16px;background:linear-gradient(135deg,#FBFAFF,#F5F3FF)}
+.gradeGate h4{margin:0 0 4px;font-size:17px;color:#23284A}
+.gradeGate p{margin:0 0 13px;font-size:13px;color:#7A7E9A}
+.ggBtns{display:flex;gap:10px;flex-wrap:wrap}
+.ggBtn{flex:1 1 30%;min-width:96px;border:2px solid #DAD4FB;background:#fff;border-radius:14px;padding:13px 10px;font-family:inherit;font-size:15px;font-weight:800;color:#4B3FBB;cursor:pointer;transition:.15s}
+.ggBtn:hover{background:#F3F0FF;transform:translateY(-1px)}
+.ggBtn small{display:block;font-size:11px;font-weight:600;color:#8489A3;margin-top:3px}
+.pstrip{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:10px 0 14px;padding:12px 14px;border:1.5px solid #ECEAFB;border-radius:16px;background:#FBFAFF}
+.pstep{display:flex;align-items:center;gap:7px;padding:6px 11px;border-radius:12px;background:#fff;border:1.5px solid #EFEDF9;transition:.15s}
+.pstep .pnum{width:19px;height:19px;border-radius:50%;background:#ECEAFB;color:#6C5CE7;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:none}
+.pstep .ptxt{font-size:12.5px;font-weight:700;color:#5C617C}
+.pstep .pstate{font-size:11px;font-weight:800;color:#A9A5C4}
+.pstep.done{border-color:#B9EDE6;background:#F1FCFA}
+.pstep.done .pnum{background:#00CEC9;color:#fff}
+.pstep.done .ptxt{color:#0A7C77}
+.pstep.done .pstate{color:#0FA9A2}
+.pstep.now{border-color:#FDCB6E;background:#FFF9EC;box-shadow:0 3px 10px rgba(253,203,110,.28)}
+.pstep.now .pnum{background:#FDCB6E;color:#5C4405}
+.pstep.now .ptxt{color:#23284A}
+.pstep.now .pstate{color:#B07B08}
+.parrow{color:#CFC8F2;font-size:15px;font-weight:800}
+.lvMore{display:block;width:100%;margin:6px 0 4px;border:2px dashed #DAD4FB;background:#fff;border-radius:14px;padding:12px;font-family:inherit;font-size:13.5px;font-weight:700;color:#6C5CE7;cursor:pointer}
+.lvMore:hover{background:#F7F5FF}
+/* [F-PATCH 2026-08-02] 진단 코스 (M-09) */
+.csec{margin:0 0 18px}
+.csec>.wk{margin-bottom:10px}
+.cgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(268px,1fr));gap:12px}
+.ccard{border:2px solid #EDEBF7;border-radius:18px;padding:15px 16px 13px;background:#fff;cursor:pointer;transition:.18s;position:relative;overflow:hidden}
+.ccard:hover{border-color:#C9BFFA;transform:translateY(-2px);box-shadow:0 10px 26px rgba(108,92,231,.13)}
+.ccard.cdone{border-color:#B9EDE6;background:linear-gradient(180deg,#F7FDFC,#fff)}
+.ccard .cem{font-size:24px;line-height:1}
+.ccard h4{margin:7px 0 2px;font-size:16px;color:#23284A}
+.ccard .csub{font-size:11.5px;color:#8489A3;font-weight:700}
+.ccard .cdesc{margin:7px 0 9px;font-size:12.3px;color:#5C617C;line-height:1.55}
+.cbar{height:8px;border-radius:5px;background:#F0EEF9;overflow:hidden;margin:2px 0 7px}
+.cbar i{display:block;height:100%;width:0;border-radius:5px;background:linear-gradient(90deg,#6C5CE7,#00CEC9);transition:width .5s}
+.cprog{display:flex;justify-content:space-between;font-size:11px;font-weight:800;color:#7A7E9A;margin-bottom:9px}
+.cprog b{color:#6C5CE7}
+.cchips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:11px}
+.cchip{font-size:10.8px;font-weight:700;border:1px solid #EAE7F5;border-radius:20px;padding:3px 9px;color:#7A7E9A;background:#FBFAFF}
+.cchip.on{border-color:#00CEC9;background:#EAFBF9;color:#0A7C77}
+.cgo{width:100%;border:none;border-radius:12px;padding:10px;font-family:inherit;font-size:13px;font-weight:800;color:#fff;background:linear-gradient(120deg,#6C5CE7,#00CEC9);cursor:pointer}
+.cgo.cfin{background:#F0EEF9;color:#6C5CE7}
+.callBtn{display:block;width:100%;margin:2px 0 16px;border:2px dashed #DAD4FB;background:#fff;border-radius:14px;padding:12px;font-family:inherit;font-size:13.5px;font-weight:700;color:#6C5CE7;cursor:pointer}
+.callBtn:hover{background:#F7F5FF}
+/* [F-PATCH 2026-08-02 · M-10] 성장 카르테 */
+.karte{border:2px solid #E4DFFB;border-radius:20px;overflow:hidden;background:#fff;margin:0 0 16px;box-shadow:0 8px 26px rgba(108,92,231,.10)}
+.karte .kh{background:linear-gradient(120deg,#6C5CE7,#00CEC9);color:#fff;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.karte .kh b{font-size:15.5px}
+.karte .kh span{font-size:11.5px;opacity:.92;font-weight:700}
+.krows{padding:4px 18px 10px}
+.krow{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid #F3F1FB}
+.krow:last-child{border-bottom:none}
+.krow .kk{flex:none;width:80px;font-size:11.5px;font-weight:800;color:#8489A3}
+.krow .kv{flex:1;min-width:0;font-size:14px;font-weight:800;color:#23284A;line-height:1.4}
+.krow .kv small{display:block;font-size:11.5px;font-weight:600;color:#7A7E9A;margin-top:2px}
+.krow .kt{flex:none;font-size:11px;font-weight:800;border-radius:20px;padding:4px 11px;background:#F2F0FA;color:#6C5CE7}
+.kup{color:#0FA9A2!important;background:#E9FBF8!important}
+.kdn{color:#C0392B!important;background:#FDEDEA!important}
+.kmini{display:block;height:7px;border-radius:4px;background:#F0EEF9;overflow:hidden;margin-top:6px}
+.kmini i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,#6C5CE7,#00CEC9)}
+.kacts{display:flex;gap:8px;padding:0 18px 16px;flex-wrap:wrap}
+.kacts button{flex:1 1 30%;min-width:104px;border:1.5px solid #E4DFFB;background:#FBFAFF;border-radius:12px;padding:10px;font-family:inherit;font-size:12.5px;font-weight:800;color:#6C5CE7;cursor:pointer}
+.kacts button:hover{background:#F3F0FF}
+.kacts button.kprim{border:none;color:#fff;background:linear-gradient(120deg,#6C5CE7,#00CEC9)}
+/* [F-PATCH 2026-08-02 · M-20-3] 결과 화면 요약 sticky 바 */
+.rsticky{position:fixed;left:0;right:0;top:0;z-index:60;transform:translateY(-110%);transition:transform .22s ease;background:rgba(255,255,255,.96);backdrop-filter:saturate(1.4) blur(8px);border-bottom:1px solid #E7E6F2;box-shadow:0 6px 20px rgba(20,18,50,.08)}
+.rsticky.on{transform:translateY(0)}
+.rsin{max-width:1080px;margin:0 auto;padding:9px 16px;display:flex;align-items:center;gap:11px}
+.rsin .rst{font-size:11px;font-weight:800;color:#6C5CE7;letter-spacing:.3px;flex:none}
+.rsin .rsh{flex:1;min-width:0;font-size:13.5px;font-weight:800;color:#23284A;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rsact{display:flex;gap:6px;flex:none}
+.rsact button{border:1.5px solid #E4DFFB;background:#FBFAFF;border-radius:10px;padding:6px 11px;font-family:inherit;font-size:11.5px;font-weight:800;color:#6C5CE7;cursor:pointer;white-space:nowrap}
+.rsact button:hover{background:#F3F0FF}
+@media(max-width:520px){.rsin{padding:8px 12px;gap:8px}.rsin .rst{display:none}.rsin .rsh{font-size:12.5px}.rsact button{padding:6px 9px;font-size:11px}}
+@media print{.rsticky{display:none!important}}
+/* [F-PATCH 2026-08-02 · N-03] 자기평가 갭 분석 */
+.srwrap{max-width:560px;margin:0 auto}
+.srcard{border:2px solid #E4DFFB;border-radius:22px;padding:26px 24px;background:#fff;box-shadow:0 10px 30px rgba(108,92,231,.10)}
+.srcard h2{margin:0 0 6px;font-size:21px;color:#23284A}
+.srcard .srsub{font-size:13.5px;color:#7A7E9A;line-height:1.65;margin:0 0 22px}
+.srval{text-align:center;font-size:46px;font-weight:900;color:#6C5CE7;line-height:1;margin:8px 0 2px}
+.srval small{font-size:17px;color:#8489A3;font-weight:800}
+.srhint{text-align:center;font-size:12.5px;font-weight:700;color:#8489A3;margin-bottom:16px}
+input.srrange{width:100%;-webkit-appearance:none;height:10px;border-radius:6px;background:linear-gradient(90deg,#EFEDF9,#DCD6FB);outline:none;margin:6px 0 4px}
+input.srrange::-webkit-slider-thumb{-webkit-appearance:none;width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#6C5CE7,#00CEC9);border:3px solid #fff;box-shadow:0 3px 10px rgba(108,92,231,.4);cursor:pointer}
+input.srrange::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:#6C5CE7;border:3px solid #fff;cursor:pointer}
+.srtick{display:flex;justify-content:space-between;font-size:11px;color:#A9A5C4;font-weight:700;margin-bottom:20px}
+.srconf{display:flex;gap:8px;margin:6px 0 22px}
+.srconf button{flex:1;border:2px solid #EDEBF7;background:#FBFAFF;border-radius:13px;padding:11px 6px;font-family:inherit;font-size:13px;font-weight:800;color:#7A7E9A;cursor:pointer}
+.srconf button.on{border-color:#6C5CE7;background:#F3F0FF;color:#4B3FBB}
+.srgo{width:100%;border:none;border-radius:14px;padding:15px;font-family:inherit;font-size:15px;font-weight:800;color:#fff;background:linear-gradient(120deg,#6C5CE7,#00CEC9);cursor:pointer}
+.srskip{display:block;width:100%;margin-top:10px;border:none;background:none;font-family:inherit;font-size:12.5px;font-weight:700;color:#A9A5C4;cursor:pointer}
+.gapc{border:2px solid #E4DFFB;border-radius:18px;overflow:hidden;background:#fff;margin:14px 0}
+.gapc .gh{padding:13px 18px;background:linear-gradient(120deg,#6C5CE7,#00CEC9);color:#fff;font-size:14.5px;font-weight:800}
+.gapb{padding:16px 18px}
+.gaprow{display:flex;align-items:center;gap:11px;margin-bottom:11px}
+.gaprow .gl{flex:none;width:78px;font-size:11.5px;font-weight:800;color:#8489A3}
+.gaptrack{flex:1;height:12px;border-radius:7px;background:#F0EEF9}
+.gaptrack i{display:block;height:100%;border-radius:7px}
+.gaprow .gv{flex:none;width:44px;text-align:right;font-size:13.5px;font-weight:900}
+.gapmsg{border-radius:13px;padding:13px 15px;font-size:13.2px;line-height:1.7;font-weight:600}
+.gap-under{background:#E9FBF8;color:#0A7C77;border:1px solid #B9EDE6}
+.gap-match{background:#F3F0FF;color:#4B3FBB;border:1px solid #DAD4FB}
+.gap-over{background:#FFF8E8;color:#96660A;border:1px solid #F0DBA8}
+/* [F-PATCH 2026-08-02 · M-16] 비회원 체험 동선 */
+.ggov{position:fixed;inset:0;background:rgba(20,20,35,.48);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px}
+.ggm{background:#fff;border-radius:22px;padding:24px 22px;max-width:400px;width:100%;box-shadow:0 20px 60px rgba(20,18,50,.28)}
+.ggh{font-size:16px;font-weight:800;color:#23284A;margin-bottom:6px}
+.ggp{font-size:13px;line-height:1.7;color:#7A7E9A;margin:0 0 16px}
+.ggb{display:block;width:100%;text-align:left;border:2px solid #EDEBF7;background:#FBFAFF;border-radius:15px;padding:13px 15px;margin-bottom:9px;font-family:inherit;cursor:pointer;transition:.15s}
+.ggb:hover{border-color:#C9BFFA;background:#F5F2FF}
+.ggb b{display:block;font-size:14px;color:#23284A}
+.ggb small{display:block;font-size:11.5px;color:#8489A3;font-weight:700;margin-top:3px}
+.ggb.prim{border-color:#6C5CE7;background:linear-gradient(120deg,#F3F0FF,#EAFBF9)}
+.ggb.ghost{border-style:dashed}
+.ggx{display:block;width:100%;border:none;background:none;font-family:inherit;font-size:12.5px;font-weight:700;color:#A9A5C4;cursor:pointer;margin-top:4px}
+.gpwrap{max-width:560px;margin:0 auto}
+.gpbar{height:7px;border-radius:5px;background:#F0EEF9;overflow:hidden;margin-bottom:18px}
+.gpbar i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,#6C5CE7,#00CEC9);transition:width .35s}
+.gptag{font-size:11.5px;font-weight:800;color:#6C5CE7;letter-spacing:.3px;margin-bottom:4px}
+.gptitle{font-size:17px;margin:0 0 18px;color:#8489A3;font-weight:800}
+.gpq{font-size:19px;font-weight:800;line-height:1.55;color:#23284A;margin-bottom:20px}
+.gpopts{display:flex;flex-direction:column;gap:9px}
+.gqo{border:2px solid #EDEBF7;background:#fff;border-radius:15px;padding:15px;font-family:inherit;font-size:15px;font-weight:800;color:#4C5170;cursor:pointer;transition:.15s}
+.gqo:hover{border-color:#6C5CE7;background:#F5F2FF;color:#4B3FBB}
+.gpskip{display:block;width:100%;margin-top:18px;border:none;background:none;font-family:inherit;font-size:12.5px;font-weight:700;color:#A9A5C4;cursor:pointer}
+.gpdone{text-align:center;border:2px solid #E4DFFB;border-radius:22px;padding:30px 22px;background:#fff}
+.gpemo{font-size:42px}
+.gpdone h2{font-size:21px;margin:10px 0 8px;color:#23284A}
+.gpdone p{font-size:13.5px;line-height:1.75;color:#7A7E9A;margin:0 0 18px}
+.gpcards{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.gpc{border:1px solid #EDEBF7;border-radius:13px;padding:12px 14px;background:#FBFAFF;text-align:left}
+.gpc b{display:block;font-size:13.5px;color:#23284A}
+.gpc span{display:block;font-size:11.5px;color:#8489A3;font-weight:700;margin-top:2px}
+.gpgo{width:100%;border:none;border-radius:14px;padding:15px;font-family:inherit;font-size:15px;font-weight:800;color:#fff;background:linear-gradient(120deg,#6C5CE7,#00CEC9);cursor:pointer}
+.gpback{width:100%;margin-top:9px;border:1.5px solid #E4DFFB;background:#fff;border-radius:13px;padding:12px;font-family:inherit;font-size:13px;font-weight:800;color:#6C5CE7;cursor:pointer}
+.gpnote{font-size:11.5px;color:#A9A5C4;font-weight:700;margin:12px 0 0!important}
+/* [FIX-S1] Chart 대체 표 */
+.cfb{border:1.5px solid #E4DFFB;border-radius:14px;padding:14px 16px;background:#FBFAFF;margin:8px 0}
+.cfbh{font-size:12px;font-weight:800;color:#8489A3;margin-bottom:10px}
+.cfbrow{display:flex;align-items:center;gap:10px;padding:5px 0}
+.cfbl{flex:none;width:86px;font-size:12.5px;font-weight:700;color:#23284A}
+.cfbt{flex:1;height:9px;border-radius:5px;background:#EFEDF9}
+.cfbt i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,#6C5CE7,#00CEC9)}
+.cfbv{flex:none;width:38px;text-align:right;font-size:12.5px;font-weight:800;color:#6C5CE7}
+/* [FIX-S2] 쿠키 배너가 모바일 화면 42%를 가리던 문제 — 높이 제한 + 스크롤 */
+@media(max-width:640px){
+ #ls-banner{max-height:26vh!important}
+ #ls-banner>*{max-height:26vh;overflow:auto;-webkit-overflow-scrolling:touch}
+ #ls-banner p,#ls-banner li,#ls-banner label{font-size:11.5px!important;line-height:1.5!important}
+ #ls-banner button{padding:8px 12px!important;font-size:12px!important}
+}
+/* [FIX-S5] 결과 액션 위계 */
+.actionbar .ract1{display:block;width:100%;text-align:center;padding:15px;font-size:15px;margin-bottom:9px}
+.actionbar .ract1 small{display:block;font-size:11.5px;font-weight:600;opacity:.85;margin-top:3px}
+.actionbar .ract2{display:flex;gap:8px;margin-bottom:10px}
+.actionbar .ract2 .btn{flex:1;text-align:center}
+.ractmore{border:1.5px dashed #E4DFFB;border-radius:13px;background:#FBFAFF}
+.ractmore summary{padding:11px 14px;font-size:12.5px;font-weight:800;color:#6C5CE7;cursor:pointer;list-style:none}
+.ractmore summary::-webkit-details-marker{display:none}
+.ractmore summary::after{content:' ▾'}
+.ractmore[open] summary::after{content:' ▴'}
+.ract3{display:flex;flex-direction:column;gap:7px;padding:0 12px 12px}
+.ract3 .btn{width:100%;text-align:center}
+/* [FIX-S3] 모바일 진단 카드 리스트형 축소 — 카드 1장 280px → 약 132px */
+@media(max-width:640px){
+ .vgrid{grid-template-columns:1fr!important;gap:9px!important}
+ .vcard{display:flex;align-items:stretch;min-height:0}
+ .vcard .vtop{flex:none;width:96px;min-height:0;border-radius:16px 0 0 16px}
+ .vcard .vph{height:100%}
+ .vcard .vmed{transform:scale(.72)}
+ .vcard .stepb,.vcard .catb{font-size:9.5px;padding:2px 6px}
+ .vcard .vbody{flex:1;min-width:0;padding:11px 13px}
+ .vcard .vbody h3{font-size:14px;margin:0 0 3px}
+ .vcard .vbody p{font-size:11.8px;line-height:1.5;margin:0 0 5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+ .vcard .aud2{font-size:10.5px}
+ .vcard .vchips{gap:4px}
+ .vcard .vchip{font-size:10px;padding:2px 7px}
+}
+/* [F-PATCH 2026-08-02 · M-18] 재진단 리마인드 배너 */
+.rmb{display:flex;align-items:center;gap:14px;border:2px solid #F5DDA8;border-radius:18px;padding:14px 16px;margin:0 0 14px;background:linear-gradient(120deg,#FFFCF3,#FFF7E6);box-shadow:0 6px 20px rgba(232,169,60,.14)}
+.rmb.due{border-color:#7BE0D6;background:linear-gradient(120deg,#F4FDFC,#E9FBF8);box-shadow:0 6px 20px rgba(15,169,162,.14)}
+.rmb .rmi{flex:none;width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:21px;background:#fff;border:1.5px solid #F0DBA8}
+.rmb.due .rmi{border-color:#B9EDE6}
+.rmb .rmt{flex:1;min-width:0}
+.rmb .rmt b{display:block;font-size:14.5px;color:#23284A;line-height:1.4}
+.rmb .rmt span{display:block;font-size:12px;color:#8489A3;font-weight:700;margin-top:3px;line-height:1.5}
+.rmb .rmgo{flex:none;border:none;border-radius:12px;padding:10px 15px;font-family:inherit;font-size:12.5px;font-weight:800;color:#fff;background:linear-gradient(120deg,#E8A93C,#F0C060);cursor:pointer;white-space:nowrap}
+.rmb.due .rmgo{background:linear-gradient(120deg,#6C5CE7,#00CEC9)}
+.rmb .rmx{flex:none;border:none;background:none;font-size:17px;color:#C4C0D4;cursor:pointer;padding:0 2px;line-height:1}
+@media(max-width:520px){.rmb{flex-wrap:wrap}.rmb .rmt{flex:1 1 100%;order:2}.rmb .rmgo{order:3;flex:1 1 100%}}
 .chip{border:2px solid #ECEAFB;background:#fff;border-radius:var(--r-pill);padding:7px 16px;font-family:inherit;font-size:13px;font-weight:700;color:#7A7E9A;cursor:pointer;transition:.15s}
 .chip.on,.chip:hover{background:var(--vio);border-color:var(--vio);color:#fff}
 .sxgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:6px}
@@ -512,7 +713,7 @@ if(window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches&&window.
   "url": "https://mybest-next-edu.netlify.app/",
   "logo": "https://mybest-next-edu.netlify.app/og-default.png",
   "parentOrganization": { "@type": "Organization", "name": "㈜가르치는사람들" },
-  "description": "초·중·고 학생을 위한 진로·진학·공부·미래역량 진단 26종과 맞춤 성장 리포트를 제공하는 온라인 진로교육 플랫폼."
+  "description": "초·중·고 학생을 위한 진로·진학·공부·미래역량 진단 27종과 맞춤 성장 리포트를 제공하는 온라인 진로교육 플랫폼."
 }
 </script>
 <script type="application/ld+json">
@@ -520,12 +721,12 @@ if(window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches&&window.
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
-    {"@type":"Question","name":"마이베스트 NEXT는 무엇인가요?","acceptedAnswer":{"@type":"Answer","text":"초·중·고 학생을 위한 진로·진학·공부·미래역량 진단 26종과 맞춤 성장 리포트를 제공하는 온라인 진로교육 플랫폼이다. 학교/학급 단위 도입뿐 아니라 개인 이용자도 이용할 수 있다."}},
+    {"@type":"Question","name":"마이베스트 NEXT는 무엇인가요?","acceptedAnswer":{"@type":"Answer","text":"초·중·고 학생을 위한 진로·진학·공부·미래역량 진단 27종과 맞춤 성장 리포트를 제공하는 온라인 진로교육 플랫폼이다. 학교/학급 단위 도입뿐 아니라 개인 이용자도 이용할 수 있다."}},
     {"@type":"Question","name":"진로심리검사는 꼭 필요한가요?","acceptedAnswer":{"@type":"Answer","text":"한국직업능력연구원의 2025년 초·중등 진로교육 현황조사에 따르면 중학교 98.3%, 고등학교 98.9%가 이미 진로심리검사를 실시하고 있어, 진로검사는 사실상 보편적인 진로교육 절차로 자리잡았다."}},
     {"@type":"Question","name":"고등학생들은 대학 진학을 얼마나 희망하나요?","acceptedAnswer":{"@type":"Answer","text":"같은 조사에서 고등학생의 대학 진학 희망 비율은 2023년 77.3%에서 2025년 64.9%로 매년 감소하고 취업 희망 비율은 늘고 있어, 조기에 적성을 파악하는 진단의 중요성이 커지고 있다."}},
     {"@type":"Question","name":"학급코드 없이 개인적으로도 이용할 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"가능하다. 학급코드 없이 이름과 4자리 PIN만으로 개인 결과함을 만들어 무료 진단 8종(고등/중학 계열성향, 고교 과목추천, 학생부 로드맵, 공부습관, 면접 준비도, 고교 유형, 초등 진로탐험 등)을 바로 이용할 수 있다."}},
     {"@type":"Question","name":"진단 결과는 무엇을 알려주나요?","acceptedAnswer":{"@type":"Answer","text":"계열·적성 성향, 학습습관, 미래역량 등을 진단하고 A4 요약·B4 상세 보고서(선택 시 10쪽 종합 보고서)로 제공하며, 학급 단위 이용 시 또래·전국 규준과 비교한 결과도 함께 제공한다."}},
-    {"@type":"Question","name":"비용이 드나요?","acceptedAnswer":{"@type":"Answer","text":"26종 진단 중 통계적으로 검증된 계열성향 검사(고1 α=0.951, 중학 α=0.930)를 포함한 기본 진단과 A4·B4 리포트는 무료다."}}
+    {"@type":"Question","name":"비용이 드나요?","acceptedAnswer":{"@type":"Answer","text":"26종 진단과 기본 결과·차트·요약은 가입 후 무료로 이용한다. 통계적으로 검증된 계열성향 검사(고1 α=0.951, 중학 α=0.930)도 무료 진단에 포함된다. 정식 A4·B4 상담 보고서와 통합 포트폴리오 PDF, 학부모용 리포트는 유료 플랜에서 제공한다."}}
   ]
 }
 </script>
@@ -533,22 +734,25 @@ if(window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches&&window.
   data-site="mybest-next" data-key="pub_live_mybest-next_b5a2ddfa68ca7879"
   data-api="https://growth-engine-hub.netlify.app/api/engine"
   data-growth-definition="마이베스트 NEXT는 초·중·고 학생을 위한 진로·진학·공부·미래역량 진단과 맞춤 성장 리포트를 제공하는 온라인 진로교육 플랫폼이다."
-  data-growth-quickanswer="마이베스트 NEXT는 26종의 진로·진학·공부·미래역량 진단과 A4·B4 상담 보고서를 무료로 제공한다. 한국직업능력연구원의 2025년 조사에 따르면 중·고교 98% 이상이 이미 진로심리검사를 실시한다."
+  data-growth-quickanswer="마이베스트 NEXT는 26종의 진로·진학·공부·미래역량 진단을 가입 후 무료로 제공하고, 정식 A4·B4 상담 보고서와 통합 포트폴리오는 유료 플랜에서 제공한다. 한국직업능력연구원의 2025년 조사에 따르면 중·고교 98% 이상이 이미 진로심리검사를 실시한다."
   defer></script>
 <link rel="stylesheet" href="/assets/onae-responsive.css">
 <link rel="stylesheet" href="/assets/onae-theme.css">
 <script src="/assets/onae-i18n.mybest-next-edu.js"></script>
 <script src="/assets/onae-theme.js" defer></script>
-</head><body><div class="app">
+
+  <link rel="canonical" href="https://mybest-next-edu.netlify.app/">
+</head><body>
+<a href="#main" class="skip-to-main">본문 바로가기</a><div class="app">
 <div class="topbar"><div class="brandwrap"><button id="backBtn" class="backlink noprint" onclick="appBack()" style="display:none">← 뒤로</button><div class="logo" onclick="go('home')">MY BEST <span>NEXT</span></div></div>
 <nav class="mnav noprint"><a onclick="go('home')">홈</a><a class="mktg" onclick="go('consult')">컨설팅 진단</a><a class="mktg" href="/sample.html">샘플 1분 확인</a><a class="mktg" onclick="go('coaching')">선생님 코칭</a><a class="mktg" onclick="go('pricing')">요금·도입</a><a class="mktg" href="/guide.html">도입 안내</a><a class="authnav" style="display:none" onclick="go('dash')">진단</a><a class="authnav" style="display:none" onclick="go('mypage')">마이페이지</a><a class="authnav" style="display:none" onclick="go('profile')">통합리포트</a><a class="loginpill" onclick="go(S.token?'dash':'login')">로그인</a></nav>
 <div class="who" id="who"></div></div>
 <div id="view"></div>
 <div class="tabbar noprint" id="tabbar"></div>
 <div class="foot">
-<div class="flinks noprint"><a href="/terms.html">이용약관</a> · <a href="/privacy.html"><b>개인정보처리방침</b></a> · <a href="/ecommerce.html">사업자정보</a> · <a href="/refund.html">환불규정</a> · <a onclick="go('howto')">활용법</a> · <a onclick="go('quality')">신뢰도</a> · <a href="/sample.html">실제 결과 샘플</a> · <a onclick="go('cs')">문의하기</a> · <a href="/admin.html">관리자</a> · <a onclick="toggleView()" id="viewtgl">🖥 PC 화면 보기</a></div>
-<div style="margin-top:8px;line-height:1.7">(주)가르치는사람들 · 대표 이성훈 · 사업자등록번호 115-87-03727<br>
-서울특별시 강남구 테헤란로70길 12, 402-J913호(대치동) · 문의 onlyjdw3831@gmail.com<br>
+<div class="flinks noprint"><a href="/terms.html">이용약관</a> · <a href="/privacy.html"><b>개인정보처리방침</b></a> · <a href="/ecommerce.html">사업자정보</a> · <a href="/refund.html">환불규정</a> · <a onclick="go('howto')">활용법</a> · <a onclick="go('quality')">신뢰도</a> · <a href="/sample.html">실제 결과 샘플</a> · <a onclick="go('cs')">문의하기</a><span id="adminlink" style="display:none"> · <a href="/admin.html">관리자</a></span> · <a onclick="toggleView()" id="viewtgl">🖥 PC 화면 보기</a></div>
+<div style="margin-top:8px;line-height:1.7">(주)가르치는사람들 · 대표 이성훈 · 사업자등록번호 115-87-03727 · 통신판매업신고 제 2026-서울강남-03605 호<br>
+서울특별시 강남구 테헤란로70길 12, 402-J913호(대치동) · 문의 teachertshare2024@naver.com<br>
 ⓒ My Best NEXT · 살아갈 힘을 기르는 진단 플랫폼</div></div>
 </div>
 <script>
@@ -577,27 +781,36 @@ const SLUG_CAT={hs_series:'진로',ms_series:'진로',es_dream:'진로',future:'
 const STAGE_NO={
  초등:{es_dream:1,es_habit:2,value_work:3,gifted_ready:4,story_writer:5,ai_inquiry:6},
  중등:{ms_series:1,ms_study:2,ms_hsfit:3,hs_essay:4,future:5,value_work:6,story_writer:7,ai_inquiry:8},
- 고등:{hs_series:1,subject_rec:2,study:3,roadmap:4,inquiry:5,interview:6,track_fit:8}
+ 고등:{hs_series:1,subject_rec:2,subject_pick:3,study:4,roadmap:5,inquiry:6,interview:7,track_fit:9}
 };
 const DISPLAY_TITLE={
- ms_study:'중학 공부습관 진단',
- ms_hsfit:'고교 유형 적합도 진단',
- hs_essay:'고입&대입(과기원) 소개서 준비도',
- future:'미래·AI 활용역량 진단',
- value_work:'직업&능력 진단',
- subject_rec:'고교학점제 과목추천',
- study:'대학합격 공부진단',
- interview:'대입 면접 준비도 진단',
- track_fit:'전형적합도 진단',
- study_manage:'공부관리 진단',
+ es_dream:'초등 진로 탐험',
+ es_habit:'초등 공부습관 진단',
+ value_work:'직업가치관 진단',
+ gifted_ready:'초등 영재 준비도 진단',
  story_writer:'AI 동화작가',
  ai_inquiry:'AI 과제탐구',
- study_emotion:'공부정서 진단',
- ai_skill:'AI 활용역량 진단',
- career_mature:'진로성숙도 진단',
+ ms_series:'중등 계열성향 진단',
+ ms_study:'중등 공부습관 진단',
+ ms_hsfit:'고교 유형 적합도 진단',
+ hs_essay:'고입·과기원 소개서 준비도 진단',
  multi_iq:'다중지능 진단',
+ study_emotion:'학습정서·시험불안 진단',
+ career_mature:'진로성숙도 진단',
+ study_manage:'공부관리 진단',
+ hs_series:'고등 계열성향 진단',
+ subject_rec:'고교학점제 과목 추천',
+ subject_pick:'고교학점제 과목 선택 진단',
+ study:'대학합격 공부 진단',
+ roadmap:'학생부 로드맵 진단',
+ inquiry:'과제탐구 준비도 진단',
+ reading:'독서역량 진단',
+ interview:'대입 면접 준비도 진단',
+ track_fit:'전형 적합도 진단',
  admission_nav:'입시전형 내비게이터',
- mock_exam:'모의고사 분석'
+ mock_exam:'모의고사 성적 분석',
+ future:'미래역량 진단',
+ ai_skill:'AI 활용역량 진단'
 };
 const DISPLAY_STEP={
  es:{es_dream:1,es_habit:2,value_work:3,gifted_ready:4,story_writer:5,ai_inquiry:6},
@@ -663,26 +876,415 @@ function vcardHtml(k,d,act,st,i,enabled=true,reason='',lvname='',t=null,plan=nul
   if(d.ent.until) parts.push('~'+esc(String(d.ent.until).slice(5,10).replace('-','/'))+'까지');
   return parts.length?('<span class="tag" style="background:#EEF1FF;color:#3B4BB0;margin-left:6px">⏳ '+parts.join(' · ')+'</span>'):'';
  })();
-  return `<div class="${cls}" data-slug="${k}" style="animation-delay:${i*60}ms"${onclick}><div class="vtop" style="background:linear-gradient(135deg,${(ARTC[k]||['#6C5CE7','#00CEC9']).join(',')})"><img class="vph" loading="lazy" decoding="async" src="${PHOTO[k]||''}?w=640&h=260&fit=crop&q=60&auto=format" onerror="this.remove()" alt=""><div class="vshade"></div><div class="vmed">${ART(k)}</div><span class="stepb">${badge}</span><span class="catb">${d.cat||''}</span>${enabled?'':`<span class="lockb">${esc(reason||'다른 학년')}</span>`}</div><div class="vbody"><h3>${esc(stageTitle(lvname,k,d.title))}${planTag}${entTag}</h3><p>${esc(d.desc)}</p><span class="aud2">${esc(d.audience)}</span>${chipsHtml}</div></div>`;
+  return `<div class="${cls}" data-slug="${k}" style="animation-delay:${i*60}ms"${onclick}><div class="vtop" style="background:linear-gradient(135deg,${(ARTC[k]||['#6C5CE7','#00CEC9']).join(',')})"><img class="vph" loading="lazy" decoding="async" src="${PHOTO[k]||''}?w=640&h=260&fit=crop&q=60&auto=format" onerror="this.remove()" alt=""><div class="vshade"></div><div class="vmed">${ART(k)}</div><span class="stepb">${badge}</span><span class="catb">${d.cat||''}</span>${enabled?'':`<span class="lockb">${esc(reason||'다른 학년')}</span>`}</div><div class="vbody"><h3>${esc(stageTitle(lvname,k,d.title))}${planTag}${entTag}</h3><p>${esc(d.desc)}</p><span class="aud2">${esc(d.audience)}</span>${(typeof normBadge==='function')?normBadge(k):''}${chipsHtml}</div></div>`;
 }
 /* 진단 목록/결과 로딩 스켈레톤 */
 function skeletonGrid(n){n=n||6;let c='';for(let i=0;i<n;i++)c+='<div class="skel-card"><div class="skel skel-thumb"></div><div class="skel skel-line" style="width:70%"></div><div class="skel skel-line" style="width:45%"></div></div>';return `<div class="vgrid">${c}</div>`}
 function skeletonRows(n){n=n||3;let c='';for(let i=0;i<n;i++)c+='<div class="skel-row"><div class="skel skel-line" style="width:55%"></div><div class="skel skel-line" style="width:22%"></div></div>';return c}
+/* [F-PATCH 2026-08-02 · M-16] 비회원 체험 동선
+   기존 문제: 로그인/학급코드 없이 진단을 시작하면 문항을 끝까지 푼 뒤 제출 단계에서야 실패했다.
+   개선: 시작 시점에 안내하고, 실제 문항 3개를 먼저 풀어보게 한 뒤 결과를 위해 가입하도록 유도한다.
+   백엔드 변경 없음(/questions는 token 없이도 호출 가능). 답변은 이 기기에 임시 저장해 가입 후 이어서 쓸 수 있다. */
+const GP_KEY=s=>'myb_pre_'+s;
+function guestGateModal(slug){
+ const t=(S.tests&&S.tests[slug])||{};
+ const nm=String((typeof DISPLAY_TITLE!=='undefined'&&DISPLAY_TITLE[slug])||t.title||'').replace(/^(?:[가-힣]{1,3}\s*\d+[·․]?)+\.\s*/,'');
+ const ov=document.createElement('div'); ov.className='ggov';
+ ov.onclick=e=>{if(e.target===ov)ov.remove()};
+ ov.innerHTML=`<div class="ggm">
+  <div class="ggh">🧭 <b>${esc(nm)}</b> 시작하기</div>
+  <p class="ggp">결과를 저장하고 보고서를 받으려면 입장이 필요해요.<br>어떤 방법으로 시작할까요?</p>
+  <button class="ggb prim" onclick="ggPick('code')"><b>학급코드가 있어요</b><small>선생님께 받은 코드로 입장 · 전체 진단 무료</small></button>
+  <button class="ggb" onclick="ggPick('join')"><b>혼자 이용할래요</b><small>개인 가입 · 무료 진단 8종 바로 이용</small></button>
+  <button class="ggb ghost" onclick="ggPick('try','${slug}')"><b>먼저 3문항만 풀어볼래요</b><small>가입 없이 문항을 직접 확인 · 답변은 저장돼요</small></button>
+  <button class="ggx" onclick="this.closest('.ggov').remove()">닫기</button>
+ </div>`;
+ document.body.appendChild(ov);
+}
+function ggPick(kind,slug){
+ const ov=document.querySelector('.ggov'); if(ov)ov.remove();
+ if(kind==='code')go('join');
+ else if(kind==='join')go('join');
+ else guestPreview(slug);
+}
+async function guestPreview(slug){
+ try{
+  S.page='gpreview';
+  $('#view').innerHTML='<div class="card" style="text-align:center;padding:44px">문항 불러오는 중…</div>';
+  const q=await api('/questions?slug='+encodeURIComponent(slug));
+  const qs=(q&&q.questions?q.questions:[]).slice(0,3);
+  if(!qs.length){go('join');return;}
+  S.gp={slug:slug,i:0,qs:qs,answers:[]};
+  renderGuestQ();
+ }catch(e){ go('join'); }
+}
+function renderGuestQ(){
+ const z=S.gp; if(!z)return;
+ const t=(S.tests&&S.tests[z.slug])||{};
+ const nm=String((typeof DISPLAY_TITLE!=='undefined'&&DISPLAY_TITLE[z.slug])||t.title||'').replace(/^(?:[가-힣]{1,3}\s*\d+[·․]?)+\.\s*/,'');
+ if(z.i>=z.qs.length){ renderGuestEnd(); return; }
+ const q=z.qs[z.i];
+ const opts=['그렇다','보통이다','아니다'].map((o,k)=>`<button class="gqo" onclick="guestAns(${3-k})">${o}</button>`).join('');
+ $('#view').innerHTML=`<div class="gpwrap">
+  <div class="gpbar"><i style="width:${Math.round(z.i/z.qs.length*100)}%"></i></div>
+  <div class="gptag">체험 미리보기 · ${z.i+1} / ${z.qs.length}</div>
+  <h2 class="gptitle">${esc(nm)}</h2>
+  <div class="gpq">${esc(q.q_text||q.text||'')}</div>
+  <div class="gpopts">${opts}</div>
+  <button class="gpskip" onclick="go('join')">바로 가입하고 전체 진단하기 →</button>
+ </div>`;
+ window.scrollTo({top:0});
+}
+function guestAns(v){
+ const z=S.gp; if(!z)return;
+ z.answers[z.i]=v; z.i++;
+ try{localStorage.setItem(GP_KEY(z.slug),JSON.stringify({a:z.answers,at:Date.now()}))}catch(e){}
+ renderGuestQ();
+}
+function renderGuestEnd(){
+ const z=S.gp; if(!z)return;
+ const t=(S.tests&&S.tests[z.slug])||{};
+ const nm=String((typeof DISPLAY_TITLE!=='undefined'&&DISPLAY_TITLE[z.slug])||t.title||'').replace(/^(?:[가-힣]{1,3}\s*\d+[·․]?)+\.\s*/,'');
+ const total=(t.count||t.total||'');
+ $('#view').innerHTML=`<div class="gpwrap">
+  <div class="gpbar"><i style="width:100%"></i></div>
+  <div class="gpdone">
+   <div class="gpemo">🎯</div>
+   <h2>여기까지가 체험이에요</h2>
+   <p>${esc(nm)}${inqJong(nm)?'은':'는'} ${total?esc(String(total))+'문항 전체를 ':''}풀어야 결과가 나와요.<br>
+      지금까지 고른 답은 이 기기에 저장해뒀어요. 입장하면 이어서 진행할 수 있어요.</p>
+   <div class="gpcards">
+    <div class="gpc"><b>📊 결과 보고서</b><span>또래·전국 비교와 영역별 해설</span></div>
+    <div class="gpc"><b>🗂 성장 카르테</b><span>진단 결과가 하나로 이어져요</span></div>
+    <div class="gpc"><b>🔁 재진단 비교</b><span>다시 하면 변화가 자동 비교돼요</span></div>
+   </div>
+   <button class="gpgo" onclick="go('join')">30초 입장하고 결과 받기 →</button>
+   <button class="gpback" onclick="go('consult')">다른 진단 둘러보기</button>
+   <p class="gpnote">학급코드가 있으면 전체 진단을 무료로 이용할 수 있어요.</p>
+  </div></div>`;
+ window.scrollTo({top:0});
+}
+/* [F-PATCH 2026-08-02 · M-18] 재진단 리마인드 배너
+   이메일(Resend) 없이도 리텐션을 만들기 위해, 재진단 권장 시점이 온 진단을 대시보드 최상단에 알린다.
+   RETEST_WEEKS·retestInfoFx 등 기존 로직을 그대로 재사용한다(추가만). */
+function rmbDismissed(slug){
+ try{const v=+(localStorage.getItem('myb_rmb_'+slug)||0);
+  return !!v && (Date.now()-v) < 7*86400000;}catch(e){return false}
+}
+function rmbClose(slug,el){
+ try{localStorage.setItem('myb_rmb_'+slug,String(Date.now()))}catch(e){}
+ const b=el&&el.closest('.rmb'); if(b)b.remove();
+}
+function retestBannerHtml(t,ats){
+ try{
+  const list=(ats||[]).slice().sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+  if(!list.length)return '';
+  const latest={}; list.forEach(a=>{if(!latest[a.test_slug])latest[a.test_slug]=a;});
+  const cand=[];
+  Object.keys(latest).forEach(k=>{
+   if(!t||!t[k])return;
+   if(rmbDismissed(k))return;
+   const ri=retestInfoFx(k,latest[k].created_at);
+   if(!ri)return;
+   if(ri.diff<=7)cand.push({slug:k,ri:ri});
+  });
+  if(!cand.length)return '';
+  cand.sort((a,b)=>a.ri.diff-b.ri.diff);
+  const top=cand[0], more=cand.length-1;
+  const nm=String((typeof DISPLAY_TITLE!=='undefined'&&DISPLAY_TITLE[top.slug])||(t[top.slug]&&t[top.slug].title)||top.slug)
+    .replace(/^(?:[가-힣]{1,3}\s*\d+[·․]?)+\.\s*/,'');
+  const due=top.ri.diff<=0;
+  const when=due?`권장 시점이 ${Math.abs(top.ri.diff)}일 지났어요`:`${top.ri.diff}일 뒤가 권장 시점이에요`;
+  return `<div class="rmb${due?' due':''}">
+   <span class="rmi">${due?'🔁':'⏰'}</span>
+   <span class="rmt"><b>${esc(nm)}, 다시 받아볼 때가 됐어요</b>
+    <span>${esc(when)} · 다시 하면 지난 결과와 자동으로 비교돼요${more>0?` · 다른 ${more}개도 대기 중`:''}</span></span>
+   <button class="rmgo" onclick="cardClickFx('${top.slug}')">${due?'지금 재진단':'미리 보기'}</button>
+   <button class="rmx" onclick="rmbClose('${top.slug}',this)" title="7일간 숨기기">×</button>
+  </div>`;
+ }catch(e){return ''}
+}
+/* [F-PATCH 2026-08-02 · N-03] 자기평가 갭 분석
+   응시 직전 "내가 몇 점일 것 같은가"를 물어 저장하고, 결과 화면에서 실제 점수와의 차이를 보여준다.
+   백엔드 변경 없이 localStorage로 먼저 동작시키고, 이후 mybx_selfrate 테이블로 이관 가능. */
+const SR_KEY=s=>'myb_self_'+s;
+function selfRateGet(slug){try{return JSON.parse(localStorage.getItem(SR_KEY(slug))||'null')}catch(e){return null}}
+function selfRateSave(slug,v,c){try{localStorage.setItem(SR_KEY(slug),JSON.stringify({v:v,c:c,at:Date.now()}))}catch(e){}}
+function selfRateScreen(slug){
+ const t=(S.tests&&S.tests[slug])||{};
+ const nm=String((typeof DISPLAY_TITLE!=='undefined'&&DISPLAY_TITLE[slug])||t.title||'').replace(/^(?:[가-힣]{1,3}\s*\d+[·․]?)+\.\s*/,'');
+ S.page='selfrate';
+ $('#view').innerHTML=`<div class="srwrap"><div class="srcard">
+  <h2>시작 전에 하나만 물어볼게요</h2>
+  <p class="srsub"><b>${esc(nm)}</b><br>이 진단에서 나는 100점 만점에 몇 점쯤 나올 것 같나요?<br>정답은 없어요. 끝나고 실제 결과와 비교해서 보여드릴게요.</p>
+  <div class="srval"><span id="srv">70</span><small>점</small></div>
+  <div class="srhint" id="srh">아마 이 정도일 것 같아요</div>
+  <input class="srrange" id="srr" type="range" min="0" max="100" step="5" value="70" oninput="srUpd(this.value)">
+  <div class="srtick"><span>0 · 전혀 안 될 것 같아</span><span>100 · 아주 잘할 것 같아</span></div>
+  <div style="font-size:12.5px;font-weight:800;color:#8489A3;margin-bottom:4px">얼마나 확신하나요?</div>
+  <div class="srconf" id="src">
+   <button data-c="low" onclick="srConf(this)">잘 모르겠어요</button>
+   <button data-c="mid" class="on" onclick="srConf(this)">그럭저럭</button>
+   <button data-c="high" onclick="srConf(this)">꽤 확실해요</button>
+  </div>
+  <button class="srgo" onclick="srGo('${slug}')">진단 시작하기 →</button>
+  <button class="srskip" onclick="srGo('${slug}',1)">건너뛰고 바로 시작</button>
+ </div></div>`;
+ window.scrollTo({top:0});
+}
+function srUpd(v){const e=$('#srv');if(e)e.textContent=v;
+ const h=$('#srh');if(h)h.textContent=v>=80?'꽤 잘할 것 같아요':(v>=55?'아마 이 정도일 것 같아요':(v>=30?'조금 부족할 것 같아요':'많이 부족할 것 같아요'));}
+function srConf(b){document.querySelectorAll('#src button').forEach(x=>x.classList.remove('on'));b.classList.add('on');}
+function srGo(slug,skip){
+ if(!skip){const r=$('#srr'),c=document.querySelector('#src button.on');
+  selfRateSave(slug, r?+r.value:null, c?c.dataset.c:'mid');}
+ else{try{localStorage.setItem(SR_KEY(slug),JSON.stringify({v:null,c:null,at:Date.now()}))}catch(e){}}
+ startQuiz(slug);
+}
+function gapMetric(r){ if(!r)return null;
+ if(typeof r.pct==='number')return r.pct;
+ if(Array.isArray(r.scores)&&r.scores.length){const mx=Math.max(...r.scores.map(Number));const s2=r.scores.reduce((a,b)=>a+Number(b),0);return mx?Math.round(s2/r.scores.length/mx*100):null;}
+ if(Array.isArray(r.grades)&&r.grades.length){const av=r.grades.reduce((a,b)=>a+Number(b),0)/r.grades.length;return Math.round((9-av)/8*100);}
+ return null;
+}
+function mountGapCard(){
+ try{
+  const v=document.getElementById('view'); if(!v||document.getElementById('gapcard'))return;
+  const slug=(typeof S!=='undefined'&&S.lastResultSlug)||''; if(!slug)return;
+  const sr=selfRateGet(slug); if(!sr||typeof sr.v!=='number')return;
+  const d=window._shareCardD; const act=gapMetric(d&&d.attempt&&d.attempt.result);
+  if(act==null)return;
+  const gap=act-sr.v;
+  const kind=gap>=15?'under':(gap<=-15?'over':'match');
+  const msg={
+   under:`스스로 생각한 것보다 <b>${Math.abs(gap)}점 높게</b> 나왔어요. 자신을 조금 낮춰 보고 있었네요. 잘하고 있는 부분을 더 믿고 밀고 나가도 좋아요.`,
+   match:`스스로 예상한 점수와 <b>거의 비슷하게</b> 나왔어요. 자기 자신을 정확히 보고 있다는 뜻이에요. 이건 생각보다 큰 강점이에요.`,
+   over:`스스로 생각한 것보다 <b>${Math.abs(gap)}점 낮게</b> 나왔어요. 실망할 일이 아니라, 아직 안 채워진 부분이 어디인지 알게 된 거예요. 상세 가이드의 첫 번째 항목부터 시작해 보세요.`
+  }[kind];
+  const conf={low:'잘 모르겠다고 답했어요',mid:'그럭저럭 확신했어요',high:'꽤 확실하다고 답했어요'}[sr.c]||'';
+  const card=document.createElement('div');
+  card.id='gapcard'; card.className='gapc';
+  card.innerHTML=`<div class="gh">🪞 나는 나를 어떻게 보고 있었나</div><div class="gapb">
+   <div class="gaprow"><span class="gl">내 예상</span><span class="gaptrack"><i style="width:${sr.v}%;background:linear-gradient(90deg,#B9AFF5,#6C5CE7)"></i></span><span class="gv" style="color:#6C5CE7">${sr.v}</span></div>
+   <div class="gaprow"><span class="gl">실제 결과</span><span class="gaptrack"><i style="width:${act}%;background:linear-gradient(90deg,#7BE0D6,#0FA9A2)"></i></span><span class="gv" style="color:#0FA9A2">${act}</span></div>
+   <div class="gapmsg gap-${kind}">${msg}</div>
+   <div style="font-size:11.5px;color:#A9A5C4;font-weight:700;margin-top:9px">응시 전 ${conf} · 이 비교는 이 기기에만 저장돼요</div>
+  </div>`;
+  const hero=v.querySelector('.hero');
+  if(hero&&hero.nextSibling)hero.parentNode.insertBefore(card,hero.nextSibling);
+  else v.insertBefore(card,v.firstChild);
+ }catch(e){}
+}
+/* [F-PATCH 2026-08-02 · M-20-3] 결과 화면 스크롤 시 핵심 결과 상단 고정 (기존 렌더 함수 무수정) */
+function mountResultSticky(){
+ try{
+  const v=document.getElementById('view'); if(!v)return;
+  const hero=v.querySelector('.hero'), h2=hero&&hero.querySelector('h2');
+  if(!hero||!h2){const o=document.getElementById('rsticky');if(o)o.remove();return;}
+  let bar=document.getElementById('rsticky');
+  if(!bar){bar=document.createElement('div');bar.id='rsticky';bar.className='rsticky noprint';document.body.appendChild(bar);}
+  const slug=(typeof S!=='undefined'&&S.lastResultSlug)||'';
+  const nm=slug?String((typeof DISPLAY_TITLE!=='undefined'&&DISPLAY_TITLE[slug])||'').replace(/^(?:[가-힣]{1,3}\s*\d+[·․]?)+\.\s*/,''):'';
+  const btns=[...v.querySelectorAll('button,a')].filter(b=>/보고서|리포트|공유/.test(b.textContent||''));
+  const acts=btns.slice(0,2).map((b,i)=>`<button data-rsi="${i}">${esc(b.textContent.trim().slice(0,7))}</button>`).join('')+`<button data-rstop="1">위로 ↑</button>`;
+  bar.innerHTML=`<div class="rsin"><span class="rst">${esc(nm||'결과')}</span><span class="rsh">${esc(h2.textContent.trim())}</span><div class="rsact">${acts}</div></div>`;
+  bar.querySelectorAll('[data-rsi]').forEach(el=>{const i=+el.dataset.rsi;
+   el.onclick=()=>{const b=btns[i]; if(b){ if(b.tagName==='A'&&b.getAttribute('href')){location.href=b.getAttribute('href');} else b.click(); }};});
+  const up=bar.querySelector('[data-rstop]'); if(up)up.onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
+  if(window.__rsObs){try{window.__rsObs.disconnect()}catch(e){}}
+  window.__rsObs=new IntersectionObserver(es=>{es.forEach(e=>bar.classList.toggle('on',!e.isIntersecting))},{rootMargin:'-8px 0px 0px 0px',threshold:0});
+  window.__rsObs.observe(hero);
+ }catch(e){}
+}
+(function(){
+ let t=null;
+ function tick(){
+  const isRes=(typeof S!=='undefined'&&S.page==='result');
+  if(isRes){mountResultSticky();mountGapCard();}
+  else{const b=document.getElementById('rsticky');if(b)b.remove();
+       if(window.__rsObs){try{window.__rsObs.disconnect()}catch(e){}window.__rsObs=null;}}
+ }
+ function start(){const v=document.getElementById('view');
+  if(!v){setTimeout(start,400);return;}
+  new MutationObserver(()=>{clearTimeout(t);t=setTimeout(tick,140)}).observe(v,{childList:true});
+  tick();}
+ if(document.readyState==='complete')start(); else window.addEventListener('load',start);
+})();
+/* [F-PATCH 2026-08-02 · M-10] 성장 카르테 — 진단별 파편 결과를 "학생 1명 = 카드 1장"으로 묶는다.
+   기존 화면(profile/growth/mypage)은 그대로 두고 대시보드 상단에 요약만 얹는다(additive). */
+const KARTE_SERIES=['hs_series','ms_series','es_dream'];
+function karteMetric(r){ if(!r)return null;
+ if(typeof r.pct==='number')return r.pct;
+ if(Array.isArray(r.scores)&&r.scores.length){const mx=Math.max(...r.scores.map(Number));const sum=r.scores.reduce((a,b)=>a+Number(b),0);return mx?Math.round(sum/r.scores.length/mx*100):null;}
+ return null;
+}
+function karteTitle(k,t){return String((typeof DISPLAY_TITLE!=='undefined'&&DISPLAY_TITLE[k])||(t&&t[k]&&t[k].title)||k).replace(/^(?:[가-힣]{1,3}\s*\d+[·․]?)+\.\s*/,'');}
+function karteHtml(t,ats,me){
+ try{
+  const list=(ats||[]).slice().sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+  if(!list.length)return '';
+  const T=k=>karteTitle(k,t);
+  const byS={}; list.forEach(a=>{(byS[a.test_slug]=byS[a.test_slug]||[]).push(a)});
+  const doneN=Object.keys(byS).length, totalN=Object.keys(t||{}).length||26;
+  const retestN=Object.values(byS).filter(v=>v.length>1).length;
+  let dir='',dirSub='';
+  for(const k of KARTE_SERIES){ const a=byS[k]&&byS[k][0], r=a&&a.result;
+   if(r&&Array.isArray(r.labels)&&typeof r.best==='number'){
+    dir=r.labels[r.best]+' 계열'; const n=byS[k].length;
+    const stable=n>1&&byS[k].every(x=>x.result&&x.result.best===r.best);
+    dirSub=`${T(k)} · ${n}회 응시${n>1?(stable?' · 방향 안정':' · 방향 변화 있음'):''}`; break;}
+  }
+  const top=list[0], tm=karteMetric(top.result);
+  let growth='',gcls='';
+  const prev=(byS[top.test_slug]||[])[1];
+  if(prev){const pm=karteMetric(prev.result);
+   if(pm!=null&&tm!=null){const d=tm-pm;growth=(d>0?'▲ +':(d<0?'▼ ':'– '))+(d===0?'변화 없음':Math.abs(d));gcls=d>0?'kup':(d<0?'kdn':'');}}
+  const RW=(typeof RETEST_WEEKS!=='undefined'&&RETEST_WEEKS)||{};
+  const w=RW[top.test_slug]||8;
+  const due=new Date(new Date(top.created_at).getTime()+w*7*86400000);
+  const dday=Math.ceil((due-new Date())/86400000);
+  let cs='';
+  if(typeof COURSES!=='undefined'){
+   const lv=gradeLv(me&&me.grade)||'';
+   const cand=COURSES.filter(c=>!lv||c.lv.indexOf(lv)>=0)
+     .map(c=>{const sl=c.slugs.filter(k=>t&&t[k]);return {c,sl,dn:sl.filter(k=>byS[k]).length};})
+     .filter(x=>x.sl.length&&x.dn<x.sl.length).sort((a,b)=>(b.dn/b.sl.length)-(a.dn/a.sl.length))[0];
+   if(cand)cs=`<div class="krow"><span class="kk">진행 코스</span><span class="kv">${cand.c.em} ${esc(cand.c.nm)}<small>${cand.dn} / ${cand.sl.length} 완료 · 다음: ${esc(T(cand.sl.find(k=>!byS[k])))}</small><span class="kmini"><i style="width:${Math.round(cand.dn/cand.sl.length*100)}%"></i></span></span><button class="kt" style="border:none;cursor:pointer" onclick="courseGo('${cand.c.id}')">이어서 ›</button></div>`;
+  }
+  return `<div class="karte"><div class="kh"><b>🗂 ${esc((me&&me.name)||'나')} 성장 카르테</b><span>흩어진 진단 결과가 하나로 이어집니다</span></div><div class="krows">`
+   +(dir?`<div class="krow"><span class="kk">계열 방향</span><span class="kv">${esc(dir)}<small>${esc(dirSub)}</small></span></div>`:'')
+   +`<div class="krow"><span class="kk">최근 결과</span><span class="kv">${esc(T(top.test_slug))}${tm!=null?' '+tm+'점':''}<small>${esc(String(top.created_at).slice(0,10))} 응시</small></span>${growth?`<span class="kt ${gcls}">${growth}</span>`:''}</div>`
+   +`<div class="krow"><span class="kk">쌓은 기록</span><span class="kv">진단 ${doneN} / ${totalN} 완료<small>재진단 ${retestN}회 · 총 응시 ${list.length}건</small><span class="kmini"><i style="width:${Math.round(doneN/totalN*100)}%"></i></span></span></div>`
+   +cs
+   +`<div class="krow"><span class="kk">다음 재진단</span><span class="kv">${dday>0?('D-'+dday):'지금 받아볼 때예요'}<small>${esc(T(top.test_slug))} · 약 ${w}주 주기 권장</small></span><span class="kt${dday<=0?' kup':''}">${dday>0?esc(due.toISOString().slice(0,10)):'권장'}</span></div>`
+   +`</div><div class="kacts"><button class="kprim" onclick="go('profile')">통합 결과 보기</button><button onclick="go('growth')">성장 그래프</button><button onclick="go('mypage')">전체 기록</button></div></div>`;
+ }catch(e){return ''}
+}
+/* [F-PATCH 2026-08-02 · M-09] 진단 코스 — 26종을 "추천 경로 9개"로 묶어 입구만 단순화.
+   진단은 하나도 숨기지 않는다. 코스는 안내일 뿐이고 '전체 진단 보기'가 항상 함께 있다. */
+const COURSES=[
+ {id:'c1',lv:['es'],em:'🌈',nm:'초등 나 알아보기',sub:'초 4~6학년 · 약 30분',desc:'관심과 공부습관부터 차근차근 살펴봐요.',slugs:['es_dream','es_habit','value_work']},
+ {id:'c2',lv:['es'],em:'🎨',nm:'초등 AI·창작',  sub:'초 4~6학년 · 약 35분',desc:'AI로 이야기와 탐구를 만들어 봐요.',slugs:['story_writer','ai_inquiry','gifted_ready']},
+ {id:'c3',lv:['ms'],em:'🌱',nm:'중등 진로 첫걸음',sub:'중 1~2학년 · 약 45분',desc:'계열 성향과 공부습관을 함께 잡아요.',slugs:['ms_series','ms_study','career_mature']},
+ {id:'c4',lv:['ms'],em:'🔍',nm:'중등 나를 더 깊이',sub:'중 1~3학년 · 약 40분',desc:'강점 지능과 학습 마음까지 살펴요.',slugs:['multi_iq','study_emotion','study_manage']},
+ {id:'c5',lv:['ms'],em:'🏫',nm:'중등 고입 준비',  sub:'중 3학년 · 약 40분',desc:'맞는 고교 유형과 소개서 준비도를 확인해요.',slugs:['ms_hsfit','hs_essay']},
+ {id:'c6',lv:['hs'],em:'🎓',nm:'고1 계열 결정',   sub:'고 1학년 · 약 60분',desc:'계열을 정하고 과목과 공부 전략까지 이어요.',slugs:['hs_series','subject_rec','subject_pick','study']},
+ {id:'c7',lv:['hs'],em:'📚',nm:'고2 활동 설계',   sub:'고 2학년 · 약 50분',desc:'학생부 흐름과 탐구·독서를 설계해요.',slugs:['roadmap','inquiry','reading']},
+ {id:'c8',lv:['hs'],em:'🎯',nm:'고3 지원 전략',   sub:'고 3학년 · 약 60분',desc:'전형 적합도와 면접까지 점검해요.',slugs:['track_fit','interview','admission_nav','mock_exam']},
+ {id:'c9',lv:['ms','hs'],em:'🚀',nm:'미래역량·AI',sub:'중·고 공통 · 약 30분',desc:'미래역량과 AI 활용 능력을 점검해요.',slugs:['future','ai_skill']}
+];
+function courseTitle(k,t){const d=(t&&t[k])||{};return String((typeof DISPLAY_TITLE!=='undefined'&&DISPLAY_TITLE[k])||d.title||k).replace(/^(?:[가-힣]{1,3}\s*\d+[·․]?)+\.\s*/,'').slice(0,14);}
+function courseCardsHtml(t,lv){
+ const cs=COURSES.filter(c=>c.lv.indexOf(lv)>=0).map(c=>({...c,slugs:c.slugs.filter(k=>t&&t[k])})).filter(c=>c.slugs.length);
+ if(!cs.length)return '';
+ const cards=cs.map(c=>`<div class="ccard" data-course="${c.id}" data-slugs="${c.slugs.join(',')}" onclick="courseGo('${c.id}')">
+  <div class="cem">${c.em}</div><h4>${c.nm}</h4><div class="csub">${c.sub}</div>
+  <div class="cdesc">${c.desc}</div>
+  <div class="cbar"><i></i></div>
+  <div class="cprog"><span>진행</span><span><b class="cdn">0</b> / ${c.slugs.length} 완료</span></div>
+  <div class="cchips">${c.slugs.map(k=>`<span class="cchip" data-cs="${k}">${courseTitle(k,t)}</span>`).join('')}</div>
+  <button class="cgo" onclick="event.stopPropagation();courseGo('${c.id}')">이어서 시작하기</button>
+ </div>`).join('');
+ return `<div class="csec"><div class="wk">🧭 추천 코스 <span>순서대로 하면 결과가 서로 이어져요 · 전체 진단은 아래에서 언제든 볼 수 있어요</span></div><div class="cgrid">${cards}</div></div>`;
+}
+function paintCourses(){
+ document.querySelectorAll('.ccard').forEach(cd=>{
+  const slugs=(cd.dataset.slugs||'').split(',').filter(Boolean);
+  const done=slugs.filter(k=>window.__done&&window.__done[k]);
+  const bar=cd.querySelector('.cbar i'), dn=cd.querySelector('.cdn'), go=cd.querySelector('.cgo');
+  if(bar)bar.style.width=(slugs.length?Math.round(done.length/slugs.length*100):0)+'%';
+  if(dn)dn.textContent=done.length;
+  cd.querySelectorAll('.cchip').forEach(ch=>{const k=ch.dataset.cs;
+   if(window.__done&&window.__done[k]){ch.classList.add('on');if(ch.textContent.charAt(0)!=='✓')ch.textContent='✓ '+ch.textContent;}});
+  const fin=done.length===slugs.length&&slugs.length>0;
+  cd.classList.toggle('cdone',fin);
+  if(go)go.textContent=fin?'결과 다시 보기':(done.length?'이어서 시작하기':'코스 시작하기');
+  if(go)go.classList.toggle('cfin',fin);
+ });
+}
+function courseGo(id){
+ const cd=document.querySelector('.ccard[data-course="'+id+'"]'); if(!cd)return;
+ const slugs=(cd.dataset.slugs||'').split(',').filter(Boolean);
+ const next=slugs.find(k=>!(window.__done&&window.__done[k]))||slugs[0];
+ if(typeof cardClickFx==='function')cardClickFx(next);
+ else if(typeof startQuizFx==='function')startQuizFx(next);
+}
 function gridHtml(t,act,grade,plan){
  let LV=[['es','초등','🌈'],['ms','중학','🌱'],['hs','고등','🎓']];
- let h=`<div class="chips noprint">${['전체','초등','중학','고등'].map((c,i)=>`<button class="chip${i===0?' on':''}" onclick="filterLv(this,'${c}')">${c}</button>`).join('')}</div>`;
- const target=gradeLv(grade);
+ const target=gradeLv(grade)||(localStorage.getItem('myb_lvpick')||'');
+ const NM={es:'초등',ms:'중학',hs:'고등'};
+ let h='';
+ /* [F-PATCH] 학년 미확인 시 먼저 학년을 고르게 해 26장 동시 노출을 막는다 */
+ if(!target){
+  h+=`<div class="gradeGate noprint"><h4>몇 학년인가요?</h4><p>학년을 고르면 그 학년에 맞는 진단만 보여드려요. 언제든 바꿀 수 있어요.</p><div class="ggBtns">`
+    +[['es','🌈 초등','1~6학년'],['ms','🌱 중학','1~3학년'],['hs','🎓 고등','1~3학년']]
+      .map(([k,t2,sb])=>`<button class="ggBtn" onclick="pickLv('${k}')">${t2}<small>${sb}</small></button>`).join('')
+    +`</div></div>`;
+ }
+ const curChip = target?NM[target]:'전체';
+ h+=`<div class="chips noprint">${['전체','초등','중학','고등'].map((c)=>`<button class="chip${c===curChip?' on':''}" onclick="filterLv(this,'${c}')">${c}</button>`).join('')}</div>`;
  if(target){const ti=LV.findIndex(x=>x[0]===target);if(ti>0){const[picked]=LV.splice(ti,1);LV.unshift(picked);}}
  for(const[lv,nm,em]of LV){
   const items=Object.entries(t).filter(([k,d])=>!DISPLAY_HIDDEN.has(k)&&displayStep(k,d,lv)).sort((a,b)=>displayStep(a[0],a[1],lv)-displayStep(b[0],b[1],lv));
   if(!items.length)continue;
   const active=!target||target===lv;
-  const extra = lv==='hs' ? `<div class="${active?'vcard':'vcard locked'}" ${active?`onclick="go('majors')"`:'aria-disabled="true"'}><div class="vtop" style="background:linear-gradient(135deg,#0F1530,#3E5C8A)"><div class="vmed">${ART('subject_rec')}</div><span class="stepb">탐색관</span><span class="catb">진학</span>${active?'':'<span class="lockb">다른 학년</span>'}</div><div class="vbody"><h3>학과 탐색관 🏛️</h3><p>7계열 56개 학과 — 설명·인재상·권장과목·진로를 한곳에서</p><span class="aud2">중3·고등</span></div></div><div class="${active?'vcard':'vcard locked'}" ${active?`onclick="go('subjexp')"`:'aria-disabled="true"'}><div class="vtop" style="background:linear-gradient(135deg,#1B2A4A,#00997B)"><div class="vmed">${ART('subject_rec')}</div><span class="stepb">탐색관</span><span class="catb">진학</span>${active?'':'<span class="lockb">다른 학년</span>'}</div><div class="vbody"><h3>2022 과목 탐색 🗂</h3><p>계열 → 학과 선택 → 일반·진로·융합선택 과목 비교</p><span class="aud2">중3·고등</span></div></div>` : '';
+  const extra = lv==='hs' ? `<div class="${active?'vcard':'vcard locked'}" ${active?`onclick="go('majors')"`:'aria-disabled="true"'}><div class="vtop" style="background:linear-gradient(135deg,#0F1530,#3E5C8A)"><div class="vmed">${ART('subject_rec')}</div><span class="stepb">탐색관</span><span class="catb">진학</span>${active?'':'<span class="lockb">다른 학년</span>'}</div><div class="vbody"><h3>학과 탐색관</h3><p>계열별 대표 학과와 추천 과목을 한곳에서 살펴봐요.</p><div class="aud2">고등 전 학년</div></div></div>` : '';
   const recBadge = (target&&target===lv) ? '<span class="tag" style="margin-left:6px;background:#FFF3D6;color:#836728">✨ 내 학년 추천</span>' : '';
-   h+=`<div class="lvsec" data-lv="${nm}"><div class="wk">${em} ${nm} 로드맵${recBadge} <span>${active?'나의 학년에 맞는 프로그램':'다른 학년 프로그램은 참고용으로 잠겨 있어요'}</span></div><div class="vgrid">${items.map(([k,d],i)=>vcardHtml(k,d,act,displayStep(k,d,lv),i,active,'다른 학년',nm==='중학'?'중등':nm,t,plan)).join('')}${extra}</div></div>`;
-  }
-  return h;
+  /* [F-PATCH] 진행 스트립 — 완료/다음 순서를 한 줄로 안내 */
+  const strip = active ? progressStripHtml(items,t,lv) : '';
+  const courses = active ? courseCardsHtml(t,lv) : '';
+  /* [F-PATCH] 내 학년이 정해졌으면 다른 학년 섹션은 접어둔다(삭제 아님, 칩/버튼으로 즉시 펼침) */
+  const hide = (target && target!==lv) ? ' style="display:none"' : '';
+  /* [FIX-S3] 코스가 있으면 카드 목록은 기본 접힘 — 모바일 6.5화면 문제 해소 */
+  const foldCards = !!(active && courses);
+  h+=`<div class="lvsec" data-lv="${nm}"${hide}>${courses}${active?`<button class="callBtn noprint" onclick="toggleAllTests(this)">전체 진단 ${Object.keys(t).length}종 ${foldCards?'모두 보기 ▾':'접기 ▴'}</button>`:''}<div class="wk"${foldCards?' style="display:none"':''}>${em} ${nm} 로드맵${recBadge} <span>${active?'나의 학년에 맞는 프로그램':'다른 학년 프로그램은 참고용으로 잠겨 있어요'}</span></div>${foldCards?strip.replace('class="pstrip','style="display:none" class="pstrip'):strip}<div class="vgrid"${foldCards?' style="display:none"':''}>${items.map(([k,d],i)=>vcardHtml(k,d,act,displayStep(k,d,lv),i,active,'다른 학년',nm==='중학'?'중등':nm,t,plan)).join('')}${extra}</div></div>`;
+ }
+ if(target) h+=`<button class="lvMore noprint" onclick="showAllLv(this)">다른 학년 진단도 보기 ▾ <span style="font-weight:600;color:#8489A3">(전체 진단은 언제든 볼 수 있어요)</span></button>`;
+ return h;
 }
+/* [F-PATCH] 진행 스트립 생성 — 완료 표시는 paintProgressStrip()이 채운다 */
+function progressStripHtml(items,t,lv){
+ if(!items||items.length<2)return '';
+ const cells=items.slice(0,6).map(([k,d],i)=>{
+  const nm=String((typeof DISPLAY_TITLE!=='undefined'&&DISPLAY_TITLE[k])||d.title||k).replace(/^(?:[가-힣]{1,3}\s*\d+[·․]?)+\.\s*/,'').slice(0,13);
+  return `<div class="pstep" data-slug="${k}"><span class="pnum">${i+1}</span><span class="ptxt">${nm}</span><span class="pstate">·</span></div>`;
+ }).join('<span class="parrow">›</span>');
+ return `<div class="pstrip noprint" data-lv="${lv}">${cells}</div>`;
+}
+function paintProgressStrip(){
+ document.querySelectorAll('.pstrip').forEach(st=>{
+  let firstTodo=null;
+  st.querySelectorAll('.pstep').forEach(el=>{
+   const k=el.dataset.slug, ps=el.querySelector('.pstate');
+   el.classList.remove('done','now');
+   if(window.__done&&window.__done[k]){el.classList.add('done');if(ps)ps.textContent='✓ 완료';}
+   else if(!firstTodo){firstTodo=el;el.classList.add('now');if(ps)ps.textContent='◀ 지금 여기';}
+   else if(ps)ps.textContent='';
+  });
+ });
+}
+/* [F-PATCH] 학년 선택 게이트 */
+function pickLv(lv){try{localStorage.setItem('myb_lvpick',lv);}catch(e){}
+ const NM={es:'초등',ms:'중학',hs:'고등'};
+ document.querySelectorAll('.gradeGate').forEach(g=>g.remove());
+ document.querySelectorAll('.lvsec').forEach(sx=>{sx.style.display=(sx.dataset.lv===NM[lv])?'':'none'});
+ document.querySelectorAll('.chips .chip').forEach(b=>{b.classList.toggle('on',b.textContent.trim()===NM[lv]);});
+ const mb=document.querySelector('.lvMore'); if(mb)mb.style.display='';
+ try{paintProgressStrip();}catch(e){}
+}
+function toggleAllTests(btn){
+ const sec=btn.closest('.lvsec'); if(!sec)return;
+ const wk=sec.querySelector('.wk'), grid=sec.querySelector('.vgrid'), st=sec.querySelector('.pstrip');
+ const open=grid&&grid.style.display!=='none';
+ [wk,grid,st].forEach(e=>{if(e)e.style.display=open?'none':''});
+ btn.textContent=open?btn.textContent.replace('▴','▾'):btn.textContent.replace('▾','▴');
+}
+function showAllLv(btn){
+ document.querySelectorAll('.lvsec').forEach(sx=>{sx.style.display=''});
+ document.querySelectorAll('.chips .chip').forEach(b=>b.classList.toggle('on',b.textContent.trim()==='전체'));
+ if(btn)btn.style.display='none';
+}
+
 function filterLv(el,c){
  [...el.parentElement.children].forEach(b=>b.classList.remove('on'));el.classList.add('on');
  document.querySelectorAll('.lvsec').forEach(sx=>{sx.style.display=(c==='전체'||sx.dataset.lv===c)?'':'none'});
@@ -701,6 +1303,196 @@ const SEXP={majors:null,series:null,picked:[]};
 async function loadMajors(){if(SEXP.majors)return SEXP.majors;const d=await fetch(API+'/api/majors').then(r=>r.json());SEXP.majors=d.majors||[];return SEXP.majors;}
 function subjTags(str,cls){return String(str||'').split(',').map(s=>s.trim()).filter(Boolean).map(s=>`<span class="subjtag ${cls}">${esc(s)}</span>`).join('');}
 function sexpToggle(id){id=+id;const i=SEXP.picked.indexOf(id);if(i>=0)SEXP.picked.splice(i,1);else SEXP.picked.push(id);go('subjexp',SEXP.series);}
+
+/* [F-PATCH 2026-08-03 · R9] 이번 분기 내 활동
+   활동카드 300장(고등108·중등108·초등84)이 리포트 안에서 '읽고 끝'이 되지 않도록,
+   대시보드에서 바로 체크할 수 있게 한다. 체크 기록이 쌓여야 다음 분기에 비교가 된다.
+   서버 /api/act_log 가 이번 분기 추천 카드와 내 기록을 함께 내려준다. */
+const ACT_ST = {planned:{nm:'할 예정', cls:'ap-p'}, doing:{nm:'하는 중', cls:'ap-d'}, done:{nm:'완료', cls:'ap-o'}};
+function actPanelHtml(){
+  return `<div class="card actp" id="actp" style="display:none">
+    <div class="k">🎯 이번 분기 내 활동 <span class="apq" id="apq"></span></div>
+    <div id="apbody"></div>
+  </div>`;
+}
+function actTitleShort(t){
+  return String(t||'').replace(/^\[[^\]]*\]\s*/,'').replace(/\s*—\s*.*$/,'');
+}
+async function paintActPanel(){
+  const box=document.getElementById('actp'); if(!box||!S.token)return;
+  let d=null;
+  try{ d=await api('/act_log?token='+encodeURIComponent(S.token)); }catch(e){ return; }
+  if(!d)return;
+  const rec=d.recommend||{}, cards=rec.cards||[];
+  const done=new Map((d.logs||[]).map(x=>[x.gu_no+'|'+x.card_key,x.status]));
+  const qn=d.quarter_name?`· ${esc(d.quarter_name)}`:'';
+  const qe=document.getElementById('apq'); if(qe)qe.textContent=`${d.quarter||''}분기 ${qn}`;
+  const body=document.getElementById('apbody'); if(!body)return;
+  if(!cards.length){
+    const need=rec.need==='es_dream'?'초등 진로 탐험':'고교학점제 과목 선택 진단';
+    body.innerHTML=`<p class="apnone">「${esc(need)}」을 먼저 하면 이번 분기에 맞는 활동을 추천해드려요.</p>`;
+    box.style.display='';
+    return;
+  }
+  const n=cards.filter(c=>done.get(c.gu+'|'+c.key)==='done').length;
+  body.innerHTML=`<p class="apsub">이 중 <b>하나만</b> 골라 끝까지 해도 충분해요. 완료 ${n} / ${cards.length}</p>`
+   + cards.map(c=>{
+      const cur=done.get(c.gu+'|'+c.key)||'';
+      const btns=['planned','doing','done'].map(k=>
+        `<button class="apb ${ACT_ST[k].cls}${cur===k?' on':''}" onclick="actSet('${c.key}',${c.gu},${c.quarter},'${k}')">${ACT_ST[k].nm}</button>`).join('');
+      const promote = (cur==='done')
+        ? `<button class="apb ap-i" onclick="inqFromCard('${c.key}',${c.gu},'${esc(actTitleShort(c.title)).replace(/'/g,"\\'")}')">🔬 기록으로 정리하기</button>`
+        : '';
+      return `<div class="apc${cur==='done'?' fin':''}"><div class="apt">${esc(actTitleShort(c.title))}</div>
+        <div class="apl">${esc(c.lead)}</div><div class="apbs">${btns}${promote}</div></div>`;
+    }).join('');
+  box.style.display='';
+}
+async function actSet(key,gu,q,status){
+  if(!S.token)return;
+  try{
+    await api('/act_log',{token:S.token,card_key:key,gu_no:gu,quarter:q,status:status});
+    await paintActPanel();
+  }catch(e){ alert(e.message||'저장하지 못했습니다'); }
+}
+
+/* [F-PATCH 2026-08-03 · R12] 탐구 기록장 (N-02)
+   왜 진단으로 만들지 않았나 — 탐구 정리는 문항에 답해 점수를 내는 일이 아니라
+   학생이 자기가 한 일을 서술하는 일이다. 진단 27종에 끼우면 성격이 흐려지고
+   규준 배지 체계와도 맞지 않는다. 그래서 대시보드 도구로 둔다.
+   step_guide 6단계를 학생이 실제로 쓸 수 있는 8칸으로 접었다. */
+const INQ_F = [
+ ['q_question','무엇이 궁금했나요?','예) 우리 학교 급식 잔반량은 요일마다 다를까?'],
+ ['q_motive','왜 궁금해졌나요?','그 질문이 생긴 계기를 한두 문장으로'],
+ ['p_method','어떻게 알아봤나요?','관찰·실험·설문·자료조사 중 무엇을 어떻게'],
+ ['p_data','무슨 자료를 썼나요?','출처와 기간을 함께 적으면 좋아요'],
+ ['r_result','무엇을 알게 됐나요?','숫자나 사실 위주로'],
+ ['r_diff','예상과 달랐던 점은?','빗나간 예상이 오히려 좋은 탐구입니다'],
+ ['l_learned','무엇을 배웠나요?','방법·태도에서 배운 것도 좋아요'],
+ ['l_next','남은 질문은?','다음 탐구의 씨앗이 됩니다'],
+];
+let INQ = {list:[], cur:null};
+function inqPanelHtml(){
+  return `<div class="card inqp" id="inqp" style="display:none">
+    <div class="k">🔬 탐구 기록장 <span class="inqn" id="inqn"></span></div>
+    <div id="inqbody"></div>
+  </div>`;
+}
+async function paintInqPanel(){
+  const box=document.getElementById('inqp'); if(!box||!S.token)return;
+  let d=null;
+  try{ d=await api('/inquiry_note?token='+encodeURIComponent(S.token)); }catch(e){ return; }
+  INQ.list=(d&&d.notes)||[];
+  const n=document.getElementById('inqn');
+  if(n)n.textContent=INQ.list.length?`${INQ.list.length}건`:'';
+  const body=document.getElementById('inqbody'); if(!body)return;
+  const rows=INQ.list.slice(0,5).map(x=>`<div class="inqi" onclick="inqOpen(${x.id})">
+      <div class="inqt">${esc(x.title||'제목 없음')}</div>
+      <div class="inqm">${x.status==='done'?'<b class="ok">정리 완료</b>':'작성 중'} · ${esc(String(x.updated_at||'').slice(0,10))}</div>
+    </div>`).join('');
+  body.innerHTML=(INQ.list.length
+      ? `<p class="inqs">탐구는 정리해야 남습니다. 8칸만 채우면 개요·과정·결과·배운 점 형태로 만들어 드려요.</p>${rows}`
+      : `<p class="inqs">한 번 한 탐구도 정리하지 않으면 사라집니다. 8칸만 채워 보세요.<br>완료한 활동카드가 있으면 거기서 바로 이어서 쓸 수도 있어요.</p>`)
+    + `<button class="btn small" onclick="inqOpen(0)">＋ 새 탐구 기록 쓰기</button>`;
+  box.style.display='';
+}
+function inqOpen(id,seed){
+  const cur = id ? (INQ.list.find(x=>Number(x.id)===Number(id))||{}) : (seed||{});
+  INQ.cur = Object.assign({}, cur);
+  S.page='inqedit';
+  const f=INQ_F.map(([k,label,ph])=>`<label class="inql">${label}</label>
+      <textarea class="inqta" id="if_${k}" placeholder="${esc(ph)}" oninput="inqDirty()">${esc(cur[k]||'')}</textarea>`).join('');
+  $('#view').innerHTML=`<div class="inqwrap">
+    <button class="btn small ghost" onclick="go('dash')">← 대시보드</button>
+    <h2 class="inqh">🔬 탐구 기록 ${cur.id?'수정':'쓰기'}</h2>
+    <label class="inql">제목</label>
+    <input class="inqin" id="if_title" placeholder="예) 급식 잔반량은 요일마다 다를까" value="${esc(cur.title||'')}" oninput="inqDirty()">
+    <label class="inql">관심 분야 (선택)</label>
+    <input class="inqin" id="if_field" placeholder="예) 자연·탐구 / 사회·인간" value="${esc(cur.field||'')}" oninput="inqDirty()">
+    ${f}
+    <div class="inqbs">
+      <button class="btn" onclick="inqSave('done')">정리 완료로 저장</button>
+      <button class="btn ghost" onclick="inqSave('draft')">임시 저장</button>
+      <button class="btn ghost" onclick="inqPreview()">미리 보기</button>
+    </div>
+    <div id="inqres"></div>
+    <div id="inqprev"></div>
+  </div>`;
+  window.scrollTo({top:0});
+}
+function inqDirty(){ const e=document.getElementById('inqres'); if(e)e.innerHTML=''; }
+function inqCollect(){
+  const o={};
+  ['title','field'].concat(INQ_F.map(x=>x[0])).forEach(k=>{
+    const e=document.getElementById('if_'+k); if(e)o[k]=e.value.trim();
+  });
+  return o;
+}
+function inqSummary(o){
+  const P=(t,v)=>v?`<p><b>${t}</b> ${esc(v)}</p>`:'';
+  return `<div class="inqsum">
+    <div class="inqsh">${esc(o.title||'제목 없음')}${o.field?` <span>· ${esc(o.field)}</span>`:''}</div>
+    <div class="inqsec">개요</div>${P('탐구 질문',o.q_question)}${P('시작한 계기',o.q_motive)}
+    <div class="inqsec">과정</div>${P('방법',o.p_method)}${P('자료',o.p_data)}
+    <div class="inqsec">결과</div>${P('알게 된 것',o.r_result)}${P('예상과 달랐던 점',o.r_diff)}
+    <div class="inqsec">배운 점</div>${P('배운 것',o.l_learned)}${P('남은 질문',o.l_next)}
+  </div>`;
+}
+function inqJong(w){
+  const ch=String(w||'').trim().slice(-1);
+  if(!ch)return false;
+  const c=ch.charCodeAt(0);
+  return c>=0xAC00&&c<=0xD7A3&&((c-0xAC00)%28!==0);
+}
+function inqJ(w,pair){ return w + (inqJong(w)?pair[0]:pair[1]); }
+// [R14] 로/으로 는 ㄹ 받침(종성 8)도 '로' 를 쓴다. 관찰→관찰로, 실험→실험으로
+function inqRo(w){
+  const ch=String(w||'').trim().slice(-1);
+  const c=ch?ch.charCodeAt(0):0;
+  const t=(c>=0xAC00&&c<=0xD7A3)?((c-0xAC00)%28):0;
+  return w+((t===0||t===8)?'로':'으로');
+}
+function inqOneLine(o){
+  const a=(o.q_question||'').trim().replace(/[.?!]$/,'');
+  const b=(o.p_method||'').trim().replace(/[.?!]$/,'');
+  const c=(o.r_result||'').trim().replace(/[.?!]$/,'');
+  if(!a&&!b&&!c)return '';
+  const p1=a?`${inqJ(a,['이라는','라는'])} 질문에서 출발해 `:'';
+  const p2=b?`${inqRo(b)} 확인하고 `:'';
+  const p3=c?`${inqJ(c,['을','를'])} 정리함`:'탐구를 진행함';
+  return p1+p2+p3;
+}
+function inqPreview(){
+  const o=inqCollect();
+  const line=inqOneLine(o);
+  document.getElementById('inqprev').innerHTML=inqSummary(o)
+    + (line?`<div class="inqline"><b>한 문장으로 줄이면</b><br>“${esc(line)}”
+        <button class="btn small ghost" onclick="inqCopy()">복사</button>
+        <p class="inqwarn">※ 이 문장은 활동을 설명할 때 쓰는 <b>표현 예시</b>입니다.
+        학교생활기록부 기재 여부와 표현은 담당 선생님의 관찰·평가에 따릅니다.</p></div>`:'');
+  window.__inqline=line;
+}
+function inqCopy(){
+  try{ navigator.clipboard.writeText(window.__inqline||''); alert('복사했습니다.'); }
+  catch(e){ alert('복사하지 못했습니다. 길게 눌러 직접 복사해 주세요.'); }
+}
+async function inqSave(status){
+  const o=inqCollect();
+  if(!o.title){ document.getElementById('inqres').innerHTML='<p class="inqerr">제목을 적어 주세요.</p>'; return; }
+  const body=Object.assign({token:S.token,status:status},o);
+  if(INQ.cur&&INQ.cur.id)body.id=INQ.cur.id;
+  if(INQ.cur&&INQ.cur.act_key){body.act_key=INQ.cur.act_key;body.act_gu=INQ.cur.act_gu;}
+  try{
+    const r=await api('/inquiry_note',body);
+    INQ.cur=r.note||INQ.cur;
+    document.getElementById('inqres').innerHTML='<p class="inqok">저장했습니다.</p>';
+    inqPreview();
+  }catch(e){ document.getElementById('inqres').innerHTML=`<p class="inqerr">${esc(e.message||'저장하지 못했습니다')}</p>`; }
+}
+/* 활동카드 → 탐구 기록 승격 */
+function inqFromCard(key,gu,title){
+  inqOpen(0,{act_key:key,act_gu:gu,title:String(title||'').slice(0,80)});
+}
 const api=async(p,body)=>{
  const r=await fetch(API+'/api'+p,body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:undefined);
  const j=await r.json();
@@ -914,12 +1706,12 @@ function renderTabs(){var el=document.getElementById("tabbar");if(!el)return;var
 function updateBack(page){var b=document.getElementById('backBtn');if(!b)return;var root=(page==='home'||page==='dash'||page==='dash0');b.style.display=root?'none':'inline-flex';}
 function appBack(){var p=S.prevPage,a=S.prevArg;if(p==='quiz'){p=S.token?'dash':'home';a=undefined;}if(p&&p!==S.page){go(p,a);return;}go(S.token?'dash':'home');}
 function proofHtml(){return `<div class="proofgrid">
- <div class="proof"><b>45,000명 활용 기반</b><span>기존 마이베스트 운영 경험을 NEXT 흐름으로 재설계</span></div>
+ <div class="proof"><b>전국 규준 12,644명</b><span>고1 8,575명·중등 4,069명 표준화 규준으로 또래·전국 위치 제공</span></div>
  <div class="proof"><b>검증 규준 공개</b><span>고등 N=8,575 α0.951 · 중학 N=4,069 α0.930</span></div>
  <div class="proof"><b>학교용 경량 운영</b><span>학급코드·PIN·교사용 대시보드로 도입 부담 최소화</span></div>
  </div>`}
 function teacherVoiceHtml(){return `<div class="lp-sectk">선생님들의 이야기</div><div class="proofgrid">
- <div class="proof"><b>누적 45,000명 활용 프로그램의 후속 버전</b><span>기존 마이베스트를 학교 현장에서 운영해 온 경험을 그대로 이어받아 NEXT 흐름으로 재설계했습니다.</span></div>
+ <div class="proof"><b>구 마이베스트(2019~2024) 누적 45,000명 운영 경험</b><span>기존 마이베스트를 학교 현장에서 운영해 온 경험을 그대로 이어받아 NEXT 흐름으로 재설계했습니다.</span></div>
  <div class="proof"><span class="qbadge build" style="margin-bottom:6px">PILOT</span><b style="display:block">2026년 8월 파일럿 학교 모집 중</b><span>실제 도입 학교의 선생님 후기·활용 데이터는 파일럿 종료 후 이 자리에 정직하게 채워 넣습니다.</span></div>
  <div class="proof"><b>도입 문의 환영</b><span>학교·기관 담당 선생님이라면 언제든 도입 문의를 남겨주세요. 파일럿 학교로 가장 먼저 초대해 드립니다.</span></div>
  </div>`}
@@ -935,11 +1727,95 @@ function conversionWhyHtml(){return `<div class="convgrid">
  <div class="convcard"><b>학교 운영 확장</b><span>개인 결과함과 학급 대시보드가 연결되어 학생·학부모·교사가 같은 자료를 봅니다.</span></div>
  </div>`}
 function saveValueHtml(){return `<div class="savebox"><h3>진단 후 바로 저장되는 개인 결과함</h3><p>회원가입을 길게 요구하지 않습니다. 학급코드·이름·4자리 PIN만 있으면 결과 저장, 다시 진단, 성장 그래프, A4·B4 보고서 보기가 이어집니다.</p><div class="savechips"><span>결과 누적</span><span>재진단 비교</span><span>보고서 다시보기</span><span>추천 진단</span></div></div>`}
+/* ===== 2026-08-04: 유료 서비스 오픈 예고 + 사전신청(대기명단) =====
+   결제 파이프라인 점검 중이라 이번 오픈에서는 예고와 이메일 사전신청만 받는다.
+   가격·일정·혜택은 아직 확정 전이라 적지 않는다. 만 14세 미만 학생의 개인정보 수집을 피하기 위해
+   "학부모·선생님" 대상임을 문구로 명시한다. otn_waitlist 테이블(anon INSERT 전용 RLS)에 이메일 1건만 적재. */
+function otnWaitlistHtml(){
+ return `<div class="card" id="otnWl">
+  <div class="k">학부모·선생님을 위한 사전 알림</div>
+  <h3 style="font-size:17px;color:var(--navy-text);margin:0 0 6px">유료 서비스, 준비하고 있습니다</h3>
+  <p style="font-size:13px;line-height:1.65;color:#5C617C;margin-bottom:10px">마이베스트 NEXT의 유료 서비스를 준비 중입니다. 준비되는 대로 사전 신청하신 분께 가장 먼저 알려드립니다.</p>
+  <div style="background:#FFF7E8;border:1.5px solid #F0D9A8;border-radius:12px;padding:10px 12px;margin-bottom:12px;font-size:12.5px;font-weight:700;color:#7A4A12">이 사전 신청은 학부모·선생님을 위한 것입니다. 학생은 신청하지 않아도 됩니다.</div>
+  <div id="otnWlForm">
+   <div class="err" id="otnWlErr" style="display:none"></div>
+   <label for="otnWlEmail">이메일</label>
+   <input type="email" id="otnWlEmail" placeholder="example@email.com" autocomplete="email">
+   <label for="otnWlConsent" style="display:flex;align-items:flex-start;gap:9px;font-weight:400;color:#3A4154;font-size:12.5px;line-height:1.6;margin:2px 0 12px;cursor:pointer">
+    <input type="checkbox" id="otnWlConsent" style="width:18px;height:18px;min-width:18px;margin:1px 0 0;flex:0 0 auto;accent-color:#6C5CE7">
+    <span>오픈 알림을 받기 위해 이메일 수집에 동의합니다. 알림 목적 외에는 사용하지 않으며, 언제든 수신 거부할 수 있습니다.</span>
+   </label>
+   <button class="btn" id="otnWlBtn" onclick="otnWaitlistSubmit()">사전 신청하기</button>
+  </div>
+  <div id="otnWlDone" style="display:none;background:#F2FBF5;border:1px solid #CDEBD7;border-radius:10px;padding:12px 14px;font-size:13px;color:#1E8E4E;font-weight:700">신청되었습니다. 준비되는 대로 가장 먼저 안내드릴게요.</div>
+ </div>`;
+}
+async function otnWaitlistSubmit(){
+ const emailEl=$('#otnWlEmail'),consentEl=$('#otnWlConsent'),errEl=$('#otnWlErr'),btn=$('#otnWlBtn');
+ if(!emailEl||!consentEl||!btn)return;
+ const email=String(emailEl.value||'').trim();
+ const consent=!!consentEl.checked;
+ if(errEl){errEl.style.display='none';errEl.textContent='';}
+ if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+  if(errEl){errEl.textContent='이메일을 올바르게 입력해주세요';errEl.style.display='block';}
+  return;
+ }
+ if(!consent){
+  if(errEl){errEl.textContent='이메일 수집 동의가 필요합니다';errEl.style.display='block';}
+  return;
+ }
+ const prevLabel=btn.textContent;
+ btn.disabled=true;btn.textContent='신청 중…';
+ try{
+  const r=await fetch('https://onqisdgxwuvlxehjvoto.supabase.co/rest/v1/otn_waitlist',{
+   method:'POST',
+   headers:{'Content-Type':'application/json','apikey':SB_ANON,'Authorization':'Bearer '+SB_ANON,'Prefer':'return=minimal'},
+   body:JSON.stringify({site:'mybest',email:email,source:'index-hero',consent:true})
+  });
+  if(!r.ok)throw new Error('HTTP '+r.status);
+  const formEl=$('#otnWlForm'),doneEl=$('#otnWlDone');
+  if(formEl)formEl.style.display='none';
+  if(doneEl)doneEl.style.display='block';
+ }catch(e){
+  if(errEl){errEl.textContent='잠시 후 다시 시도해 주세요';errEl.style.display='block';}
+  btn.disabled=false;btn.textContent=prevLabel;
+ }
+}
 function seoLinksHtml(){return `<div class="seolinks noprint"><a href="/career-test-middle.html">중학생 진로검사</a><a href="/highschool-subject-choice.html">고교학점제 과목선택</a><a href="/study-habit-test.html">공부습관 진단</a><a href="/student-record-roadmap.html">학생부 로드맵</a><a href="/content-quality.html">보고서 품질 기준</a></div>`}
 function resultSaveHtml(){return `<div class="resultsave noprint"><h3>이 결과를 성장 기록으로 남겨두세요</h3><p>이미 개인 결과함에 저장되었습니다. 다음에는 같은 이름과 PIN으로 들어오면 오늘 결과, 다시 진단, 성장 그래프, 정식 보고서를 계속 볼 수 있습니다.</p><div class="actionbar" style="margin-top:0"><button class="btn navy" onclick="go('mypage')">내 결과함 보기</button><button class="btn ghost" onclick="go('profile')">통합 성장 리포트</button></div></div>`}
+
+/* [F-PATCH 2026-08-03 · N-BADGE] 규준 3단 배지
+   근거: 전국 표준화 규준이 실제로 있는 진단은 hs_series·ms_series 2종뿐인데,
+   화면에서는 26종 전부가 "전국 규준"으로 읽히고 있었다.
+   진단을 숨기거나 지우지 않고, 근거의 등급만 정직하게 표기한다. */
+const NORM_TIER = {
+  hs_series:'verified', ms_series:'verified',
+  subject_pick:'building', story_writer:'building', ai_inquiry:'building',
+  gifted_ready:'building', hs_essay:'building', mock_exam:'building',
+  admission_nav:'building', career_mature:'building', multi_iq:'building',
+  study_emotion:'building', study_manage:'building', track_fit:'building'
+};
+const NORM_META = {
+  verified:{cls:'nv', em:'🟦', nm:'규준검증',
+    tip:'전국 표준화 규준과 내적일관도(Cronbach α)가 검증된 척도입니다.'},
+  self:{cls:'ns', em:'🟩', nm:'자가점검',
+    tip:'준거참조 자가점검 도구입니다. 또래 비교로 상대적 위치를 함께 보여줍니다.'},
+  building:{cls:'nb', em:'🟨', nm:'개발중',
+    tip:'응시 표본을 축적하는 단계입니다. 참고용으로 활용하고, 표본 300명이 모이면 규준을 산출해 등급을 올립니다.'}
+};
+function normTier(slug){ return NORM_TIER[slug] || 'self'; }
+function normBadge(slug){
+  const m = NORM_META[normTier(slug)]; if(!m) return '';
+  return `<span class="nbadge ${m.cls}" title="${m.tip}">${m.em} ${m.nm}</span>`;
+}
+function normNoteHtml(slug){
+  const m = NORM_META[normTier(slug)]; if(!m) return '';
+  return `<div class="methodnote"><b>${m.em} ${m.nm}</b> · ${m.tip}</div>`;
+}
 function methodNote(slug){
  const series=slug==='hs_series'||slug==='ms_series';
- if(series)return `<div class="methodnote"><b>신뢰도 기준</b> · 이 계열성향 결과는 전국 규준과 내적일관도 검증을 함께 표시합니다. 고등 α0.951(N=8,575), 중학 α0.930(N=4,069) 기준입니다.</div>`;
+ const __nb=(typeof normNoteHtml==='function')?normNoteHtml(slug):'';
+ if(series)return __nb+`<div class="methodnote"><b>신뢰도 기준</b> · 이 계열성향 결과는 전국 규준과 내적일관도 검증을 함께 표시합니다. 고등 α0.951(N=8,575), 중학 α0.930(N=4,069) 기준입니다.</div>`;
  if(slug==='study'||slug==='subject_rec')return `<div class="methodnote"><b>활용 기준</b> · 이 화면은 심리검사가 아니라 입력값 기반 맞춤 자료입니다. 학교 교육과정과 상담을 함께 확인하세요.</div>`;
  return `<div class="methodnote"><b>활용 기준</b> · 이 결과는 준거참조 자가점검입니다. 점수보다 보완 영역과 이번 주 실천 항목을 중심으로 활용하세요.</div>`;
 }
@@ -1304,11 +2180,13 @@ async function go(page,arg){
    <h1><span class="lp-grad">학년·결과별 초개별화</span><br>진로·진학 성장 보고서</h1>
    <p class="lp-lead">초등·중학·고등 학생의 자기이해를 학년별 진단으로 돕고,<br>학년과 결과에 맞춰 한 명 한 명 다른 맞춤 성장 보고서를 만듭니다.</p>
    <div class="lp-cta">
-    <button class="btn ghost" onclick="go('consult')">3분 진단 시작</button>
+    <button class="btn ghost" onclick="go('consult')">진단 시작하기</button>
     <a class="btn" style="background:rgba(255,255,255,.16);box-shadow:none" href="/sample.html">실제 결과 먼저 보기</a>
    </div>
-   <div class="lp-stats"><div><b>45,000+</b><span>누적 활용 · 구 마이베스트 포함</span></div><div><b>초·중·고</b><span>학년별 진단</span></div><div><b>A4·B4·10쪽</b><span>맞춤 보고서</span></div></div>
+   <div class="lp-stats"><div><b>12,644명</b><span>전국 표준화 규준 · 고1 8,575 · 중등 4,069</span></div><div><b>초·중·고</b><span>학년별 진단</span></div><div><b>A4·B4·10쪽</b><span>맞춤 보고서</span></div></div>
   </div>
+
+  ${otnWaitlistHtml()}
 
   ${schoolWidgetHtml()}
 
@@ -1342,15 +2220,15 @@ async function go(page,arg){
 
   <div class="lp-sectk">시작은 이렇게</div>
   <div class="cstep">
-   <div class="hstep"><b>1</b><h4>입장</h4><p>학급코드·이름·PIN으로 간편하게</p></div>
-   <div class="hstep"><b>2</b><h4>3분 진단</h4><p>카드를 고르고 솔직하게 답하면 즉시 분석</p></div>
+   <div class="hstep"><b>1</b><h4>입장</h4><p>학급코드가 있으면 코드·이름·PIN으로,<br>없으면 개인 가입으로 시작해요</p></div>
+   <div class="hstep"><b>2</b><h4>진단 응시</h4><p>진단마다 10~20분 · 중간에 저장돼 이어서 할 수 있어요</p></div>
    <div class="hstep"><b>3</b><h4>맞춤 보고서</h4><p>차트+맞춤 가이드+A4 한장 보고서까지</p></div>
   </div>
   <div class="linkrow"><a onclick="go('join','individual')">학급코드 없이 개인으로 시작하기 →</a></div>
 
   <div class="lp-sectk">시작하기</div>
   <div class="lp-dualcta">
-   <div class="lp-dc b2b"><div class="dch">🏫 학교·기관 도입</div><p>학년·학교 단위 운영, 연수, 맞춤 콘텐츠</p><a class="btn small ghost" style="display:inline-block;width:auto" href="mailto:onlyjdw3831@gmail.com?subject=마이베스트%20NEXT%20기관%20도입%20문의">도입 문의 (B2B)</a></div>
+   <div class="lp-dc b2b"><div class="dch">🏫 학교·기관 도입</div><p>학년·학교 단위 운영, 연수, 맞춤 콘텐츠</p><a class="btn small ghost" style="display:inline-block;width:auto" href="mailto:teachertshare2024@naver.com?subject=마이베스트%20NEXT%20기관%20도입%20문의">도입 문의 (B2B)</a></div>
    <div class="lp-dc b2c"><div class="dch">🎒 개인·학부모</div><p>지금 무료로 진단하고 성장 보고서 받기</p><button class="btn small navy" style="display:inline-block;width:auto" onclick="go('consult')">진단 시작 (B2C)</button></div>
   </div>
 
@@ -1366,8 +2244,8 @@ async function go(page,arg){
    ${qualityHtml()}
    <div class="wk">이용 방법</div>
   <div class="how">
-   <div class="hstep"><b>1</b><h4>학급코드 입장</h4><p>선생님께 받은 코드와 이름, 나만의 PIN으로 간편하게</p></div>
-   <div class="hstep"><b>2</b><h4>3분 진단</h4><p>카드를 고르고 솔직하게 답하면 즉시 분석</p></div>
+   <div class="hstep"><b>1</b><h4>입장하기</h4><p>학급코드로 입장하면 전체 진단 무료,<br>개인 가입은 무료 진단 8종부터</p></div>
+   <div class="hstep"><b>2</b><h4>진단 응시</h4><p>진단마다 10~20분 · 중간에 저장돼 이어서 할 수 있어요</p></div>
    <div class="hstep"><b>3</b><h4>성장 솔루션</h4><p>차트 + 맞춤 가이드 + A4 한장 보고서까지</p></div>
    </div>
    <div class="actionbar noprint"><button class="btn" onclick="go('join')">10초 입장하고 결과 저장하기</button><button class="btn ghost" onclick="go('coaching')">선생님 코칭 보기</button></div>
@@ -1427,6 +2305,10 @@ async function go(page,arg){
    const t=S.tests??(S.tests=(await api('/tests')).tests);
    const ats=S.me.attempts||[];
    v.innerHTML=`<h1>안녕, ${esc(S.me.name)}! 👋</h1><div class="sub">${esc(S.me.school||'')} ${esc(S.me.class_name||'')} · 오늘은 어떤 가능성을 열어볼까요?</div>
+   ${retestBannerHtml(t,ats)}
+   ${karteHtml(t,ats,S.me)}
+   ${actPanelHtml()}
+   ${inqPanelHtml()}
    ${schoolWidgetHtml()}
    ${S.me.gate?`<div class="card" style="background:#FFF3F3;border-color:#F3C0C0;color:#C0392B;font-weight:700">⚠️ ${esc(S.me.gate)} · 기존 결과는 계속 볼 수 있어요</div>`:(S.me.max_uses?`<div class="card" style="background:#F2FBF5;border-color:#CDEBD7;color:#1E8E4E;font-weight:700">🎟️ 남은 진단 이용 ${Math.max(0,S.me.max_uses-(S.me.used||0))}회 / 총 ${S.me.max_uses}회</div>`:'')}
    ${(S.me.assignments&&S.me.assignments.length)?`<div class="card" style="background:#EEF1FF;border-color:#C9D2FF"><div class="k" style="margin-top:0">📌 선생님이 내준 진단</div>${S.me.assignments.map(a=>`<div style="display:flex;align-items:center;gap:8px;margin:6px 0;font-size:13px"><span style="flex:1">${esc(a.test_title||a.test_slug)}${a.due_date?` <span style='color:#8489A3'>· ~${esc(a.due_date)}까지</span>`:''}</span>${a.done?`<b style="color:#1E8E4E">✓ 완료</b>`:`<button class="btn small navy" onclick="startQuizFx('${a.test_slug}')">풀기</button>`}</div>`).join('')}</div>`:''}
@@ -1456,11 +2338,11 @@ async function go(page,arg){
   ${d.deep.map(b=>`<div class="solpage">${blockHtml(b,best+'계열 심층 가이드')}</div>`).join('')}
   <div class="solpage"><div class="card"><div class="k">${best}계열 대표 학과 6</div>${d.majors.map(m=>`<div style="padding:9px 0;border-bottom:1px dashed #ECEAFB"><b style="font-size:14px;color:var(--navy-text)">${esc(m.name)}</b><p style="font-size:11.8px;color:#5B6270;line-height:1.55;margin-top:3px">${esc((m.talent||'').slice(0,110))}…</p></div>`).join('')}<p class="muted" style="margin-top:8px">→ 학과 탐색관에서 전체 정보(권장과목·진로) 확인</p></div></div>
   ${d.subj.length?`<div class="solpage">${blockHtml(d.subj[0],'고교학점제 과목 전략')}</div>`:''}
-  <div class="solpage"><div class="card coach" style="background:#F4F1E8"><div class="k">마무리 — ${sec}계열과의 융합</div><p style="font-size:13px;line-height:1.75">${esc(st.name)} 학생의 2순위 <b>${sec}계열</b>은 버려야 할 차선이 아니라 ${best}계열을 특별하게 만드는 재료입니다. ${best}×${sec}이 만나는 지점(예: 융합 전공·복수전공·교양 선택)을 의식적으로 탐색해 보세요. 이 보고서의 4주 플랜을 끝내면 한 달 뒤 재진단으로 변화를 확인하고, 다음 STEP 진단으로 여정을 이어가길 권합니다.</p></div>
+  <div class="solpage"><div class="card coach" style="background:#F4F1E8"><div class="k">마무리 — ${sec}계열과의 융합</div><p style="font-size:13px;line-height:1.75">${esc(st.name)} 학생의 2순위 <b>${sec}계열</b>은 버려야 할 차선이 아니라 ${best}계열을 특별하게 만드는 재료입니다. ${best}×${inqJ(sec,["이","가"])} 만나는 지점(예: 융합 전공·복수전공·교양 선택)을 의식적으로 탐색해 보세요. 이 보고서의 4주 플랜을 끝내면 한 달 뒤 재진단으로 변화를 확인하고, 다음 STEP 진단으로 여정을 이어가길 권합니다.</p></div>
   <div class="foot" style="border-top:1px solid #E7E4DA;padding-top:8px;margin-top:10px">My Best NEXT 심층 솔루션 · (주)가르치는사람들 · 전국 규준 기반 성장 진단</div></div>
   <button class="btn navy noprint" onclick="print()">🖨️ 심층 솔루션 인쇄/PDF (7쪽)</button>
   <div style="height:8px"></div><button class="btn ghost noprint" onclick="go('dash')">대시보드로</button>`;
-  new Chart($('#solr'),{type:'radar',data:{labels:r.labels,datasets:[{data:r.scores,fill:true,backgroundColor:'rgba(108,92,231,.16)',borderColor:'#6C5CE7',pointBackgroundColor:'#00CEC9',borderWidth:2}]},options:{plugins:{legend:{display:false}},scales:{r:{beginAtZero:true,ticks:{display:false},pointLabels:{font:{size:11,weight:'700',family:'Pretendard'}}}},animation:false}});
+  safeChart($('#solr'),{type:'radar',data:{labels:r.labels,datasets:[{data:r.scores,fill:true,backgroundColor:'rgba(108,92,231,.16)',borderColor:'#6C5CE7',pointBackgroundColor:'#00CEC9',borderWidth:2}]},options:{plugins:{legend:{display:false}},scales:{r:{beginAtZero:true,ticks:{display:false},pointLabels:{font:{size:11,weight:'700',family:'Pretendard'}}}},animation:false}});
   window.scrollTo(0,0);
  }
  else if(page==='profile'){
@@ -1498,8 +2380,8 @@ async function go(page,arg){
   <div class="card coach" style="background:#F4F1E8;border-color:#E2D9BD"><div class="k">종합 코칭</div><p style="font-size:13px;line-height:1.7">${esc(S.me.name)} 학생은 ${bestSer?'<b>'+bestSer+'계열</b> 성향을 중심으로 ':''}현재 ${done}개 영역을 진단했고 평균 준비도는 <b>${avgAll}점</b>입니다. ${bars.length?'가장 강한 영역은 <b>'+esc(bars[0].title)+'</b>('+bars[0].v+'점)'+(bars.length>1?', 우선 보완 영역은 <b>'+esc(bars[bars.length-1].title)+'</b>('+bars[bars.length-1].v+'점)입니다.':'.'):''} 보완 영역의 맞춤 가이드를 이번 주 실천 목표로 삼고, 한 달 뒤 재진단으로 성장을 확인해 보세요.</p></div>
   ${nextStepHtml(t,ats,S.me.grade)}
   <div class="actionbar noprint"><button class="btn navy" onclick="print()">🖨️ A4 한장 리포트 인쇄/PDF</button><button class="btn ghost" onclick="shareProfile()">🔗 통합 리포트 공유</button><button class="btn ghost" onclick="go('dash')">대시보드로</button></div>`;
-  if(ser)new Chart($('#pr1'),{type:'radar',data:{labels:ser.result.labels,datasets:[{data:ser.result.scores,fill:true,backgroundColor:'rgba(108,92,231,.16)',borderColor:'#6C5CE7',pointBackgroundColor:'#00CEC9',borderWidth:2}]},options:{plugins:{legend:{display:false}},scales:{r:{beginAtZero:true,ticks:{display:false},pointLabels:{font:{size:11,weight:'700',family:'Pretendard'}}}},animation:false}});
-  if(fut)new Chart($('#pr2'),{type:'radar',data:{labels:fut.result.labels,datasets:[{data:fut.result.scores,fill:true,backgroundColor:'rgba(0,206,201,.15)',borderColor:'#00B894',pointBackgroundColor:'#6C5CE7',borderWidth:2}]},options:{plugins:{legend:{display:false}},scales:{r:{beginAtZero:true,max:15,ticks:{display:false},pointLabels:{font:{size:11,weight:'700',family:'Pretendard'}}}},animation:false}});
+  if(ser)safeChart($('#pr1'),{type:'radar',data:{labels:ser.result.labels,datasets:[{data:ser.result.scores,fill:true,backgroundColor:'rgba(108,92,231,.16)',borderColor:'#6C5CE7',pointBackgroundColor:'#00CEC9',borderWidth:2}]},options:{plugins:{legend:{display:false}},scales:{r:{beginAtZero:true,ticks:{display:false},pointLabels:{font:{size:11,weight:'700',family:'Pretendard'}}}},animation:false}});
+  if(fut)safeChart($('#pr2'),{type:'radar',data:{labels:fut.result.labels,datasets:[{data:fut.result.scores,fill:true,backgroundColor:'rgba(0,206,201,.15)',borderColor:'#00B894',pointBackgroundColor:'#6C5CE7',borderWidth:2}]},options:{plugins:{legend:{display:false}},scales:{r:{beginAtZero:true,max:15,ticks:{display:false},pointLabels:{font:{size:11,weight:'700',family:'Pretendard'}}}},animation:false}});
   window.scrollTo(0,0);
  }
  else if(page==='mypage'){
@@ -1572,7 +2454,7 @@ async function go(page,arg){
   if(!gi&&!Object.keys(by).length)html+='<div class="card"><p class="muted">아직 진단 기록이 없어요.</p></div>';
   html+=`<button class="btn ghost noprint" onclick="go('dash')">대시보드로</button>`;
   v.innerHTML=html;
-  charts.forEach(([i,ms])=>{new Chart($('#gw'+i),{type:'line',data:{labels:ms.map(x=>x.d),datasets:[{data:ms.map(x=>x.v),borderColor:'#6C5CE7',backgroundColor:'rgba(108,92,231,.12)',fill:true,tension:.35,pointBackgroundColor:'#00CEC9',pointRadius:4}]},options:{plugins:{legend:{display:false}},scales:{y:{min:0,max:100,grid:{color:'#F0EEF9'}},x:{grid:{display:false}}},animation:false}})});
+  charts.forEach(([i,ms])=>{safeChart($('#gw'+i),{type:'line',data:{labels:ms.map(x=>x.d),datasets:[{data:ms.map(x=>x.v),borderColor:'#6C5CE7',backgroundColor:'rgba(108,92,231,.12)',fill:true,tension:.35,pointBackgroundColor:'#00CEC9',pointRadius:4}]},options:{plugins:{legend:{display:false}},scales:{y:{min:0,max:100,grid:{color:'#F0EEF9'}},x:{grid:{display:false}}},animation:false}})});
  }
  else if(page==='quiz'){renderQuiz()}
  else if(page==='result'){renderResult(arg)}
@@ -1595,14 +2477,14 @@ async function go(page,arg){
     :`<div class="card" style="text-align:center"><div class="k">교사 전용 기능</div><p style="font-size:13px;color:#7A7E9A;line-height:1.6;margin-bottom:12px">학급 만들기·코드 발급·학급 관리·진단 배정은 <b>관리자 대시보드 로그인 후</b> 이용할 수 있어요.</p><a class="btn navy" style="width:auto;display:inline-block;padding:13px 26px" href="/admin.html">관리자 로그인 / 학급 관리 🔑</a></div>`}
    <div class="card" style="text-align:center"><div class="k">학교·기관 도입 문의</div>
    <p style="font-size:13px;color:#7A7E9A;line-height:1.6;margin-bottom:10px">다학급 운영, 연수, 기관별 맞춤 콘텐츠는 별도로 준비합니다.</p>
-   <a class="btn ghost" style="width:auto;display:inline-block;padding:12px 24px" href="mailto:onlyjdw3831@gmail.com?subject=마이베스트%20NEXT%20학교%20도입%20문의">학교 도입 문의하기</a></div>
+   <a class="btn ghost" style="width:auto;display:inline-block;padding:12px 24px" href="mailto:teachertshare2024@naver.com?subject=마이베스트%20NEXT%20학교%20도입%20문의">학교 도입 문의하기</a></div>
    <div class="linkrow"><a onclick="go('home')">← 처음으로</a> · <a onclick="go('pricing')">요금·도입</a> · <a onclick="go('quality')">신뢰도</a></div>`;
    window.scrollTo(0,0);
   }
   else if(page==='pricing'){
    const b2b=`<div class="card"><span class="planpill">B2B · 학교/기관</span><div class="k" style="margin-top:8px">학교·교육청·기관 도입</div>
     <ul class="rx"><li><span class="n">✓</span>학년·학교 단위 라이선스, 다학급 운영, 세금계산서</li><li><span class="n">✓</span>교사 연수·운영 가이드, 기관별 맞춤 콘텐츠</li><li><span class="n">✓</span>학교장·기관관리자 / 담임·학급관리자 권한 분리</li><li><span class="n">✓</span>정식 보고서(A4·B4·10쪽)·학급 리포트 일괄 활용</li></ul>
-    <a class="btn navy" style="margin-top:10px" href="mailto:onlyjdw3831@gmail.com?subject=마이베스트%20NEXT%20기관%20도입%20문의&body=학교/기관명,%20학급%20수,%20도입%20시기를%20알려주시면%20견적을%20보내드립니다.">🏫 도입 문의하기 (견적)</a></div>`;
+    <a class="btn navy" style="margin-top:10px" href="mailto:teachertshare2024@naver.com?subject=마이베스트%20NEXT%20기관%20도입%20문의&body=학교/기관명,%20학급%20수,%20도입%20시기를%20알려주시면%20견적을%20보내드립니다.">🏫 도입 문의하기 (견적)</a></div>`;
    v.innerHTML=`<h1>요금·도입 안내 💎</h1><div class="sub">모든 진단과 기본 결과는 <b>계속 무료</b>예요. 학교는 B2B 도입, 개인·학부모는 프리미엄을 선택할 수 있습니다.</div>
    ${b2b}
    <div class="lp-sectk">B2C · 개인/학부모</div>
@@ -1638,7 +2520,7 @@ async function go(page,arg){
   <button class="btn" onclick="makeClass()">학급 코드 발급받기</button><div id="newcode" style="margin-top:10px"></div></div>
    <div class="card" style="text-align:center"><div class="k">학교 도입 문의</div>
    <p style="font-size:13px;color:#7A7E9A;line-height:1.6;margin-bottom:10px">다학급 운영, 연수, 기관별 맞춤 콘텐츠는 별도 문의로 준비합니다.</p>
-   <a class="btn ghost" style="width:auto;display:inline-block;padding:12px 24px" href="mailto:onlyjdw3831@gmail.com">문의 메일 보내기</a></div>
+   <a class="btn ghost" style="width:auto;display:inline-block;padding:12px 24px" href="mailto:teachertshare2024@naver.com">문의 메일 보내기</a></div>
   <div class="linkrow"><a onclick="go('home')">← 처음으로</a></div>`;
  }
  else if(page==='tdash'){renderTeacherDash(arg)}
@@ -1657,7 +2539,7 @@ async function go(page,arg){
    <div class="card"><div class="k">🏢 학교·기관</div><ul class="rx">
    <li><span class="n">1</span>학교장·기관관리자와 담임·학급관리자 권한을 나누어 운영할 수 있도록 구성합니다</li>
    <li><span class="n">2</span>학년·학교 단위 도입, 다학급, 맞춤 콘텐츠는 별도 문의로 준비합니다</li>
-   <li><span class="n">3</span>문의: onlyjdw3831@gmail.com</li></ul></div>
+   <li><span class="n">3</span>문의: teachertshare2024@naver.com</li></ul></div>
   <div class="card"><div class="k">🎒 학급코드 없이 개인으로</div><p style="font-size:13px;line-height:1.7;color:#4C5C4C">학급코드가 없어도 이름·PIN만으로 개인 진단을 바로 시작할 수 있어요. 개인 이용자는 무료 진단 8종(계열성향·고교 과목추천·학생부 로드맵·공부습관·면접 준비도·고교 유형·초등 진로탐험 등)을 이용할 수 있습니다. 학급/학교 도입은 학교·기관 전용입니다.</p></div>
   <button class="btn" onclick="go(S.token?'dash':'join')">바로 시작하기 ✨</button>
   <div class="linkrow"><a onclick="go('home')">← 처음으로</a> · <a onclick="go('join','individual')">개인으로 시작하기</a></div>`;
@@ -1736,7 +2618,7 @@ async function go(page,arg){
   v.innerHTML=`<h1>법적 고지 ⚖️</h1>
   <div class="chips noprint"><button class="chip ${tab==='terms'?'on':''}" onclick="go('legal','terms')">이용약관</button><button class="chip ${tab==='privacy'?'on':''}" onclick="go('legal','privacy')">개인정보처리방침</button></div>
   ${tab==='terms'?`
-  <div class="card"><div class="k">이용약관</div><div style="font-size:13px;line-height:1.8;color:#3A4154"><b>제1조(목적)</b> 본 약관은 (주)가르치는사람들(이하 "회사")이 제공하는 마이베스트 NEXT 진단 서비스(이하 "서비스")의 이용 조건·절차 및 회사와 이용자의 권리·의무를 정합니다.<br><b>제2조(서비스 내용)</b> 초·중·고 학생 대상 진로·진학·공부·미래역량·AI역량 진단과 성장 가이드, 교사용 학급 관리 기능을 제공합니다. 진단 결과는 교육적 참고 자료이며 합격·입시 결과를 보장하지 않습니다.<br><b>제3조(이용권·결제)</b> 학급/학년 단위 이용권은 포트원(PortOne)을 통해 결제되며, 결제 즉시 화면에 표시된 정원·기간 동안 적용됩니다. 가격·정원·기간은 구매 화면 표시에 따릅니다.<br><b>제4조(청약철회 및 환불)</b> ① 이용자는 결제일부터 7일 이내에 청약을 철회할 수 있습니다. ② 다만 학급 소속 학생이 진단을 1회 이상 이용(콘텐츠 이용 개시)한 경우, 콘텐츠 특성상 그 부분의 청약철회가 제한될 수 있습니다(전자상거래법 제17조 및 콘텐츠이용자보호지침). ③ 이용 개시 후 중도 해지 시 잔여 이용기간을 일할 계산하여 환불하며, 결제대행 수수료가 공제될 수 있습니다. ④ 환불은 요청 확인 후 3영업일 이내 동일 결제수단으로 처리합니다. ⑤ 미성년자가 법정대리인의 동의 없이 결제한 경우 법정대리인은 이를 취소할 수 있습니다. 환불·청약철회 문의: onlyjdw3831@gmail.com<br><b>제5조(저작권)</b> 진단 문항·콘텐츠·결과 보고서에 대한 저작권은 회사에 있으며, 무단 복제·배포·상업적 재사용을 금합니다.<br><b>제6조(금지행위)</b> 타인 정보 도용, 결과의 무단 상업적 재배포, 시스템 부정 접근·자동 수집(크롤링)을 금합니다.<br><b>제7조(면책)</b> 천재지변, 클라우드 장애 등 불가항력 및 이용자 귀책 사유로 인한 손해에 대해 회사는 책임을 지지 않습니다.<br><b>제8조(분쟁해결)</b> 본 약관은 대한민국 법률에 따르며, 「전자상거래 등에서의 소비자보호에 관한 법률」 등 관련 법령과 회사 본점 소재지 관할 법원에 따릅니다. 소비자는 한국소비자원·전자거래분쟁조정위원회에 분쟁 조정을 신청할 수 있습니다.<br><b>부칙</b> 본 약관은 2026년 6월 20일부터 시행합니다.<br><span style="color:#8489A3;font-size:11.5px">※ 통신판매업 신고번호: 제 2026-서울강남-03605 호</span></div></div>`:`
+  <div class="card"><div class="k">이용약관</div><div style="font-size:13px;line-height:1.8;color:#3A4154"><b>제1조(목적)</b> 본 약관은 (주)가르치는사람들(이하 "회사")이 제공하는 마이베스트 NEXT 진단 서비스(이하 "서비스")의 이용 조건·절차 및 회사와 이용자의 권리·의무를 정합니다.<br><b>제2조(서비스 내용)</b> 초·중·고 학생 대상 진로·진학·공부·미래역량·AI역량 진단과 성장 가이드, 교사용 학급 관리 기능을 제공합니다. 진단 결과는 교육적 참고 자료이며 합격·입시 결과를 보장하지 않습니다.<br><b>제3조(이용권·결제)</b> 학급/학년 단위 이용권은 포트원(PortOne)을 통해 결제되며, 결제 즉시 화면에 표시된 정원·기간 동안 적용됩니다. 가격·정원·기간은 구매 화면 표시에 따릅니다.<br><b>제4조(청약철회 및 환불)</b> ① 이용자는 결제일부터 7일 이내에 청약을 철회할 수 있습니다. ② 다만 학급 소속 학생이 진단을 1회 이상 이용(콘텐츠 이용 개시)한 경우, 콘텐츠 특성상 그 부분의 청약철회가 제한될 수 있습니다(전자상거래법 제17조 및 콘텐츠이용자보호지침). ③ 이용 개시 후 중도 해지 시 잔여 이용기간을 일할 계산하여 환불하며, 결제대행 수수료가 공제될 수 있습니다. ④ 환불은 요청 확인 후 3영업일 이내 동일 결제수단으로 처리합니다. ⑤ 미성년자가 법정대리인의 동의 없이 결제한 경우 법정대리인은 이를 취소할 수 있습니다. 환불·청약철회 문의: teachertshare2024@naver.com<br><b>제5조(저작권)</b> 진단 문항·콘텐츠·결과 보고서에 대한 저작권은 회사에 있으며, 무단 복제·배포·상업적 재사용을 금합니다.<br><b>제6조(금지행위)</b> 타인 정보 도용, 결과의 무단 상업적 재배포, 시스템 부정 접근·자동 수집(크롤링)을 금합니다.<br><b>제7조(면책)</b> 천재지변, 클라우드 장애 등 불가항력 및 이용자 귀책 사유로 인한 손해에 대해 회사는 책임을 지지 않습니다.<br><b>제8조(분쟁해결)</b> 본 약관은 대한민국 법률에 따르며, 「전자상거래 등에서의 소비자보호에 관한 법률」 등 관련 법령과 회사 본점 소재지 관할 법원에 따릅니다. 소비자는 한국소비자원·전자거래분쟁조정위원회에 분쟁 조정을 신청할 수 있습니다.<br><b>부칙</b> 본 약관은 2026년 6월 20일부터 시행합니다.<br><span style="color:#8489A3;font-size:11.5px">※ 통신판매업 신고번호: 제 2026-서울강남-03605 호</span></div></div>`:`
   <div class="card"><div class="k">개인정보처리방침</div><div style="font-size:13px;line-height:1.8;color:#3A4154">
   (주)가르치는사람들(이하 "회사")은 개인정보보호법을 준수하며, <b>개인정보 최소수집 원칙</b>을 서비스 설계의 기본으로 합니다.<br><br>
   <b>1. 수집 항목과 방법</b> — 학생: 이름, 학급코드, PIN(일방향 암호화 저장), 학년(선택), 진단 응답. 교사: 학교명, 학급명, 교사 PIN(암호화). 결제: 포트원(PortOne)을 통해 처리되며 회사는 카드번호를 저장하지 않습니다. <b>연락처·이메일·주민등록번호·사진은 일절 수집하지 않습니다.</b><br>
@@ -1747,7 +2629,7 @@ async function go(page,arg){
   <b>6. 아동 보호</b> — 만 14세 미만 아동의 진단은 학교(교사)가 교육 목적으로 개설한 학급 내에서 이루어지며, 법정대리인 동의가 필요한 경우 학교의 동의 절차를 따릅니다.<br>
   <b>7. 정보주체의 권리</b> — 본인 또는 담임 교사를 통해 열람·정정·삭제를 요청할 수 있으며 지체 없이 조치합니다.<br>
   <b>8. 안전성 확보</b> — 전 구간 TLS 암호화, PIN 일방향 해시 저장, 데이터베이스 접근통제(RLS), 결과 열람 권한 분리(본인·담임 한정).<br>
-  <b>9. 보호책임자</b> — 이성훈 (대표) · onlyjdw3831@gmail.com<br>
+  <b>9. 보호책임자</b> — 이성훈 (대표) · teachertshare2024@naver.com<br>
   본 방침은 2026년 6월 11일부터 적용됩니다.</div></div>`}
   <div class="linkrow"><a onclick="go('home')">← 처음으로</a></div>`;
   }
@@ -1764,7 +2646,7 @@ async function go(page,arg){
    <label>기관명(선택)</label><input id="csOrg" placeholder="예: OO중학교">
    <label>담당자명(선택)</label><input id="csName" placeholder="이름">
    <label>이메일(필수)</label><input id="csEmail" type="email" placeholder="example@school.kr">
-   <label>연락처(선택)</label><input id="csPhone" placeholder="010-0000-0000">
+   <label>연락처(선택)</label><input id="csPhone" placeholder="02-547-6846">
    <label>문의 내용(필수)</label><textarea id="csMsg" rows="5" style="width:100%;border:1px solid var(--bg);border-radius:10px;padding:10px;font-family:inherit;font-size:14px" placeholder="문의 내용을 입력해주세요"></textarea>
    <input type="text" id="csHp" style="position:absolute;left:-9999px" tabindex="-1" autocomplete="off">
    <button class="btn" style="margin-top:10px" onclick="submitCs()">문의 보내기</button>
@@ -1782,7 +2664,7 @@ async function go(page,arg){
     <div class="saleshold"><p><b>기관 운영 안내</b><br>26종 진단, 결과 리포트, 교사용 운영 화면, 신뢰도 고지, 보안 로그를 학교 현장에 맞게 구성합니다.</p></div>
     <div class="qualitygrid"><div class="quality"><span class="qbadge ready">READY</span><h3>학급코드 운영</h3><p>학생들이 코드와 PIN으로 입장해 결과를 확인할 수 있습니다.</p></div>
     <div class="quality"><span class="qbadge build">EXPAND</span><h3>권한 구조</h3><p>기관관리자와 학급관리자 역할을 나누어 여러 학급을 안정적으로 운영합니다.</p></div></div>
-    <a class="btn ghost" href="mailto:onlyjdw3831@gmail.com">학교 도입 문의하기</a>
+    <a class="btn ghost" href="mailto:teachertshare2024@naver.com">학교 도입 문의하기</a>
     <div class="linkrow"><a onclick="go('login')">← 로그인 선택</a></div>`;
     return;
    }
@@ -1809,9 +2691,10 @@ async function go(page,arg){
   <div class="linkrow"><a onclick="go('login')">← 로그인 선택</a></div>`;
  }
  else if(page==='admin'){
-  v.innerHTML=`<h1>전체 관리 대시보드 🔧</h1><div class="sub">운영 통계와 콘텐츠 블록 관리 · <a style="color:var(--vio-text);cursor:pointer" onclick="go('school')">학교 대시보드 →</a></div>
-  <div class="card"><div class="err" id="err"></div><label>관리자 PIN</label><input id="ap" type="password"><button class="btn navy" onclick="adminLoad()">관리 대시보드 열기</button></div><div id="astats"></div><div id="ablocks"></div>
-  <div class="linkrow"><a onclick="go('home')">← 처음으로</a></div>`;
+  /* Legacy public PIN administration is retired. All administration goes through
+     the scoped server-session dashboard. */
+  location.replace('/admin.html');
+  return;
  }
  else if(page==='wizard'){
   if(!S.tests){try{S.tests=(await api('/tests')).tests;}catch(e){}}
@@ -1954,6 +2837,10 @@ function startQuizFx(slug){
  const card=document.querySelector(`.vcard[data-slug="${slug}"]:not(.locked)`);
  if(card)card.classList.add('launch');
  try{confetti()}catch(e){}
+ /* [F-PATCH M-16] 비로그인이면 끝까지 풀고 실패하지 않도록 시작 시점에 안내 */
+ if(!S.token){setTimeout(()=>guestGateModal(slug),200);return;}
+ /* [F-PATCH N-03] 자기평가를 아직 안 했으면 먼저 묻는다 */
+ if(!selfRateGet(slug)){setTimeout(()=>selfRateScreen(slug),260);return;}
  setTimeout(()=>startQuiz(slug),260);
 }
 function quizPrev(){const z=S.quiz;if(z&&z.i>0){z.i--;renderQuiz();}}
@@ -2103,6 +2990,10 @@ function applyDoneBadges(ats){
    const mk=ch.dataset.chipSlug;
    if(window.__done[mk]&&!ch.classList.contains('done')){ch.classList.add('done');ch.textContent='✓ '+ch.textContent;}
   });
+  try{paintProgressStrip();}catch(e){}
+  try{paintCourses();}catch(e){}
+  try{paintActPanel();}catch(e){}
+  try{paintInqPanel();}catch(e){}
  },50);
 }
 /* 카드/칩 클릭 진입점 — 완료 이력이 없으면 바로 진단 시작, 있으면 결과보기/재진단 선택 모달 */
@@ -2167,7 +3058,7 @@ function relatedTestsHtml(slug){
 /* ===== 유료화 동선(B5) — 무료 vs 프리미엄 비교. PAID_LIVE=false면 결제·금액 미노출 ===== */
 function payPremiumHtml(){
  const rows=[
-  ['전체 진단 프로그램(26종)','전체 무료','전체 무료',true,true],
+  ['전체 진단 프로그램(26종)','가입 후 전체 이용','가입 후 전체 이용',true,true],
   ['기본 결과·차트·요약','포함','포함',true,true],
   ['정식 A4 / B4 상담 보고서','미리보기','정식 다면 보고서',false,true],
   ['통합 포트폴리오(PDF)','요약','정식 발급',false,true],
@@ -2179,36 +3070,42 @@ function payPremiumHtml(){
  const cta = PAID_LIVE
    ? `<button class="btn" onclick="go('pay')">💎 프리미엄·플랜 보기</button>`
    : `<button class="btn" onclick="payNotify()">🔔 출시되면 알림 받기</button>
-      <a class="btn ghost" href="mailto:onlyjdw3831@gmail.com?subject=마이베스트%20NEXT%20기관%20도입%20문의">🏫 기관 도입 문의</a>`;
+      <a class="btn ghost" href="mailto:teachertshare2024@naver.com?subject=마이베스트%20NEXT%20기관%20도입%20문의">🏫 기관 도입 문의</a>`;
  return `<h1>학교·기관 도입 안내 💎</h1>
   <div class="sub">마이베스트 NEXT는 진단, 정식 보고서, 학급 관리, 성장 추적을 학교·기관 운영에 맞게 확장할 수 있습니다.</div>
   <div class="card">
    <span class="planpill">무료 vs 프리미엄</span>
    <table class="cmp"><thead><tr><th>기능</th><th class="f">무료</th><th class="p pcol">프리미엄</th></tr></thead>
    <tbody>${rows.map(r=>`<tr><td>${esc(r[0])}</td><td>${cell(r[1],r[3])}</td><td class="pcol">${cell(r[2],r[4])}</td></tr>`).join('')}</tbody></table>
-   <p class="muted" style="font-size:11.5px;margin-top:4px">※ 학습·진단 콘텐츠는 영구 무료 유지 정책입니다. 프리미엄은 부가 산출물·지원에 한합니다.</p>
+   <p class="muted" style="font-size:11.5px;margin-top:4px">※ 26종 진단과 기본 결과·차트·요약은 가입만 하면 이용할 수 있습니다. 유료 플랜은 정식 상담 보고서·통합 포트폴리오·성장 추적 등 부가 산출물과 지원에 적용됩니다. 제공 범위와 요금은 변경될 수 있으며, 변경 시 사전에 공지합니다.</p>
   </div>
   <div class="actionbar noprint">${cta}<button class="btn ghost" onclick="go(S.token?'dash':'home')">← 돌아가기</button></div>`;
 }
 function payNotify(){
  // PAID_LIVE=false 단계: 실제 결제/토스 호출 없음. 사전 알림 수요만 안내(추후 알림톡·메일 수집 연결 자리).
  alert('학교·기관 도입은 운영자 문의로 안내드리고 있습니다. 학급/학년 단위 운영이 필요하면 도입 문의 메일을 보내주세요.');
- window.open('mailto:onlyjdw3831@gmail.com?subject='+encodeURIComponent('프리미엄 출시 알림 신청'));
+ window.open('mailto:teachertshare2024@naver.com?subject='+encodeURIComponent('프리미엄 출시 알림 신청'));
  // TODO(PAID_LIVE): 사전 알림 신청 수집 엔드포인트 배선 위치.
 }
 function resultActions(d,opts){
  opts=opts||{};
  const RB='report.html?token='+encodeURIComponent(S.token||'')+'&id='+encodeURIComponent(d.attempt.id);
+ /* [FIX-S5 2026-08-02] 같은 크기 버튼 9개가 나열돼 무엇을 눌러야 할지 알 수 없던 문제.
+    1차(정식 보고서) / 2차(공유·재진단) / 나머지는 접어둔다. */
  return `${resultSaveHtml()}<div class="actionbar noprint">
-  ${opts.solution?`<button class="btn" onclick="openSolution('${d.attempt.id}')">📚 심층 솔루션 (학과·과목·4주플랜)</button>`:''}
-  <a class="btn navy" href="${RB}" target="_blank" rel="noopener">📄 정식 보고서(A4 다면)</a>
-  <a class="btn navy" href="${RB}&mode=b4" target="_blank" rel="noopener">🗂 B4 한장 요약</a>
-  <button class="btn ghost" onclick="retakeQuiz('${d.attempt.test_slug}')">🔄 다시 진단하기</button>
-  <button class="btn ghost" onclick="shareResult('${d.attempt.id}','${esc(opts.summary||'')}')">🔗 결과 공유</button>
-  <button class="btn ghost" onclick="shareCardMake('${d.attempt.id}')">🎨 결과 공유 카드</button>
-  <button class="btn ghost" onclick="sendResultMessage('${d.attempt.id}','${esc(opts.summary||'')}')">💬 문자·카톡 문구</button>
-  <button class="btn ghost" onclick="go('premium')">학교·기관 도입 안내</button>
-  <button class="btn ghost" onclick="go('dash')">다음 진단 고르기</button>
+  <a class="btn navy ract1" href="${RB}" target="_blank" rel="noopener">📄 정식 보고서 보기 <small>A4 요약 + B4 상세</small></a>
+  <div class="ract2">
+   <button class="btn ghost" onclick="shareResult('${d.attempt.id}','${esc(opts.summary||'')}')">🔗 결과 공유</button>
+   <button class="btn ghost" onclick="retakeQuiz('${d.attempt.test_slug}')">🔄 다시 진단</button>
+  </div>
+  <details class="ractmore"><summary>다른 방법으로 활용하기</summary><div class="ract3">
+   ${opts.solution?`<button class="btn ghost" onclick="openSolution('${d.attempt.id}')">📚 심층 솔루션 (학과·과목·4주플랜)</button>`:''}
+   <a class="btn ghost" href="${RB}&mode=b4" target="_blank" rel="noopener">🗂 B4 한장 요약</a>
+   <button class="btn ghost" onclick="shareCardMake('${d.attempt.id}')">🎨 결과 공유 카드</button>
+   <button class="btn ghost" onclick="sendResultMessage('${d.attempt.id}','${esc(opts.summary||'')}')">💬 문자·카톡 문구</button>
+   <button class="btn ghost" onclick="go('premium')">🏫 학교·기관 도입 안내</button>
+   <button class="btn ghost" onclick="go('dash')">➡️ 다음 진단 고르기</button>
+  </div></details>
  </div>${relatedTestsHtml(d.attempt.test_slug)}`;
 }
 function resultLink(id){
@@ -2353,6 +3250,26 @@ function ogCopy(t,msg){
  try{navigator.clipboard.writeText(t).then(()=>alert(msg||'복사되었어요!'),()=>prompt('아래 내용을 복사하세요',t));}
  catch(e){prompt('아래 내용을 복사하세요',t);}
 }
+/* [FIX-S1 2026-08-02] Chart.js 미로드 시 화면 전체가 죽던 문제 방어.
+   CDN 차단·광고차단기·네트워크 지연 어느 경우든 표로 대체 렌더하고 나머지 화면은 살린다. */
+function chartFallback(el,cfg){
+ try{
+  if(!el)return;
+  const labels=(cfg&&cfg.data&&cfg.data.labels)||[];
+  const ds=(cfg&&cfg.data&&cfg.data.datasets&&cfg.data.datasets[0]&&cfg.data.datasets[0].data)||[];
+  const nums=ds.map(x=>Number(x)||0), mx=Math.max(1,...nums);
+  const rows=labels.map((l,i)=>`<div class="cfbrow"><span class="cfbl">${esc(l)}</span><span class="cfbt"><i style="width:${Math.round(nums[i]/mx*100)}%"></i></span><b class="cfbv">${ds[i]!==undefined?esc(ds[i]):'-'}</b></div>`).join('');
+  const box=document.createElement('div'); box.className='cfb';
+  box.innerHTML=`<div class="cfbh">📊 그래프를 불러오지 못해 표로 보여드려요</div>${rows||'<div class="cfbrow"><span class="cfbl">표시할 값이 없어요</span></div>'}`;
+  if(el.replaceWith)el.replaceWith(box); else if(el.parentNode)el.parentNode.replaceChild(box,el);
+ }catch(e){}
+}
+function safeChart(el,cfg){
+ try{
+  if(typeof Chart==='undefined'){chartFallback(el,cfg);return null;}
+  return safeChart(el,cfg);
+ }catch(e){ chartFallback(el,cfg); return null; }
+}
 function personaBannerHtml(d){
  const st=d.student||{};
  const glv=gradeLv(st.grade);
@@ -2360,11 +3277,14 @@ function personaBannerHtml(d){
  const allAt=(S.me&&S.me.attempts)||[];
  const serAt=[...allAt].reverse().find(a=>a.test_slug==='hs_series'||a.test_slug==='ms_series'||a.test_slug==='es_dream');
  const serLabel=(serAt&&serAt.result&&serAt.result.labels&&serAt.result.best!==undefined)?serAt.result.labels[serAt.result.best]+' 계열 성향':'';
- const parts=[gLabel,serLabel].filter(Boolean);
+ /* [FIX-S4] 계열 배지는 계열과 직접 관련된 진단에서만. 초등 공부습관 결과에 "공학 계열"이 뜨던 문제. */
+ const SER_CTX=['hs_series','ms_series','es_dream','subject_rec','roadmap','inquiry','track_fit','reading','hs_essay','admission_nav'];
+ const _slug=(d.attempt&&d.attempt.test_slug)||'';
+ const parts=[gLabel, SER_CTX.indexOf(_slug)>=0?serLabel:''].filter(Boolean);
  if(!parts.length)return '';
  return `<div class="card" style="padding:9px 14px;margin-bottom:10px;background:var(--vio-soft);border-color:#E0DAFB"><span class="tag" style="background:#fff">${parts.map(p=>esc(p)).join(' · ')} 맞춤 결과</span></div>`;
 }
-function renderResult(d){
+function renderResult(d){ try{S.lastResultSlug=d.attempt.test_slug}catch(e){}
  window._shareCardD=d;
  const v=$('#view'),r=d.attempt.result,slug=d.attempt.test_slug,t=S.tests[slug],st=d.student;
  const dt=d.attempt.created_at.slice(0,10);
@@ -2377,7 +3297,7 @@ function renderResult(d){
    <div class="card"><div class="k">성장 처방 — 이번 주에 시작해요</div><ul class="rx">${SER_ACT[best].map((a,i)=>`<li><span class="n">${i+1}</span>${esc(a)}</li>`).join('')}</ul></div>
   <div class="card"><div class="k">컨설턴트 코칭</div><p style="font-size:13.5px;line-height:1.7">${esc(st.name)} 학생은 <b>${best}계열</b> 성향이 가장 뚜렷하고, <b>${sec}계열</b>의 가능성도 함께 지니고 있습니다. 두 계열이 만나는 융합 영역에서 자신만의 강점이 만들어집니다. 위 처방을 한 달만 실천하면 학교생활기록부에 남길 '나만의 이야기'가 시작됩니다.</p></div>
   ${resultActions(d,{solution:true,summary:best+'계열 성향이 가장 높게 나왔어요'})}`;
-  new Chart($('#radar'),{type:'radar',data:{labels:LABELS,datasets:[{data:r.scores,fill:true,backgroundColor:'rgba(108,92,231,.16)',borderColor:'#6C5CE7',pointBackgroundColor:'#00CEC9',borderWidth:2}]},options:{plugins:{legend:{display:false}},scales:{r:{beginAtZero:true,ticks:{display:false},pointLabels:{font:{size:12,weight:'700',family:'Pretendard'}}}},animation:false}});
+  safeChart($('#radar'),{type:'radar',data:{labels:LABELS,datasets:[{data:r.scores,fill:true,backgroundColor:'rgba(108,92,231,.16)',borderColor:'#6C5CE7',pointBackgroundColor:'#00CEC9',borderWidth:2}]},options:{plugins:{legend:{display:false}},scales:{r:{beginAtZero:true,ticks:{display:false},pointLabels:{font:{size:12,weight:'700',family:'Pretendard'}}}},animation:false}});
  }else if(r.kind==='grades'){
   const blocks=d.blocks||[];
   const COLS=['#2E7D32','#388E3C','#F9A825','#EF6C00','#C62828'];
@@ -2416,7 +3336,7 @@ function renderResult(d){
    <div class="k" style="margin:14px 0 8px">역량 가이드 — 강점 살리고 약점 보완하기</div>
   ${blocks.map(b=>blockHtml(b)).join('')}
   ${resultActions(d,{summary:fb+' 역량이 가장 강해요'})}`;
-  new Chart($('#radar6'),{type:'radar',data:{labels:r.labels,datasets:[{data:r.scores,fill:true,backgroundColor:'rgba(108,92,231,.16)',borderColor:'#6C5CE7',pointBackgroundColor:'#00CEC9',borderWidth:2}]},options:{plugins:{legend:{display:false}},scales:{r:{beginAtZero:true,max:15,ticks:{display:false},pointLabels:{font:{size:11,weight:'700',family:'Pretendard'}}}},animation:false}});
+  safeChart($('#radar6'),{type:'radar',data:{labels:r.labels,datasets:[{data:r.scores,fill:true,backgroundColor:'rgba(108,92,231,.16)',borderColor:'#6C5CE7',pointBackgroundColor:'#00CEC9',borderWidth:2}]},options:{plugins:{legend:{display:false}},scales:{r:{beginAtZero:true,max:15,ticks:{display:false},pointLabels:{font:{size:11,weight:'700',family:'Pretendard'}}}},animation:false}});
  }else{
   const blocks=d.blocks||[];
   v.innerHTML=`<div class="hero">${ART(slug)}<h2>${esc(t.title)} <span class="cnt" data-v="${r.pct}">0</span>점</h2><p>${r.ready} / ${r.total} 항목 준비 완료 · ${esc(st.name)} · ${dt}</p><div class="meter" style="background:rgba(255,255,255,.25)"><i style="width:${r.pct}%;background:#FDCB6E"></i></div></div>
@@ -2569,6 +3489,132 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
   #ls-banner .ls-btn-primary{background:#3b82f6;border-color:#3b82f6;color:#fff}
 }
 
+
+/* [F-PATCH 2026-08-03 · N-BADGE] */
+.nbadge{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:700;
+ line-height:1;padding:3px 7px;border-radius:999px;white-space:nowrap;vertical-align:middle;
+ border:1px solid transparent;cursor:help}
+.nbadge.nv{background:#EAF2FF;color:#1B4B8F;border-color:#C7DDFB}
+.nbadge.ns{background:#EAF7EE;color:#1F6B3A;border-color:#C6E7D2}
+.nbadge.nb{background:#FFF6E0;color:#8A6100;border-color:#F3E0AE}
+@media(max-width:520px){.nbadge{font-size:10px;padding:2px 6px}}
+
+/* [F-PATCH 2026-08-03 · R9] 이번 분기 내 활동 */
+.actp .apq{font-size:12px;font-weight:700;color:#6C5CE7;margin-left:6px}
+.actp .apsub{font-size:12.5px;color:#5C617C;margin:2px 0 10px}
+.actp .apnone{font-size:13px;color:#5C617C;line-height:1.6;margin:4px 0 2px}
+.apc{border:1px solid #E5E9F2;border-radius:12px;padding:11px 12px;margin-bottom:8px;background:#fff}
+.apc.fin{background:#F4FBF6;border-color:#CDEBD7}
+.apt{font-size:13.5px;font-weight:800;color:#23284A;line-height:1.4}
+.apl{font-size:11.5px;color:#6B7186;margin:4px 0 8px;line-height:1.5}
+.apbs{display:flex;gap:6px;flex-wrap:wrap}
+.apb{font-size:11.5px;font-weight:700;line-height:1;padding:7px 11px;border-radius:999px;
+ border:1px solid #DDE3EE;background:#FAFBFD;color:#5C617C;cursor:pointer}
+.apb.on.ap-p{background:#EEF1FF;color:#3B4BB0;border-color:#C9D2F8}
+.apb.on.ap-d{background:#FFF6E0;color:#8A6100;border-color:#F3E0AE}
+.apb.on.ap-o{background:#E9FBF3;color:#1E8E4E;border-color:#BFEBD5}
+@media(max-width:520px){.apb{flex:1;text-align:center;padding:9px 6px}}
+
+/* [F-PATCH 2026-08-03 · R12] 탐구 기록장 */
+.inqp .inqn{font-size:12px;font-weight:700;color:#6C5CE7;margin-left:6px}
+.inqp .inqs{font-size:12.5px;color:#5C617C;line-height:1.6;margin:2px 0 10px}
+.inqi{border:1px solid #E5E9F2;border-radius:10px;padding:10px 12px;margin-bottom:7px;cursor:pointer;background:#fff}
+.inqi:hover{border-color:#C9D2F8}
+.inqt{font-size:13.5px;font-weight:800;color:#23284A}
+.inqm{font-size:11.5px;color:#6B7186;margin-top:3px}
+.inqm .ok{color:#1E8E4E}
+.apb.ap-i{background:#F3EEFF;color:#5B45C7;border-color:#DCD2F7}
+.inqwrap{max-width:720px;margin:0 auto;padding:6px 0 40px}
+.inqh{font-size:21px;font-weight:900;color:#23284A;margin:12px 0 14px}
+.inql{display:block;font-size:12.5px;font-weight:800;color:#3B4257;margin:12px 0 5px}
+.inqin{width:100%;padding:11px 12px;border:1.5px solid #DDE3EE;border-radius:10px;font-family:inherit;font-size:14px}
+.inqta{width:100%;min-height:72px;padding:11px 12px;border:1.5px solid #DDE3EE;border-radius:10px;
+ font-family:inherit;font-size:14px;line-height:1.6;resize:vertical}
+.inqin:focus,.inqta:focus{outline:none;border-color:#6C5CE7}
+.inqbs{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+.inqok{color:#1E8E4E;font-weight:700;font-size:13px;margin-top:10px}
+.inqerr{color:#C0392B;font-weight:700;font-size:13px;margin-top:10px}
+.inqsum{margin-top:18px;border:1px solid #E5E9F2;border-radius:14px;padding:16px 18px;background:#fff}
+.inqsh{font-size:16px;font-weight:900;color:#23284A;margin-bottom:10px}
+.inqsh span{font-size:12.5px;font-weight:700;color:#6C5CE7}
+.inqsec{font-size:11.5px;font-weight:900;color:#6C5CE7;letter-spacing:.04em;margin:12px 0 4px}
+.inqsum p{font-size:13px;line-height:1.65;color:#3B4257;margin:3px 0}
+.inqsum p b{color:#23284A}
+.inqline{margin-top:12px;border:1px solid #CDEBD7;background:#F4FBF6;border-radius:12px;padding:14px 16px;
+ font-size:13.5px;line-height:1.7;color:#1B4B2E}
+.inqwarn{font-size:11.5px;color:#5C617C;line-height:1.55;margin-top:8px}
+@media(max-width:520px){.inqbs .btn{flex:1}}
+
+/* ===== [UX-PATCH v3 2026-08-03] 시작 =============================================
+   라이브 DOM 대조 완료. 아래 A 그룹은 홈 화면에서 실측 확인했고,
+   B 그룹은 로그인 후 화면 전용이라 확인하지 못했습니다(적용돼도 무해).
+   이 블록만 지우면 원래대로 돌아갑니다.
+   ------------------------------------------------------------------------------ */
+
+/* ── A. 홈 화면에서 실측 확인한 것 ─────────────────────────────── */
+
+/* A-1. 히어로 (.lp-stats — .stats 가 아니다)
+        현재 26px / 10.5px = 2.48배. 캡션만 올리면 비율이 눌리므로 숫자도 같이 올린다.
+        29px / 12px = 2.42배 — 위계를 거의 그대로 유지하면서 캡션만 읽히게 만든다. */
+.lp-stats b    { font-size: clamp(24px, 6.6vw, 29px); line-height: 1.15 }
+.lp-stats span { font-size: 12px; opacity: .92; letter-spacing: .02em }
+
+/* A-2. 푸터 명암비. 여기가 제일 나빴다.
+        .foot 본문 #A9ACC4 = 2.24:1  (기준 4.5:1)
+        .flinks a  #7A7E9A = 3.98:1
+        결제 사이트의 법정 표시 항목이라 가장 먼저 고쳐야 할 곳이다. */
+.foot              { color: #6F749C }   /* 2.24 → 4.51 */
+.foot .flinks a    { color: #707593 }   /* 3.98 → 4.51 */
+
+/* A-3. 터치 영역만 넓힌다. 보이는 크기·색·줄높이는 그대로.
+        푸터 링크 38×13px, 링크행 181×16px → 손가락 영역 44px.
+        ::after 투명 히트박스라 레이아웃이 밀리지 않는다. */
+.foot .flinks a, .linkrow a { position: relative }
+.foot .flinks a::after,
+.linkrow a::after {
+  content: ""; position: absolute;
+  left: -9px; right: -9px; top: -15px; bottom: -15px;
+}
+/* 히트박스가 겹치면 오탭이 되므로 가로 간격만 확보한다 */
+.foot .flinks { gap: 4px 20px }
+.linkrow      { gap: 6px 20px }
+
+/* A-4. 상단 메뉴 '홈' 은 높이 44px 인데 폭이 11px 뿐이다. 폭만 채운다. */
+.topbar nav.mnav a { min-width: 44px; text-align: center }
+
+/* A-5. 근거 카드 설명문 11.5px → 12.5px. 실제로 읽는 문장이다.
+        색(#5C617C, 6.08:1)은 이미 기준을 넘으므로 건드리지 않는다. */
+.proof span { font-size: 12.5px; line-height: 1.55 }
+
+/* A-6. 배지는 이미 11.5px 다. 크기는 그대로 두고 자간만 조인다. */
+.qbadge { letter-spacing: .06em }
+
+/* ── B. 로그인 후 화면 전용 — 라이브에서 확인하지 못했습니다 ────────
+        홈에는 이 선택자가 없어 렌더 확인이 불가능했습니다.
+        값은 보수적으로 잡았고, 요소가 없으면 아무 일도 일어나지 않습니다. */
+.tcard p, .stat .l { color: #707593 }          /* 3.98 → 4.51 */
+.stats b    { font-size: clamp(22px, 6.4vw, 27px); line-height: 1.15 }
+.stats span { font-size: 12px; opacity: .9 }
+.block .badge { letter-spacing: .06em }
+
+/* ── C. 전역 접근성 ────────────────────────────────────────────── */
+
+/* C-1. 키보드 포커스 표시 (원래 규칙 0건) */
+:where(a, button, [role=button], input, select, textarea, summary):focus-visible {
+  outline: 3px solid var(--vio, #6C5CE7);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* C-2. 본문 바로가기 — 평소엔 완전히 보이지 않는다 */
+.skip-to-main {
+  position: absolute; left: -9999px; top: 0; z-index: 100000;
+  background: var(--vio, #6C5CE7); color: #fff;
+  padding: 12px 18px; border-radius: 0 0 10px 0; font-weight: 700;
+}
+.skip-to-main:focus { left: 0 }
+
+/* ===== [UX-PATCH v3 2026-08-03] 끝 ============================================ */
 </style>
 <script>
 window.LEGAL_CONFIG = {
@@ -2578,7 +3624,7 @@ window.LEGAL_CONFIG = {
   ceo: "이성훈",
   bizRegNo: "115-87-03727",
   ecomRegNo: "제 2026-서울강남-03605 호",
-  contact: "02-547-6846 · onlyjdw3831@gmail.com",
+  contact: "02-547-6846 · teachertshare2024@naver.com",
   links: {
     privacy: "/privacy.html",
     terms: "/terms.html",
@@ -2701,172 +3747,8 @@ window.LEGAL_CONFIG = {
 })();
 
 </script>
-<!-- legal-safety widget (11.legal-safety module v1.0) -->
-<style>
-/* legal-widget.css — 11.legal-safety v1.0 */
-#ls-footer{margin-top:48px;padding:20px 16px 28px;border-top:1px solid rgba(128,128,128,.25);font-size:12.5px;line-height:1.7;color:#8a8f98;background:transparent}
-#ls-footer .ls-footer-in{max-width:1080px;margin:0 auto}
-#ls-footer a{color:inherit;text-decoration:none}
-#ls-footer a:hover{text-decoration:underline}
-#ls-footer .ls-links a b{font-weight:700}
-#ls-footer .ls-sep{margin:0 7px;opacity:.5}
-#ls-footer .ls-biz{margin-top:6px;opacity:.85}
-#ls-footer .ls-copy{margin-top:2px;opacity:.7}
-
-#ls-banner{position:fixed;left:0;right:0;bottom:0;z-index:99999;padding:12px;pointer-events:none}
-#ls-banner .ls-banner-in{pointer-events:auto;max-width:560px;margin:0 auto;background:#fff;color:#222;border:1px solid #e3e6ea;border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.18);padding:18px 20px;font-size:14px;line-height:1.6}
-#ls-banner .ls-banner-title{font-weight:700;font-size:15px;margin-bottom:6px}
-#ls-banner .ls-banner-desc{margin:0 0 10px;font-size:13px;color:#555}
-#ls-banner .ls-banner-desc a{color:#2563eb}
-#ls-banner .ls-check{display:block;margin:4px 0;font-size:13.5px;cursor:pointer}
-#ls-banner .ls-check input{margin-right:7px;accent-color:#2563eb}
-#ls-banner .ls-disabled{color:#999;cursor:default}
-#ls-banner .ls-banner-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap}
-#ls-banner .ls-btn{border-radius:9px;padding:8px 14px;font-size:13.5px;cursor:pointer;border:1px solid #d6dae0;background:#fff;color:#333}
-#ls-banner .ls-btn:hover{background:#f4f6f8}
-#ls-banner .ls-btn-primary{background:#2563eb;border-color:#2563eb;color:#fff}
-#ls-banner .ls-btn-primary:hover{background:#1d4fd7}
-@media (max-width:600px){#ls-banner .ls-banner-btns{justify-content:stretch}#ls-banner .ls-btn{flex:1}}
-@media (prefers-color-scheme:dark){
-  #ls-banner .ls-banner-in{background:#1d2129;color:#e6e8ec;border-color:#333a45}
-  #ls-banner .ls-banner-desc{color:#aab1bb}
-  #ls-banner .ls-btn{background:#262c36;border-color:#3a424e;color:#dbe0e7}
-  #ls-banner .ls-btn:hover{background:#2e3542}
-  #ls-banner .ls-btn-primary{background:#3b82f6;border-color:#3b82f6;color:#fff}
-}
-
-</style>
-<script>
-window.LEGAL_CONFIG = {
-  consentVersion: "v1.mybest.2026",
-  links: {
-    privacy: "/legal/privacy.html",
-    terms: "/legal/terms.html",
-    cookies: "/legal/cookies.html",
-    copyright: "/legal/copyright.html",
-    youth: "/legal/youth.html"
-  },
-  company: {
-    name: "오늘과내일의학교 연구소",
-    contact_email: "legal@mybest.example"
-  }
-};
-</script>
-<script>
-/*!
- * legal-widget.js — 11.legal-safety 공통 법적 고지 위젯 v1.0
- * 기능: ① 푸터 법적 고지 자동 삽입 ② 쿠키·행태정보 동의 배너(기본값 미동의)
- * 사용: window.LEGAL_CONFIG 정의 후 이 스크립트 로드. CSS(legal-widget.css) 함께 로드.
- * 동의 조회: window.LegalSafety.getConsent() → {essential:true, analytics:bool, learning:bool}
- * 동의 변경 이벤트: window 'legal-consent-changed' (detail=consent)
- */
-(function () {
-  "use strict";
-  var CFG = window.LEGAL_CONFIG || {};
-  var KEY = "ls_consent_" + (CFG.consentVersion || "v1");
-
-  function getConsent() {
-    try { var raw = localStorage.getItem(KEY); return raw ? JSON.parse(raw) : null; }
-    catch (e) { return null; }
-  }
-  function setConsent(c) {
-    c.ts = new Date().toISOString();
-    c.version = CFG.consentVersion || "v1";
-    try { localStorage.setItem(KEY, JSON.stringify(c)); } catch (e) {}
-    try { window.dispatchEvent(new CustomEvent("legal-consent-changed", { detail: c })); } catch (e) {}
-  }
-
-  /* ---------- 푸터 법적 고지 ---------- */
-  function renderFooter() {
-    if (document.getElementById("ls-footer")) return;
-    var L = CFG.links || {};
-    var f = document.createElement("footer");
-    f.id = "ls-footer";
-    var bizLine = [];
-    if (CFG.corpName) bizLine.push(CFG.corpName);
-    if (CFG.ceo) bizLine.push("대표: " + CFG.ceo);
-    if (CFG.bizRegNo) bizLine.push("사업자등록번호: " + CFG.bizRegNo);
-    if (CFG.ecomRegNo) bizLine.push("통신판매업: " + CFG.ecomRegNo);
-    if (CFG.contact) bizLine.push("문의: " + CFG.contact);
-    var links = [];
-    if (L.terms) links.push('<a href="' + L.terms + '">이용약관</a>');
-    if (L.privacy) links.push('<a href="' + L.privacy + '"><b>개인정보 처리방침</b></a>');
-    if (L.refund) links.push('<a href="' + L.refund + '">유료서비스·환불약관</a>');
-    if (L.cookies) links.push('<a href="' + L.cookies + '">쿠키·행태정보</a>');
-    if (L.copyright) links.push('<a href="' + L.copyright + '">저작권 고지</a>');
-    if (L.youth) links.push('<a href="' + L.youth + '">아동·청소년 보호</a>');
-    links.push('<a href="#" id="ls-open-settings">쿠키 설정</a>');
-    f.innerHTML =
-      '<div class="ls-footer-in">' +
-      '<div class="ls-links">' + links.join('<span class="ls-sep">·</span>') + "</div>" +
-      (bizLine.length ? '<div class="ls-biz">' + bizLine.join(" | ") + "</div>" : "") +
-      '<div class="ls-copy">© ' + new Date().getFullYear() + " " + (CFG.corpName || CFG.serviceName || "") + ". All rights reserved.</div>" +
-      "</div>";
-    document.body.appendChild(f);
-    var btn = document.getElementById("ls-open-settings");
-    if (btn) btn.addEventListener("click", function (e) { e.preventDefault(); showBanner(true); });
-  }
-
-  /* ---------- 쿠키 동의 배너 ---------- */
-  function showBanner(force) {
-    if (CFG.cookieBanner === false) return;
-    var existing = getConsent();
-    if (existing && !force) return;
-    var old = document.getElementById("ls-banner");
-    if (old) old.remove();
-
-    var b = document.createElement("div");
-    b.id = "ls-banner";
-    b.setAttribute("role", "dialog");
-    b.setAttribute("aria-label", "쿠키 및 행태정보 수집 동의");
-    var cur = existing || {};
-    b.innerHTML =
-      '<div class="ls-banner-in">' +
-      '<div class="ls-banner-title">쿠키·행태정보 수집 동의</div>' +
-      '<p class="ls-banner-desc">필수 항목은 서비스 기본 기능 유지에만 사용됩니다. 선택 항목은 동의한 경우에만 수집되며, 동의하지 않아도 서비스 이용에 제한이 없습니다. 맞춤형 광고에는 사용하지 않습니다.' +
-      (CFG.links && CFG.links.cookies ? ' <a href="' + CFG.links.cookies + '">자세히 보기</a>' : "") + "</p>" +
-      '<label class="ls-check ls-disabled"><input type="checkbox" checked disabled> 필수 — 로그인 세션·동의 상태 저장</label>' +
-      '<label class="ls-check"><input type="checkbox" id="ls-c-learning"' + (cur.learning ? " checked" : "") + "> 선택 — 학습 이력(진도·풀이 기록) 수집</label>" +
-      '<label class="ls-check"><input type="checkbox" id="ls-c-analytics"' + (cur.analytics ? " checked" : "") + "> 선택 — 이용 통계(방문·클릭) 수집</label>" +
-      '<div class="ls-banner-btns">' +
-      '<button type="button" class="ls-btn ls-btn-ghost" id="ls-reject">모두 거부</button>' +
-      '<button type="button" class="ls-btn ls-btn-ghost" id="ls-save">선택 저장</button>' +
-      '<button type="button" class="ls-btn ls-btn-primary" id="ls-accept">모두 동의</button>' +
-      "</div></div>";
-    document.body.appendChild(b);
-
-    function close() { b.remove(); }
-    document.getElementById("ls-reject").onclick = function () {
-      setConsent({ essential: true, learning: false, analytics: false }); close();
-    };
-    document.getElementById("ls-save").onclick = function () {
-      setConsent({
-        essential: true,
-        learning: document.getElementById("ls-c-learning").checked,
-        analytics: document.getElementById("ls-c-analytics").checked
-      }); close();
-    };
-    document.getElementById("ls-accept").onclick = function () {
-      setConsent({ essential: true, learning: true, analytics: true }); close();
-    };
-  }
-
-  window.LegalSafety = {
-    getConsent: getConsent,
-    openSettings: function () { showBanner(true); },
-    /* 선택 수집 실행 전 가드: LegalSafety.allowed('learning') */
-    allowed: function (cat) {
-      if (cat === "essential") return true;
-      var c = getConsent(); return !!(c && c[cat]);
-    }
-  };
-
-  function init() { renderFooter(); showBanner(false); }
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
-  else init();
-})();
-
-</script>
+<!-- [F-PATCH 2026-08-01] legal-safety 위젯 2차 중복 블록 제거 (166줄)
+     사유: 2차 LEGAL_CONFIG가 1차(실제 사업자정보)를 덮어써 placeholder 이메일·깨진 링크가 노출됨 -->
 <script>
 /*!
  * consent-capture.js — 동의 캡처·로그 v1.0 (11.legal-safety 표준, mybest-next 이식)
@@ -2977,4 +3859,5 @@ window.LEGAL_CONFIG = {
   try { flushConsentRetryQueue(); } catch (e) {}
 })();
 </script>
+<script src="assets/ev-gate.js" data-ev-service="mybest-next" defer></script>
 </body></html>

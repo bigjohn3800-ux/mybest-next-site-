@@ -48,7 +48,22 @@ h1{font-size:26px;font-weight:800;line-height:1.32;margin:14px 0 8px}
 .foot{text-align:center;font-size:11.5px;color:#9499AD;margin-top:30px;line-height:1.7}
 .foot a{color:#7A7E9A;text-decoration:none}
 @media(min-width:560px){.cta{flex-direction:row}.cta .btn{flex:1}}
+
+.ul{margin:8px 0 0;padding-left:20px}.ul li{font-size:15px;line-height:1.85;color:#555B72;margin-bottom:4px}
+.fq{border:1px solid var(--line,#E8E4F8);border-radius:12px;padding:12px 14px;margin:8px 0;background:#fff}
+.fq summary{font-weight:800;font-size:15px;cursor:pointer;color:#242842}
+.fq p{margin:9px 0 0;font-size:14.5px;line-height:1.8;color:#555B72}
+.relg{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:8px}
+.relc{display:block;border:1px solid var(--line,#E8E4F8);border-radius:14px;padding:13px 14px;background:#fff}
+.relc b{display:block;font-size:14.5px;color:#242842}
+.relc span{display:block;font-size:11.5px;color:#8489A3;margin-top:3px;font-weight:700}
 </style>
+<link rel="stylesheet" href="/assets/onae-responsive.css">
+<link rel="stylesheet" href="/assets/onae-theme.css">
+<script src="/assets/onae-i18n.mybest-next-edu.js"></script>
+<script src="/assets/onae-theme.js" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "면접 준비는 언제부터 하나요?", "acceptedAnswer": {"@type": "Answer", "text": "고3 여름 이전에 한 번 점검하고, 원서 이후 집중 연습하는 흐름을 권합니다."}}, {"@type": "Question", "name": "모범답안을 주나요?", "acceptedAnswer": {"@type": "Answer", "text": "답을 대신 써주지 않습니다. 답변의 뼈대와 보완할 지점을 알려줍니다."}}, {"@type": "Question", "name": "학생부가 부실해도 되나요?", "acceptedAnswer": {"@type": "Answer", "text": "기록의 양보다 그 활동을 설명할 수 있느냐가 중요합니다."}}, {"@type": "Question", "name": "혼자 연습해도 되나요?", "acceptedAnswer": {"@type": "Answer", "text": "가능합니다. 다만 소리 내어 말해보는 연습을 반드시 함께 하세요."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "홈", "item": "https://mybest-next-edu.netlify.app/"}, {"@type": "ListItem", "position": 2, "name": "진단 소개", "item": "https://mybest-next-edu.netlify.app/d/"}, {"@type": "ListItem", "position": 3, "name": "대입 면접 준비도 진단", "item": "https://mybest-next-edu.netlify.app/d/interview.html"}]}</script>
 </head>
 <body>
 <div class="wrap">
@@ -63,7 +78,7 @@ h1{font-size:26px;font-weight:800;line-height:1.32;margin:14px 0 8px}
     <h1>대입 면접 준비도 진단</h1>
     <p class="lead">10문항 체크로 면접 준비 전략 받기</p>
     <div class="cta">
-      <a class="btn go" href="/">지금 진단 시작 →</a>
+      <a class="btn go" href="/?view=quiz&amp;slug=interview">지금 진단 시작 →</a>
       <a class="btn ghost" href="/sample.html">결과 샘플 보기</a>
     </div>
     <p class="note">100% 무료 · 별도 설치 없이 바로 진행</p>
@@ -85,8 +100,13 @@ h1{font-size:26px;font-weight:800;line-height:1.32;margin:14px 0 8px}
     <p>마이베스트 NEXT의 결과 보고서는 또래·전국 비교와 영역별 해설을 담아, 단순한 점수가 아니라 '무엇을 어떻게 해볼지'를 안내합니다. 실제 결과지가 궁금하다면 <a href="/sample.html" style="color:var(--vio);font-weight:700">결과 샘플</a>을 먼저 살펴보세요.</p>
   </div>
 
-  <div class="cta">
-    <a class="btn go" href="/">지금 진단 시작 →</a>
+  
+<div class="sec"><h2>이런 고민이 있다면</h2><ul class="ul"><li>면접에서 말이 정리되지 않는다</li><li>학생부 기반 질문에 답을 못 하겠다</li><li>꼬리 질문이 들어오면 막힌다</li><li>긴장하면 준비한 것도 안 나온다</li><li>면접관이 왜 그걸 묻는지 모르겠다</li></ul></div>
+<div class="sec"><h2>결과를 이렇게 활용해요</h2><ul class="ul"><li>답변 구조(결론–근거–사례)를 점검한다</li><li>내 기록에서 나올 법한 질문을 미리 확보한다</li><li>1분 답변 연습 과제를 받는다</li><li>질문의 의도를 먼저 파악하는 연습을 한다</li><li>답변을 소리 내어 녹음하고 다시 들어본다</li></ul></div>
+<div class="sec"><h2>자주 묻는 질문</h2><details class="fq"><summary>면접 준비는 언제부터 하나요?</summary><p>고3 여름 이전에 한 번 점검하고, 원서 이후 집중 연습하는 흐름을 권합니다.</p></details><details class="fq"><summary>모범답안을 주나요?</summary><p>답을 대신 써주지 않습니다. 답변의 뼈대와 보완할 지점을 알려줍니다.</p></details><details class="fq"><summary>학생부가 부실해도 되나요?</summary><p>기록의 양보다 그 활동을 설명할 수 있느냐가 중요합니다.</p></details><details class="fq"><summary>혼자 연습해도 되나요?</summary><p>가능합니다. 다만 소리 내어 말해보는 연습을 반드시 함께 하세요.</p></details></div>
+<div class="sec"><h2>함께 보면 좋은 진단</h2><div class="relg"><a class="relc" href="/d/track_fit.html"><b>전형 적합도 진단</b><span>함께 보면 좋아요</span></a><a class="relc" href="/d/hs_essay.html"><b>고입 자기소개서 준비도</b><span>함께 보면 좋아요</span></a><a class="relc" href="/d/roadmap.html"><b>학생부 로드맵 진단</b><span>함께 보면 좋아요</span></a></div></div>
+<div class="cta">
+    <a class="btn go" href="/?view=quiz&amp;slug=interview">지금 진단 시작 →</a>
     <a class="btn ghost" href="/d/">다른 진단 둘러보기</a>
   </div>
 

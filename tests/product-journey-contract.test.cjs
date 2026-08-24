@@ -76,6 +76,15 @@ test('every local asset referenced by the main journey exists in the deploy bund
   }
 });
 
+test('missing shared assets fail with a real 404 before the SPA catch-all', () => {
+  const config = fs.readFileSync(path.join(__dirname, '..', 'netlify.toml'), 'utf8');
+  const assetRule = config.indexOf('from = "/assets/*"');
+  const catchAll = config.indexOf('from = "/*"');
+  assert.ok(assetRule >= 0 && catchAll > assetRule);
+  assert.match(config.slice(assetRule, catchAll), /to = "\/404\.html"[\s\S]*status = 404/);
+  assert.ok(fs.existsSync(path.join(__dirname, '..', '404.html')));
+});
+
 test('diagnosis selection progressively reveals one grade with time and value guidance', () => {
   assert.match(html, /먼저 현재 학년대를 선택하세요/);
   assert.match(html, /각 진단은 10~20분/);

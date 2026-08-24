@@ -1,0 +1,63 @@
+# 2026-07-29 관제센터 — publish="." 이라 배포 zip·백업 HTML 이 공개 URL 로 열리던 것을 막는다.
+# ※ 결제 사이트다. 실제 페이지·스크립트는 하나도 제외하지 않았다.
+*.zip
+*.bak-*
+index.backup-*
+index.prev.html
+index_check_tmp2.html
+
+# 2026-07-31 — 422 "no records matched" 대응
+# publish="." 이라 이 폴더 안에서 배포 중 "변하는" 파일이 있으면 해시가 어긋난다.
+# CLI 출력은 %TEMP% 로 옮겼지만, 과거에 만들어진 로그/결과 파일도 확실히 제외한다.
+_deploy_log.txt
+_deploy_result.txt
+_deploy_last.txt
+_netlify_output.txt
+배포_직접_로그.txt
+_배포로그.txt
+_배포결과_최근.txt
+# 0바이트 정크 (빈 파일은 해시가 같아 중복 업로드를 유발한다)
+Deploys
+Netlify
+_to_delete/
+.git/
+
+# 2026-07-31 관제 세션 — 내부 문서·점검 결과가 공개 URL 로 열리는 것을 막는다.
+_배포안내_*.md
+_인계_*.md
+_WORK_LOG.md
+_점검결과.html
+preflight.js
+preflight.bat
+*.bak-*
+
+# 2026-07-31 보안 — 인증 없는 내부 페이지·판매자료
+d/study_manage.html
+assets/sales/
+
+# 2026-07-31 preflight 가 새로 잡아낸 것 — 서버 소스가 공개되고 있었다
+_JEOMGEOM.html
+_myb-admin_v11_addendum.ts
+_mybpay_portone_index.ts
+_widget_school.html
+*.ts
+
+# 2026-08-01 — 관제센터가 넣는 안내 파일은 배포하지 않는다
+_재배포_필요_*.md
+_배포안내_*.md
+_점검_*.md
+_보안조치_*.md
+_결제게이트_*.md
+
+# 2026-08-02 - operator scripts and prepared-but-not-live files
+# must not be reachable on the public site.
+*.new-*
+*.bat
+*.cmd
+*.py
+_*.md
+_applied_20260802/
+*.bak-prev
+*.bak-orig
+_applied/
+_emergency/

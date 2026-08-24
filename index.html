@@ -1211,7 +1211,11 @@ function courseGo(id){
 }
 function gridHtml(t,act,grade,plan){
  let LV=[['es','초등','🌈'],['ms','중학','🌱'],['hs','고등','🎓']];
- const target=gradeLv(grade)||(localStorage.getItem('myb_lvpick')||'');
+ /* [FIX 2026-08-24 · 회장님 신고 9] myb_lvpick 이 계정 구분 없이 브라우저 전체에 저장돼, 같은 브라우저에서
+    이전에 다른(예: 고등) 계정으로 테스트한 뒤 중학생 계정으로 로그인하면 grade 문자열에 "중"이 없을 때
+    (숫자만 있는 학년 등) 옛 계정의 hs 선택값이 그대로 새 계정에 적용돼 초등·중등이 잠기고 고등만 열리던
+    버그. 토큰별로 저장 키를 분리해 계정 간 오염을 막는다. */
+ const target=gradeLv(grade)||(localStorage.getItem('myb_lvpick_'+(S.token||''))||'');
  const NM={es:'초등',ms:'중학',hs:'고등'};
  let h='';
  /* [F-PATCH] 학년 미확인 시 먼저 학년을 고르게 해 26장 동시 노출을 막는다 */
@@ -1264,7 +1268,7 @@ function paintProgressStrip(){
  });
 }
 /* [F-PATCH] 학년 선택 게이트 */
-function pickLv(lv){try{localStorage.setItem('myb_lvpick',lv);}catch(e){}
+function pickLv(lv){try{localStorage.setItem('myb_lvpick_'+(S.token||''),lv);}catch(e){}
  const NM={es:'초등',ms:'중학',hs:'고등'};
  document.querySelectorAll('.gradeGate').forEach(g=>g.remove());
  document.querySelectorAll('.lvsec').forEach(sx=>{sx.style.display=(sx.dataset.lv===NM[lv])?'':'none'});

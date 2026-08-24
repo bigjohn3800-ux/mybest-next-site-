@@ -348,9 +348,13 @@ async function viewDash(){
     <div><button class="btn" onclick="loadDash()">조회</button></div>
   </div></div>
   <div class="tablewrap"><table><thead><tr>
+    <th style="width:34px"><input type="checkbox" id="chkAll" title="전체선택" onchange="toggleAllStudentChk(this)"></th>
     <th>번호</th><th>학생</th><th>학교</th><th>학급</th><th>학년</th><th>진행(완료/14)</th><th>응시</th><th>최근활동</th><th>상태</th><th></th>
   </tr></thead><tbody id="tbody"></tbody></table></div>
-  <div class="muted" style="font-size:12px;margin-top:8px" id="cnt"></div>
+  <div class="muted" style="font-size:12px;margin-top:8px;display:flex;align-items:center;gap:10px" id="cntRow">
+   <span id="cnt"></span>
+   <button class="btn ghost sm noprint" id="bulkDelBtn" style="display:none" onclick="bulkDeleteStudents()">선택 삭제</button>
+  </div>
  </div>
  <div class="modal" id="modal" onclick="if(event.target.id==='modal')closeModal()"><div class="sheet" id="sheet"></div></div>`;
  // load filter options
@@ -478,15 +482,18 @@ async function loadDash(){
  $('#stats').innerHTML=[['학생',s.students],['학급',s.classes],['총 응시',s.attempts],['5종+ 완료',s.completed],['평균 완료',s.avg_done]]
    .map(([l,v])=>`<div class="stat"><div class="v">${v??0}</div><div class="l">${l}</div></div>`).join('');
  $('#tbody').innerHTML=rows.length?rows.map((r,i)=>`<tr>
+   <td><input type="checkbox" class="stuChk" value="${esc(r.id)}" data-name="${esc(r.name).replace(/"/g,'&quot;')}" onchange="updateBulkDelBtn()"></td>
    <td>${esc(r.student_no||r.no||r.number||String(i+1).padStart(2,'0'))}</td><td><b>${esc(r.name)}</b></td><td>${esc(r.school||'-')}</td><td>${esc(r.class_name||'-')}</td><td>${esc(r.grade||'-')}</td>
    <td><span class="pbar"><i style="width:${Math.round((r.done/r.total)*100)}%"></i></span> ${r.done}/${r.total}</td>
    <td>${r.attempts}</td><td class="muted">${r.last_at?r.last_at.slice(0,10):'-'}</td>
    <td><span class="tag ${r.plan==='paid'?'paid':'free'}">${r.plan==='paid'?'운영':'기본'}</span></td>
    <td style="white-space:nowrap"><button class="btn ghost sm" onclick="openStudent('${r.id}')">결과·상담</button>
-    <button class="btn ghost sm" onclick="openEditStudent('${r.id}','${esc(r.name).replace(/'/g,"\\'")}','${esc(r.grade||'').replace(/'/g,"\\'")}')" title="수정"></button>
-    <button class="btn ghost sm" onclick="deleteStudent('${r.id}','${esc(r.name).replace(/'/g,"\\'")}')" title="삭제"></button></td></tr>`).join('')
-   :`<tr><td colspan="10" class="muted" style="text-align:center;padding:30px">조건에 맞는 학생이 없습니다</td></tr>`;
+    <button class="btn ghost sm" onclick="openEditStudent('${r.id}','${esc(r.name).replace(/'/g,"\\'")}','${esc(r.grade||'').replace(/'/g,"\\'")}')" title="수정">수정</button>
+    <button class="btn ghost sm" onclick="deleteStudent('${r.id}','${esc(r.name).replace(/'/g,"\\'")}')" title="삭제">삭제</button></td></tr>`).join('')
+   :`<tr><td colspan="11" class="muted" style="text-align:center;padding:30px">조건에 맞는 학생이 없습니다</td></tr>`;
  $('#cnt').textContent=`총 ${rows.length}명 표시`;
+ const chkAllEl=$('#chkAll'); if(chkAllEl)chkAllEl.checked=false;
+ updateBulkDelBtn();
  renderCompare(rows,s);
  renderNudge(rows);
 }
@@ -927,7 +934,17 @@ function openClassEdit(id){
   </div>
   <div style="height:14px"></div>
   <button class="btn" style="width:100%" onclick="doClassMetaSave('${esc(c.id)}')">저장</button>
-  <div id="ceResult" style="margin-top:10px"></div>`;
+  <div id="ceResult" style="margin-top:10px"></div>
+  <div style="height:20px;border-top:1px solid var(--line);margin-top:6px"></div>
+  <label style="margin-top:14px;display:block">이용 종료일</label>
+  <div class="muted" style="font-size:13px;margin:2px 0 8px">현재: ${c.expires_at?esc(c.expires_at):'미설정'}</div>
+  <label>횟수연장 (개월 단위로 종료일을 늦춥니다)</label>
+  <div style="display:flex;gap:8px;align-items:center">
+   <input id="ceExtendMonths" type="number" min="1" max="24" value="12" style="max-width:100px">
+   <span class="muted" style="font-size:13px">개월</span>
+   <button class="btn ghost sm" onclick="doClassExtend('${esc(c.id)}')">연장</button>
+  </div>
+  <div id="ceExtendResult" style="margin-top:10px"></div>`;
 }
 async function doClassMetaSave(id){
  const body={token:S.token,class_id:id,school:($('#ceSchool')?.value||'').trim()||null,region:$('#ceRegion')?.value||null,school_level:$('#ceLevel')?.value||null};
@@ -938,6 +955,18 @@ async function doClassMetaSave(id){
  const f=await api('/filters',{token:S.token});
  if(!f.error)S.filters=f;
  setTimeout(openClassManage,500);
+}
+/* [FIX 2026-08-24 · 회장님 신고 3,5,6] 학급 수정 화면에 종료일 연장(횟수연장) 컨트롤이
+   없어서 만료 연장이 불가능했다. 백엔드 /class_extend(개월 단위 연장)는 이미 있었는데
+   화면에 연결이 안 돼 있었을 뿐이라 새 엔드포인트 없이 화면만 연결한다. */
+async function doClassExtend(id){
+ const months=+($('#ceExtendMonths')?.value||12);
+ $('#ceExtendResult').innerHTML='<div class="muted" style="font-size:12.5px">연장 중…</div>';
+ const j=await api('/class_extend',{token:S.token,class_id:id,months});
+ if(j.error){$('#ceExtendResult').innerHTML=`<div class="err" style="display:block">${esc(j.error)}</div>`;return}
+ $('#ceExtendResult').innerHTML=`<div class="notice ok">연장되었습니다. 새 종료일: ${esc(j.expires_at||'')}</div>`;
+ const c=(S.mgmtClasses||[]).find(x=>String(x.id)===String(id));
+ if(c)c.expires_at=j.expires_at;
 }
 async function openAssignTeacher(id){
  const c=(S.mgmtClasses||[]).find(x=>String(x.id)===String(id));
@@ -1201,6 +1230,33 @@ async function deleteStudent(id,name){
  if(!confirm(`'${name}' 학생을 삭제하시겠습니까? 응시 기록도 함께 삭제되며 되돌릴 수 없습니다.`))return;
  const j=await api('/delete_student',{token:S.token,student_id:id});
  if(j.error){alert('삭제 실패: '+j.error);return}
+ loadDash();
+}
+/* [FIX 2026-08-24 · 회장님 신고 8] 학생 목록 체크박스로 여러 명 한번에 삭제.
+   서버에 별도 일괄삭제 엔드포인트를 새로 만들지 않고, 기존 /delete_student를 선택한 만큼
+   순차 호출한다 — 학생별 권한(scope) 검증은 서버가 매 건마다 그대로 수행하므로 안전하다. */
+function toggleAllStudentChk(master){
+ document.querySelectorAll('.stuChk').forEach(c=>c.checked=master.checked);
+ updateBulkDelBtn();
+}
+function updateBulkDelBtn(){
+ const n=document.querySelectorAll('.stuChk:checked').length;
+ const btn=$('#bulkDelBtn');
+ if(!btn)return;
+ if(n>0){btn.style.display='';btn.textContent=`선택 삭제 (${n}명)`}
+ else{btn.style.display='none'}
+}
+async function bulkDeleteStudents(){
+ const boxes=[...document.querySelectorAll('.stuChk:checked')];
+ if(!boxes.length)return;
+ const names=boxes.map(b=>b.dataset.name||'');
+ if(!confirm(`선택한 ${boxes.length}명(${names.slice(0,5).join(', ')}${names.length>5?' 외':''})을 삭제하시겠습니까? 응시 기록도 함께 삭제되며 되돌릴 수 없습니다.`))return;
+ let okCnt=0;const fails=[];
+ for(const b of boxes){
+  const j=await api('/delete_student',{token:S.token,student_id:b.value});
+  if(j.error)fails.push(`${b.dataset.name||b.value}: ${j.error}`);else okCnt++;
+ }
+ if(fails.length)alert(`${okCnt}명 삭제 완료, ${fails.length}명 실패\n`+fails.slice(0,10).join('\n'));
  loadDash();
 }
 
@@ -1522,6 +1578,14 @@ function openInstForm(id){
    <div><label>이용 시작일</label><input id="iStart" type="date" value="${isEdit?esc(inst.usage_start||''):''}"></div>
    <div><label>이용 종료일</label><input id="iEnd" type="date" value="${isEdit?esc(inst.usage_end||''):''}"></div>
   </div>
+  ${isEdit?`<div style="height:8px"></div>
+  <label>횟수연장 (개월 단위로 이용 종료일을 늦춥니다)</label>
+  <div style="display:flex;gap:8px;align-items:center">
+   <input id="iExtendMonths" type="number" min="1" max="24" value="12" style="max-width:100px">
+   <span class="muted" style="font-size:13px">개월</span>
+   <button type="button" class="btn ghost sm" onclick="doInstExtend('${esc(inst.id)}')">연장</button>
+  </div>
+  <div id="iExtendResult" style="margin-top:6px"></div>`:''}
   <div style="height:8px"></div>
   <label>담당 이메일</label><input id="iEmail" value="${isEdit?esc(inst.contact_email||''):''}" placeholder="example@school.kr">
   <div style="height:8px"></div>
@@ -1530,6 +1594,23 @@ function openInstForm(id){
   <button class="btn" style="width:100%" onclick="doInstSave(${isEdit?`'${inst.id}'`:'null'})">저장</button>
   <div id="iResult" style="margin-top:10px"></div>`;
  $('#modal').classList.add('open');
+}
+/* [FIX 2026-08-24 · 회장님 신고 5,6] 기관 수정 화면에도 학급 수정과 같은 방식으로
+   "몇 개월 연장" 단축 버튼을 추가. /inst_update 는 이미 usage_end 패치를 지원하므로
+   새 백엔드 없이, 여기서 개월수만큼 날짜를 계산해 usage_end 로 저장한다. */
+async function doInstExtend(id){
+ const months=+($('#iExtendMonths')?.value||12);
+ const cur=$('#iEnd')?.value||'';
+ const base=cur?new Date(cur+'T00:00:00'):new Date();
+ const now=new Date();
+ const from=base>now?base:now;
+ from.setMonth(from.getMonth()+months);
+ const next=from.toISOString().slice(0,10);
+ $('#iExtendResult').innerHTML='<div class="muted" style="font-size:12.5px">연장 중…</div>';
+ const j=await api('/inst_update',{token:S.token,id,patch:{usage_end:next}});
+ if(j.error){$('#iExtendResult').innerHTML=`<div class="err" style="display:block">${esc(j.error)}</div>`;return}
+ const endEl=$('#iEnd'); if(endEl)endEl.value=next;
+ $('#iExtendResult').innerHTML=`<div class="notice ok">연장되었습니다. 새 종료일: ${esc(next)}</div>`;
 }
 async function doInstSave(id){
  const name=($('#iName')?.value||'').trim();
@@ -2010,7 +2091,11 @@ function viewSchoolSubjects(){
   <div class="card noprint">
    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap">
     <label style="margin:0">엑셀·한글 표에서 복사해 그대로 붙여넣기 (Ctrl+V)</label>
-    <button class="btn ghost sm" style="margin-left:auto" onclick="ssClear()">비우기</button>
+    <div style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap">
+     <button class="btn ghost sm" onclick="downloadSubjectTemplate()">엑셀 양식 다운로드</button>
+     <label class="btn ghost sm" style="cursor:pointer;margin:0">엑셀 업로드<input type="file" id="ssExcelFile" accept=".xlsx,.xls,.csv" style="display:none" onchange="uploadSubjectExcel(event)"></label>
+     <button class="btn ghost sm" onclick="ssClear()">비우기</button>
+    </div>
    </div>
    <textarea id="ssText" rows="10" style="width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:10px;font-family:inherit;font-size:13.5px;resize:vertical;line-height:1.7" placeholder="공통국어1&#9;공통&#9;1&#10;독서와 작문&#9;일반선택&#9;2&#10;주제 탐구 독서&#9;진로선택&#9;2-3&#9;격년 개설"></textarea>
    <div class="muted" style="font-size:12px;margin:7px 0 12px;line-height:1.7">탭(엑셀 복사)과 쉼표를 모두 인식합니다. 열 순서는 <b>과목명 · 교과 · 학년 · 비고</b>이고, <b>과목명만 한 줄에 하나씩</b> 붙여넣어도 됩니다.
@@ -2073,6 +2158,41 @@ function ssToEditor(){
  ta.value=rows.join('\n');
  ssConvert();
  try{ta.scrollIntoView({behavior:'smooth',block:'center'})}catch(e){}
+}
+/* [FIX 2026-08-24 · 회장님 신고 7] 학급편제표도 학생 일괄등록처럼 엑셀 양식 다운로드/업로드를
+   지원한다. 새 파싱 로직을 만들지 않고, 엑셀 각 행을 탭으로 이어붙여 기존 붙여넣기 textarea에
+   넣은 뒤 그대로 ssConvert()를 호출한다 — 검증·미리보기 로직은 100% 재사용(회귀 위험 최소화). */
+function downloadSubjectTemplate(){
+ if(typeof XLSX==='undefined'){alert('엑셀 기능을 불러오는 중입니다. 잠시 후 다시 시도해주세요.');return}
+ const ws=XLSX.utils.aoa_to_sheet([
+  ['과목명','교과','학년','비고'],
+  ['공통국어1','공통','1',''],
+  ['독서와 작문','일반선택','2',''],
+  ['주제 탐구 독서','진로선택','2-3','격년 개설'],
+ ]);
+ ws['!cols']=[{wch:20},{wch:12},{wch:10},{wch:16}];
+ const wb=XLSX.utils.book_new();
+ XLSX.utils.book_append_sheet(wb,ws,'편제표');
+ XLSX.writeFile(wb,'마이베스트_학급편제표_양식.xlsx');
+}
+function uploadSubjectExcel(ev){
+ const file=ev.target.files&&ev.target.files[0];if(!file)return;
+ if(typeof XLSX==='undefined'){alert('엑셀 기능을 불러오는 중입니다. 잠시 후 다시 시도해주세요.');return}
+ const reader=new FileReader();
+ reader.onload=(e)=>{
+  try{
+   const wb=XLSX.read(e.target.result,{type:'array'});
+   const sheet=wb.Sheets[wb.SheetNames[0]];
+   const rows=XLSX.utils.sheet_to_json(sheet,{header:1});
+   const lines=rows.map(r=>(r||[]).map(c=>String(c??'').trim()).join('\t')).filter(l=>l.replace(/\t/g,'').length>0);
+   if(!lines.length){alert('엑셀에서 내용을 찾지 못했습니다. 과목명(·교과·학년·비고) 열을 확인해주세요.');return}
+   const ta=$('#ssText');
+   if(ta){ta.value=lines.join('\n');ssConvert();}
+   alert(lines.length+'줄을 엑셀에서 불러왔습니다. 미리보기에서 확인 후 저장하세요.');
+  }catch(err){alert('엑셀 파일을 읽는 중 오류가 발생했습니다: '+err.message);}
+  ev.target.value='';
+ };
+ reader.readAsArrayBuffer(file);
 }
 function ssConvert(){
  const t=$('#ssText');

@@ -132,7 +132,7 @@ async function getQuestions(slug: string) {
   return data!;
 }
 async function student(token: string) {
-  const { data } = await sb.from("myb_students").select("*, myb_classes(id,code,name,school,expires_at,plan,active,starts_at,max_uses,allow_expired_review)").eq("token", token).maybeSingle();
+  const { data } = await sb.from("myb_students").select("*, myb_classes(id,code,name,school,school_level,expires_at,plan,active,starts_at,max_uses,allow_expired_review)").eq("token", token).maybeSingle();
   return data;
 }
 
@@ -699,7 +699,12 @@ Deno.serve(async (req) => {
         return J({ notes, summary: { total: notes.length, done: notes.filter((n: any) => n.status === "done").length } });
       }
       if (req.method === "POST") {
-        const b = await req.json().catch(() => ({}));
+        // [FIX 2026-08-25 · 회장님 신고 4] 요청 본문은 라우팅 직전(위쪽 `const body = ...`)에서
+        // 이미 한 번 읽혔다. Request 의 body 스트림은 한 번만 읽을 수 있어 여기서 req.json() 을
+        // 다시 부르면 항상 예외 → catch 로 {} 가 되고, b.token 이 비어 student("") 가 null 이라
+        // 로그인 상태인데도 401 "로그인이 필요합니다" 가 떴다(= 탐구기록·활동기록이 저장 불가).
+        // 이미 파싱해 둔 body 를 그대로 쓴다.
+        const b = body as Record<string, unknown>;
         const st = await student(String(b.token ?? ""));
         if (!st) return err("로그인이 필요합니다", 401);
         const row: Record<string, unknown> = { student_id: st.id };
@@ -753,7 +758,12 @@ Deno.serve(async (req) => {
           quarter: qNow, quarter_name: ACT_QNM[qNow - 1], recommend: rec });
       }
       if (req.method === "POST") {
-        const b = await req.json().catch(() => ({}));
+        // [FIX 2026-08-25 · 회장님 신고 4] 요청 본문은 라우팅 직전(위쪽 `const body = ...`)에서
+        // 이미 한 번 읽혔다. Request 의 body 스트림은 한 번만 읽을 수 있어 여기서 req.json() 을
+        // 다시 부르면 항상 예외 → catch 로 {} 가 되고, b.token 이 비어 student("") 가 null 이라
+        // 로그인 상태인데도 401 "로그인이 필요합니다" 가 떴다(= 탐구기록·활동기록이 저장 불가).
+        // 이미 파싱해 둔 body 를 그대로 쓴다.
+        const b = body as Record<string, unknown>;
         const st = await student(String(b.token ?? ""));
         if (!st) return err("로그인이 필요합니다", 401);
         const gu = Number(b.gu_no) | 0;
@@ -786,7 +796,12 @@ Deno.serve(async (req) => {
       const cls = st.myb_classes ?? {};
       const { data: asg } = await sb.from("myb_assignments").select("id,test_slug,title,due_date,created_at").eq("class_id", st.class_id).eq("active", true).order("created_at", { ascending: false });
       const assignments = (asg ?? []).map((a) => ({ id: a.id, test_slug: a.test_slug, test_title: TESTS[a.test_slug]?.title ?? a.test_slug, title: a.title, due_date: a.due_date, done: (ats ?? []).some((x) => x.test_slug === a.test_slug && x.created_at >= a.created_at) }));
-      return J({ name: st.name, grade: st.grade, class_name: cls.name, school: cls.school, plan: cls.plan ?? "free", expires_at: cls.expires_at ?? null, max_uses: cls.max_uses ?? null, used: (ats ?? []).length, gate: gateMsg(cls), assignments, attempts: ats ?? [] });
+      // [FIX 2026-08-25 · 회장님 신고 1~3] 학교급(초/중/고)을 프런트가 판정할 근거를 함께 내려준다.
+      // 지금까지 프런트는 학생의 grade 문자열에서 초/중/고 글자만 찾아 학교급을 정했는데,
+      // 일괄등록 학생은 grade 가 비어 있는 경우가 대부분(현재 282명)이라 판정이 실패했고,
+      // 그때 "대상 학교급 없음"으로 처리돼 초·중·고 세 묶음이 전부 활성화됐다.
+      // 학급의 school_level("초등"/"중등"/"고등")과 학교명("○○초등학교")을 근거로 추가한다.
+      return J({ name: st.name, grade: st.grade, class_name: cls.name, school: cls.school, school_level: cls.school_level ?? null, plan: cls.plan ?? "free", expires_at: cls.expires_at ?? null, max_uses: cls.max_uses ?? null, used: (ats ?? []).length, gate: gateMsg(cls), assignments, attempts: ats ?? [] });
     }
 
     if (path === "/api/attempt") {
@@ -840,7 +855,12 @@ Deno.serve(async (req) => {
       // [FIX 2026-08-03 · A2/A3] region·school_level 이 저장되지 않아 학급 16개 전부 region=NULL 이었고,
       // 화면의 지역 필터 3곳이 영구히 "미지정"만 표시하고 있었다.
       // 만료일도 body.expires_at 을 읽지 않아 달력에서 무엇을 고르든 오늘+12개월로 덮어썼다.
-      const school = me.role === "school" && me.scope ? me.scope : body.school;
+      // [FIX 2026-08-25 · 회장님 신고] school 역할 관리자가 화면의 "학교·기관명"란에 직접 입력해도
+      // scope가 지정돼 있으면 무조건 me.scope 값으로 덮어써서, 입력한 학교명이 저장되지 않고
+      // 교사 화면(학급 관리 목록)에 다른/빈 학교명으로 보이던 버그. 화면 입력값을 우선하고,
+      // 아무것도 입력하지 않았을 때만 기존처럼 scope를 기본값으로 쓴다.
+      const typedSchool = typeof body.school === "string" ? body.school.trim() : "";
+      const school = typedSchool || (me.role === "school" ? (me.scope || "") : "");
       if (!name || !teacher_pin) return err("학급명과 교사 PIN을 입력하세요");
       if (!/^[0-9]{4,8}$/.test(String(teacher_pin))) return err("교사 PIN은 숫자 4~8자리여야 합니다");
       const code = Array.from({ length: 6 }, () => "ABCDEFGHJKMNPQRSTUVWXYZ23456789"[Math.floor(Math.random() * 31)]).join("");

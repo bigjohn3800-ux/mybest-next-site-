@@ -41,6 +41,35 @@
   to = "/sitemap.xml"
   status = 200
 
+# ── 앱(PWA) 파일 · 2026-08-25 추가 ─────────────────────────────
+# 이것들이 캐치올에 걸려 index.html 로 바뀌면 앱 설치가 통째로 실패한다.
+# (매니페스트가 HTML 로 오면 안드로이드가 설치를 거부하고,
+#  서비스워커가 HTML 로 오면 등록 자체가 안 된다.)
+[[redirects]]
+  from = "/manifest.webmanifest"
+  to = "/manifest.webmanifest"
+  status = 200
+[[redirects]]
+  from = "/sw.js"
+  to = "/sw.js"
+  status = 200
+[[redirects]]
+  from = "/apple-touch-icon.png"
+  to = "/apple-touch-icon.png"
+  status = 200
+[[redirects]]
+  from = "/icons/*"
+  to = "/icons/:splat"
+  status = 200
+[[redirects]]
+  from = "/splash/*"
+  to = "/splash/:splat"
+  status = 200
+[[redirects]]
+  from = "/assets/*"
+  to = "/assets/:splat"
+  status = 200
+
 # 단일 파일 정적 SPA — 나머지 경로는 index.html로
 [[redirects]]
   from = "/*"
@@ -51,3 +80,27 @@
   for = "/*.html"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
+
+# 서비스워커는 절대 오래 캐시하지 않는다 — 새 버전을 내보내도 폰에 안 내려간다.
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+    Content-Type = "application/javascript; charset=utf-8"
+
+[[headers]]
+  for = "/manifest.webmanifest"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+    Content-Type = "application/manifest+json; charset=utf-8"
+
+# 아이콘·실행화면은 파일명이 고정이라 오래 캐시해도 안전하다.
+[[headers]]
+  for = "/icons/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/splash/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"

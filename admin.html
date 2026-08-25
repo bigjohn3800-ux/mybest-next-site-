@@ -256,7 +256,7 @@ function viewLogin(msg){
  $('#app').innerHTML=`<div class="wrap"><div class="login card">
   <div class="logo" style="margin-bottom:14px">MY BEST <span>NEXT</span> · 관리자</div>
   <h1>관리자 로그인</h1><div class="sub">진단 진행, 상담 자료, A4·B4 보고서 운영</div>
-  <div class="notice"><b>학교·기관 운영 화면</b><br>학교장·기관관리자와 담임·학급관리자가 학생 진행 현황과 상담 자료를 안정적으로 확인하는 화면입니다.</div>
+  <div class="notice"><b>학교·기관 운영 화면</b><br>학교장·학교기관 관리자와 담임·학급 관리자가 학생 진행 현황과 상담 자료를 안정적으로 확인하는 화면입니다.</div>
   <div class="err" id="err" style="${msg?'display:block':''}">${esc(msg||'')}</div>
   <label>아이디</label><input id="u" autocomplete="username" placeholder="아이디 또는 이메일">
   <div style="height:8px"></div>
@@ -304,8 +304,8 @@ async function viewDash(){
    <span class="rolebadge">${esc(S.name||'관리자')}</span><div class="spacer"></div>
    <button class="btn ghost sm" onclick="goHome()">홈</button>
    <button class="btn ghost sm" onclick="loadDash()">새로고침</button>
-    <button class="btn ghost sm" onclick="openCreateClass()">새 학급 발급</button>
-    <button class="btn ghost sm" onclick="openClassManage()">학급 관리</button>
+    ${S.role!=='teacher'?'<button class="btn ghost sm" onclick="openCreateClass()">새 학급 발급</button>':''}
+    ${S.role!=='teacher'?'<button class="btn ghost sm" onclick="openClassManage()">학급 관리</button>':''}
     <button class="btn ghost sm" onclick="openBulk()">학생 일괄 등록</button>
     <button class="btn ghost sm" onclick="openReport()">학급 종합 리포트</button>
     <button class="btn ghost sm" onclick="exportCsv()">명단 CSV</button>
@@ -977,7 +977,7 @@ async function openAssignTeacher(id){
  const j=await api('/teachers_list',{token:S.token});
  if(j.error){$('#atBody').innerHTML=`<div class="err" style="display:block">${esc(j.error)}</div>`;return}
  const list=j.teachers||[];
- if(!list.length){$('#atBody').innerHTML='<div class="repnote">등록된 담임/학급관리자 계정이 없습니다. "관리자 계정"에서 먼저 담임 계정을 만들어 주세요.</div>';return}
+ if(!list.length){$('#atBody').innerHTML='<div class="repnote">등록된 담임·학급 관리자 계정이 없습니다. "관리자 계정"에서 먼저 담임 계정을 만들어 주세요.</div>';return}
  $('#atBody').innerHTML=`<label>담당교사</label><select id="atSel">${list.map(t=>`<option value="${esc(t.id)}">${esc(t.display_name||t.username)} (${esc(t.username)})</option>`).join('')}</select>
   <div style="height:14px"></div>
   <button class="btn" style="width:100%" onclick="doAssignTeacher('${esc(c.id)}')">지정</button>
@@ -1342,20 +1342,20 @@ async function viewAdmins(){
  if(S.role!=='super'){alert('권한이 없습니다.');return}
  $('#app').innerHTML=`<div class="wrap">${adminTopbar('admins')}
   <div class="card noprint" style="display:flex;justify-content:space-between;align-items:center">
-   <div><b>관리자 계정 관리</b><div class="muted" style="font-size:12px;margin-top:3px">최고관리자(super)·기관관리자(school)·담임(teacher) 계정을 추가·수정·삭제합니다.</div></div>
+   <div><b>관리자 계정 관리</b><div class="muted" style="font-size:12px;margin-top:3px">최고관리자(super)·학교기관 관리자(school)·담임·학급 관리자(teacher) 계정을 추가·수정·삭제합니다.</div></div>
    <button class="btn sm" onclick="openAdminForm()">새 관리자 추가</button></div>
   <div class="tablewrap"><table><thead><tr><th>아이디</th><th>이름</th><th>역할</th><th>범위</th><th>생성일</th><th></th></tr></thead><tbody id="admTbody"><tr><td colspan="6" class="muted" style="text-align:center;padding:20px"><span class="spinner"></span>불러오는 중…</td></tr></tbody></table></div>
  </div>
  <div class="modal" id="modal" onclick="if(event.target.id==='modal')closeModal()"><div class="sheet" id="sheet"></div></div>`;
  loadAdmins();
 }
-const ROLE_LABEL={super:'최고관리자',school:'기관관리자',teacher:'담임/학급관리자'};
+const ROLE_LABEL={super:'최고관리자',school:'학교기관 관리자',teacher:'담임·학급 관리자'};
 async function loadAdmins(){
  const j=await api('/admins_list',{token:S.token});
  if(j.error){$('#admTbody').innerHTML=`<tr><td colspan="6" class="err" style="display:table-cell">${esc(j.error)}</td></tr>`;return}
  S.admins=j.admins||[];
  $('#admTbody').innerHTML=S.admins.length?S.admins.map(a=>`<tr>
-   <td><b>${esc(a.username)}</b></td><td>${esc(a.display_name||'-')}</td><td>${esc(ROLE_LABEL[a.role]||a.role)}</td><td>${esc(a.scope||'-')}</td>
+   <td><b>${esc(a.username)}</b></td><td>${esc(a.display_name||'-')}</td><td>${esc(ROLE_LABEL[a.role]||a.role)}</td><td>${esc(a.scope_display||a.scope||'-')}</td>
    <td class="muted">${a.created_at?a.created_at.slice(0,10):'-'}</td>
    <td style="white-space:nowrap">
     <button class="btn ghost sm" onclick="openAdminForm('${a.id}')">수정</button>
@@ -1371,12 +1371,12 @@ function openAdminForm(id){
   <label>이름(표시명)</label><input id="admName" value="${isEdit?esc(admin.display_name||''):''}">
   <div style="height:8px"></div>
   <label>역할</label><select id="admRole">
-   <option value="teacher"${(!isEdit||admin.role==='teacher')?' selected':''}>담임/학급관리자</option>
-   <option value="school"${isEdit&&admin.role==='school'?' selected':''}>기관관리자</option>
+   <option value="teacher"${(!isEdit||admin.role==='teacher')?' selected':''}>담임·학급 관리자</option>
+   <option value="school"${isEdit&&admin.role==='school'?' selected':''}>학교기관 관리자</option>
    <option value="super"${isEdit&&admin.role==='super'?' selected':''}>최고관리자</option>
   </select>
   <div style="height:8px"></div>
-  <label>범위(scope, 학교명/학급코드 · 선택)</label><input id="admScope" value="${isEdit?esc(admin.scope||''):''}" placeholder="school=학교명 일부 · teacher=학급코드">
+  <label>범위(담임=학급코드만 입력 · 학교기관 관리자=학교명 일부, 선택)</label><input id="admScope" value="${isEdit?esc(admin.scope_codes??admin.scope??''):''}" placeholder="예) 담임: 89YGG8 (여러 개는 콤마로) · 학교기관 관리자: 연습중학교">
   <div style="height:14px"></div>
   <button class="btn" style="width:100%" onclick="doAdminSave(${isEdit?`'${admin.id}'`:'null'})">저장</button>
   <div id="admResult" style="margin-top:10px"></div>`;

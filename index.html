@@ -107,6 +107,21 @@ label{font-size:12px;font-weight:700;color:#7A7E9A;display:block;margin:4px 0 4p
 .block h3{font-size:16px;color:var(--navy-text);margin-bottom:6px;line-height:1.4}
 .block p{font-size:13px;line-height:1.65}
 .bodytext p{font-size:13px;line-height:1.65;margin:0 0 6px}.bodytext p:last-child{margin-bottom:0}
+/* [NEW 2026-08-25] 심화 자료 — 기존 카드 문법(--vio/--mint/--r-md/--shadow-card)을 그대로 따른다 */
+.deepwrap{margin-top:6px}
+.deepsec{padding:0;overflow:hidden}
+.deephd{display:flex;align-items:center;gap:8px;font-weight:800;font-size:15px;color:var(--ink);
+ padding:14px 18px;background:linear-gradient(100deg,var(--vio-soft),rgba(0,206,201,.10));
+ border-bottom:1px solid rgba(108,92,231,.12)}
+.deepdot{width:7px;height:7px;border-radius:50%;background:var(--vio);flex:none;
+ box-shadow:0 0 0 3px rgba(108,92,231,.16)}
+.deeplist{padding:4px 18px 6px}
+.deepitem{padding:13px 0;border-top:1px solid rgba(27,42,74,.07)}
+.deeplist .deepitem:first-child{border-top:none}
+.deepname{font-weight:700;font-size:13.5px;color:var(--vio-text);margin-bottom:5px;letter-spacing:-.2px}
+.deepbody{font-size:14px;line-height:1.75;color:var(--text);word-break:keep-all}
+.deepsrc{padding:9px 18px 13px;font-size:11.5px;color:var(--muted);text-align:right}
+@media print{.deepsec{break-inside:avoid;box-shadow:none;border:1px solid #ddd}}
 .tipbox{margin-top:10px;background:#F4F1E8;border-radius:var(--r-sm);padding:11px 13px}
 .tipbox b{font-size:10px;letter-spacing:.14em;color:#836728}
 .tipbox ul{list-style:none;margin-top:5px}
@@ -833,7 +848,6 @@ const DISPLAY_TITLE={
  reading:'독서역량 진단',
  interview:'대입 면접 준비도 진단',
  track_fit:'전형 적합도 진단',
- admission_nav:'입시전형 내비게이터',
  mock_exam:'모의고사 성적 분석',
  future:'미래역량 진단',
  ai_skill:'AI 활용역량 진단'
@@ -843,7 +857,7 @@ const DISPLAY_STEP={
  ms:{ms_series:1,ms_study:2,ms_hsfit:3,hs_essay:4,future:5,value_work:6,story_writer:7,ai_inquiry:8},
  hs:{hs_series:1,subject_rec:2,study:3,roadmap:4,inquiry:5,interview:6,future:9,track_fit:10}
 };
-const DISPLAY_HIDDEN=new Set(['ai_skill','career_mature','multi_iq','study_emotion','mock_exam','admission_nav','study_manage','reading']);
+const DISPLAY_HIDDEN=new Set(['ai_skill','career_mature','multi_iq','study_emotion','mock_exam','study_manage','reading']);
 function visibleTestKeys(t){return Object.keys(t||{}).filter(k=>!DISPLAY_HIDDEN.has(k));}
 const DISPLAY_OVERRIDE_ONLY=new Set(['future','value_work','hs_essay','gifted_ready','story_writer','ai_inquiry']);
 /* 통합 표시 그룹: 대표 slug 1장 카드 + members는 대표 카드 하단 칩으로 종속 표시(슬러그·데이터는 불변) */
@@ -851,7 +865,7 @@ const DISPLAY_GROUPS={
  ms_study:{label:'중학 공부습관 진단',members:['study_manage','study_emotion']},
  future:{label:'미래·AI 활용역량 진단',members:['ai_skill']},
  value_work:{label:'진로직업 진단',members:['career_mature','multi_iq']},
- track_fit:{label:'전형적합도 진단',members:['admission_nav','mock_exam']}
+ track_fit:{label:'전형적합도 진단',members:['mock_exam']}
 };
 const MEMBER_OF={};
 Object.entries(DISPLAY_GROUPS).forEach(([rep,g])=>{g.members.forEach(m=>{MEMBER_OF[m]=rep;});});
@@ -877,10 +891,10 @@ function displayStep(k,d,lv){
 function stageTitle(lvname,k,title){const m=STAGE_NO[lvname];const n=m&&m[k];return n?`${lvname} ${n}. ${DISPLAY_TITLE[k]||title}`:(DISPLAY_TITLE[k]||title);}
 function catOf(slug){return SLUG_CAT[slug]||'기타';}
 /* 진단 문항·채점·결과 저장은 mybest API를 정본으로 사용한다. */
-const EXTRA_EMO={study_manage:'🧩',gifted_ready:'💡',mock_exam:'📊',admission_nav:'🎯',story_writer:'🪄',ai_inquiry:'🔬'};
+const EXTRA_EMO={study_manage:'🧩',gifted_ready:'💡',mock_exam:'📊',story_writer:'🪄',ai_inquiry:'🔬'};
 Object.assign(EMO,EXTRA_EMO);
-Object.assign(ARTC,{study_manage:['#2D9CDB','#56CCF2'],gifted_ready:['#F2994A','#F2C94C'],mock_exam:['#EB5757','#F2994A'],admission_nav:['#1B2A4A','#6C5CE7'],story_writer:['#BB6BD9','#F299C2'],ai_inquiry:['#00A884','#2D9CDB']});
-Object.assign(PHOTO,{study_manage:'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4',gifted_ready:'https://images.unsplash.com/photo-1531482615713-2afd69097998',mock_exam:'https://images.unsplash.com/photo-1434030216411-0b793f4b4173',admission_nav:'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40',story_writer:'https://images.unsplash.com/photo-1455390582262-044cdead277a',ai_inquiry:'https://images.unsplash.com/photo-1532094349884-543bc11b234d'});
+Object.assign(ARTC,{study_manage:['#2D9CDB','#56CCF2'],gifted_ready:['#F2994A','#F2C94C'],mock_exam:['#EB5757','#F2994A'],story_writer:['#BB6BD9','#F299C2'],ai_inquiry:['#00A884','#2D9CDB']});
+Object.assign(PHOTO,{study_manage:'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4',gifted_ready:'https://images.unsplash.com/photo-1531482615713-2afd69097998',mock_exam:'https://images.unsplash.com/photo-1434030216411-0b793f4b4173',story_writer:'https://images.unsplash.com/photo-1455390582262-044cdead277a',ai_inquiry:'https://images.unsplash.com/photo-1532094349884-543bc11b234d'});
 function gradeLv(g){g=String(g||'');if(g.includes('초'))return'es';if(g.includes('중'))return'ms';if(g.includes('고'))return'hs';return''}
 /* [FIX 2026-08-25 · 회장님 신고 1~3] 학교급(초/중/고) 판정 근거 보강.
    증상: 초등으로 학생을 등록해도 초·중·고 세 묶음이 전부 활성화됐다.
@@ -1224,7 +1238,7 @@ const COURSES=[
  {id:'c5',lv:['ms'],em:'🏫',nm:'중등 고입 준비',  sub:'중 3학년 · 약 40분',desc:'맞는 고교 유형과 소개서 준비도를 확인해요.',slugs:['ms_hsfit','hs_essay']},
  {id:'c6',lv:['hs'],em:'🎓',nm:'고1 계열 결정',   sub:'고 1학년 · 약 60분',desc:'계열을 정하고 과목과 공부 전략까지 이어요.',slugs:['hs_series','subject_rec','subject_pick','study']},
  {id:'c7',lv:['hs'],em:'📚',nm:'고2 활동 설계',   sub:'고 2학년 · 약 50분',desc:'학생부 흐름과 탐구·독서를 설계해요.',slugs:['roadmap','inquiry','reading']},
- {id:'c8',lv:['hs'],em:'🎯',nm:'고3 지원 전략',   sub:'고 3학년 · 약 60분',desc:'전형 적합도와 면접까지 점검해요.',slugs:['track_fit','interview','admission_nav','mock_exam']},
+ {id:'c8',lv:['hs'],em:'🎯',nm:'고3 지원 전략',   sub:'고 3학년 · 약 60분',desc:'전형 적합도와 면접까지 점검해요.',slugs:['track_fit','interview','mock_exam']},
  {id:'c9',lv:['ms','hs'],em:'🚀',nm:'미래역량·AI',sub:'중·고 공통 · 약 30분',desc:'미래역량과 AI 활용 능력을 점검해요.',slugs:['future','ai_skill']}
 ];
 function courseTitle(k,t){const d=(t&&t[k])||{};return String((typeof DISPLAY_TITLE!=='undefined'&&DISPLAY_TITLE[k])||d.title||k).replace(/^(?:[가-힣]{1,3}\s*\d+[·․]?)+\.\s*/,'').slice(0,14);}
@@ -1850,7 +1864,7 @@ const NORM_TIER = {
   hs_series:'verified', ms_series:'verified',
   subject_pick:'building', story_writer:'building', ai_inquiry:'building',
   gifted_ready:'building', hs_essay:'building', mock_exam:'building',
-  admission_nav:'building', career_mature:'building', multi_iq:'building',
+  career_mature:'building', multi_iq:'building',
   study_emotion:'building', study_manage:'building', track_fit:'building'
 };
 const NORM_META = {
@@ -3097,7 +3111,6 @@ const RELATED_TESTS={
  interview:['roadmap','hs_essay','hs_series'],
  hs_essay:['ms_hsfit','roadmap','interview'],
  track_fit:['subject_rec','study','roadmap'],
- admission_nav:['track_fit','study','roadmap'],
  mock_exam:['study','track_fit','subject_rec'],
  study_manage:['ms_study','es_habit','study'],
  gifted_ready:['es_dream','future','ai_inquiry'],
@@ -3145,12 +3158,40 @@ function payNotify(){
  window.open('mailto:teachertshare2024@naver.com?subject='+encodeURIComponent('프리미엄 출시 알림 신청'));
  // TODO(PAID_LIVE): 사전 알림 신청 수집 엔드포인트 배선 위치.
 }
+/* [NEW 2026-08-25 · 고등 콘텐츠 보강] 심화 자료 —
+   구버전 마이베스트 결과지의 학과·계열별 상세 자료를 읽어 구조화한 것.
+   원본 지면 이미지는 타사 브랜딩이 박혀 있어 쓰지 않고, 내용만 가져와
+   마이베스트 NEXT 디자인으로 다시 그린다.
+   기존 해설(blocks) 뒤에 "추가로" 붙는다 — 기존 내용을 대체하지 않는다. */
+function deepHtml(d){
+ const rows=(d&&d.deep)||[];
+ if(!rows.length) return '';
+ const secs=[];
+ rows.forEach(r=>{
+  let g=secs.find(x=>x.key===r.section_key);
+  if(!g){g={key:r.section_key,label:r.section_label,items:[],src:r.source_note||''};secs.push(g);}
+  g.items.push(r);
+  if(!g.src&&r.source_note) g.src=r.source_note;
+ });
+ const ser=rows[0]&&rows[0].series;
+ return `<div class="deepwrap">
+  <div class="k" style="margin:20px 0 8px">심화 자료${ser?` — ${esc(ser)}계열 맞춤`:''}</div>
+  ${secs.map(g=>`<div class="card deepsec">
+    <div class="deephd"><span class="deepdot"></span>${esc(g.label)}</div>
+    <div class="deeplist">${g.items.map(it=>`<div class="deepitem">
+      ${it.item_label?`<div class="deepname">${esc(it.item_label)}</div>`:''}
+      <div class="deepbody">${esc(it.body)}</div>
+    </div>`).join('')}</div>
+    ${g.src?`<div class="deepsrc">${esc(g.src)}</div>`:''}
+  </div>`).join('')}
+ </div>`;
+}
 function resultActions(d,opts){
  opts=opts||{};
  const RB='report.html?token='+encodeURIComponent(S.token||'')+'&id='+encodeURIComponent(d.attempt.id);
  /* [FIX-S5 2026-08-02] 같은 크기 버튼 9개가 나열돼 무엇을 눌러야 할지 알 수 없던 문제.
     1차(정식 보고서) / 2차(공유·재진단) / 나머지는 접어둔다. */
- return `${resultSaveHtml()}<div class="actionbar noprint">
+ return `${deepHtml(d)}${resultSaveHtml()}<div class="actionbar noprint">
   <a class="btn navy ract1" href="${RB}" target="_blank" rel="noopener">📄 정식 보고서 보기 <small>A4 요약 + B4 상세</small></a>
   <div class="ract2">
    <button class="btn ghost" onclick="shareResult('${d.attempt.id}','${esc(opts.summary||'')}')">🔗 결과 공유</button>
@@ -3336,7 +3377,7 @@ function personaBannerHtml(d){
  const serAt=[...allAt].reverse().find(a=>a.test_slug==='hs_series'||a.test_slug==='ms_series'||a.test_slug==='es_dream');
  const serLabel=(serAt&&serAt.result&&serAt.result.labels&&serAt.result.best!==undefined)?serAt.result.labels[serAt.result.best]+' 계열 성향':'';
  /* [FIX-S4] 계열 배지는 계열과 직접 관련된 진단에서만. 초등 공부습관 결과에 "공학 계열"이 뜨던 문제. */
- const SER_CTX=['hs_series','ms_series','es_dream','subject_rec','roadmap','inquiry','track_fit','reading','hs_essay','admission_nav'];
+ const SER_CTX=['hs_series','ms_series','es_dream','subject_rec','roadmap','inquiry','track_fit','reading','hs_essay'];
  const _slug=(d.attempt&&d.attempt.test_slug)||'';
  const parts=[gLabel, SER_CTX.indexOf(_slug)>=0?serLabel:''].filter(Boolean);
  if(!parts.length)return '';

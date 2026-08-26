@@ -106,3 +106,11 @@ test('public result samples explain reason, evidence, limitation, and saved next
   assert.match(sample, /sampleClose'\)\?\.focus\(\)/);
   assert.match(sample, /e\.key==='Escape'/);
 });
+
+test('free scope and conversion copy stay consistent across discovery surfaces', () => {
+  assert.match(html, /개인은 핵심 진단 8종과 기본 결과를 무료로 시작/);
+  assert.match(html, /\['진단 프로그램','핵심 8종','전체 26종'/);
+  assert.match(html, /결제 기능은 현재 열려 있지 않습니다/);
+  assert.doesNotMatch(html, /모든 진단과 기본 결과는 <b>계속 무료<\/b>/);
+  assert.doesNotMatch(html, /\['전체 진단 프로그램\(26종\)','전체 무료','전체 무료'/);
+});

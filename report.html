@@ -105,6 +105,8 @@
 <script>
 (function(){
   var FN='https://onqisdgxwuvlxehjvoto.supabase.co/functions/v1/myb-report';
+  var ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9ucWlzZGd4d3V2bHhlaGp2b3RvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkzNjExMTAsImV4cCI6MjA4NDkzNzExMH0.65ODRewzapQi3w1qLyhn1x-nSnI99KGirYRvTaXbBYg';
+  function esc0(t){ return String(t==null?'':t).replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];}); }
   function injectBefore(html, pattern, chunk){
     return pattern.test(html) ? html.replace(pattern, chunk) : html + chunk;
   }
@@ -158,10 +160,23 @@
     p.set('token',token); p.set('atoken',atoken); p.set('id',id);
     if(q.get('mode')) p.set('mode',q.get('mode'));
     if(q.get('for'))  p.set('for', q.get('for'));
-    fetch(FN+'?'+p.toString(),{cache:'no-store'})
-      .then(function(r){ return r.text().then(function(t){ return {ok:r.ok,t:t}; }); })
+    /* [FIX 2026-08-27] 두 가지를 고친다.
+       1) 함수가 JWT 확인을 켜 두면 아무 것도 못 받아 오므로 공개 키를 함께 보낸다.
+          (공개 키는 이 사이트 어디서나 쓰는 값이라 새로 드러나는 비밀이 없다.)
+       2) 이용권 안내 화면(402)은 오류가 아니라 보여줘야 할 화면이다.
+          그동안 오류 상자에 HTML 이 글자로 쏟아졌다. */
+    fetch(FN+'?'+p.toString(),{cache:'no-store',headers:{Authorization:'Bearer '+ANON,apikey:ANON}})
+      .then(function(r){ return r.text().then(function(t){ return {ok:r.ok,st:r.status,t:t}; }); })
       .then(function(res){
-        if(!res.ok){ fail((res.t||'보고서를 불러오지 못했습니다.')+'<br><br>'); return; }
+        if(res.st===402 && /<html/i.test(res.t||'')){
+          document.open(); document.write(res.t); document.close(); return;
+        }
+        if(!res.ok){
+          var msg=(res.t||'').trim();
+          if(!msg || /^\s*</.test(msg)) msg='보고서를 불러오지 못했습니다.';
+          fail(esc0(msg)+'<br><span style="font-size:12px;color:#8A8FA8">(코드 '+res.st+')</span><br><br>');
+          return;
+        }
         document.open(); document.write(enhanceReportHtml(res.t)); document.close();
       })
       .catch(function(e){ fail('보고서를 불러오지 못했습니다.<br><span style="font-size:12px">'+(e&&e.message?e.message:e)+'</span><br><br>'); });

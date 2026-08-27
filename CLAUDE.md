@@ -38,3 +38,19 @@ python3 -m http.server 3000   # http://localhost:3000/admin.html (CORS 허용 �
 ```
 
 API는 절대 URL이라 로컬에서도 원격 Edge Function 호출됨 — **로컬 테스트도 프로덕션 DB를 만짐**. 수정/삭제 테스트는 반드시 테스트 학급/학생으로만.
+
+## ⚠️ Edge Function 배포 — 크기 한계 (2026-08-27 사고 기록)
+
+MCP `deploy_edge_function` 도구는 **소스를 모델이 글자로 다시 적어 보내는 방식**이다.
+`myb-report/index.ts`(약 187KB)처럼 큰 파일은 한 번에 다 실을 수 없어,
+**잘린 파일이 그대로 프로덕션에 올라가 함수가 죽는다.** 실제로 2026-08-27 그렇게 죽였다.
+
+- **40~50KB를 넘는 함수는 MCP 도구로 배포하지 말 것.**
+  `myb-report`(187KB), `myb-admin`(80KB)이 여기에 해당한다.
+- 이 크기는 반드시 로컬 CLI로:
+  `npx supabase functions deploy <fn> --project-ref onqisdgxwuvlxehjvoto --no-verify-jwt --use-api`
+- MCP 도구로 배포하면 **verify_jwt 가 true 로 바뀐다.** 프런트는 publishable key 만 보내므로
+  `--no-verify-jwt` 없이 올리면 전 엔드포인트가 401 이 된다.
+- 클라우드 컨테이너와 원격 작업 VM 모두 `*.supabase.co` 접속이 막혀 있어
+  CLI 를 대신 돌려 줄 방법이 없다. 큰 함수는 사람이 로컬에서 올려야 한다.
+- 배포 뒤에는 반드시 `get_edge_function` 으로 되받아 `diff` 로 대조할 것.

@@ -147,6 +147,25 @@ label{font-size:12px;font-weight:700;color:#7A7E9A;display:block;margin:4px 0 4p
  .deeppanel[hidden]{display:block !important}
  .deepsec{break-inside:avoid;box-shadow:none;border:1px solid #ddd;margin-bottom:8px}
 }
+/* [NEW 2026-08-27] 지면 자료집(구버전 결과지 이미지)
+   글로 다시 쓰기 아까운 표·도식 지면을 그대로 붙여 준다.
+   기본은 접어 두고, 펼칠 때만 이미지를 내려받게 한다(닫힌 details 안은 로드되지 않는다). */
+.legwrap{margin-top:20px}
+.legsec{border:1px solid rgba(108,92,231,.18);border-radius:var(--r-sm);background:#fff;margin-bottom:9px;overflow:hidden}
+.legsec[open]{box-shadow:0 2px 10px rgba(27,42,74,.06)}
+.leghd{list-style:none;cursor:pointer;display:flex;align-items:center;gap:9px;
+ padding:13px 16px;font-weight:800;font-size:14.5px;color:var(--ink);
+ background:linear-gradient(100deg,var(--vio-soft),rgba(0,206,201,.09))}
+.leghd::-webkit-details-marker{display:none}
+.leghd:before{content:"▸";color:var(--vio);font-size:12px;transition:transform .15s;flex:none}
+.legsec[open] .leghd:before{transform:rotate(90deg)}
+.leghd em{font-style:normal;font-weight:700;font-size:11.5px;color:var(--vio-text);
+ background:#fff;border-radius:var(--r-pill);padding:2px 9px;margin-left:auto;flex:none}
+.leggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:10px;padding:13px 16px 16px}
+.leggrid img{width:100%;display:block;border-radius:8px;border:1px solid rgba(27,42,74,.12);
+ background:#f7f7fb;cursor:zoom-in}
+@media (max-width:520px){.leggrid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;padding:11px 12px 13px}}
+@media print{.legwrap{display:none}}
 .tipbox{margin-top:10px;background:#F4F1E8;border-radius:var(--r-sm);padding:11px 13px}
 .tipbox b{font-size:10px;letter-spacing:.14em;color:#836728}
 .tipbox ul{list-style:none;margin-top:5px}
@@ -1218,7 +1237,15 @@ function karteHtml(t,ats,me){
   if(!list.length)return '';
   const T=k=>karteTitle(k,t);
   const byS={}; list.forEach(a=>{(byS[a.test_slug]=byS[a.test_slug]||[]).push(a)});
-  const doneN=Object.keys(byS).length, totalN=Object.keys(t||{}).length||26;
+  /* [FIX 2026-08-27 · 회장님 신고 3] "진단 6 / 19 완료" 문제.
+     아래 카드 목록은 이미 학교급별로 갈라 보여 주는데(초등 6종·중등 8종·고등 10종),
+     이 줄만 전체 카탈로그 수(19종)를 분모로 써서 초등 학생이 다 해도 6/19 로 보였다.
+     같은 기준(displayStep 으로 이 학교급에 뜨는 진단)으로 세어 초등이면 6/6 이 되게 한다.
+     학교급을 못 잡으면 예전처럼 전체를 분모로 둔다. */
+  const myLv=(typeof resolveLv==='function'?resolveLv(me&&me.grade):(gradeLv(me&&me.grade)||''))||'';
+  const lvKeys=Object.keys(t||{}).filter(k=>!DISPLAY_HIDDEN.has(k)&&(myLv?displayStep(k,t[k],myLv):true));
+  const doneN=(myLv&&lvKeys.length)?lvKeys.filter(k=>byS[k]).length:Object.keys(byS).length;
+  const totalN=lvKeys.length||Object.keys(t||{}).length||26;
   const retestN=Object.values(byS).filter(v=>v.length>1).length;
   let dir='',dirSub='';
   for(const k of KARTE_SERIES){ const a=byS[k]&&byS[k][0], r=a&&a.result;
@@ -1236,20 +1263,13 @@ function karteHtml(t,ats,me){
   const w=RW[top.test_slug]||8;
   const due=new Date(new Date(top.created_at).getTime()+w*7*86400000);
   const dday=Math.ceil((due-new Date())/86400000);
-  let cs='';
-  if(typeof COURSES!=='undefined'){
-   const lv=gradeLv(me&&me.grade)||'';
-   const cand=COURSES.filter(c=>!lv||c.lv.indexOf(lv)>=0)
-     .map(c=>{const sl=c.slugs.filter(k=>t&&t[k]);return {c,sl,dn:sl.filter(k=>byS[k]).length};})
-     .filter(x=>x.sl.length&&x.dn<x.sl.length).sort((a,b)=>(b.dn/b.sl.length)-(a.dn/a.sl.length))[0];
-   if(cand)cs=`<div class="krow"><span class="kk">진행 코스</span><span class="kv">${cand.c.em} ${esc(cand.c.nm)}<small>${cand.dn} / ${cand.sl.length} 완료 · 다음: ${esc(T(cand.sl.find(k=>!byS[k])))}</small><span class="kmini"><i style="width:${Math.round(cand.dn/cand.sl.length*100)}%"></i></span></span><button class="kt" style="border:none;cursor:pointer" onclick="courseGo('${cand.c.id}')">이어서 ›</button></div>`;
-  }
+  /* [FIX 2026-08-27 · 회장님 신고 4] '진행 코스' 줄 삭제.
+     바로 위 추천 코스 카드와 같은 내용을 한 줄로 또 보여 줘 중복이었다. */
   return `<div class="karte"><div class="kh"><b>🗂 ${esc((me&&me.name)||'나')} 성장 카르테</b><span>흩어진 진단 결과가 하나로 이어집니다</span></div><div class="krows">`
    +(dir?`<div class="krow"><span class="kk">계열 방향</span><span class="kv">${esc(dir)}<small>${esc(dirSub)}</small></span></div>`:'')
    +`<div class="krow"><span class="kk">최근 결과</span><span class="kv">${esc(T(top.test_slug))}${tm!=null?' '+tm+'점':''}<small>${esc(String(top.created_at).slice(0,10))} 응시</small></span>${growth?`<span class="kt ${gcls}">${growth}</span>`:''}</div>`
    +`<div class="krow"><span class="kk">쌓은 기록</span><span class="kv">진단 ${doneN} / ${totalN} 완료<small>재진단 ${retestN}회 · 총 응시 ${list.length}건</small><span class="kmini"><i style="width:${Math.round(doneN/totalN*100)}%"></i></span></span></div>`
-   +cs
-   +`<div class="krow"><span class="kk">다음 재진단</span><span class="kv">${dday>0?('D-'+dday):'지금 받아볼 때예요'}<small>${esc(T(top.test_slug))} · 약 ${w}주 주기 권장</small></span><span class="kt${dday<=0?' kup':''}">${dday>0?esc(due.toISOString().slice(0,10)):'권장'}</span></div>`
+      +`<div class="krow"><span class="kk">다음 재진단</span><span class="kv">${dday>0?('D-'+dday):'지금 받아볼 때예요'}<small>${esc(T(top.test_slug))} · 약 ${w}주 주기 권장</small></span><span class="kt${dday<=0?' kup':''}">${dday>0?esc(due.toISOString().slice(0,10)):'권장'}</span></div>`
    +`</div><div class="kacts"><button class="kprim" onclick="go('profile')">통합 결과 보기</button><button onclick="go('growth')">성장 그래프</button><button onclick="go('mypage')">전체 기록</button></div></div>`;
  }catch(e){return ''}
 }
@@ -1334,7 +1354,7 @@ function gridHtml(t,act,grade,plan){
   const hide = (target && target!==lv) ? ' style="display:none"' : '';
   /* [FIX-S3] 코스가 있으면 카드 목록은 기본 접힘 — 모바일 6.5화면 문제 해소 */
   const foldCards = !!(active && courses);
-  h+=`<div class="lvsec" data-lv="${nm}"${hide}>${courses}${active?`<button class="callBtn noprint" onclick="toggleAllTests(this)">전체 진단 ${Object.keys(t).length}종 ${foldCards?'모두 보기 ▾':'접기 ▴'}</button>`:''}<div class="wk"${foldCards?' style="display:none"':''}>${em} ${nm} 로드맵${recBadge} <span>${active?'나의 학년에 맞는 프로그램':'다른 학년 프로그램은 참고용으로 잠겨 있어요'}</span></div>${foldCards?strip.replace('class="pstrip','style="display:none" class="pstrip'):strip}<div class="vgrid"${foldCards?' style="display:none"':''}>${items.map(([k,d],i)=>vcardHtml(k,d,act,displayStep(k,d,lv),i,active,'다른 학년',nm==='중학'?'중등':nm,t,plan)).join('')}${extra}</div></div>`;
+  h+=`<div class="lvsec" data-lv="${nm}"${hide}>${courses}${active?`<button class="callBtn noprint" onclick="toggleAllTests(this)">${nm==='중학'?'중등':nm} 진단 ${items.length}종 ${foldCards?'모두 보기 ▾':'접기 ▴'}</button>`:''}<div class="wk"${foldCards?' style="display:none"':''}>${em} ${nm} 로드맵${recBadge} <span>${active?'나의 학년에 맞는 프로그램':'다른 학년 프로그램은 참고용으로 잠겨 있어요'}</span></div>${foldCards?strip.replace('class="pstrip','style="display:none" class="pstrip'):strip}<div class="vgrid"${foldCards?' style="display:none"':''}>${items.map(([k,d],i)=>vcardHtml(k,d,act,displayStep(k,d,lv),i,active,'다른 학년',nm==='중학'?'중등':nm,t,plan)).join('')}${extra}</div></div>`;
  }
  if(target) h+=`<button class="lvMore noprint" onclick="showAllLv(this)">다른 학년 진단도 보기 ▾ <span style="font-weight:600;color:#8489A3">(전체 진단은 언제든 볼 수 있어요)</span></button>`;
  return h;
@@ -3256,12 +3276,70 @@ function deepHtml(d){
    '대학별 세부 사항은 해당 연도 모집요강에서 반드시 다시 확인하세요.</p>' +
  '</div>';
 }
+/* [NEW 2026-08-27] 지면 자료집
+   구버전 마이베스트 결과지 가운데 표·도식이 많아 글로 옮기기 어려운 지면을
+   이미지 그대로 붙인다. 계열이 잡히면 그 계열 것과 계열 무관 자료만 온다.
+   푸터는 (주)가르치는사람들 연락처로 모두 교체된 상태다.
+
+   묶음 열쇠는 학과 이름(label)을 쓴다. 옛 자료의 계열 번호는 새 7계열로 합쳐질 때
+   둘이 하나가 되는 경우(경상+사회)가 있어 번호만으로는 서로 다른 학과가 겹친다. */
+function legacyOpen(u){ try{ window.open(u,'_blank','noopener'); }catch(e){} }
+function legacyHtml(d){
+ var rows = (d && d.legacy) || [];
+ if (!rows.length) return '';
+ var KIND = {dept:'학과별 상세 지면', series:'계열 전체 지면', tip:'준비 Tip', cover:'표지 · 이용 안내'};
+ var ORD  = ['dept','series','tip','cover'];
+ var gs = [];
+ rows.forEach(function(r){
+  var name = r.label || r.old_name || '';
+  var g = null;
+  if (!name){
+   /* 이름이 비어 있으면 바로 앞 같은 종류 묶음의 뒷장으로 본다. */
+   for (var q=gs.length-1;q>=0;q--){ if (gs[q].kind === r.kind) { g = gs[q]; break; } }
+  }
+  var gk = r.kind + '|' + (name || ('#' + r.group_ix + '.' + r.tip_ix));
+  if (!g) for (var i=0;i<gs.length;i++){ if (gs[i].gk === gk) { g = gs[i]; break; } }
+  if (!g){ g = { gk:gk, kind:r.kind, ord:ORD.indexOf(r.kind), seq:gs.length,
+                 gi:(r.group_ix==null?0:r.group_ix), ti:(r.tip_ix==null?0:r.tip_ix),
+                 label:name, urls:[] };
+           gs.push(g); }
+  if (!g.label && name) g.label = name;
+  g.urls = g.urls.concat(r.urls || []);
+ });
+ gs.sort(function(a,b){ return (a.ord-b.ord) || (a.seq-b.seq); });
+
+ var total = 0; gs.forEach(function(g){ total += g.urls.length; });
+ var ser = ''; var dr = (d && d.deep) || [];
+ for (var i=0;i<dr.length;i++){ if (dr[i].series){ ser = dr[i].series; break; } }
+
+ var secs = gs.map(function(g){
+  var t = g.label || KIND[g.kind] || '자료';
+  if (g.kind === 'dept' && !g.label) t = '학과 자료 ' + (g.gi + 1);
+  if (g.kind === 'tip'  && !g.label) t = '준비 Tip ' + g.ti;
+  var imgs = g.urls.map(function(u, k){
+   return '<img loading="lazy" decoding="async" src="' + esc(u) + '"' +
+          ' alt="' + esc(t) + ' ' + (k+1) + '쪽" onclick="legacyOpen(this.src)">';
+  }).join('');
+  return '<details class="legsec"><summary class="leghd">' + esc(t) +
+         '<em>' + g.urls.length + '쪽</em></summary>' +
+         '<div class="leggrid">' + imgs + '</div></details>';
+ }).join('');
+
+ return '<div class="legwrap">' +
+   '<div class="deephead"><div class="k">자료집 지면</div>' +
+     '<span class="deeptag">' + (ser ? esc(ser) + '계열 · ' : '') + total + '쪽</span>' +
+   '</div>' +
+   '<p class="deepnote" style="margin:0 2px 11px">표·도식이 많아 글로 옮기기 어려운 지면을 그대로 실었습니다. ' +
+   '제목을 눌러 펼치고, 이미지를 누르면 원본 크기로 열립니다.</p>' +
+   secs +
+ '</div>';
+}
 function resultActions(d,opts){
  opts=opts||{};
  const RB='report.html?token='+encodeURIComponent(S.token||'')+'&id='+encodeURIComponent(d.attempt.id);
  /* [FIX-S5 2026-08-02] 같은 크기 버튼 9개가 나열돼 무엇을 눌러야 할지 알 수 없던 문제.
     1차(정식 보고서) / 2차(공유·재진단) / 나머지는 접어둔다. */
- return `${deepHtml(d)}${resultSaveHtml()}<div class="actionbar noprint">
+ return `${deepHtml(d)}${legacyHtml(d)}${resultSaveHtml()}<div class="actionbar noprint">
   <a class="btn navy ract1" href="${RB}" target="_blank" rel="noopener">📄 정식 보고서 보기 <small>A4 요약 + B4 상세</small></a>
   <div class="ract2">
    <button class="btn ghost" onclick="shareResult('${d.attempt.id}','${esc(opts.summary||'')}')">🔗 결과 공유</button>

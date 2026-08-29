@@ -3383,13 +3383,28 @@ function legacyHtml(d){
   var gk = r.kind + '|' + (name || ('#' + r.group_ix + '.' + r.tip_ix));
   if (!g) for (var i=0;i<gs.length;i++){ if (gs[i].gk === gk) { g = gs[i]; break; } }
   if (!g){ g = { gk:gk, kind:r.kind, ord:(ORD.indexOf(r.kind)<0?9:ORD.indexOf(r.kind)), seq:gs.length,
-                 gi:(r.group_ix==null?0:r.group_ix), ti:(r.tip_ix==null?0:r.tip_ix),
+                 gi:(r.group_ix==null?0:r.group_ix), si:(r.sub_ix==null?0:r.sub_ix),
+                 ti:(r.tip_ix==null?0:r.tip_ix),
                  label:name, urls:[] };
            gs.push(g); }
   if (!g.label && name) g.label = name;
   g.urls = g.urls.concat(r.urls || []);
  });
- gs.sort(function(a,b){ return (a.ord-b.ord) || (a.seq-b.seq); });
+ /* 묶음 차례: 종류 → 항목 번호 → 항목 안 순서. 미래역량이면 체크리스트·해설·실천 차례가 된다. */
+ gs.sort(function(a,b){ return (a.ord-b.ord) || (a.gi-b.gi) || (a.si-b.si) || (a.seq-b.seq); });
+
+ /* 내 1순위(계열·역량)에 해당하는 묶음을 맨 앞으로 올린다.
+    247쪽을 늘어놓고 알아서 찾으라고 하면 아무도 안 본다. */
+ try{
+  var res = (d && d.attempt && d.attempt.result) || {};
+  var top = (Array.isArray(res.labels) && typeof res.best === 'number') ? res.labels[res.best] : '';
+  if (top){
+   var mine = gs.filter(function(g){ return g.label.indexOf(top) === 0; });
+   if (mine.length && mine.length < gs.length){
+    gs = mine.concat(gs.filter(function(g){ return g.label.indexOf(top) !== 0; }));
+   }
+  }
+ }catch(e){}
 
  gs.forEach(function(g){
   if (!g.label) g.label = (g.kind === 'dept') ? ('학과 자료 ' + (g.gi + 1))

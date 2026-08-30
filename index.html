@@ -88,6 +88,38 @@ label{font-size:12px;font-weight:700;color:#7A7E9A;display:block;margin:4px 0 4p
 .opt.sel{border-color:var(--vio);background:#F1EEFF;font-weight:700}
 .hero{background:linear-gradient(135deg,var(--vio),var(--mint));color:#fff;border-radius:var(--r-lg);padding:26px;text-align:center;margin-bottom:14px}
 .hero .emoji{font-size:42px}.hero h2{font-size:23px;margin:6px 0 4px}.hero p{font-size:13px;opacity:.93}
+/* [2026-08-30] 파트 안내 화면 · 매거진 히어로 — 나만의 맞춤 교육 매거진 컨셉 */
+.qpart{display:flex;align-items:center;gap:9px;margin:0 2px 8px;padding:9px 12px;border-radius:var(--r-pill);background:var(--vio-soft);border:1px solid rgba(108,92,231,.18)}
+.qpart b{font-size:13px;font-weight:800;color:var(--text);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.qpartn{font-size:10.5px;font-weight:900;letter-spacing:.08em;color:#fff;background:var(--vio);border-radius:var(--r-pill);padding:3px 9px;flex:none}
+.qpartc{font-size:11.5px;font-weight:800;color:var(--vio-text);flex:none}
+.qpart.turn{animation:qpartturn .5s ease}
+@keyframes qpartturn{0%{transform:scale(.94);opacity:.4}60%{transform:scale(1.02)}100%{transform:scale(1);opacity:1}}
+.qintro{border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--shadow-card);background:var(--paper);margin-bottom:14px}
+.qintro-top{padding:26px 22px 22px;color:#fff;background:linear-gradient(135deg,var(--m1,#6C5CE7),var(--m2,#00CEC9))}
+.qintro-band{display:flex;align-items:center;gap:9px;font-size:10px;font-weight:900;letter-spacing:.14em;opacity:.95;margin-bottom:15px}
+.qintro-band i{flex:1;height:1px;background:rgba(255,255,255,.45);font-style:normal}
+.qintro-top h2{font-size:clamp(22px,6vw,30px);line-height:1.22;font-weight:900;margin:0 0 9px;letter-spacing:-.02em;word-break:keep-all}
+.qintro-top p{font-size:13px;line-height:1.65;opacity:.94;margin:0;word-break:keep-all}
+.qintro-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.qintro-meta span{font-size:11.5px;font-weight:800;background:rgba(255,255,255,.2);border-radius:var(--r-pill);padding:5px 11px}
+.qintro-body{padding:20px 20px 22px}
+.qintro-k{font-size:11px;font-weight:900;letter-spacing:.1em;color:var(--vio-text);margin-bottom:10px}
+.qparts{list-style:none;margin:0;padding:0}
+.qparts li{display:flex;align-items:flex-start;gap:11px;padding:11px 0;border-top:1px solid rgba(27,42,74,.08)}
+.qparts li:first-child{border-top:none}
+.qparts li i{flex:none;font-style:normal;width:26px;height:26px;border-radius:50%;background:var(--vio-soft);color:var(--vio-text);font-size:11.5px;font-weight:900;display:flex;align-items:center;justify-content:center}
+.qparts li b{font-size:14px;font-weight:700;color:var(--text);flex:1;word-break:keep-all;line-height:1.5}
+.qparts li em{font-style:normal;font-size:11.5px;font-weight:800;color:var(--muted);flex:none;padding-top:4px}
+.qhow{margin:16px 0 0;padding:13px 15px;border-radius:var(--r-md);background:var(--vio-soft);font-size:12.5px;line-height:1.75;color:var(--text)}
+.qhow b{color:var(--vio-text)}
+.hero.mag{text-align:left;background:linear-gradient(135deg,var(--m1,#6C5CE7),var(--m2,#00CEC9));padding:24px 22px 22px}
+.hero.mag h2{font-size:clamp(21px,5.6vw,29px);line-height:1.2;letter-spacing:-.02em;margin:2px 0 9px;word-break:keep-all}
+.magband{display:flex;align-items:center;gap:9px;font-size:10px;font-weight:900;letter-spacing:.14em;margin-bottom:13px;opacity:.95;flex-wrap:wrap}
+.magband .magmast{border:1px solid rgba(255,255,255,.6);border-radius:var(--r-pill);padding:3px 9px}
+.magband .magdot{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.7);flex:none}
+.magband .magno{margin-left:auto;letter-spacing:.02em;font-size:10.5px;opacity:.9;font-weight:800}
+@media(max-width:430px){.magband .magno{margin-left:0;width:100%;margin-top:3px}}
 .chartwrap{height:260px;position:relative;display:flex;align-items:center;justify-content:center}
 .chartwrap canvas{display:block;margin:auto;max-width:100%}
 .tag{display:inline-block;background:#F1EEFF;color:var(--vio-text);font-weight:700;font-size:12px;border-radius:var(--r-pill);padding:5px 12px;margin:3px 2px}
@@ -894,7 +926,7 @@ const SLUG_CAT={hs_series:'진로',ms_series:'진로',es_dream:'진로',future:'
 const STAGE_NO={
  초등:{es_dream:1,es_habit:2,value_work:3,gifted_ready:4,story_writer:5,ai_inquiry:6},
  중등:{ms_series:1,ms_study:2,ms_hsfit:3,hs_essay:4,future:5,value_work:6,story_writer:7,ai_inquiry:8},
- 고등:{hs_series:1,subject_rec:2,subject_pick:3,study:4,roadmap:5,inquiry:6,interview:7,track_fit:9}
+ 고등:{hs_series:1,subject_rec:2,subject_pick:3,study:4,roadmap:5,inquiry:6,interview:7,hs_essay:8,track_fit:9}
 };
 const DISPLAY_TITLE={
  es_dream:'초등 진로 탐험',
@@ -927,10 +959,103 @@ const DISPLAY_TITLE={
 const DISPLAY_STEP={
  es:{es_dream:1,es_habit:2,value_work:3,gifted_ready:4,story_writer:5,ai_inquiry:6},
  ms:{ms_series:1,ms_study:2,ms_hsfit:3,hs_essay:4,future:5,value_work:6,story_writer:7,ai_inquiry:8},
- hs:{hs_series:1,subject_rec:2,study:3,roadmap:4,inquiry:5,interview:6,future:9,track_fit:10}
+ hs:{hs_series:1,subject_rec:2,subject_pick:3,study:4,roadmap:5,inquiry:6,interview:7,hs_essay:8,future:9,track_fit:10}
 };
 const DISPLAY_HIDDEN=new Set(['ai_skill','career_mature','multi_iq','study_emotion','mock_exam','study_manage','reading']);
 function visibleTestKeys(t){return Object.keys(t||{}).filter(k=>!DISPLAY_HIDDEN.has(k));}
+/* [2026-08-30] 파트 안내 화면.
+   진단별 문항은 myb_questions.bucket(채점 영역)으로 묶여 있다. 아래 이름표는 서버 채점기
+   (BUCKET_NAMES / FUT_LABELS / LABELS / SUBJ)와 실제 문항을 대조해 붙인 것으로,
+   진단을 시작하기 전에 "이 진단은 이런 파트로 이루어져 있습니다"를 먼저 보여준다. */
+const QUIZ_PARTS={
+ es_dream:['인문 — 말과 글','사회 — 사람과 규칙','자연 — 관찰과 탐구','공학 — 만들기와 원리','의생명 — 몸과 건강','교육 — 가르치고 나누기','예체능 — 표현과 감각'],
+ es_habit:['숙제·준비','집중','말하기 복습','생활 리듬','마음 습관'],
+ ms_series:['인문','사회','자연','공학','의생명','교육','예체능'],
+ hs_series:['인문','사회','자연','공학','의생명','교육','예체능'],
+ ms_study:['계획','집중','복습','정리·요약','시험 전략','마인드'],
+ study:['국어','수학','사회','과학','영어'],
+ subject_pick:['국어·문해','수학·수리','영어·국제','사회·인간이해','과학·실험','진로·융합'],
+ subject_rec:['계열 선택','학과 선택','학교 교육과정 확인'],
+ inquiry:['주제 선정','질문 설계','자료 조사','탐구 수행','결과 정리','발표·기록'],
+ roadmap:['학교생활','창체활동','교과·내신','세특','행특·종합'],
+ interview:['면접 유형 이해','학과 지원동기','진로 방향','활동·학생부 연결','인성·협업','답변 구성','꼬리질문 대응','제시문·시사','모의면접·전달','복기·태도'],
+ hs_essay:['목표 유형','활동 정리','학습 이야기','배려·협력','학교·기관 이해','작성 규정','첨삭·퇴고','지원 동기','진로 계획','면접 연계'],
+ track_fit:['교과전형','학생부종합','논술전형','정시(수능)'],
+ ms_hsfit:['일반고','과학고·영재고','외고·국제고','자사고'],
+ value_work:['능력발휘·성취','자율성','안정성','사회적 인정','사회봉사','창의·자기계발'],
+ career_mature:['자기이해','직업세계 이해','진로계획','진로 태도','의사결정'],
+ study_emotion:['시험불안 관리','학습동기','자기효능감','집중·스트레스 관리'],
+ multi_iq:['언어','논리수학','공간','신체운동','음악','대인','자기성찰','자연친화'],
+ study_manage:['계획','집중','오답','반복','점검'],
+ gifted_ready:['관찰','탐구','창의','논리','표현'],
+ mock_exam:['등급해석','오답분석','시간전략','과목균형','피드백'],
+ story_writer:['주제','인물','구성','표현','윤리'],
+ ai_inquiry:['질문설계','자료검증','탐구실행','출처표기','보고서화'],
+ ai_skill:['AI 이해·활용','프롬프트','검증·비판','윤리·책임'],
+ reading:['독서 습관','독해 전략','독서 기록','확장 독서'],
+ admission_nav:['학생부 점검','과목·정시 전략','요강 확인','일정 관리','상담·실행'],
+ future:['리더십','창의성','문제해결','소통','프로젝트','전략적사고']
+};
+/* 문항이 파트 순서대로 묶여 있을 때만 문항 화면에 파트 배지를 띄운다.
+   계열성향(70문항·7계열 순환)처럼 파트가 한 문항마다 바뀌는 진단은 배지를 끈다. */
+function quizPartInfo(z){
+ if(z.__pi!==undefined)return z.__pi;
+ let pi=null;
+ try{
+  const names=QUIZ_PARTS[z.slug]||null;
+  const qs=z.questions||[];
+  const bs=qs.map(q=>(q&&typeof q.bucket==='number')?q.bucket:-1);
+  let runs=0;for(let i=0;i<bs.length;i++){if(i===0||bs[i]!==bs[i-1])runs++;}
+  const n=names?names.length:0;
+  const ok=!!(names&&n>1&&bs.length>=n&&bs.every(b=>b>=0&&b<n)&&runs>0&&(bs.length/runs)>=2);
+  const cnt=names?names.map((_x,b)=>bs.filter(x=>x===b).length):[];
+  pi={names:names||[],buckets:bs,counts:cnt,badge:ok};
+ }catch(e){pi=null}
+ z.__pi=pi;return pi;
+}
+function quizMinutes(n){return Math.max(3,Math.round((n||0)*6/60));}
+function quizStartNow(){const z=S.quiz;if(!z)return;z.intro=false;renderQuiz();window.scrollTo(0,0);}
+function renderQuizIntro(){
+ const z=S.quiz,v=$('#view'),t=z.t||{},pi=quizPartInfo(z),n=(z.questions||[]).length;
+ const c=ARTC[z.slug]||['#6C5CE7','#00CEC9'];
+ const cat=(typeof catOf==='function'?catOf(z.slug):(t.cat||''))||'';
+ const title=DISPLAY_TITLE[z.slug]||t.title||'';
+ const parts=(pi&&pi.names&&pi.names.length)?pi.names:[];
+ const counts=(pi&&pi.counts)||[];
+ const listed=parts.length?`<div class="qintro-k">이 진단의 파트 구성</div>
+  <ul class="qparts">${parts.map((nm,i)=>`<li><i>${i+1}</i><b>${esc(nm)}</b>${counts[i]?`<em>${counts[i]}문항</em>`:''}</li>`).join('')}</ul>`:'';
+ v.innerHTML=`<div class="qintro" style="--m1:${c[0]};--m2:${c[1]}">
+  <div class="qintro-top">
+   <div class="qintro-band"><span>MY BEST NEXT</span><i></i><span>${esc(cat)}</span></div>
+   ${ART(z.slug)}
+   <h2>${esc(title)}</h2>
+   <p>${esc(t.desc||'')}</p>
+   <div class="qintro-meta"><span>${n}문항</span><span>약 ${quizMinutes(n)}분</span>${parts.length?`<span>${parts.length}개 파트</span>`:''}${t.audience?`<span>${esc(t.audience)}</span>`:''}</div>
+  </div>
+  <div class="qintro-body">
+   ${listed}
+   <div class="qhow"><b>진행 방법</b><br>한 화면에 한 문항씩 나오고, 답을 고르면 다음 문항으로 자동으로 넘어갑니다.<br>중간에 나가도 답한 곳까지 저장되어 이어서 할 수 있습니다.<br>정답과 오답이 없는 진단입니다. 지금의 나에 가장 가까운 답을 고르면 됩니다.</div>
+   <div class="actionbar" style="margin-top:16px"><button class="btn" onclick="quizStartNow()">시작하기</button><button class="btn ghost" onclick="go('dash')">돌아가기</button></div>
+  </div>
+ </div>`;
+ window.scrollTo(0,0);
+}
+/* 결과지 매거진 히어로 — 진단별 색면 + 매거진 밴드 */
+const MAG_KICK={'진로':'CAREER','진학':'ADMISSION','공부':'STUDY','역량':'COMPETENCY'};
+function heroSkin(slug){
+ try{
+  const h=document.querySelector('#view .hero');
+  if(!h||h.classList.contains('mag'))return;
+  const c=ARTC[slug]||['#6C5CE7','#00CEC9'];
+  h.style.setProperty('--m1',c[0]);h.style.setProperty('--m2',c[1]);
+  h.classList.add('mag');
+  const t=(S.tests&&S.tests[slug])||{};
+  const cat=(typeof catOf==='function'?catOf(slug):(t.cat||''))||'';
+  const nm=DISPLAY_TITLE[slug]||t.title||'';
+  h.insertAdjacentHTML('afterbegin',
+   `<div class="magband"><span class="magmast">MY BEST NEXT</span><span class="magdot"></span><span>${esc(MAG_KICK[cat]||'REPORT')}</span><span class="magno">${esc(nm)}</span></div>`);
+ }catch(e){}
+}
 const DISPLAY_OVERRIDE_ONLY=new Set(['future','value_work','hs_essay','gifted_ready','story_writer','ai_inquiry']);
 /* 통합 표시 그룹: 대표 slug 1장 카드 + members는 대표 카드 하단 칩으로 종속 표시(슬러그·데이터는 불변) */
 const DISPLAY_GROUPS={
@@ -2950,10 +3075,10 @@ async function startQuiz(slug){
    {q_text:'3단계. 우리 학교 교육과정표 확인 상태를 선택하세요. 최종 과목 선택은 학교 개설 과목 기준으로 조정됩니다.'}
   ];
  }
- S.quiz={slug,scale:q.scale,questions,answers:[],i:0,t:S.tests[slug],majors};
+ S.quiz={slug,scale:q.scale,questions,answers:[],i:0,t:S.tests[slug],majors,intro:true};
  try{
   const sv=JSON.parse(localStorage.getItem('myb_q_'+slug)||'null');
-  if(sv&&sv.i>0&&sv.i<questions.length&&confirm(`이전에 ${sv.i}번까지 답한 기록이 있어요.\n이어서 할까요? (취소=처음부터)`)){S.quiz.answers=sv.answers;S.quiz.i=sv.i;}
+  if(sv&&sv.i>0&&sv.i<questions.length&&confirm(`이전에 ${sv.i}번까지 답한 기록이 있어요.\n이어서 할까요? (취소=처음부터)`)){S.quiz.answers=sv.answers;S.quiz.i=sv.i;S.quiz.intro=false;}
   else localStorage.removeItem('myb_q_'+slug);
  }catch(e){}
  go('quiz');
@@ -3009,12 +3134,17 @@ function subjectRecOpts(z){
  return `<div class="ynrow"><button class="yn yes" onclick="answer(1)"><span>✅</span>확인 완료</button><button class="yn yes" onclick="answer(2)"><span>📝</span>일부 확인</button><button class="yn no" onclick="answer(3)"><span>🔎</span>아직 확인 전</button></div>`;
 }
 function renderQuiz(){
- const z=S.quiz,v=$('#view'),q=z.questions[z.i],total=z.questions.length;
+ const z=S.quiz;
+ if(z&&z.intro){renderQuizIntro();return;}
+ const v=$('#view'),q=z.questions[z.i],total=z.questions.length;
  let opts;
  if(z.slug==='subject_rec'){
   opts=subjectRecOpts(z);
  }else if(z.slug==='hs_essay'&&z.i===0){
-  opts=['외고·국제고','자사고','영재학교·과학고','특성화고·마이스터고'].map((o,k)=>`<button class="opt" onclick="answer(${k+1})">${o}</button>`).join('');
+  /* [2026-08-30] 고등학생은 같은 진단을 과학기술원(KAIST·GIST·DGIST·UNIST·KENTECH) 등
+     이공계 서류형 소개서 준비에 쓴다. 채점 유형(1~4)은 그대로 두고 3번 보기의 이름만 넓힌다. */
+  const __hs=(typeof resolveLv==='function'?resolveLv(S.me&&S.me.grade):'')==='hs';
+  opts=['외고·국제고','자사고',__hs?'영재학교·과학고·과학기술원(KAIST·GIST·DGIST·UNIST·KENTECH)':'영재학교·과학고','특성화고·마이스터고'].map((o,k)=>`<button class="opt" onclick="answer(${k+1})">${o}</button>`).join('');
  }else if(z.scale==='grade'){
   opts=['1등급 (상위 10%)','2등급','3등급','4등급','5등급'].map((o,k)=>`<button class="opt" onclick="answer(${k+1})">${o}</button>`).join('');
  }else if(z.scale==='likert'){
@@ -3023,7 +3153,19 @@ function renderQuiz(){
   opts=`<div class="ynrow"><button class="yn yes" onclick="answer(1)"><span>⭕</span>네, 맞아요</button><button class="yn no" onclick="answer(0)"><span>❌</span>아니요, 아니에요</button></div>`;
  }
  const pct=Math.round(z.i/total*100);
+ /* [2026-08-30] 파트 배지 — 지금 어느 파트의 몇 번째 문항인지 항상 보이게 한다. */
+ let partBar='';
+ try{
+  const pi=quizPartInfo(z);
+  if(pi&&pi.badge){
+   const b=pi.buckets[z.i],nm=pi.names[b]||'';
+   const idxs=pi.buckets.map((x,i)=>x===b?i:-1).filter(i=>i>=0);
+   const turn=(z.i===0||pi.buckets[z.i-1]!==b)?' turn':'';
+   partBar=`<div class="qpart${turn}"><span class="qpartn">PART ${b+1}</span><b>${esc(nm)}</b><span class="qpartc">${idxs.indexOf(z.i)+1} / ${idxs.length}</span></div>`;
+  }
+ }catch(e){}
  v.innerHTML=`<div class="qnum">${esc(z.t.title)}</div>
+ ${partBar}
  <div class="qprog noprint"><span>${z.i+1} / ${total} 문항</span><span>${pct}% 진행</span></div>
  <div class="bar"><i style="width:${pct}%"></i></div>
   <div class="card"><div class="qnum">Q${z.i+1} / ${total}</div><div class="qtext">${esc(z.slug==='subject_rec'?subjectRecQText(z,q):q.q_text)}</div>${opts}</div>
@@ -3695,6 +3837,7 @@ function renderResult(d){ try{S.lastResultSlug=d.attempt.test_slug}catch(e){}
   ${blocks.map(b=>blockHtml(b)).join('')||'<div class="muted">모든 항목이 준비되었습니다! 🎉</div>'}
   ${resultActions(d,{summary:esc(t.title)+' 결과를 받았어요'})}`;
  }
+ try{heroSkin(slug)}catch(e){}
  const pbh=personaBannerHtml(d);if(pbh)v.insertAdjacentHTML('afterbegin',pbh);
  window.scrollTo(0,0);
  countUp();confetti();

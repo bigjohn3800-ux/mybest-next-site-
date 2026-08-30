@@ -981,7 +981,7 @@ function visibleTestKeys(t){return Object.keys(t||{}).filter(k=>!DISPLAY_HIDDEN.
    진단을 시작하기 전에 "이 진단은 이런 파트로 이루어져 있습니다"를 먼저 보여준다. */
 const QUIZ_PARTS={
  es_dream:['인문 — 말과 글','사회 — 사람과 규칙','자연 — 관찰과 탐구','공학 — 만들기와 원리','의생명 — 몸과 건강','교육 — 가르치고 나누기','예체능 — 표현과 감각'],
- es_habit:['숙제·준비','집중','말하기 복습','생활 리듬','마음 습관'],
+ es_habit:['숙제·준비','집중','말하기 복습','생활 리듬','마음 습관','사실 확인'], /* [2026-08-30] 사실 확인 파트 추가 */
  ms_series:['인문','사회','자연','공학','의생명','교육','예체능'],
  hs_series:['인문','사회','자연','공학','의생명','교육','예체능'],
  ms_study:['계획','집중','복습','정리·요약','시험 전략','마인드'],
@@ -999,7 +999,7 @@ const QUIZ_PARTS={
  study_emotion:['시험불안 관리','학습동기','자기효능감','집중·스트레스 관리'],
  multi_iq:['언어','논리수학','공간','신체운동','음악','대인','자기성찰','자연친화'],
  study_manage:['계획','집중','오답','반복','점검'],
- gifted_ready:['관찰','탐구','창의','논리','표현'],
+ gifted_ready:['관찰','탐구','창의','논리','표현','사실 확인'], /* [2026-08-30] 사실 확인 파트 추가 */
  mock_exam:['등급해석','오답분석','시간전략','과목균형','피드백'],
  story_writer:['주제','인물','구성','표현','윤리'],
  ai_inquiry:['질문설계','자료검증','탐구실행','출처표기','보고서화'],
@@ -3661,8 +3661,54 @@ async function shareResult(id,summary){
  try{ if(navigator.share){await navigator.share({title:'마이베스트 NEXT',text,url});return;} }catch(e){if(e&&e.name==='AbortError')return;}
  ogShareSheet(text,url,'결과 공유');
 }
+/* [FIX 2026-08-30 · 초등교사 피드백 ①②] 자기보고 편향 보정 — '사실 확인' 문항군 읽기.
+   서버(mybest/scoreBucketCheck)는 BUCKET_NAMES 에 등록된 영역만 per 로 집계하고,
+   flags/qtexts/ready/total 에는 모든 문항을 담는다. 사실 확인 문항은 마지막 버킷이라
+   flags 의 뒤쪽 꼬리에 그대로 남는다. 그래서 서버를 건드리지 않고 여기서 분리해 읽는다.
+   - 성향 점수가 높아도 사실 확인이 비면 최고 단계로 올라가지 못한다(성향만으로 영재 오판 방지).
+   - 반대로 자신에게 엄격해 성향 점수만 낮은 학생은 보호 문구로 감싼다. */
+const EVI_SLUGS={es_habit:1,gifted_ready:1};
+function eviRead(r,slug){
+  try{
+    if(!slug||!EVI_SLUGS[slug])return null;
+    if(!r||!Array.isArray(r.per)||!Array.isArray(r.flags))return null;
+    const selfTot=r.per.reduce((a,p)=>a+((p&&p.total)||0),0);
+    const selfOk =r.per.reduce((a,p)=>a+((p&&p.ok)||0),0);
+    const eF=r.flags.slice(selfTot), eT=(r.qtexts||[]).slice(selfTot);
+    if(!eF.length)return null;
+    const eOk=eF.filter(Boolean).length;
+    const selfPct=Math.round(selfOk/Math.max(1,selfTot)*100);
+    const eviPct =Math.round(eOk/Math.max(1,eF.length)*100);
+    const sb=selfPct>=80?0:(selfPct>=50?1:2);
+    const eb=eviPct >=67?0:(eviPct >=34?1:2);
+    /* 사실 확인은 상한이다: 성향 응답만 높고 실제 경험이 없으면 최고 단계로 못 올라간다.
+       반대로 자신에게 지나치게 엄격해 성향 응답만 낮은 경우에는 사실 확인 쪽을 기준으로 삼는다. */
+    const band=(selfPct-eviPct<=-34)?eb:Math.max(sb,eb);
+    const NAMES=slug==='gifted_ready'
+      ?['탐구 경험이 쌓였어요','탐구를 시작했어요','탐구를 준비하는 단계']
+      :['습관이 자리 잡았어요','습관이 자라는 중','습관의 씨앗 단계'];
+    const gap=selfPct-eviPct;let note='';
+    if(gap>=34)note='스스로 매긴 점수는 높은데, 최근에 실제로 있었던 일로 확인되는 항목은 적습니다. 답을 후하게 고른 것일 수 있어요. 아래 사실 확인 항목을 선생님·보호자와 함께 한 번 더 짚어 보세요.';
+    else if(gap<=-34)note='실제로 해낸 일은 많은데 스스로 매긴 점수는 낮습니다. 자신에게 엄격한 편이에요. 아래에서 체크된 항목이 지금 이미 하고 있는 일이니, 점수보다 그 목록을 먼저 봐 주세요.';
+    return {band,label:NAMES[band],selfPct,eviPct,ok:eOk,total:eF.length,gap,note,flags:eF,texts:eT};
+  }catch(e){return null}
+}
+function eviCards(ev,slug){
+  if(!ev)return '';
+  let h='';
+  if(slug==='gifted_ready'){
+    h+='<div class="card coachnote"><p style="font-size:12.8px;line-height:1.7;color:#5B6270">이 진단은 영재 여부를 가려내거나 영재교육 대상자를 뽑는 자료가 아닙니다. 관찰·탐구·창의·논리·표현을 지금 얼마나 자주 쓰고 있는지 보여 주는 점검표입니다. 점수를 등수처럼 읽지 말아 주세요.</p></div>';
+  }
+  h+='<div class="card"><div class="k">사실 확인 — 최근에 실제로 있었던 일</div>'
+   + '<p style="font-size:12.8px;line-height:1.6;color:#686D84;margin:0 0 8px">생각이나 성향이 아니라 지난 한 주·한 달 안에 실제로 있었던 일만 묻는 항목입니다. 이 항목이 채워질수록 결과를 그대로 믿어도 좋습니다.</p>'
+   + '<ul class="chk">'+ev.texts.map((q,i)=>'<li class="'+(ev.flags[i]?'ok':'no')+'">'+(ev.flags[i]?'✓':'✗')+' '+esc(q)+'</li>').join('')+'</ul>'
+   + '<div style="display:flex;align-items:center;gap:10px;padding:8px 0 0"><span style="flex:0 0 92px;font-size:13px;font-weight:700">사실 확인</span><div class="meter" style="flex:1;margin:0"><i style="width:'+ev.eviPct+'%;background:#00CEC9"></i></div><span class="muted">'+ev.ok+'/'+ev.total+'</span></div></div>';
+  if(ev.note)h+='<div class="card" style="background:#FFF8E6;border:1.5px solid #F6E3B0"><div class="k">이 결과를 읽을 때</div><p style="font-size:13px;line-height:1.7;color:#5B5320">'+esc(ev.note)+'</p></div>';
+  h+='<div class="card coachnote"><div class="k">선생님·보호자 확인 3가지</div><p style="font-size:12.8px;line-height:1.7;color:#5B6270">① 사실 확인에서 체크된 항목이 실제와 맞는지 아이와 함께 확인해 주세요.<br>② 성향 점수가 높아도 사실 확인이 비어 있으면 아직 습관이 자리 잡기 전입니다. 점수만 보고 판단하지 말아 주세요.<br>③ 성향 점수가 낮아도 사실 확인이 채워져 있으면 이미 잘하고 있는 학생입니다. 그 점을 먼저 말해 주세요.</p></div>';
+  return h;
+}
 /* ===== 바이럴 결과 공유 카드(W10-B) — canvas 1080x1080 브랜드 이미지(익명/요약만) ===== */
-function shareCardLines(r,t){
+function shareCardLines(r,t,slug){
  // 결과종류별 핵심 한 줄 추출(개인정보 없음). 추출 불가 시 진단명만.
  try{
   if(r.kind==='series'){const L=r.labels||LABELS;const b=L[r.best],s=L[r.second];return {head:(b||'')+'계열 성향',sub:s?('융합 '+b+' × '+s):''};}
@@ -3670,7 +3716,11 @@ function shareCardLines(r,t){
   if(r.kind==='grades'){const subs=r.subjects||[];return {head:'과목별 맞춤 공부 전략',sub:subs.length?(subs.slice(0,4).join(' · ')):''};}
   if(r.kind==='pick'){const L=r.labels||LABELS;const p=L[(r.pick||1)-1];return {head:(p||'')+'계열 추천 과목 조합',sub:'2022 개정 교육과정 기준'};}
   if(r.kind==='areas'){const L=r.labels||[];const b=L[r.best];return {head:'학습영역 강점 · '+(b||''),sub:(L[r.worst]?('보완 영역 '+L[r.worst]):'')};}
-  if(r.kind==='bucketcheck'||r.kind==='checklist'){return {head:'준비도 '+(r.pct||0)+'점',sub:((r.ready||0)+' / '+(r.total||0)+' 항목 준비 완료')};}
+  if(r.kind==='bucketcheck'||r.kind==='checklist'){
+   /* [FIX 2026-08-30] 사실 확인 문항이 있는 초등 진단은 점수 대신 단계로 공유한다(점수 오독 방지). */
+   const ev=eviRead(r,slug);
+   if(ev)return {head:ev.label,sub:('사실 확인 '+ev.ok+' / '+ev.total+' 항목')};
+   return {head:'준비도 '+(r.pct||0)+'점',sub:((r.ready||0)+' / '+(r.total||0)+' 항목 준비 완료')};}
  }catch(e){}
  return {head:(t&&t.title)||'진단 결과',sub:''};
 }
@@ -3682,11 +3732,12 @@ function scWrap(ctx,text,maxW){
 function shareCardMake(id){
  const d=window._shareCardD;
  let r,t,title;
- if(d&&d.attempt&&d.attempt.id===id){r=d.attempt.result;t=S.tests[d.attempt.test_slug];}
- else{const a=[...((S.me&&S.me.attempts)||[])].find(x=>x.id===id);if(a){r=a.result;t=S.tests[a.test_slug];}}
+ let _slug='';
+ if(d&&d.attempt&&d.attempt.id===id){r=d.attempt.result;t=S.tests[d.attempt.test_slug];_slug=d.attempt.test_slug;}
+ else{const a=[...((S.me&&S.me.attempts)||[])].find(x=>x.id===id);if(a){r=a.result;t=S.tests[a.test_slug];_slug=a.test_slug;}}
  if(!r){alert('결과 정보를 불러오지 못했어요. 결과 화면에서 다시 시도해 주세요.');return;}
  title=(t&&t.title)||'진단 결과';
- const ln=shareCardLines(r,t);
+ const ln=shareCardLines(r,t,_slug);
  const cv=document.createElement('canvas');cv.width=1080;cv.height=1080;
  const ctx=cv.getContext('2d');
  // 배경: 보라 → 민트 대각 그라데이션
@@ -3867,9 +3918,14 @@ function renderResult(d){ try{S.lastResultSlug=d.attempt.test_slug}catch(e){}
   ${resultActions(d,{summary:pk+'계열 추천 과목 조합을 받았어요'})}`;
  }else if(r.kind==='bucketcheck'){
   const blocks=d.blocks||[];
-  v.innerHTML=`<div class="hero">${ART(slug)}<h2>${esc(t.title)} <span class="cnt" data-v="${r.pct}">0</span>점</h2><p>${r.ready} / ${r.total} 항목 준비 · ${esc(st.name)} · ${dt}</p><div class="meter" style="background:rgba(255,255,255,.25)"><i style="width:${r.pct}%;background:#FDCB6E"></i></div></div>
+  const ev=eviRead(r,slug);
+  const heroHtml=ev
+   ?`<div class="hero">${ART(slug)}<h2>${esc(ev.label)}</h2><p>${esc(t.title)} · 사실 확인 ${ev.ok}/${ev.total} · ${esc(st.name)} · ${dt}</p><div class="meter" style="background:rgba(255,255,255,.25)"><i style="width:${ev.eviPct}%;background:#FDCB6E"></i></div></div>`
+   :`<div class="hero">${ART(slug)}<h2>${esc(t.title)} <span class="cnt" data-v="${r.pct}">0</span>점</h2><p>${r.ready} / ${r.total} 항목 준비 · ${esc(st.name)} · ${dt}</p><div class="meter" style="background:rgba(255,255,255,.25)"><i style="width:${r.pct}%;background:#FDCB6E"></i></div></div>`;
+  v.innerHTML=`${heroHtml}
    ${methodNote(slug)}
-   <div class="card"><div class="k">영역별 진단</div>${r.names.map((nm,b)=>`<div style="display:flex;align-items:center;gap:10px;padding:6px 0"><span style="flex:0 0 92px;font-size:13px;font-weight:700">${nm}</span><div class="meter" style="flex:1;margin:0"><i style="width:${r.per[b].ok/Math.max(1,r.per[b].total)*100}%"></i></div><span class="muted">${r.per[b].ok}/${r.per[b].total}</span></div>`).join('')}</div>
+   ${eviCards(ev,slug)}
+   <div class="card"><div class="k">${ev?'영역별 성향 응답':'영역별 진단'}</div>${r.names.map((nm,b)=>`<div style="display:flex;align-items:center;gap:10px;padding:6px 0"><span style="flex:0 0 92px;font-size:13px;font-weight:700">${nm}</span><div class="meter" style="flex:1;margin:0"><i style="width:${r.per[b].ok/Math.max(1,r.per[b].total)*100}%"></i></div><span class="muted">${r.per[b].ok}/${r.per[b].total}</span></div>`).join('')}</div>
   <div class="k" style="margin:14px 0 8px">보완 영역 가이드</div>
   ${blocks.map(b=>blockHtml(b)).join('')||'<div class="muted">모든 영역이 탄탄해요! 🎉</div>'}
   ${blocks.length?`<div class="card"><div class="k">4주 실천 플랜 — 보완 영역을 주차별로</div>${blocks.slice(0,4).map((b,i)=>{const tp=(b.tips||[])[0]||'';return `<div style="display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px dashed #ECEAFB"><span class="n" style="flex:0 0 46px;height:24px;border-radius:8px;background:var(--sun);font-weight:800;font-size:11px;display:flex;align-items:center;justify-content:center">${i+1}주차</span><div style="font-size:12.5px;line-height:1.5"><b>${esc(b.title.split(' — ')[0])}</b> · ${esc(tp)}</div></div>`}).join('')}</div>`:''}

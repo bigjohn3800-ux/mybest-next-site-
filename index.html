@@ -2622,7 +2622,7 @@ async function go(page,arg){
   const latest={},first={},counts={};
   allAt.forEach(a=>{if(!latest[a.test_slug])latest[a.test_slug]=a;counts[a.test_slug]=(counts[a.test_slug]||0)+1});
   [...allAt].reverse().forEach(a=>{if(!first[a.test_slug])first[a.test_slug]=a});
-  const metric=r=>r.pct!==undefined?r.pct:(r.scores?Math.round(r.scores[r.best]/(r.kind==='future'?15:50)*100):(r.grades?Math.round(100-(r.grades.reduce((x,y)=>x+y,0)/r.grades.length-1)*20):null));
+  const metric=r=>r.pct!==undefined?r.pct:(r.scores?Math.round(r.scores[r.best]/(r.kind==='future'?15:r.kind==='areas'?30:50)*100):(r.grades?Math.round(100-(r.grades.reduce((x,y)=>x+y,0)/r.grades.length-1)*20):null));
   const ser=latest['hs_series']||latest['ms_series']||latest['es_dream'];
   const fut=latest['future'];
   const bars=Object.entries(latest).map(([k,a])=>({k,title:t[k]?.title||k,v:metric(a.result)})).filter(x=>x.v!==null);
@@ -2664,7 +2664,7 @@ async function go(page,arg){
   const latest={},first={},counts={};
   allAt.forEach(a=>{if(!latest[a.test_slug]||new Date(a.created_at)>new Date(latest[a.test_slug].created_at))latest[a.test_slug]=a;counts[a.test_slug]=(counts[a.test_slug]||0)+1;});
   allAt.forEach(a=>{if(!first[a.test_slug]||new Date(a.created_at)<new Date(first[a.test_slug].created_at))first[a.test_slug]=a;});
-  const metric=r=>!r?null:(r.pct!==undefined?r.pct:(r.scores?Math.round(r.scores[r.best]/(r.kind==='future'?15:50)*100):(r.grades?Math.round(100-(r.grades.reduce((x,y)=>x+y,0)/r.grades.length-1)*20):null)));
+  const metric=r=>!r?null:(r.pct!==undefined?r.pct:(r.scores?Math.round(r.scores[r.best]/(r.kind==='future'?15:r.kind==='areas'?30:50)*100):(r.grades?Math.round(100-(r.grades.reduce((x,y)=>x+y,0)/r.grades.length-1)*20):null)));
   /* 게임화: 레벨·배지 */
   const distinct=Object.keys(latest).length;
   const cats=new Set(Object.keys(latest).map(k=>catOf(k)));
@@ -2708,7 +2708,7 @@ async function go(page,arg){
   const t=S.tests??(S.tests=(await api('/tests')).tests);
   const by={};
   [...(S.me.attempts||[])].reverse().forEach(a=>{(by[a.test_slug]=by[a.test_slug]||[]).push(a)});
-  const metric=r=>r.pct!==undefined?r.pct:(r.scores?Math.round(r.scores[r.best]/(r.kind==='future'?15:50)*100):(r.grades?Math.round(100-(r.grades.reduce((x,y)=>x+y,0)/r.grades.length-1)*20):null));
+  const metric=r=>r.pct!==undefined?r.pct:(r.scores?Math.round(r.scores[r.best]/(r.kind==='future'?15:r.kind==='areas'?30:50)*100):(r.grades?Math.round(100-(r.grades.reduce((x,y)=>x+y,0)/r.grades.length-1)*20):null));
   let html=`<h1>나의 성장 그래프 📈</h1><div class="sub">재진단할 때마다 변화가 기록됩니다. 점수는 진단별 100점 환산 기준.</div>`;
   let gi=0; const charts=[];
   Object.entries(by).forEach(([slug,ats])=>{
@@ -3075,7 +3075,10 @@ async function startQuiz(slug){
    {q_text:'3단계. 우리 학교 교육과정표 확인 상태를 선택하세요. 최종 과목 선택은 학교 개설 과목 기준으로 조정됩니다.'}
   ];
  }
- S.quiz={slug,scale:q.scale,questions,answers:[],i:0,t:S.tests[slug],majors,intro:true};
+ /* [FIX 2026-08-30] 서버 HIDDEN_TESTS 7종은 /tests 응답에 없어 S.tests[slug] 가 undefined 였고,
+    문항 화면의 esc(z.t.title) 에서 즉시 흰 화면이 됐다(딥링크로만 도달). 최소 정보로 대체한다. */
+ const _t=(S.tests&&S.tests[slug])||{title:(DISPLAY_TITLE[slug]||slug),desc:'',audience:'',cat:'',scale:q.scale,steps:{}};
+ S.quiz={slug,scale:q.scale,questions,answers:[],i:0,t:_t,majors,intro:true};
  try{
   const sv=JSON.parse(localStorage.getItem('myb_q_'+slug)||'null');
   if(sv&&sv.i>0&&sv.i<questions.length&&confirm(`이전에 ${sv.i}번까지 답한 기록이 있어요.\n이어서 할까요? (취소=처음부터)`)){S.quiz.answers=sv.answers;S.quiz.i=sv.i;S.quiz.intro=false;}
@@ -3164,7 +3167,7 @@ function renderQuiz(){
    partBar=`<div class="qpart${turn}"><span class="qpartn">PART ${b+1}</span><b>${esc(nm)}</b><span class="qpartc">${idxs.indexOf(z.i)+1} / ${idxs.length}</span></div>`;
   }
  }catch(e){}
- v.innerHTML=`<div class="qnum">${esc(z.t.title)}</div>
+ v.innerHTML=`<div class="qnum">${esc((z.t&&z.t.title)||'')}</div>
  ${partBar}
  <div class="qprog noprint"><span>${z.i+1} / ${total} 문항</span><span>${pct}% 진행</span></div>
  <div class="bar"><i style="width:${pct}%"></i></div>
@@ -3619,6 +3622,7 @@ function shareCardLines(r,t){
   if(r.kind==='future'){const L=r.labels||[];const b=L[r.best];return {head:'대표 역량 · '+(b||'미래역량'),sub:(L[r.worst]?('성장 포인트 '+L[r.worst]):'')};}
   if(r.kind==='grades'){const subs=r.subjects||[];return {head:'과목별 맞춤 공부 전략',sub:subs.length?(subs.slice(0,4).join(' · ')):''};}
   if(r.kind==='pick'){const L=r.labels||LABELS;const p=L[(r.pick||1)-1];return {head:(p||'')+'계열 추천 과목 조합',sub:'2022 개정 교육과정 기준'};}
+  if(r.kind==='areas'){const L=r.labels||[];const b=L[r.best];return {head:'학습영역 강점 · '+(b||''),sub:(L[r.worst]?('보완 영역 '+L[r.worst]):'')};}
   if(r.kind==='bucketcheck'||r.kind==='checklist'){return {head:'준비도 '+(r.pct||0)+'점',sub:((r.ready||0)+' / '+(r.total||0)+' 항목 준비 완료')};}
  }catch(e){}
  return {head:(t&&t.title)||'진단 결과',sub:''};
@@ -3758,7 +3762,10 @@ function chartFallback(el,cfg){
 function safeChart(el,cfg){
  try{
   if(typeof Chart==='undefined'){chartFallback(el,cfg);return null;}
-  return safeChart(el,cfg);
+  return new Chart(el,cfg);   /* [FIX 2026-08-30] safeChart 를 자기 자신으로 호출하고 있어
+     Chart.js 가 정상 로드돼도 RangeError(스택 초과)로 떨어졌고, catch 안의 chartFallback 조차
+     스택 한계 근처라 실패해 그래프도 대체 표도 없이 빈 캔버스만 남았다. 계열성향·미래역량·
+     심층솔루션·통합리포트·성장추이 전부 해당. */
  }catch(e){ chartFallback(el,cfg); return null; }
 }
 function personaBannerHtml(d){
@@ -3817,6 +3824,26 @@ function renderResult(d){ try{S.lastResultSlug=d.attempt.test_slug}catch(e){}
   ${blocks.map(b=>blockHtml(b)).join('')||'<div class="muted">모든 영역이 탄탄해요! 🎉</div>'}
   ${blocks.length?`<div class="card"><div class="k">4주 실천 플랜 — 보완 영역을 주차별로</div>${blocks.slice(0,4).map((b,i)=>{const tp=(b.tips||[])[0]||'';return `<div style="display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px dashed #ECEAFB"><span class="n" style="flex:0 0 46px;height:24px;border-radius:8px;background:var(--sun);font-weight:800;font-size:11px;display:flex;align-items:center;justify-content:center">${i+1}주차</span><div style="font-size:12.5px;line-height:1.5"><b>${esc(b.title.split(' — ')[0])}</b> · ${esc(tp)}</div></div>`}).join('')}</div>`:''}
   ${resultActions(d,{summary:esc(t.title)+' 결과를 받았어요'})}`;
+ }else if(r.kind==='areas'){
+  /* [FIX 2026-08-30] 고교학점제 과목 선택 진단(subject_pick)은 서버가 scoreSeries 를 재사용하면서
+     kind 를 'areas' 로 바꿔 저장하는데(mybest/index.ts), 프런트에는 그 분기가 없어 마지막 else
+     (체크리스트) 로 떨어졌다. areas 결과에는 qtexts/flags/pct 가 없어 TypeError 가 나고, 제출 직후는
+     물론 내 결과함에서도 이 진단 결과를 영영 열 수 없었다. 무료 8종에 포함된 진단이라 영향이 컸다. */
+  const blocks=d.blocks||[];
+  const L=r.labels||[];
+  const sc=r.scores||[];
+  const ab=L[r.best]||'',a2=L[r.second]||'',aw=L[r.worst]||'';
+  const mx=Math.max(1,...sc.map(x=>Number(x)||0));
+  v.innerHTML=`<div class="hero">${ART(slug)}<h2>강한 학습영역은 ${esc(ab)}</h2><p>${esc(st.name)} · 2022 개정 교육과정 · 고교학점제 기준 · ${dt}</p></div>
+   <div class="card"><div class="k">나의 6개 학습영역 프로파일</div><div class="chartwrap"><canvas id="radarA"></canvas></div>
+   <div style="text-align:center;margin-top:6px"><span class="tag">1순위 ${esc(ab)}</span>${a2?`<span class="tag">2순위 ${esc(a2)}</span>`:''}${aw?`<span class="tag">보완 ${esc(aw)}</span>`:''}</div></div>
+   ${methodNote(slug)}
+   <div class="card"><div class="k">영역별 점수</div>${L.map((nm,i)=>`<div class="cfbrow"><span class="cfbl">${esc(nm)}</span><span class="cfbt"><i style="width:${Math.round((Number(sc[i])||0)/mx*100)}%"></i></span><b class="cfbv">${Number(sc[i])||0}</b></div>`).join('')}</div>
+   <div class="card"><div class="k">읽는 법</div><p style="font-size:13.5px;line-height:1.7">점수가 높은 영역은 지금의 나에게 잘 맞는 학습 방식이고, 낮은 영역은 아직 경험이 적은 쪽입니다. 낮다고 피해야 하는 과목은 아닙니다. 진로가 그 영역과 이어진다면 오히려 지금부터 경험을 쌓을 자리입니다. 최종 과목 선택은 우리 학교 교육과정 편제표에 개설된 과목을 기준으로 담임 선생님과 함께 확인해 주세요.</p></div>
+   <div class="k" style="margin:14px 0 8px">과목 조합 설계 가이드</div>
+  ${blocks.map(b=>blockHtml(b)).join('')||'<div class="muted">학교 교육과정 편제표를 확인하고 선생님과 함께 조합을 점검해 보세요.</div>'}
+  ${resultActions(d,{summary:ab+' 학습영역이 강하게 나왔어요'})}`;
+  safeChart($('#radarA'),{type:'radar',data:{labels:L,datasets:[{data:sc,fill:true,backgroundColor:'rgba(108,92,231,.16)',borderColor:'#6C5CE7',pointBackgroundColor:'#00CEC9',borderWidth:2}]},options:{plugins:{legend:{display:false}},scales:{r:{beginAtZero:true,ticks:{display:false},pointLabels:{font:{size:11,weight:'700',family:'Pretendard'}}}},animation:false}});
  }else if(r.kind==='future'){
   const blocks=d.blocks||[];
   const fb=r.labels[r.best],fw=r.labels[r.worst];
@@ -4107,6 +4134,274 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 .skip-to-main:focus { left: 0 }
 
 /* ===== [UX-PATCH v3 2026-08-03] 끝 ============================================ */
+
+/* ===== [PLATFORM SHELL 2026-08-30] PC(1024px+) 전용 셸. 모바일 무영향 ===== */
+/* ============================================================================
+   MY BEST NEXT — PC 플랫폼 셸 (좌측 사이드바 + 상단 유틸리티 바 + 대형 히어로)
+   ----------------------------------------------------------------------------
+   삽입 위치: 문서의 "마지막" 스타일 블록의 종료 태그 바로 앞.
+             마지막 스타일 시트여야 .lp-stats b / .lvsec 등 기존 후행 규칙을
+             캐스케이드로 이길 수 있습니다.
+
+   모바일 무영향 보장 규칙(3중 방어)
+     1) 셸 루트 #mbn-shell 은 미디어쿼리 밖에서 display:none 으로 시작합니다.
+        1024px 미만에서는 이 선언만 적용되므로 셸은 렌더 트리에 존재하지 않습니다.
+     2) 그 외 모든 선택자는 예외 없이 @media (min-width:1024px) 안에 있습니다.
+        (유일한 예외가 위 1)의 display:none 과 아래 @media print 리셋입니다.)
+     3) 히어로에 주입되는 .mbn-mast / .mbn-aside 도 미디어쿼리 밖에서
+        display:none 이며, JS 가 1024px 미만에서는 노드 자체를 제거합니다.
+   기존 팔레트(--vio/--mint/--sun/--ink/--paper/--muted)와 반경·그림자 토큰,
+   그리고 prefers-color-scheme 다크모드 체계를 그대로 따릅니다.
+   ========================================================================== */
+
+/* [모바일 영향 0] 셸 루트는 기본적으로 숨김. 1024px 이상에서만 켜집니다. */
+#mbn-shell{display:none}
+/* [모바일 영향 0] 히어로 주입 요소도 기본 숨김(PC에서만 노출) */
+.mbn-mast,.mbn-aside{display:none}
+/* [모바일 영향 0] 인쇄 시에는 항상 셸을 제거하고 본문 오프셋을 되돌립니다.
+   모바일에서는 이미 셸이 없으므로 이 블록은 데스크톱 인쇄에만 의미가 있습니다. */
+@media print{
+ #mbn-shell,.mbn-mast,.mbn-aside{display:none!important}
+ body{padding-left:0!important;padding-top:0!important}
+}
+
+/* ===================== 여기서부터 전부 PC(1024px 이상) 전용 ===================== */
+@media (min-width:1024px){
+
+ /* --- 셸 전용 토큰. 기존 :root 팔레트를 재사용하고 셸 고유값만 추가합니다. --- */
+ :root{
+  --mbn-sbw:248px;              /* 사이드바 폭 */
+  --mbn-tbh:62px;               /* 상단 바 높이 */
+  --mbn-line:#EAE7F5;           /* 셸 경계선 */
+  --mbn-panel:#FFFFFF;          /* 사이드바/상단바 바탕 */
+  --mbn-panel-tr:rgba(255,255,255,.86);
+  --mbn-item:#4C5170;           /* 메뉴 기본 글자색 */
+  --mbn-item-hv:#F4F2FE;        /* 메뉴 hover 바탕 */
+  --mbn-active-bg:var(--vio-soft);
+  --mbn-gk:#9AA0BC;             /* 메뉴 그룹 라벨 */
+ }
+
+ /* --- 본문 오프셋: 사이드바/상단바 자리만큼 body 를 밀어냅니다. --- */
+ body{padding-left:var(--mbn-sbw);padding-top:var(--mbn-tbh)}
+ /* .app 은 100vw 기준으로 폭을 잡고 있어 사이드바 폭을 빼 줘야 중앙 정렬이 맞습니다. */
+ .app{max-width:min(1180px,calc(100vw - var(--mbn-sbw) - 96px));padding:30px 36px 96px}
+ /* 풀블리드 섹션(.lvsec)은 100vw 기준 음수 오프셋을 쓰므로 사이드바 아래로 삐져나옵니다.
+    콘텐츠 컬럼 폭에 맞춰 되돌립니다. (이 스타일 시트가 마지막이라 후행 규칙을 이깁니다.) */
+ .lvsec{width:100%;left:auto;transform:none}
+ /* 셸 상단 바가 로고·로그인 상태·뒤로가기를 모두 대신하므로 기존 .topbar 는 감춥니다.
+    DOM 은 그대로 두므로 setWho()/updateBack() 이 그리는 내용은 계속 유효합니다. */
+ .topbar{display:none}
+
+ #mbn-shell{display:block}
+
+ /* ------------------------------ 좌측 사이드바 ------------------------------ */
+ .mbn-side{
+  position:fixed;left:0;top:0;bottom:0;width:var(--mbn-sbw);z-index:44;
+  background:var(--mbn-panel);border-right:1px solid var(--mbn-line);
+  display:flex;flex-direction:column;overflow:hidden
+ }
+ /* 브랜드 로크업. 높이를 상단 바와 정확히 맞춰 한 줄의 유틸리티 밴드처럼 읽히게 합니다. */
+ .mbn-brand{
+  height:var(--mbn-tbh);flex:none;display:flex;flex-direction:column;justify-content:center;
+  gap:2px;padding:0 20px;border-bottom:1px solid var(--mbn-line);cursor:pointer;
+  background:none;border-left:0;border-right:0;border-top:0;width:100%;text-align:left;font-family:inherit
+ }
+ .mbn-blogo{font-weight:800;letter-spacing:.11em;font-size:13.5px;color:var(--vio-text);line-height:1}
+ .mbn-blogo i{font-style:normal;color:var(--mint-text)}
+ .mbn-btag{font-size:10.5px;letter-spacing:.02em;color:var(--mbn-gk);line-height:1}
+
+ .mbn-nav{flex:1 1 auto;overflow-y:auto;padding:16px 12px 8px;scrollbar-width:thin}
+ .mbn-grp{margin-bottom:16px}
+ .mbn-gk{
+  font-size:10px;font-weight:800;letter-spacing:.16em;color:var(--mbn-gk);
+  padding:0 10px;margin:0 0 7px
+ }
+ .mbn-item{
+  position:relative;display:block;width:100%;text-align:left;font-family:inherit;
+  border:0;background:transparent;cursor:pointer;
+  padding:9px 12px 9px 15px;margin-bottom:1px;border-radius:var(--r-sm);
+  font-size:13.5px;font-weight:700;line-height:1.35;color:var(--mbn-item);
+  transition:background .14s ease,color .14s ease
+ }
+ /* 활성 표시는 아이콘 대신 좌측 세로 바(에디토리얼 룰)로 처리합니다. */
+ .mbn-item::before{
+  content:"";position:absolute;left:4px;top:50%;transform:translateY(-50%);
+  width:2px;height:0;border-radius:2px;background:var(--vio);
+  transition:height .16s ease
+ }
+ .mbn-item:hover{background:var(--mbn-item-hv);color:var(--vio-text)}
+ .mbn-item.on{background:var(--mbn-active-bg);color:var(--vio-text)}
+ .mbn-item.on::before{height:16px}
+
+ .mbn-sfoot{
+  flex:none;padding:12px 20px 16px;border-top:1px solid var(--mbn-line);
+  font-size:10.5px;line-height:1.6;color:var(--mbn-gk)
+ }
+ .mbn-sfoot b{font-weight:700;color:var(--muted)}
+
+ /* ---------------------------- 상단 유틸리티 바 ---------------------------- */
+ .mbn-top{
+  position:fixed;top:0;left:var(--mbn-sbw);right:0;height:var(--mbn-tbh);z-index:43;
+  display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:14px;
+  padding:0 26px;background:var(--mbn-panel-tr);backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--mbn-line)
+ }
+ .mbn-tl{display:flex;align-items:center;gap:10px;min-width:0}
+ .mbn-back{
+  border:1.5px solid var(--mbn-line);background:#fff;color:var(--vio-text);
+  border-radius:var(--r-pill);padding:6px 12px;font-family:inherit;font-size:12px;
+  font-weight:800;cursor:pointer;flex:none
+ }
+ .mbn-back:hover{background:var(--mbn-item-hv)}
+ .mbn-crumb{font-size:13px;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+ /* 검색 자리 — 아직 기능이 없으므로 읽기 전용이며, 누르면 진단 목록으로 안내합니다. */
+ .mbn-search{
+  justify-self:start;width:min(360px,100%);display:flex;align-items:center;gap:8px;
+  border:1px solid var(--mbn-line);background:#fff;border-radius:var(--r-pill);
+  padding:7px 14px;cursor:pointer;transition:border-color .14s ease
+ }
+ .mbn-search:hover{border-color:#D8D2F6}
+ /* 전역 input 규칙(padding/border/margin/font-size 15px)을 셸 안에서만 되돌립니다. */
+ .mbn-search input{
+  border:0;outline:0;background:transparent;flex:1 1 auto;min-width:0;width:auto;
+  padding:0;margin:0;border-radius:0;line-height:1.4;
+  font-family:inherit;font-size:12.5px;color:var(--text);cursor:pointer
+ }
+ .mbn-search input::placeholder{color:#A3A8C2}
+ .mbn-skey{font-size:10px;font-weight:800;letter-spacing:.08em;color:#B4B8CE;flex:none}
+
+ .mbn-inq{
+  border:0;border-radius:var(--r-pill);padding:8px 15px;font-family:inherit;
+  font-size:12.5px;font-weight:800;color:#fff;cursor:pointer;white-space:nowrap;
+  background:linear-gradient(92deg,var(--vio),#8E7CF3);
+  box-shadow:var(--shadow-vio-sm)
+ }
+ .mbn-inq:hover{box-shadow:var(--shadow-card)}
+
+ .mbn-who{display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--muted);white-space:nowrap}
+ .mbn-who b{color:var(--text);font-weight:800}
+ .mbn-who .mbn-cls{font-size:11.5px;color:var(--mbn-gk)}
+ .mbn-login{
+  border:1px solid #E5E0FB;background:#fff;color:var(--vio-text);border-radius:var(--r-pill);
+  padding:7px 16px;font-family:inherit;font-size:12.5px;font-weight:800;cursor:pointer;
+  box-shadow:var(--shadow-vio-sm)
+ }
+ .mbn-login:hover{background:var(--vio-soft)}
+ .mbn-out{
+  border:0;background:transparent;color:#C62828;font-family:inherit;font-size:12px;
+  font-weight:700;cursor:pointer;padding:4px 2px
+ }
+
+ /* ------------------------- 대형 히어로(에디토리얼) ------------------------- */
+ /* 기존 .lp-hero 마크업은 그대로 두고, 색면·타이포·여백만 PC용으로 키웁니다.
+    색은 --vio / --mint / --sun 을 그대로 쓴 그라디언트 메시입니다. */
+ .lp-hero{
+  padding:64px 60px 56px;margin-bottom:26px;border-radius:28px;
+  min-height:520px;display:flex;flex-direction:column;justify-content:center;
+  background:
+   radial-gradient(58% 76% at 90% 4%,rgba(108,92,231,.55),transparent 62%),
+   radial-gradient(48% 64% at 4% 96%,rgba(0,206,201,.30),transparent 64%),
+   radial-gradient(30% 42% at 30% 6%,rgba(253,203,110,.18),transparent 62%),
+   radial-gradient(130% 150% at 82% -16%,#4536A8 0%,#221A52 46%,#0C0A22 100%)
+ }
+ .lp-hero .lp-o1{width:420px;height:420px;right:-120px;top:-150px;filter:blur(40px)}
+ .lp-hero .lp-o2{width:320px;height:320px;left:-110px;bottom:-110px;filter:blur(40px)}
+ .lp-hero .lp-o3{width:150px;height:150px;left:26%;top:10%;filter:blur(34px)}
+
+ /* 매거진 밴드 — 결과지의 .magband 와 같은 톤(대문자·넓은 자간·헤어라인) */
+ .mbn-mast{
+  width:100%;display:flex;align-items:center;gap:11px;flex-wrap:wrap;
+  font-size:10.5px;font-weight:900;letter-spacing:.18em;color:rgba(255,255,255,.9);
+  padding-bottom:16px;margin-bottom:26px;border-bottom:1px solid rgba(255,255,255,.2)
+ }
+ .mbn-mast .mbn-mast-k{border:1px solid rgba(255,255,255,.55);border-radius:var(--r-pill);padding:3px 10px}
+ .mbn-mast .mbn-mast-d{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.62);flex:none}
+ .mbn-mast .mbn-mast-r{margin-left:auto;letter-spacing:.06em;font-weight:800;opacity:.88}
+
+ /* 히어로를 flex column 으로 바꿨으므로, 폭이 늘어나면 안 되는 요소만 자기 정렬합니다. */
+ .lp-hero .lp-eyebrow{align-self:flex-start;font-size:11.5px;padding:8px 15px;margin-bottom:20px}
+ .lp-hero h1{
+  font-size:clamp(38px,3.3vw,54px);line-height:1.16;letter-spacing:-.022em;
+  margin:0 0 18px;max-width:15em
+ }
+ .lp-hero .lp-lead{font-size:17px;line-height:1.75;max-width:38em;margin-bottom:28px;opacity:.92}
+ .lp-cta{width:100%;max-width:540px;gap:12px}
+ .lp-cta .btn{flex:1 1 calc(50% - 6px);padding:16px 22px;font-size:15px}
+ .lp-stats{
+  width:100%;gap:26px 30px;margin-top:34px;padding-top:24px;
+  border-top:1px solid rgba(255,255,255,.16)
+ }
+ /* 마지막 스타일 시트이므로 앞선 clamp() 규칙보다 우선합니다. */
+ .lp-stats b{font-size:30px;line-height:1.1;letter-spacing:-.015em}
+ .lp-stats span{font-size:11.5px;letter-spacing:.03em;opacity:.8}
+
+ /* 히어로 우측 "이번 호 목차" — 1280px 이상에서만. 그 아래는 본문 폭이 좁아 숨깁니다. */
+ .mbn-aside{display:none}
+}
+
+@media (min-width:1280px){
+ /* 우측 목차 패널이 들어오는 폭에서만 히어로 오른쪽에 자리를 비웁니다. */
+ .lp-hero{padding-right:356px}
+ .mbn-aside{
+  display:block;position:absolute;right:48px;top:50%;transform:translateY(-50%);
+  width:276px;padding:24px 22px 20px;border-radius:20px;
+  background:rgba(255,255,255,.075);border:1px solid rgba(255,255,255,.17);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)
+ }
+ .mbn-aside-k{
+  font-size:10px;font-weight:900;letter-spacing:.18em;color:rgba(255,255,255,.72);
+  padding-bottom:12px;margin-bottom:6px;border-bottom:1px solid rgba(255,255,255,.16)
+ }
+ .mbn-aside ol{list-style:none;margin:0;padding:0}
+ .mbn-aside li{border-bottom:1px solid rgba(255,255,255,.1)}
+ .mbn-aside li:last-child{border-bottom:0}
+ .mbn-aitem{
+  display:flex;align-items:baseline;gap:12px;width:100%;text-align:left;
+  border:0;background:transparent;font-family:inherit;cursor:pointer;
+  padding:12px 2px;color:#fff;transition:opacity .14s ease
+ }
+ .mbn-aitem:hover{opacity:.72}
+ .mbn-aitem em{
+  font-style:normal;font-size:11px;font-weight:900;letter-spacing:.1em;
+  color:rgba(255,255,255,.5);flex:none;width:18px
+ }
+ .mbn-aitem span{font-size:13.5px;font-weight:700;line-height:1.45}
+}
+
+@media (min-width:1440px){
+ :root{--mbn-sbw:268px}
+ .app{max-width:min(1280px,calc(100vw - var(--mbn-sbw) - 96px))}
+ .lp-hero{padding:74px 360px 64px 72px;min-height:560px}
+ .lp-hero h1{font-size:clamp(46px,3.4vw,60px)}
+}
+
+/* ------------------------------- 다크모드 -------------------------------
+   기존 prefers-color-scheme 기반 체계를 그대로 따릅니다. PC 폭 조건이 함께
+   걸려 있으므로 모바일 다크모드에는 어떤 영향도 주지 않습니다. */
+@media (min-width:1024px) and (prefers-color-scheme:dark){
+ :root{
+  --mbn-line:#2E3444;
+  --mbn-panel:#1C2029;
+  --mbn-panel-tr:rgba(23,26,36,.86);
+  --mbn-item:#AEB4CC;
+  --mbn-item-hv:#242A38;
+  --mbn-gk:#7D8399
+ }
+ .mbn-back,.mbn-search,.mbn-login{background:#1C2029;border-color:#333A4C;color:var(--vio-text)}
+ .mbn-search input{color:var(--text)}
+ .mbn-search input::placeholder{color:#7B8299}
+ .mbn-back:hover,.mbn-login:hover{background:#242A38}
+ .mbn-skey{color:#6E7488}
+ .mbn-sfoot b{color:#9198B2}
+}
+
+/* 모션 최소화 설정 존중. 전역 reduce 규칙이 이미 transition 을 끄지만,
+   셸 고유 전환도 명시적으로 차단합니다. */
+@media (min-width:1024px) and (prefers-reduced-motion:reduce){
+ .mbn-item,.mbn-item::before,.mbn-search,.mbn-aitem,.mbn-inq{transition:none!important}
+}
+
 </style>
 <script>
 window.LEGAL_CONFIG = {
@@ -4350,6 +4645,418 @@ window.LEGAL_CONFIG = {
   window.LegalSafety.configureConsent({ site: "mybest-next", version: "v1.mybest.2026" });
   try { flushConsentRetryQueue(); } catch (e) {}
 })();
+
+/* ===== [PLATFORM SHELL 2026-08-30] ===== */
+/* ============================================================================
+   MY BEST NEXT — PC 플랫폼 셸 부트스트랩
+   ----------------------------------------------------------------------------
+   삽입 위치: 문서의 "마지막" 스크립트 종료 태그 바로 앞(legal-safety 위젯 스크립트 끝,
+             `try { flushConsentRetryQueue(); } catch (e) {}` / `})();` 다음 줄).
+             boot() 가 이미 동기적으로 끝난 뒤라 S.page 가 채워져 있습니다.
+
+   설계 원칙
+     - 기존 전역(go / setWho / logout / S / renderTabs / toggleView)을 덮어쓰지
+       않습니다. go 와 setWho 만 "감싸서"(wrap) 원래 함수를 그대로 호출하고
+       반환값을 그대로 돌려줍니다.
+     - HTML 마크업을 수정하지 않고, 셸 DOM 을 런타임에 만들어 body 에 붙입니다.
+     - 1024px 미만에서는 셸 DOM 을 아예 만들지 않고, 히어로에 주입했던 노드도
+       제거합니다. 따라서 모바일 DOM 은 원본과 동일합니다.
+     - 전체가 try/catch 로 감싸여 있고, 개별 핸들러도 다시 감쌉니다.
+       셸이 실패해도 원래 사이트 동작에는 영향이 없습니다.
+   ========================================================================== */
+(function () {
+  "use strict";
+  try {
+    var W = window, D = document;
+    if (!D.body) return;
+    if (W.__MBN_SHELL__) return;   /* 중복 삽입 방지 */
+    W.__MBN_SHELL__ = true;
+
+    /* ---------- 0. 안전 실행 도우미 ---------- */
+    function safe(fn) {
+      return function () {
+        try { return fn.apply(this, arguments); }
+        catch (e) { if (W.console && console.warn) console.warn("[mbn-shell]", e); }
+      };
+    }
+    function state() { try { return (typeof S !== "undefined" && S) ? S : {}; } catch (e) { return {}; } }
+    function callGo(page, arg) {
+      try { if (typeof W.go === "function") return W.go(page, arg); } catch (e) {}
+    }
+
+    /* ---------- 1. 셸을 켜도 되는 환경인지 판정 ----------
+       "PC 화면 보기"(toggleView)를 켜면 viewport 가 width=1100 으로 바뀌어
+       실제 휴대폰에서도 CSS 폭이 1024px 을 넘습니다. 그 경우까지 셸이 뜨면
+       "모바일에서는 셸이 보이지 않는다"는 제약이 깨지므로, 물리 화면이 작은
+       기기는 html.mbn-off 로 셸을 영구히 차단합니다. */
+    var FORCED_PC = false;
+    try {
+      FORCED_PC = (localStorage.getItem("myb_view") === "pc") &&
+                  (W.screen && W.screen.width && W.screen.width < 1024);
+    } catch (e) {}
+    if (FORCED_PC) {
+      D.documentElement.classList.add("mbn-off");
+      var st = D.createElement("style");
+      /* 셸이 만들어 놓은 데스크톱 레이아웃 오프셋을 전부 되돌려, 원래의
+         "PC 화면 보기"(viewport width=1100) 상태 그대로 보이게 합니다. */
+      st.textContent =
+        "html.mbn-off #mbn-shell,html.mbn-off .mbn-mast,html.mbn-off .mbn-aside{display:none!important}" +
+        "html.mbn-off body{padding-left:0!important;padding-top:0!important}" +
+        "html.mbn-off .topbar{display:grid!important}" +
+        "html.mbn-off .app{max-width:min(1280px,calc(100vw - 96px))!important}";
+      D.head.appendChild(st);
+      return;
+    }
+
+    var MQ = W.matchMedia ? W.matchMedia("(min-width:1024px)") : null;
+    function isPC() { return MQ ? MQ.matches : (D.documentElement.clientWidth >= 1024); }
+
+    /* ---------- 2. 라우팅 메타 ----------
+       go(page, arg) 가 실제로 처리하는 페이지 키만 사용합니다. */
+    var TITLES = {
+      home: "홈", consult: "컨설팅 진단", login: "로그인", join: "입장하기",
+      dash: "내 진단 대시보드", solution: "심층 솔루션", profile: "통합 성장 리포트",
+      mypage: "내 결과함", growth: "성장 그래프", quiz: "진단 응시", result: "진단 결과",
+      coaching: "선생님 코칭", pricing: "요금·도입 안내", teacher: "선생님 로그인",
+      tdash: "학급 대시보드", howto: "활용법", quality: "신뢰도 기준",
+      majors: "학과 탐색관", subjexp: "계열·과목 탐색", school: "학교 대시보드",
+      legal: "법적 고지", cs: "문의하기", premium: "프리미엄", pay: "결제",
+      admin: "관리자", wizard: "나에게 맞는 진단 찾기"
+    };
+    /* 현재 페이지 → 사이드바에서 활성으로 볼 메뉴 키 */
+    function activeKey(page, token) {
+      if (page === "quiz" || page === "result" || page === "solution") return token ? "dash" : "consult";
+      if (page === "pay" || page === "premium") return "pricing";
+      if (page === "tdash") return "coaching";
+      return page;
+    }
+
+    /* ---------- 3. 사이드바 메뉴 모델 (로그인 전/후) ---------- */
+    function menuModel(token) {
+      if (token) {
+        return [
+          { k: "나의 학습", items: [
+            { key: "dash",    label: "대시보드" },
+            { key: "consult", label: "진단 목록" },
+            { key: "mypage",  label: "내 결과함" },
+            { key: "profile", label: "통합 성장 리포트" },
+            { key: "growth",  label: "성장 그래프" }
+          ]},
+          { k: "탐색", items: [
+            { key: "wizard",  label: "나에게 맞는 진단 찾기" },
+            { key: "majors",  label: "학과 탐색관" },
+            { key: "subjexp", label: "계열·과목 탐색" }
+          ]},
+          { k: "안내", items: [
+            { key: "howto",   label: "활용법" },
+            { key: "quality", label: "신뢰도 기준" },
+            { key: "cs",      label: "문의하기" }
+          ]}
+        ];
+      }
+      return [
+        { k: "둘러보기", items: [
+          { key: "home",    label: "서비스 소개" },
+          { key: "consult", label: "진단 둘러보기" },
+          { key: "wizard",  label: "나에게 맞는 진단 찾기" },
+          { key: "*sample", label: "실제 결과 샘플", href: "/sample.html" }
+        ]},
+        { k: "알아보기", items: [
+          { key: "coaching", label: "선생님 코칭" },
+          { key: "howto",    label: "활용법" },
+          { key: "quality",  label: "신뢰도 기준" },
+          { key: "majors",   label: "학과 탐색관" },
+          { key: "subjexp",  label: "계열·과목 탐색" }
+        ]},
+        { k: "도입", items: [
+          { key: "pricing", label: "요금·도입 안내" },
+          { key: "cs",      label: "학교 도입 문의" }
+        ]}
+      ];
+    }
+
+    /* ---------- 4. 히어로 우측 "이번 호 목차" 모델 ---------- */
+    var HERO_INDEX = [
+      { n: "01", t: "학년별 진단으로 시작하기",   go: "consult" },
+      { n: "02", t: "세 가지 질문으로 진단 찾기", go: "wizard" },
+      { n: "03", t: "A4·B4 상담 보고서 살펴보기", href: "/sample.html" },
+      { n: "04", t: "전국 규준과 신뢰도 확인하기", go: "quality" }
+    ];
+
+    /* ---------- 5. DOM 헬퍼 ---------- */
+    function el(tag, cls, txt) {
+      var n = D.createElement(tag);
+      if (cls) n.className = cls;
+      if (txt != null) n.textContent = txt;
+      return n;
+    }
+
+    var shell = null, navBox = null, whoBox = null, backBtn = null, crumb = null;
+
+    function buildShell() {
+      if (shell) return shell;
+      shell = el("div"); shell.id = "mbn-shell";
+
+      /* --- 사이드바 --- */
+      var side = el("aside", "mbn-side");
+      var brand = el("button", "mbn-brand");
+      brand.type = "button";
+      brand.setAttribute("aria-label", "마이베스트 NEXT 홈으로 이동");
+      var logo = el("span", "mbn-blogo");
+      logo.appendChild(D.createTextNode("MY BEST "));
+      var lg = el("i", null, "NEXT"); logo.appendChild(lg);
+      brand.appendChild(logo);
+      brand.appendChild(el("span", "mbn-btag", "진로·진학 진단 플랫폼"));
+      brand.addEventListener("click", safe(function () { callGo("home"); }));
+      side.appendChild(brand);
+
+      navBox = el("nav", "mbn-nav");
+      navBox.setAttribute("aria-label", "주요 기능 내비게이션");
+      side.appendChild(navBox);
+
+      var sfoot = el("div", "mbn-sfoot");
+      var b1 = el("b", null, "(주)가르치는사람들");
+      sfoot.appendChild(b1);
+      sfoot.appendChild(D.createElement("br"));
+      sfoot.appendChild(D.createTextNode("ⓒ My Best NEXT"));
+      side.appendChild(sfoot);
+      shell.appendChild(side);
+
+      /* --- 상단 유틸리티 바 --- */
+      var top = el("header", "mbn-top");
+      top.setAttribute("role", "banner");
+
+      var tl = el("div", "mbn-tl");
+      backBtn = el("button", "mbn-back", "뒤로");
+      backBtn.type = "button";
+      backBtn.style.display = "none";
+      backBtn.addEventListener("click", safe(function () {
+        if (typeof W.appBack === "function") W.appBack(); else callGo("home");
+      }));
+      tl.appendChild(backBtn);
+      crumb = el("div", "mbn-crumb", "홈");
+      tl.appendChild(crumb);
+      top.appendChild(tl);
+
+      var search = el("div", "mbn-search");
+      search.setAttribute("role", "button");
+      search.setAttribute("aria-disabled", "true");
+      search.title = "검색 기능은 준비 중입니다. 진단 목록으로 이동합니다.";
+      var si = D.createElement("input");
+      si.type = "text"; si.readOnly = true; si.tabIndex = -1;
+      si.placeholder = "진단·학년·키워드 검색";
+      si.setAttribute("aria-label", "진단 검색 (준비 중)");
+      search.appendChild(si);
+      search.appendChild(el("span", "mbn-skey", "준비 중"));
+      search.tabIndex = 0;
+      search.addEventListener("click", safe(function () { callGo("consult"); }));
+      search.addEventListener("keydown", safe(function (ev) {
+        if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); callGo("consult"); }
+      }));
+      top.appendChild(search);
+
+      var inq = el("button", "mbn-inq", "학교 도입 문의");
+      inq.type = "button";
+      inq.addEventListener("click", safe(function () { callGo("cs"); }));
+      top.appendChild(inq);
+
+      whoBox = el("div", "mbn-who");
+      top.appendChild(whoBox);
+
+      shell.appendChild(top);
+      D.body.appendChild(shell);
+      return shell;
+    }
+
+    /* ---------- 6. 사이드바 렌더 ---------- */
+    var lastSig = "";
+    function renderNav(force) {
+      if (!navBox) return;
+      var S0 = state();
+      var token = !!S0.token;
+      var sig = (token ? "in" : "out");
+      if (!force && sig === lastSig) { setActive(); return; }
+      lastSig = sig;
+
+      navBox.innerHTML = "";
+      menuModel(token).forEach(function (grp) {
+        var g = el("div", "mbn-grp");
+        g.appendChild(el("div", "mbn-gk", grp.k));
+        grp.items.forEach(function (it) {
+          var b = el("button", "mbn-item", it.label);
+          b.type = "button";
+          b.setAttribute("data-mbn-key", it.key);
+          b.addEventListener("click", safe(function () {
+            if (it.href) { W.location.href = it.href; return; }
+            callGo(it.key);
+          }));
+          g.appendChild(b);
+        });
+        navBox.appendChild(g);
+      });
+      setActive();
+    }
+
+    function setActive() {
+      if (!navBox) return;
+      var S0 = state();
+      var cur = activeKey(S0.page || "home", !!S0.token);
+      var list = navBox.querySelectorAll(".mbn-item");
+      for (var i = 0; i < list.length; i++) {
+        var on = list[i].getAttribute("data-mbn-key") === cur;
+        list[i].classList.toggle("on", on);
+        if (on) list[i].setAttribute("aria-current", "page");
+        else list[i].removeAttribute("aria-current");
+      }
+    }
+
+    /* ---------- 7. 상단 바 동기화(뒤로가기 / 현재 위치 / 로그인 상태) ---------- */
+    function syncTop() {
+      var S0 = state();
+      /* 뒤로가기: 원본 #backBtn 의 표시 여부를 그대로 따라갑니다. */
+      if (backBtn) {
+        var ob = D.getElementById("backBtn");
+        var show = !!(ob && ob.style.display && ob.style.display !== "none");
+        backBtn.style.display = show ? "inline-flex" : "none";
+      }
+      if (crumb) crumb.textContent = TITLES[S0.page] || "홈";
+
+      if (!whoBox) return;
+      whoBox.innerHTML = "";
+      if (S0.token) {
+        var name = (S0.me && S0.me.name) ? String(S0.me.name) : "로그인 상태";
+        var nb = el("b", null, name);
+        whoBox.appendChild(nb);
+        if (S0.me && S0.me.class_name) whoBox.appendChild(el("span", "mbn-cls", String(S0.me.class_name)));
+        var out = el("button", "mbn-out", "나가기");
+        out.type = "button";
+        out.addEventListener("click", safe(function () {
+          if (typeof W.logout === "function") W.logout(); else callGo("home");
+        }));
+        whoBox.appendChild(out);
+      } else {
+        var lg2 = el("button", "mbn-login", "로그인");
+        lg2.type = "button";
+        lg2.addEventListener("click", safe(function () { callGo("login"); }));
+        whoBox.appendChild(lg2);
+      }
+    }
+
+    /* ---------- 8. 히어로 매거진화(마크업 무수정, 노드 주입만) ---------- */
+    function enhanceHero() {
+      var hero = D.querySelector(".lp-hero");
+      if (!hero) return;
+      if (!hero.querySelector(".mbn-mast")) {
+        var m = el("div", "mbn-mast");
+        m.appendChild(el("span", "mbn-mast-k", "MY BEST NEXT"));
+        m.appendChild(el("i", "mbn-mast-d"));
+        m.appendChild(el("span", null, "나만의 맞춤 교육 매거진"));
+        m.appendChild(el("span", "mbn-mast-r", "초 · 중 · 고 학년별 진단"));
+        hero.insertBefore(m, hero.firstChild);
+      }
+      if (!hero.querySelector(".mbn-aside")) {
+        var a = el("aside", "mbn-aside");
+        a.appendChild(el("div", "mbn-aside-k", "이번 호 목차"));
+        var ol = D.createElement("ol");
+        HERO_INDEX.forEach(function (x) {
+          var li = D.createElement("li");
+          var b = el("button", "mbn-aitem");
+          b.type = "button";
+          b.appendChild(el("em", null, x.n));
+          b.appendChild(el("span", null, x.t));
+          b.addEventListener("click", safe(function () {
+            if (x.href) { W.location.href = x.href; return; }
+            callGo(x.go);
+          }));
+          li.appendChild(b);
+          ol.appendChild(li);
+        });
+        a.appendChild(ol);
+        hero.appendChild(a);
+      }
+    }
+    function stripHero() {
+      var n = D.querySelectorAll(".mbn-mast,.mbn-aside");
+      for (var i = 0; i < n.length; i++) if (n[i].parentNode) n[i].parentNode.removeChild(n[i]);
+    }
+
+    /* ---------- 9. 켜기 / 끄기 ---------- */
+    var mounted = false;
+    function apply() {
+      if (isPC()) {
+        if (!mounted) { buildShell(); mounted = true; renderNav(true); }
+        else renderNav(false);
+        syncTop();
+        enhanceHero();
+      } else {
+        stripHero();
+        if (mounted && shell && shell.parentNode) { shell.parentNode.removeChild(shell); }
+        if (mounted) { shell = null; navBox = whoBox = backBtn = crumb = null; mounted = false; lastSig = ""; }
+      }
+    }
+    var applySafe = safe(apply);
+
+    /* ---------- 10. 기존 전역 함수 감싸기(원래 동작·반환값 그대로 유지) ---------- */
+    if (typeof W.go === "function" && !W.go.__mbnWrapped) {
+      var origGo = W.go;
+      var wrappedGo = function (page, arg) {
+        var r;
+        try { r = origGo.apply(this, arguments); }
+        finally {
+          try {
+            if (isPC() && mounted) { renderNav(false); syncTop(); }
+          } catch (e) {}
+        }
+        /* go 는 async 이므로 렌더 완료 후 한 번 더 동기화합니다. */
+        try {
+          if (r && typeof r.then === "function") {
+            r.then(applySafe, function () { applySafe(); });
+          } else { applySafe(); }
+        } catch (e) {}
+        return r;   /* 원래 반환값(Promise)을 그대로 돌려줍니다. */
+      };
+      wrappedGo.__mbnWrapped = true;
+      W.go = wrappedGo;
+    }
+    if (typeof W.setWho === "function" && !W.setWho.__mbnWrapped) {
+      var origSetWho = W.setWho;
+      var wrappedSetWho = function () {
+        var r = origSetWho.apply(this, arguments);
+        try { if (isPC() && mounted) { renderNav(false); syncTop(); } } catch (e) {}
+        return r;
+      };
+      wrappedSetWho.__mbnWrapped = true;
+      W.setWho = wrappedSetWho;
+    }
+
+    /* ---------- 11. #view 재렌더 추적 + 리사이즈 대응 ---------- */
+    var viewEl = D.getElementById("view");
+    if (viewEl && W.MutationObserver) {
+      var pending = false;
+      var mo = new MutationObserver(function () {
+        if (pending) return;
+        pending = true;
+        W.requestAnimationFrame(function () { pending = false; applySafe(); });
+      });
+      mo.observe(viewEl, { childList: true });
+    }
+    if (MQ) {
+      if (MQ.addEventListener) MQ.addEventListener("change", applySafe);
+      else if (MQ.addListener) MQ.addListener(applySafe);
+    } else {
+      W.addEventListener("resize", applySafe);
+    }
+
+    /* ---------- 12. 최초 실행 ---------- */
+    applySafe();
+    if (D.readyState === "loading") D.addEventListener("DOMContentLoaded", applySafe);
+    W.addEventListener("load", applySafe);
+
+  } catch (e) {
+    if (window.console && console.warn) console.warn("[mbn-shell] init failed", e);
+  }
+})();
+
 </script>
 <script src="assets/ev-gate.js" data-ev-service="mybest-next" defer></script>
 <script src="/assets/pwa.js" defer></script>

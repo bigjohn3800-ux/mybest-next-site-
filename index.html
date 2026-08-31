@@ -3707,6 +3707,74 @@ function eviCards(ev,slug){
   h+='<div class="card coachnote"><div class="k">선생님·보호자 확인 3가지</div><p style="font-size:12.8px;line-height:1.7;color:#5B6270">① 사실 확인에서 체크된 항목이 실제와 맞는지 아이와 함께 확인해 주세요.<br>② 성향 점수가 높아도 사실 확인이 비어 있으면 아직 습관이 자리 잡기 전입니다. 점수만 보고 판단하지 말아 주세요.<br>③ 성향 점수가 낮아도 사실 확인이 채워져 있으면 이미 잘하고 있는 학생입니다. 그 점을 먼저 말해 주세요.</p></div>';
   return h;
 }
+/* [FIX 2026-08-31] 점수대 구간 블록 분기.
+   결과 해설(insight) 중 sort_no 901/902/903 은 "구간 블록"이라는 약속이다.
+   901 상위 · 902 중간 · 903 하위. 학생의 구간에 맞는 하나만 남기고 나머지는 버린다.
+   이 분기가 없어서 진로성숙도 학생은 상·중·하 해설을 전부 읽고 있었다.
+   서버가 sort_no 를 실어 주지 않는 경우를 대비해, 구간 블록을 쓰는 진단에서는
+   마지막 세 블록을 순서대로 901/902/903 으로 간주하는 대비책을 둔다. */
+const BAND_SLUGS={study_emotion:1,career_mature:1,study_manage:1,story_writer:1,
+                  ai_inquiry:1,ai_skill:1,multi_iq:1,es_dream:1};
+
+/* 서버는 BUCKET_NAMES 에 이름이 있는 영역만 per 로 집계하고, flags/qtexts 에는 모든 문항을 담는다.
+   이름이 없는 마지막 버킷(사실 확인·불안 신호 등)은 flags 꼬리에 그대로 남는다. */
+function tailRead(r){
+  try{
+    if(!r||!Array.isArray(r.per)||!Array.isArray(r.flags))return null;
+    const coreTot=r.per.reduce((a,p)=>a+((p&&p.total)||0),0);
+    const f=r.flags.slice(coreTot), q=(r.qtexts||[]).slice(coreTot);
+    if(!f.length)return null;
+    const ok=f.filter(Boolean).length;
+    return {ok,total:f.length,pct:Math.round(ok/f.length*100),flags:f,texts:q,coreTot};
+  }catch(e){return null}
+}
+/* 꼬리 문항이 붙은 뒤에도 점수가 예전과 같은 뜻이 되도록, 본 영역만으로 다시 센다. */
+function coreStats(r){
+  try{
+    if(!r||!Array.isArray(r.per))return null;
+    const ok=r.per.reduce((a,p)=>a+((p&&p.ok)||0),0);
+    const total=r.per.reduce((a,p)=>a+((p&&p.total)||0),0);
+    if(!total)return null;
+    return {ok,total,pct:Math.round(ok/total*100)};
+  }catch(e){return null}
+}
+function bandOf(r,slug){
+  try{
+    if(slug==='es_dream'){
+      const sc=(r&&r.scores)||[]; if(!sc.length)return 902;
+      const mx=Math.max.apply(null,sc), mn=Math.min.apply(null,sc);
+      const mean=sc.reduce((a,b)=>a+b,0)/sc.length;
+      if(mean/25<0.5)return 903;                       /* 계열당 5문항 × 리커트 5점 = 25 만점 */
+      return (mx-mn)/Math.max(1,mx)>=0.25?902:901;
+    }
+    const c=coreStats(r); if(!c)return 902;
+    if(slug==='study_emotion'){
+      /* 불안 신호 문항을 절반 이상 체크했다면 점수와 무관하게 지원 안내 구간으로 보낸다. */
+      const t=tailRead(r);
+      if(t&&t.pct>=50)return 903;
+    }
+    if(slug==='career_mature')return c.pct>=85?901:(c.pct>=66?902:903);
+    return c.pct>=80?901:(c.pct>=50?902:903);
+  }catch(e){return 902}
+}
+/* 구간 블록을 하나만 남긴다. sort_no 가 오면 그것으로, 없으면 마지막 세 개로 판단한다. */
+function pickBandBlocks(blocks,r,slug){
+  try{
+    const bs=Array.isArray(blocks)?blocks.slice():[];
+    if(!BAND_SLUGS[slug]||bs.length<2)return bs;
+    const want=bandOf(r,slug);
+    const hasNo=bs.some(b=>b&&typeof b.sort_no==='number');
+    if(hasNo){
+      const isBand=b=>b&&b.sort_no>=901&&b.sort_no<=903;
+      if(!bs.some(isBand))return bs;
+      return bs.filter(b=>!isBand(b)||b.sort_no===want);
+    }
+    if(bs.length<4)return bs;
+    const tail=bs.slice(-3), head=bs.slice(0,-3);
+    head.push(tail[want-901]||tail[1]);
+    return head;
+  }catch(e){return blocks}
+}
 /* ===== 바이럴 결과 공유 카드(W10-B) — canvas 1080x1080 브랜드 이미지(익명/요약만) ===== */
 function shareCardLines(r,t,slug){
  // 결과종류별 핵심 한 줄 추출(개인정보 없음). 추출 불가 시 진단명만.
@@ -3720,6 +3788,8 @@ function shareCardLines(r,t,slug){
    /* [FIX 2026-08-30] 사실 확인 문항이 있는 초등 진단은 점수 대신 단계로 공유한다(점수 오독 방지). */
    const ev=eviRead(r,slug);
    if(ev)return {head:ev.label,sub:('사실 확인 '+ev.ok+' / '+ev.total+' 항목')};
+   const c=coreStats(r);
+   if(c)return {head:'준비도 '+c.pct+'점',sub:(c.ok+' / '+c.total+' 항목 준비 완료')};
    return {head:'준비도 '+(r.pct||0)+'점',sub:((r.ready||0)+' / '+(r.total||0)+' 항목 준비 완료')};}
  }catch(e){}
  return {head:(t&&t.title)||'진단 결과',sub:''};
@@ -3887,13 +3957,18 @@ function renderResult(d){ try{S.lastResultSlug=d.attempt.test_slug}catch(e){}
  const v=$('#view'),r=d.attempt.result,slug=d.attempt.test_slug,st=d.student;
  const t=(S.tests&&S.tests[slug])||{title:(DISPLAY_TITLE[slug]||slug),desc:'',audience:'',cat:'',steps:{}};
  const dt=d.attempt.created_at.slice(0,10);
+ /* [FIX 2026-08-31] 구간 블록은 학생 구간에 맞는 하나만 남긴다. 아래 분기들이 모두 d.blocks 를 읽으므로 여기서 한 번만 거른다. */
+ try{ d.blocks=pickBandBlocks(d.blocks,r,slug); }catch(e){}
  if(r.kind==='series'){
   const best=LABELS[r.best],sec=LABELS[r.second];
+  /* [FIX 2026-08-31] 이 분기에만 해설 블록 렌더링이 빠져 있었다. */
+  const sBlocks=d.blocks||[];
   v.innerHTML=`<div class="hero">${ART(slug)}<h2>${best}계열 성향이 빛나요!</h2><p>${esc(SER_DESC[best])}<br>${esc(st.name)} · ${esc(st.school||'')} · ${dt}</p></div>
    <div class="card"><div class="k">나의 7계열 프로파일</div><div class="chartwrap"><canvas id="radar"></canvas></div>
    <div style="text-align:center;margin-top:6px"><span class="tag">1순위 ${best}</span><span class="tag">2순위 ${sec}</span><span class="tag">융합 ${best}×${sec}</span></div></div>
    ${methodNote(slug)}
    <div class="card"><div class="k">성장 처방 — 이번 주에 시작해요</div><ul class="rx">${SER_ACT[best].map((a,i)=>`<li><span class="n">${i+1}</span>${esc(a)}</li>`).join('')}</ul></div>
+  ${sBlocks.length?`<div class="k" style="margin:14px 0 8px">결과를 읽고 이어가는 법</div>${sBlocks.map(x=>blockHtml(x,'계열 해설')).join('')}`:''}
   <div class="card"><div class="k">컨설턴트 코칭</div><p style="font-size:13.5px;line-height:1.7">${esc(st.name)} 학생은 <b>${best}계열</b> 성향이 가장 뚜렷하고, <b>${sec}계열</b>의 가능성도 함께 지니고 있습니다. 두 계열이 만나는 융합 영역에서 자신만의 강점이 만들어집니다. 위 처방을 한 달만 실천하면 학교생활기록부에 남길 '나만의 이야기'가 시작됩니다.</p></div>
   ${resultActions(d,{solution:true,summary:best+'계열 성향이 가장 높게 나왔어요'})}`;
   safeChart($('#radar'),{type:'radar',data:{labels:LABELS,datasets:[{data:r.scores,fill:true,backgroundColor:'rgba(108,92,231,.16)',borderColor:'#6C5CE7',pointBackgroundColor:'#00CEC9',borderWidth:2}]},options:{plugins:{legend:{display:false}},scales:{r:{beginAtZero:true,ticks:{display:false},pointLabels:{font:{size:12,weight:'700',family:'Pretendard'}}}},animation:false}});
@@ -3921,7 +3996,9 @@ function renderResult(d){ try{S.lastResultSlug=d.attempt.test_slug}catch(e){}
   const ev=eviRead(r,slug);
   const heroHtml=ev
    ?`<div class="hero">${ART(slug)}<h2>${esc(ev.label)}</h2><p>${esc(t.title)} · 사실 확인 ${ev.ok}/${ev.total} · ${esc(st.name)} · ${dt}</p><div class="meter" style="background:rgba(255,255,255,.25)"><i style="width:${ev.eviPct}%;background:#FDCB6E"></i></div></div>`
-   :`<div class="hero">${ART(slug)}<h2>${esc(t.title)} <span class="cnt" data-v="${r.pct}">0</span>점</h2><p>${r.ready} / ${r.total} 항목 준비 · ${esc(st.name)} · ${dt}</p><div class="meter" style="background:rgba(255,255,255,.25)"><i style="width:${r.pct}%;background:#FDCB6E"></i></div></div>`;
+   :(function(){ /* 부가 문항군(꼬리 버킷)이 붙은 진단은 본 영역만으로 다시 세어 예전과 같은 뜻의 점수를 보여 준다. */
+      const c=coreStats(r)||{ok:r.ready,total:r.total,pct:r.pct};
+      return `<div class="hero">${ART(slug)}<h2>${esc(t.title)} <span class="cnt" data-v="${c.pct}">0</span>점</h2><p>${c.ok} / ${c.total} 항목 준비 · ${esc(st.name)} · ${dt}</p><div class="meter" style="background:rgba(255,255,255,.25)"><i style="width:${c.pct}%;background:#FDCB6E"></i></div></div>`;})();
   v.innerHTML=`${heroHtml}
    ${methodNote(slug)}
    ${eviCards(ev,slug)}

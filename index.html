@@ -1985,8 +1985,31 @@ function setWho(){$('#who').innerHTML=S.me?`<b>${esc(S.me.name)}</b> · ${esc(S.
 }
 function logout(){localStorage.removeItem('myb_token');S.token=null;S.me=null;setWho();go('home')}
 function renderTabs(){var el=document.getElementById("tabbar");if(!el)return;var t=S.token?[["🏠","홈","dash0"],["🧭","진단","dash"],["🏅","마이","mypage"],["📋","리포트","profile"],["🚪","나가기","*logout"]]:[["🏠","홈","home"],["🧭","진단","consult"],["🏫","코칭","coaching"],["💎","요금","pricing"],["✨","샘플","*sample"]];el.innerHTML=t.map(function(x){var a=x[2]==="*logout"?"logout()":(x[2]==="*sample"?"location.href='/sample.html'":(x[2]==="dash0"?"go('home')":"go('"+x[2]+"')"));return "<a onclick=\""+a+"\"><span>"+x[0]+"</span>"+x[1]+"</a>";}).join("");}
-function updateBack(page){var b=document.getElementById('backBtn');if(!b)return;var root=(page==='home'||page==='dash'||page==='dash0');b.style.display=root?'none':'inline-flex';}
-function appBack(){var p=S.prevPage,a=S.prevArg;if(p==='quiz'){p=S.token?'dash':'home';a=undefined;}if(p&&p!==S.page){go(p,a);return;}go(S.token?'dash':'home');}
+function updateBack(page){var b=document.getElementById('backBtn');if(!b)return;var root=(page==='home'||page==='dash'||page==='dash0');b.style.display=(root&&!(S.hist&&S.hist.length))?'none':'inline-flex';}
+/* [2026-09-01 · 연구팀 피드백 ⑨] 되돌아갈 화면을 스택으로 기억한다.
+   __navBack 은 '지금 되돌아가는 중'이라는 표시다. 이때는 스택에 새로 쌓지 않는다. */
+var __navBack=false;
+/* 화면을 떠나기 직전에 열려 있던 모달을 다시 열기 위한 목록.
+   함수 이름을 문자열로 저장하고, 아래 표에 등록된 것만 다시 연다(임의 실행 금지). */
+var REOPEN={
+ historyModal:function(a){ try{ var list=(window.__doneAll&&window.__doneAll[a[0]])||[]; if(list.length)historyModal(a[0],list); }catch(e){} }
+};
+function markReopen(fn,args){ S.pendingReopen={fn:fn,args:args||[]}; }
+function appBack(){
+ var e=null;
+ while(S.hist&&S.hist.length){
+  var c=S.hist.pop();
+  if(!c||!c.page)continue;
+  if(c.page===S.page)continue;      /* 같은 화면으로 되돌아가는 항목은 건너뛴다 */
+  if(c.page==='quiz')continue;      /* 문항 화면으로는 되돌아가지 않는다 */
+  e=c;break;
+ }
+ if(!e){ go(S.token?'dash':'home'); return; }
+ __navBack=true;
+ Promise.resolve(go(e.page,e.arg)).then(function(){
+  if(e.reopen&&REOPEN[e.reopen.fn])REOPEN[e.reopen.fn](e.reopen.args);
+ }).catch(function(){});
+}
 function proofHtml(){return `<div class="proofgrid">
  <div class="proof"><b>전국 규준 12,644명</b><span>고1 8,575명·중등 4,069명 표준화 규준으로 또래·전국 위치 제공</span></div>
  <div class="proof"><b>검증 규준 공개</b><span>고등 N=8,575 α0.951 · 중학 N=4,069 α0.930</span></div>
@@ -2448,7 +2471,15 @@ function gateDenyModal(gate){
 }
 async function go(page,arg){
  const v=$('#view');
- if(S.page!==page){S.prevPage=S.page;S.prevArg=S.curArg;S.page=page;}
+ if(S.page!==page){
+  if(!S.hist)S.hist=[];
+  if(!__navBack&&S.page){
+   S.hist.push({page:S.page,arg:S.curArg,reopen:S.pendingReopen||null});
+   if(S.hist.length>24)S.hist.shift();
+  }
+  S.prevPage=S.page;S.prevArg=S.curArg;S.page=page;
+ }
+ __navBack=false; S.pendingReopen=null;
  S.curArg=arg;
  updateBack(page);
  try{renderTabs()}catch(e){}
@@ -3315,7 +3346,7 @@ function historyModal(slug,list){
  ov.id=id;
  ov.style.cssText='position:fixed;inset:0;background:rgba(20,20,35,.45);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px';
  ov.onclick=function(e){if(e.target===ov)ov.remove()};
- const rows=list.map((a,i)=>`<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px dashed #ECEAFB"><span style="flex:1;font-size:12.5px">${i===0?'<b>최근</b> · ':''}${esc((a.created_at||'').slice(0,10))}</span><button class="btn small navy" onclick="document.getElementById('${id}').remove();openAttempt('${a.id}')">결과 보기</button></div>`).join('');
+ const rows=list.map((a,i)=>`<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px dashed #ECEAFB"><span style="flex:1;font-size:12.5px">${i===0?'<b>최근</b> · ':''}${esc((a.created_at||'').slice(0,10))}</span><button class="btn small navy" onclick="document.getElementById('${id}').remove();markReopen('historyModal',['${slug}']);openAttempt('${a.id}')">결과 보기</button></div>`).join('');
  ov.innerHTML=`<div class="card" style="max-width:400px;margin:0;max-height:80vh;overflow:auto"><div class="k">✓ ${esc(t.title||slug)} · 완료 ${list.length}회</div>${cooldownHtml}<div style="margin:6px 0 4px">${rows}</div><div style="display:flex;gap:8px;margin-top:10px"><button class="btn ghost" id="${id}c" style="flex:1">닫기</button><button class="btn navy" id="${id}r" style="flex:1">🔄 새로 진단하기</button></div></div>`;
  document.body.appendChild(ov);
  document.getElementById(id+'c').onclick=function(){ov.remove()};
@@ -3775,6 +3806,86 @@ function pickBandBlocks(blocks,r,slug){
     return head;
   }catch(e){return blocks}
 }
+
+/* [2026-09-01 · 연구팀 피드백 ①③] 결과 화면에 '무엇을 보는 검사인지'와
+   '영역이 무엇을 뜻하는지'가 없어서 학생 혼자 읽기 어려웠다.
+   보고서(myb-report)의 TEST_PURPOSE / AREA_MEAN 과 같은 문장을 쓴다. */
+const TEST_PURPOSE={
+ es_dream:{w:"어떤 일에 마음이 가는지, 무엇을 할 때 시간이 빨리 가는지를 알아보는 검사예요. 잘하고 못하고를 가리는 시험이 아니에요.",u:["점수가 높게 나온 쪽부터 읽어 보세요.","해보고 싶은 활동 한 가지만 골라 보세요.","6개월 뒤에 다시 해보세요. 좋아하는 건 바뀌어요."],n:"이 결과로 장래 직업이 정해지지 않아요."},
+ es_habit:{w:"공부할 때 내가 지금 어떤 습관을 가지고 있는지 살펴보는 검사예요. 성적을 재는 검사가 아니에요.",u:["잘하고 있는 칸을 먼저 보세요. 이미 하고 있는 일이에요.","가장 낮은 칸에서 딱 하나만 골라 4주 해보세요.","'진짜로 있었던 일' 칸을 어른과 같이 읽어 보세요."],n:"내가 똑똑한지 아닌지를 말해 주지 않아요."},
+ gifted_ready:{w:"평소에 관찰하고, 궁금해하고, 만들어 보고, 따져 보고, 설명하는 일을 얼마나 자주 하는지 세어 보는 점검표예요.",u:["자주 하는 칸이 지금의 내 강점이에요.","적게 나온 칸에서 이번 달에 해볼 일 하나를 정해요.","'진짜로 있었던 일'이 비어 있으면 아직 시작 단계예요."],n:"영재인지 아닌지를 가려내는 검사가 아니에요. 영재교육 대상자를 뽑는 자료로도 쓸 수 없어요."},
+ story_writer:{w:"이야기를 만들 때 필요한 다섯 가지 힘(주제·인물·구성·표현·윤리)을 지금 얼마나 쓰고 있는지 보는 검사예요.",u:["가장 높은 칸이 내가 잘 쓰는 힘이에요.","가장 낮은 칸 하나만 다음 이야기에서 신경 써 보세요.","AI로 이야기를 만들 때는 '윤리' 칸을 꼭 같이 읽어요."],n:"글을 잘 쓰는지 점수를 매기는 검사가 아니에요."},
+ ai_inquiry:{w:"궁금한 것을 스스로 알아볼 때 필요한 다섯 단계를 얼마나 하고 있는지 보는 검사예요.",u:["가장 높은 칸이 이미 잘하고 있는 단계예요.","가장 낮은 칸을 다음 탐구 때 한 번만 해보세요.","'어디서 봤는지 적기'는 AI를 쓸 때 특히 중요해요."],n:"AI를 잘 다루는지 겨루는 검사가 아니에요."},
+ value_work:{w:"일을 고를 때 무엇을 중요하게 여기는지를 알아보는 검사입니다.",u:["가장 높은 두 가지가 나의 기준입니다.","낮은 항목은 나쁜 게 아니라 지금 덜 중요한 것입니다.","가족·선생님과 왜 그렇게 골랐는지 이야기해 보세요."],n:"어떤 가치관이 더 좋다고 말하지 않습니다. 순위에 좋고 나쁨은 없습니다."},
+ ms_series:{w:"일곱 계열에 대한 관심과 성향이 어디로 기울어 있는지를 보는 검사입니다.",u:["1·2순위를 함께 보고 겹치는 지점을 찾으세요.","관심 계열의 과목·활동을 지금 경험해 보세요.","6개월 뒤 재진단으로 방향을 확인하세요."],n:"성적·실력을 재지 않으며 합격 가능성과 관계없습니다."},
+ hs_series:{w:"일곱 계열에 대한 관심과 성향의 상대적 위치를 전국 규준과 비교해 보는 검사입니다.",u:["1순위를 과목 선택·탐구 주제와 연결하세요.","2순위는 융합 지점을 찾는 재료입니다.","가장 낮은 계열은 지금 관심이 덜한 영역입니다."],n:"성적·등급·합격 가능성을 재지 않습니다."},
+ ms_study:{w:"공부 습관을 계획·집중·복습·정리·시험 전략·마음가짐 여섯으로 나누어 점검합니다.",u:["가장 낮은 영역 하나만 4주 바꿔 보세요.","과목별 공부법은 아래 가이드에서 확인하세요.","재진단으로 습관 변화를 확인하세요."],n:"성적을 예측하지 않습니다."},
+ ms_hsfit:{w:"나의 성향이 어떤 고교 유형과 잘 맞는지 참고하는 체크리스트입니다.",u:["적합도가 높은 유형부터 요강을 확인하세요.","낮은 유형도 준비 방법을 알면 선택지가 됩니다.","담임 상담 때 이 결과를 함께 놓고 보세요."],n:"합격 가능성이나 입학을 보장하지 않습니다."},
+ hs_essay:{w:"소개서를 쓰기 전에 준비된 것과 비어 있는 것을 확인하는 점검표입니다.",u:["'아직'인 항목부터 자료를 모으세요.","활동 정리는 지금 기록해 두는 게 가장 효과적입니다.","작성 규정은 지원 전 다시 확인하세요."],n:"합격하는 글을 알려 주지 않습니다."},
+ multi_iq:{w:"여덟 가지 지능 영역 중 어느 쪽을 자주 쓰고 편하게 여기는지를 봅니다.",u:["높은 두 영역을 공부 방법과 연결하세요.","낮은 영역은 부족한 게 아니라 덜 쓰는 것입니다.","진로를 좁히는 근거가 아니라 학습법의 근거로 쓰세요."],n:"머리가 좋고 나쁨을 재지 않으며 IQ와 다릅니다."},
+ study_emotion:{w:"공부할 때의 마음 상태(시험 불안·동기·자신감·스트레스 관리)를 살펴봅니다.",u:["낮은 영역은 의지 문제가 아니라 도움이 필요한 신호입니다.","'마음 신호'를 많이 표시했다면 어른과 먼저 이야기하세요.","방법 중 하나만 골라 2주 해보세요."],n:"의학적 진단이 아닙니다. 어려움이 이어지면 전문가 상담이 필요합니다."},
+ career_mature:{w:"진로를 정해 가는 과정에서 지금 어디쯤 와 있는지를 다섯 영역으로 봅니다.",u:["점수가 낮다고 늦은 게 아닙니다.","가장 낮은 영역을 이번 학기 목표로 삼으세요.","6개월 뒤 변화의 방향을 확인하세요."],n:"진로를 정해 주지 않습니다."},
+ study_manage:{w:"계획·집중·오답·반복·점검 다섯 가지 공부 관리 습관을 점검합니다.",u:["가장 낮은 하나만 4주 바꾸세요.","오답 항목은 시험 직후 다시 점검하면 효과가 큽니다.","재진단으로 습관이 자리 잡았는지 확인하세요."],n:"성적을 예측하지 않습니다."},
+ subject_rec:{w:"선택한 계열·관심 학과를 바탕으로 과목 선택 방향을 정리해 주는 자료입니다.",u:["추천 과목을 학교 교육과정 편제표와 대조하세요.","미개설 과목은 대체·공동교육과정을 확인하세요.","결정 전 담임·진로 선생님과 상담하세요."],n:"합격선·경쟁률·유불리를 알려 주지 않습니다."},
+ subject_pick:{w:"여섯 학습영역의 흥미·강점 경험·지속 의지를 재어 과목 조합을 제안합니다.",u:["제안을 그대로 따르지 말고 개설 과목과 맞춰 보세요.","흥미와 강점 경험이 함께 높은 영역을 우선하세요.","선택 후 탐구·활동과 연결해 기록을 남기세요."],n:"전국 표준화 규준이 아직 없는 개발 중 도구입니다."},
+ study:{w:"입력한 과목별 등급을 바탕으로 학습 전략을 정리해 주는 자료입니다.",u:["가장 낮은 과목이 아니라 올릴 여지가 큰 과목부터 보세요.","이번 달에 할 것 하나만 고르세요.","다음 시험 뒤 등급을 다시 입력하세요."],n:"심리검사가 아니며 합격 가능성·배치 정보를 주지 않습니다."},
+ roadmap:{w:"학교생활·창체·교과·세특·행특 다섯 축의 기록이 어디까지 찼는지 점검합니다.",u:["비어 있는 축부터 이번 학기 계획에 넣으세요.","개수보다 흐름이 이어지는지가 중요합니다.","학기말이 아니라 지금 기록하세요."],n:"어떤 활동이 합격에 유리한지 알려 주지 않습니다."},
+ inquiry:{w:"탐구를 주제 선정부터 발표까지 여섯 단계로 나누어 준비 상태를 봅니다.",u:["가장 낮은 단계에서 다음 탐구를 시작하세요.","추천 주제는 나의 질문으로 바꾸세요.","탐구 기록장에 정리하면 다음 보고서에 반영됩니다."],n:"탐구 결과의 우수성을 평가하지 않습니다."},
+ reading:{w:"독서 습관·독해 전략·기록·확장 네 영역에서 지금의 독서 방식을 점검합니다.",u:["기록이 낮으면 읽은 책 한 권만 정리해 보세요.","추천 도서는 예시입니다. 관심 가는 것부터 고르세요.","탐구 주제와 연결해 읽으면 기록으로 남습니다."],n:"읽은 책의 수준이나 양을 평가하지 않습니다."},
+ interview:{w:"면접에서 답해야 할 열 가지 영역의 준비 상태를 점검합니다.",u:["'아직'인 영역부터 답변 초안을 만드세요.","학생부와 연결되지 않은 답변은 다시 쓰세요.","소리 내어 말해 보고 시간을 재 보세요."],n:"실제 기출문제나 모범답안을 제공하지 않습니다."},
+ track_fit:{w:"네 전형에 대해 나의 준비 상태가 어디에 가까운지 보는 참고 자료입니다.",u:["높게 나온 전형부터 준비 항목을 확인하세요.","한 전형만 남기지 말고 두 갈래로 준비하세요.","학기마다 다시 점검하세요."],n:"합격 가능성·경쟁률·합격선을 제공하지 않습니다."},
+ admission_nav:{w:"입시 준비에서 빠진 곳을 다섯 축으로 찾는 점검표입니다.",u:["요강 확인과 일정 관리는 지금 처리하세요.","비어 있는 축을 이번 달 할 일로 옮기세요.","상담 전에 이 결과를 가져가세요."],n:"특정 대학·학과의 지원 유불리를 판단하지 않습니다."},
+ mock_exam:{w:"모의고사 결과를 읽고 다음 시험으로 연결하는 방법을 얼마나 익혔는지 봅니다.",u:["오답 분석이 낮으면 그것부터 시작하세요.","성적이 아니라 분석 방법을 점검하는 자료입니다.","다음 모의고사 직후 다시 확인하세요."],n:"등급을 예측하거나 배치 정보를 주지 않습니다."},
+ future:{w:"여섯 가지 미래역량을 지금 얼마나 쓰고 있는지 봅니다.",u:["가장 높은 역량은 활동에서 계속 쓰고 기록하세요.","가장 낮은 역량은 한 학기에 하나씩만 채우세요.","역량은 말이 아니라 활동으로 증명됩니다."],n:"역량의 절대 수준을 판정하지 않습니다."},
+ ai_skill:{w:"AI를 이해·활용하는 힘, 질문을 만드는 힘, 검증하는 힘, 책임 있게 쓰는 태도를 점검합니다.",u:["검증·비판이 낮으면 그것부터 채우세요.","윤리·책임 항목은 학교 과제에 바로 적용해 보세요.","프롬프트는 나의 과제로 바꿔 쓰세요."],n:"특정 AI 도구의 사용법을 평가하지 않습니다."}
+};
+function purposeCard(slug){
+ const P=TEST_PURPOSE[slug]; if(!P)return '';
+ return `<div class="card" style="border:1.5px solid #DAD4FB;background:#FBFAFF">
+  <div class="k">이 검사는 무엇을 보는 검사일까요</div>
+  <p style="font-size:13.2px;line-height:1.75;margin:0 0 10px">${esc(P.w)}</p>
+  <div style="font-size:12px;font-weight:800;color:#6C5CE7;margin:0 0 4px">결과를 이렇게 쓰세요</div>
+  <ol style="margin:0 0 10px 18px;padding:0;font-size:12.8px;line-height:1.75">${P.u.map(x=>`<li style="margin:2px 0">${esc(x)}</li>`).join('')}</ol>
+  <div style="background:#FFF8E6;border:1px solid #F5E3B8;border-radius:10px;padding:9px 11px;font-size:12.4px;line-height:1.65"><b>이 검사가 하지 않는 일</b><br>${esc(P.n)}</div>
+ </div>`;
+}
+const AREA_MEAN={
+ es_habit:["숙제와 준비물을 스스로 챙기는 정도","공부할 때 딴 데로 새지 않고 이어 가는 정도","배운 것을 말로 다시 설명해 보는 정도","자고 일어나고 먹는 시간이 규칙적인 정도","틀려도 다시 해보려는 마음의 정도","최근에 진짜로 있었던 일로 확인되는 정도"],
+ gifted_ready:["둘레를 자세히 살펴보고 다른 점을 찾아내는 정도","궁금한 것을 끝까지 알아보는 정도","남과 다른 방법을 떠올려 보는 정도","왜 그런지 이유를 따져 보는 정도","알아낸 것을 말이나 글로 설명하는 정도","최근에 진짜로 있었던 일로 확인되는 정도"],
+ story_writer:["이야기로 무엇을 말하고 싶은지 정하는 힘","인물의 마음과 성격을 만드는 힘","처음·가운데·끝을 짜임새 있게 잇는 힘","장면이 눈에 보이도록 말을 고르는 힘","남을 다치게 하지 않게 쓰는 태도"],
+ ai_inquiry:["알아볼 만한 질문으로 다듬는 힘","찾은 자료가 맞는지 살펴보는 힘","직접 해보고 확인하는 힘","어디서 가져왔는지 밝히는 태도","알아낸 것을 남이 읽을 수 있게 정리하는 힘"],
+ value_work:["잘하는 것으로 성과를 내는 일을 중요하게 여김","내 방식대로 정하고 움직이는 것을 중요하게 여김","오래 안정적으로 이어 가는 것을 중요하게 여김","다른 사람에게 인정받는 것을 중요하게 여김","다른 사람에게 도움이 되는 것을 중요하게 여김","새로 만들고 나를 키우는 것을 중요하게 여김"],
+ ms_study:["할 일을 미리 나누어 정하는 정도","공부 시간을 끊기지 않게 지키는 정도","배운 것을 다시 확인하는 정도","내용을 내 말로 줄여 정리하는 정도","시험 전 준비를 계획대로 하는 정도","어려워도 이어 가려는 마음가짐"],
+ ms_hsfit:["일반고 교육과정·생활과 맞는 정도","과학고·영재고 준비 방식과 맞는 정도","외고·국제고 준비 방식과 맞는 정도","자사고 교육과정·생활과 맞는 정도"],
+ career_mature:["내가 무엇을 좋아하고 잘하는지 아는 정도","직업이 실제로 어떤 일인지 아는 정도","다음에 무엇을 할지 정해 둔 정도","진로를 대하는 태도가 자리 잡은 정도","고를 때 스스로 결정하는 정도"],
+ study_emotion:["시험 앞에서 마음을 다스리는 정도","공부를 왜 하는지 스스로 아는 정도","하면 된다고 믿는 정도","집중이 흐트러질 때 되돌리는 정도","최근에 힘들다고 느낀 신호의 개수"],
+ multi_iq:["말과 글로 생각을 다루는 힘","수와 규칙으로 따져 보는 힘","그림·도형·공간으로 생각하는 힘","몸을 써서 익히고 표현하는 힘","소리와 리듬을 다루는 힘","다른 사람과 어울리고 이끄는 힘","내 마음을 돌아보고 조절하는 힘","자연과 생물을 살피고 분류하는 힘"],
+ study_manage:["할 일을 미리 나누어 정하는 정도","공부 시간을 끊기지 않게 지키는 정도","틀린 문제를 다시 보는 정도","한 번으로 끝내지 않고 반복하는 정도","계획대로 됐는지 스스로 확인하는 정도"],
+ mock_exam:["성적표의 등급·표준점수를 읽어 내는 정도","틀린 이유를 유형으로 나누어 보는 정도","시간을 배분해 푸는 정도","과목별 균형을 살피는 정도","다음 시험 계획으로 잇는 정도"],
+ ai_skill:["AI가 무엇이고 어디에 쓰는지 아는 정도","원하는 답을 얻도록 질문을 짜는 정도","AI 답이 맞는지 확인하고 따지는 정도","출처를 밝히고 책임 있게 쓰는 태도"],
+ reading:["꾸준히 읽는 습관이 자리 잡은 정도","글의 구조와 핵심을 잡아내는 정도","읽은 것을 기록으로 남기는 정도","한 주제에서 다른 책으로 넓히는 정도"],
+ admission_nav:["학생부에 빠진 곳을 확인한 정도","과목 선택과 정시 준비를 함께 본 정도","지원하려는 전형 요강을 확인한 정도","원서·서류 일정을 관리하는 정도","상담을 실제 실행으로 옮긴 정도"],
+ inquiry:["알아볼 주제를 좁혀 정하는 정도","답할 수 있는 질문으로 다듬는 정도","자료를 찾고 신뢰도를 따지는 정도","계획대로 실제 탐구를 진행한 정도","결과를 근거와 함께 정리한 정도","발표하고 기록으로 남긴 정도"],
+ roadmap:["출결·태도 등 기본 학교생활 기록","자율·동아리·진로 활동의 흐름","교과 학습과 내신 관리 상태","과목별 세부능력 특기사항의 근거","행동특성·종합의견으로 이어질 근거"],
+ track_fit:["교과 성적 중심 준비 상태","학생부 활동·기록 중심 준비 상태","논술 준비 상태","수능 중심 준비 상태"],
+ subject_pick:["말과 글을 다루는 영역에 대한 흥미·경험","수와 논리를 다루는 영역에 대한 흥미·경험","외국어·국제 영역에 대한 흥미·경험","사회와 사람을 이해하는 영역에 대한 흥미·경험","자연을 관찰하고 실험하는 영역에 대한 흥미·경험","기술로 만들고 융합하는 영역에 대한 흥미·경험"],
+ future:["방향을 정하고 사람을 모으는 힘","새로운 방식을 떠올리는 힘","막혔을 때 길을 찾는 힘","생각을 전하고 듣는 힘","계획을 끝까지 끌고 가는 힘","앞을 내다보고 순서를 정하는 힘"],
+ hs_essay:["지원하려는 유형을 정한 정도","활동을 정리해 둔 정도","학습 경험을 이야기로 만든 정도","배려·협력 사례를 준비한 정도","학교·기관을 이해한 정도","작성 규정을 확인한 정도","고쳐 쓰기를 거친 정도","지원 동기를 정리한 정도","진로 계획을 정리한 정도","면접까지 연결해 둔 정도"],
+ interview:["면접 유형과 진행 방식을 아는 정도","학과 지원 동기를 정리한 정도","진로 방향을 설명할 수 있는 정도","활동과 학생부를 연결한 정도","인성·협업 사례를 준비한 정도","답변을 구조로 짜는 정도","꼬리질문에 대응하는 정도","제시문·시사 문항을 다루는 정도","실제로 말해 본 정도","끝난 뒤 복기하는 태도"]
+};
+function areaMeanOf(slug,i){const a=AREA_MEAN[slug];return (a&&a[i])?a[i]:'';}
+function areaMeanLine(slug,i){const m=areaMeanOf(slug,i);return m?`<div style="font-size:11px;line-height:1.5;color:#9195A8;margin:-2px 0 8px 2px">${esc(m)}</div>`:'';}
+/* [2026-09-01 · 연구팀 피드백 ②] 1순위와 3순위 차이가 1순위의 8% 이내면
+   "예체능 계열입니다"라고 단정하지 않는다. 21/20/20 은 사실상 같은 높이다. */
+function seriesFlat(r){
+ try{
+  const sc=(r&&r.scores)||[]; if(!Array.isArray(sc)||sc.length<3)return null;
+  const idx=sc.map((v,i)=>[Number(v)||0,i]).sort((a,b)=>b[0]-a[0]);
+  const mx=idx[0][0]; if(mx<=0)return null;
+  return {flat:(mx-idx[2][0])/mx<=0.08, top:idx.slice(0,3).map(x=>x[1])};
+ }catch(e){return null}
+}
+
 /* ===== 바이럴 결과 공유 카드(W10-B) — canvas 1080x1080 브랜드 이미지(익명/요약만) ===== */
 function shareCardLines(r,t,slug){
  // 결과종류별 핵심 한 줄 추출(개인정보 없음). 추출 불가 시 진단명만.
@@ -3963,21 +4074,27 @@ function renderResult(d){ try{S.lastResultSlug=d.attempt.test_slug}catch(e){}
   const best=LABELS[r.best],sec=LABELS[r.second];
   /* [FIX 2026-08-31] 이 분기에만 해설 블록 렌더링이 빠져 있었다. */
   const sBlocks=d.blocks||[];
-  v.innerHTML=`<div class="hero">${ART(slug)}<h2>${best}계열 성향이 빛나요!</h2><p>${esc(SER_DESC[best])}<br>${esc(st.name)} · ${esc(st.school||'')} · ${dt}</p></div>
+  /* [2026-09-01 · 연구팀 피드백 ②] 점수가 사실상 평평하면 1순위를 단정하지 않는다. */
+  const fs=seriesFlat(r), flat=!!(fs&&fs.flat);
+  const flatNames=flat?fs.top.map(i=>LABELS[i]).join(' · '):'';
+  const heroH2=flat?'여러 분야를 두루 좋아해요':`${best}계열 성향이 빛나요!`;
+  const heroP=flat?`${esc(flatNames)} 점수가 거의 같아요 — 아직 한 쪽으로 좁혀지지 않았어요`:esc(SER_DESC[best]);
+  const flatCard=flat?`<div class="card" style="border:1.5px solid #BFE6CE;background:#F2FBF5"><div class="k">하나로 정하지 않아도 괜찮아요</div><p style="font-size:13.2px;line-height:1.75;margin:0">${esc(flatNames)} 점수가 거의 같아요. 한 쪽이 특별히 높은 게 아니라 <b>여러 가지를 두루 좋아하는 것</b>이에요. 지금은 하나를 고를 때가 아니라 여러 가지를 더 해볼 때예요. 아래 해설은 아주 조금 높았던 쪽을 먼저 보여 주는 것뿐이니, 나머지도 같이 읽어 보세요.</p></div>`:'';
+  v.innerHTML=`<div class="hero">${ART(slug)}<h2>${heroH2}</h2><p>${heroP}<br>${esc(st.name)} · ${esc(st.school||'')} · ${dt}</p></div>${flatCard}
    <div class="card"><div class="k">나의 7계열 프로파일</div><div class="chartwrap"><canvas id="radar"></canvas></div>
-   <div style="text-align:center;margin-top:6px"><span class="tag">1순위 ${best}</span><span class="tag">2순위 ${sec}</span><span class="tag">융합 ${best}×${sec}</span></div></div>
-   ${methodNote(slug)}
+   <div style="text-align:center;margin-top:6px">${flat?`<span class="tag">고르게 높음</span><span class="tag">${esc(flatNames)}</span>`:`<span class="tag">1순위 ${best}</span><span class="tag">2순위 ${sec}</span><span class="tag">융합 ${best}×${sec}</span>`}</div></div>
+   ${purposeCard(slug)}${methodNote(slug)}
    <div class="card"><div class="k">성장 처방 — 이번 주에 시작해요</div><ul class="rx">${SER_ACT[best].map((a,i)=>`<li><span class="n">${i+1}</span>${esc(a)}</li>`).join('')}</ul></div>
   ${sBlocks.length?`<div class="k" style="margin:14px 0 8px">결과를 읽고 이어가는 법</div>${sBlocks.map(x=>blockHtml(x,'계열 해설')).join('')}`:''}
-  <div class="card"><div class="k">컨설턴트 코칭</div><p style="font-size:13.5px;line-height:1.7">${esc(st.name)} 학생은 <b>${best}계열</b> 성향이 가장 뚜렷하고, <b>${sec}계열</b>의 가능성도 함께 지니고 있습니다. 두 계열이 만나는 융합 영역에서 자신만의 강점이 만들어집니다. 위 처방을 한 달만 실천하면 학교생활기록부에 남길 '나만의 이야기'가 시작됩니다.</p></div>
-  ${resultActions(d,{solution:true,summary:best+'계열 성향이 가장 높게 나왔어요'})}`;
+  <div class="card"><div class="k">컨설턴트 코칭</div><p style="font-size:13.5px;line-height:1.7">${flat?`${esc(st.name)} 학생은 계열 사이의 점수 차이가 거의 없습니다(${esc(flatNames)}). 한 계열이 두드러진 것이 아니라 관심이 넓게 열려 있는 상태이므로, 지금은 계열을 좁히기보다 각 계열을 실제로 경험해 볼 시기입니다. 위 처방을 한 달 해보고, 6개월 뒤 재진단에서 어느 쪽이 남는지 확인해 주세요.`:`${esc(st.name)} 학생은 <b>${best}계열</b> 성향이 가장 뚜렷하고, <b>${sec}계열</b>의 가능성도 함께 지니고 있습니다. 두 계열이 만나는 융합 영역에서 자신만의 강점이 만들어집니다. 위 처방을 한 달만 실천하면 학교생활기록부에 남길 '나만의 이야기'가 시작됩니다.`}</p></div>
+  ${resultActions(d,{solution:true,summary:flat?'여러 계열이 고르게 높게 나왔어요':best+'계열 성향이 가장 높게 나왔어요'})}`;
   safeChart($('#radar'),{type:'radar',data:{labels:LABELS,datasets:[{data:r.scores,fill:true,backgroundColor:'rgba(108,92,231,.16)',borderColor:'#6C5CE7',pointBackgroundColor:'#00CEC9',borderWidth:2}]},options:{plugins:{legend:{display:false}},scales:{r:{beginAtZero:true,ticks:{display:false},pointLabels:{font:{size:12,weight:'700',family:'Pretendard'}}}},animation:false}});
  }else if(r.kind==='grades'){
   const blocks=d.blocks||[];
   const COLS=['#2E7D32','#388E3C','#F9A825','#EF6C00','#C62828'];
   v.innerHTML=`<div class="hero">${ART(slug)}<h2>과목별 맞춤 공부 전략</h2><p>내신 5등급제 기준 · ${esc(st.name)} · ${esc(st.school||'')} · ${dt}</p></div>
    <div class="card"><div class="k">과목별 현재 위치</div><div class="gradegrid">${r.subjects.map((sj,i)=>`<div class="gcell"><div class="gsub">${sj}</div><div class="gval" style="color:${COLS[r.grades[i]-1]}">${r.grades[i]}<small>등급</small></div></div>`).join('')}</div></div>
-   ${methodNote(slug)}
+   ${purposeCard(slug)}${methodNote(slug)}
    <div class="k" style="margin:14px 0 8px">과목별 전략 + 최신 입시 환경</div>
   ${blocks.map(b=>blockHtml(b)).join('')}
   ${resultActions(d,{summary:'과목별 맞춤 공부전략을 받았어요'})}`;
@@ -3985,7 +4102,7 @@ function renderResult(d){ try{S.lastResultSlug=d.attempt.test_slug}catch(e){}
   const blocks=d.blocks||[];
   const pk=r.labels[r.pick-1];
   v.innerHTML=`<div class="hero">${ART(slug)}<h2>${pk}계열 추천 과목 조합</h2><p>2022 개정 교육과정 · 고교학점제 기준 · ${esc(st.name)} · ${dt}</p></div>
-   ${methodNote(slug)}
+   ${purposeCard(slug)}${methodNote(slug)}
    ${blocks.map(b=>blockHtml(b,'추천 과목 가이드')).join('')}
   <div class="card" style="background:linear-gradient(120deg,#F3F0FF,#EAFBF6);border:1.5px solid #E0DAFB"><div class="k">🗂 계열·학과별 2022 과목 탐색</div><p style="font-size:12.8px;line-height:1.6;color:#4C5C4C;margin-bottom:10px">${pk}계열의 학과를 골라 일반·진로·융합선택 권장 과목을 직접 비교해 보세요.</p><button class="btn small navy" onclick="SEXP.series=null;SEXP.picked=[];go('subjexp',${r.pick})">${pk}계열 학과 과목 탐색하기 →</button></div>
   <div class="card coachnote"><p style="font-size:12.5px;line-height:1.6;color:#5B6270">※ 학교별 개설 과목이 다를 수 있습니다. 최종 선택 전 학교 교육과정 편제표와 담임·진로 선생님 상담을 꼭 거치세요.</p></div>
@@ -4000,9 +4117,9 @@ function renderResult(d){ try{S.lastResultSlug=d.attempt.test_slug}catch(e){}
       const c=coreStats(r)||{ok:r.ready,total:r.total,pct:r.pct};
       return `<div class="hero">${ART(slug)}<h2>${esc(t.title)} <span class="cnt" data-v="${c.pct}">0</span>점</h2><p>${c.ok} / ${c.total} 항목 준비 · ${esc(st.name)} · ${dt}</p><div class="meter" style="background:rgba(255,255,255,.25)"><i style="width:${c.pct}%;background:#FDCB6E"></i></div></div>`;})();
   v.innerHTML=`${heroHtml}
-   ${methodNote(slug)}
+   ${purposeCard(slug)}${methodNote(slug)}
    ${eviCards(ev,slug)}
-   <div class="card"><div class="k">${ev?'영역별 성향 응답':'영역별 진단'}</div>${r.names.map((nm,b)=>`<div style="display:flex;align-items:center;gap:10px;padding:6px 0"><span style="flex:0 0 92px;font-size:13px;font-weight:700">${nm}</span><div class="meter" style="flex:1;margin:0"><i style="width:${r.per[b].ok/Math.max(1,r.per[b].total)*100}%"></i></div><span class="muted">${r.per[b].ok}/${r.per[b].total}</span></div>`).join('')}</div>
+   <div class="card"><div class="k">${ev?'영역별 성향 응답':'영역별 진단'}</div>${r.names.map((nm,b)=>`<div style="display:flex;align-items:center;gap:10px;padding:6px 0"><span style="flex:0 0 92px;font-size:13px;font-weight:700">${nm}</span><div class="meter" style="flex:1;margin:0"><i style="width:${r.per[b].ok/Math.max(1,r.per[b].total)*100}%"></i></div><span class="muted">${r.per[b].ok}/${r.per[b].total}</span></div>${areaMeanLine(slug,b)}`).join('')}</div>
   <div class="k" style="margin:14px 0 8px">보완 영역 가이드</div>
   ${blocks.map(b=>blockHtml(b)).join('')||'<div class="muted">모든 영역이 탄탄해요! 🎉</div>'}
   ${blocks.length?`<div class="card"><div class="k">4주 실천 플랜 — 보완 영역을 주차별로</div>${blocks.slice(0,4).map((b,i)=>{const tp=(b.tips||[])[0]||'';return `<div style="display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px dashed #ECEAFB"><span class="n" style="flex:0 0 46px;height:24px;border-radius:8px;background:var(--sun);font-weight:800;font-size:11px;display:flex;align-items:center;justify-content:center">${i+1}주차</span><div style="font-size:12.5px;line-height:1.5"><b>${esc(b.title.split(' — ')[0])}</b> · ${esc(tp)}</div></div>`}).join('')}</div>`:''}
@@ -4020,7 +4137,7 @@ function renderResult(d){ try{S.lastResultSlug=d.attempt.test_slug}catch(e){}
   v.innerHTML=`<div class="hero">${ART(slug)}<h2>강한 학습영역은 ${esc(ab)}</h2><p>${esc(st.name)} · 2022 개정 교육과정 · 고교학점제 기준 · ${dt}</p></div>
    <div class="card"><div class="k">나의 6개 학습영역 프로파일</div><div class="chartwrap"><canvas id="radarA"></canvas></div>
    <div style="text-align:center;margin-top:6px"><span class="tag">1순위 ${esc(ab)}</span>${a2?`<span class="tag">2순위 ${esc(a2)}</span>`:''}${aw?`<span class="tag">보완 ${esc(aw)}</span>`:''}</div></div>
-   ${methodNote(slug)}
+   ${purposeCard(slug)}${methodNote(slug)}
    <div class="card"><div class="k">영역별 점수</div>${L.map((nm,i)=>`<div class="cfbrow"><span class="cfbl">${esc(nm)}</span><span class="cfbt"><i style="width:${Math.round((Number(sc[i])||0)/mx*100)}%"></i></span><b class="cfbv">${Number(sc[i])||0}</b></div>`).join('')}</div>
    <div class="card"><div class="k">읽는 법</div><p style="font-size:13.5px;line-height:1.7">점수가 높은 영역은 지금의 나에게 잘 맞는 학습 방식이고, 낮은 영역은 아직 경험이 적은 쪽입니다. 낮다고 피해야 하는 과목은 아닙니다. 진로가 그 영역과 이어진다면 오히려 지금부터 경험을 쌓을 자리입니다. 최종 과목 선택은 우리 학교 교육과정 편제표에 개설된 과목을 기준으로 담임 선생님과 함께 확인해 주세요.</p></div>
    ${blocks.length?'<div class="k" style="margin:14px 0 8px">과목 조합 설계 가이드</div>':''}
@@ -4033,7 +4150,7 @@ function renderResult(d){ try{S.lastResultSlug=d.attempt.test_slug}catch(e){}
   v.innerHTML=`<div class="hero">${ART(slug)}<h2>나의 대표 역량은 ${fb}!</h2><p>성장 포인트는 ${fw} · ${esc(st.name)} · ${dt}</p></div>
    <div class="card"><div class="k">6대 미래역량 프로파일</div><div class="chartwrap"><canvas id="radar6"></canvas></div>
    <div style="text-align:center;margin-top:6px"><span class="tag">강점 ${fb}</span><span class="tag">성장 ${fw}</span></div></div>
-   ${methodNote(slug)}
+   ${purposeCard(slug)}${methodNote(slug)}
    <div class="k" style="margin:14px 0 8px">역량 가이드 — 강점 살리고 약점 보완하기</div>
   ${blocks.map(b=>blockHtml(b)).join('')}
   ${resultActions(d,{summary:fb+' 역량이 가장 강해요'})}`;
@@ -4041,7 +4158,7 @@ function renderResult(d){ try{S.lastResultSlug=d.attempt.test_slug}catch(e){}
  }else{
   const blocks=d.blocks||[];
   v.innerHTML=`<div class="hero">${ART(slug)}<h2>${esc(t.title)} <span class="cnt" data-v="${r.pct}">0</span>점</h2><p>${r.ready} / ${r.total} 항목 준비 완료 · ${esc(st.name)} · ${dt}</p><div class="meter" style="background:rgba(255,255,255,.25)"><i style="width:${r.pct}%;background:#FDCB6E"></i></div></div>
-   ${methodNote(slug)}
+   ${purposeCard(slug)}${methodNote(slug)}
    <div class="card"><div class="k">체크리스트 결과</div><ul class="chk">${r.qtexts.slice(slug==='hs_essay'?1:0).map((q,i)=>`<li class="${r.flags[i]?'ok':'no'}">${r.flags[i]?'✓':'✗'} ${esc(q)}</li>`).join('')}</ul></div>
   <div class="k" style="margin:14px 0 8px">${esc(st.name)}님을 위한 맞춤 가이드</div>
   ${blocks.map(b=>blockHtml(b)).join('')||'<div class="muted">모든 항목이 준비되었습니다! 🎉</div>'}

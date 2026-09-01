@@ -3877,12 +3877,18 @@ function areaMeanOf(slug,i){const a=AREA_MEAN[slug];return (a&&a[i])?a[i]:'';}
 function areaMeanLine(slug,i){const m=areaMeanOf(slug,i);return m?`<div style="font-size:11px;line-height:1.5;color:#9195A8;margin:-2px 0 8px 2px">${esc(m)}</div>`:'';}
 /* [2026-09-01 · 연구팀 피드백 ②] 1순위와 3순위 차이가 1순위의 8% 이내면
    "예체능 계열입니다"라고 단정하지 않는다. 21/20/20 은 사실상 같은 높이다. */
-function seriesFlat(r){
+/* 계열당 만점 = 계열당 문항수 x 리커트 5점. 초등 5문항 / 중등 7문항 / 고등 10문항. */
+const SERIES_MAX={es_dream:25,ms_series:35,hs_series:50};
+function seriesFlat(r,slug){
  try{
   const sc=(r&&r.scores)||[]; if(!Array.isArray(sc)||sc.length<3)return null;
   const idx=sc.map((v,i)=>[Number(v)||0,i]).sort((a,b)=>b[0]-a[0]);
   const mx=idx[0][0]; if(mx<=0)return null;
-  return {flat:(mx-idx[2][0])/mx<=0.08, top:idx.slice(0,3).map(x=>x[1])};
+  /* [2026-09-01 2차] 평평하다고 다 "고르게 높다"가 아니다.
+     실제 응답을 대조하니 평평한 학생의 넷 중 하나는 전부 낮아서 평평했다. */
+  const cap=(slug&&SERIES_MAX[slug])||Math.max(mx,1);
+  const mean=sc.reduce((a,b)=>a+(Number(b)||0),0)/sc.length;
+  return {flat:(mx-idx[2][0])/mx<=0.08, high:mean/cap>=0.6, top:idx.slice(0,3).map(x=>x[1])};
  }catch(e){return null}
 }
 
@@ -4075,19 +4081,21 @@ function renderResult(d){ try{S.lastResultSlug=d.attempt.test_slug}catch(e){}
   /* [FIX 2026-08-31] 이 분기에만 해설 블록 렌더링이 빠져 있었다. */
   const sBlocks=d.blocks||[];
   /* [2026-09-01 · 연구팀 피드백 ②] 점수가 사실상 평평하면 1순위를 단정하지 않는다. */
-  const fs=seriesFlat(r), flat=!!(fs&&fs.flat);
+  const fs=seriesFlat(r,slug), flat=!!(fs&&fs.flat), fhigh=!!(fs&&fs.high);
   const flatNames=flat?fs.top.map(i=>LABELS[i]).join(' · '):'';
-  const heroH2=flat?'여러 분야를 두루 좋아해요':`${best}계열 성향이 빛나요!`;
-  const heroP=flat?`${esc(flatNames)} 점수가 거의 같아요 — 아직 한 쪽으로 좁혀지지 않았어요`:esc(SER_DESC[best]);
-  const flatCard=flat?`<div class="card" style="border:1.5px solid #BFE6CE;background:#F2FBF5"><div class="k">하나로 정하지 않아도 괜찮아요</div><p style="font-size:13.2px;line-height:1.75;margin:0">${esc(flatNames)} 점수가 거의 같아요. 한 쪽이 특별히 높은 게 아니라 <b>여러 가지를 두루 좋아하는 것</b>이에요. 지금은 하나를 고를 때가 아니라 여러 가지를 더 해볼 때예요. 아래 해설은 아주 조금 높았던 쪽을 먼저 보여 주는 것뿐이니, 나머지도 같이 읽어 보세요.</p></div>`:'';
+  const heroH2=flat?(fhigh?'여러 분야를 두루 좋아해요':'아직 어느 쪽도 뚜렷하지 않아요'):`${best}계열 성향이 빛나요!`;
+  const heroP=flat?(fhigh?`${esc(flatNames)} 점수가 거의 같아요 — 아직 한 쪽으로 좁혀지지 않았어요`:`계열 사이의 차이가 거의 없고 전체적으로도 아직 낮아요 — 해본 것이 적다는 뜻이에요`):esc(SER_DESC[best]);
+  const flatCard=!flat?'':(fhigh
+   ?`<div class="card" style="border:1.5px solid #BFE6CE;background:#F2FBF5"><div class="k">하나로 정하지 않아도 괜찮아요</div><p style="font-size:13.2px;line-height:1.75;margin:0">${esc(flatNames)} 점수가 거의 같고 모두 높은 편이에요. 한 쪽이 특별히 높은 게 아니라 <b>여러 가지를 두루 좋아하는 것</b>이에요. 지금은 하나를 고를 때가 아니라 여러 가지를 더 해볼 때예요. 아래 해설은 아주 조금 높았던 쪽을 먼저 보여 주는 것뿐이니, 나머지도 같이 읽어 보세요.</p></div>`
+   :`<div class="card" style="border:1.5px solid #F5E3B8;background:#FFF8E6"><div class="k">아직 어느 쪽도 뚜렷하지 않아요</div><p style="font-size:13.2px;line-height:1.75;margin:0">계열 사이의 점수 차이가 거의 없고, 전체적으로도 아직 낮은 편이에요. 이건 <b>좋아하는 게 없다는 뜻이 아니라 아직 해본 것이 적다는 뜻</b>이에요. 지금은 결과를 붙들고 고민할 때가 아니라 새로 해볼 때예요. 아래 활동 중 하나만 골라 해보고, 6개월 뒤에 다시 진단해 보세요. 그때는 훨씬 또렷해집니다.</p></div>`);
   v.innerHTML=`<div class="hero">${ART(slug)}<h2>${heroH2}</h2><p>${heroP}<br>${esc(st.name)} · ${esc(st.school||'')} · ${dt}</p></div>${flatCard}
    <div class="card"><div class="k">나의 7계열 프로파일</div><div class="chartwrap"><canvas id="radar"></canvas></div>
-   <div style="text-align:center;margin-top:6px">${flat?`<span class="tag">고르게 높음</span><span class="tag">${esc(flatNames)}</span>`:`<span class="tag">1순위 ${best}</span><span class="tag">2순위 ${sec}</span><span class="tag">융합 ${best}×${sec}</span>`}</div></div>
+   <div style="text-align:center;margin-top:6px">${flat?`<span class="tag">${fhigh?'고르게 높음':'아직 뚜렷하지 않음'}</span><span class="tag">${esc(flatNames)}</span>`:`<span class="tag">1순위 ${best}</span><span class="tag">2순위 ${sec}</span><span class="tag">융합 ${best}×${sec}</span>`}</div></div>
    ${purposeCard(slug)}${methodNote(slug)}
    <div class="card"><div class="k">성장 처방 — 이번 주에 시작해요</div><ul class="rx">${SER_ACT[best].map((a,i)=>`<li><span class="n">${i+1}</span>${esc(a)}</li>`).join('')}</ul></div>
   ${sBlocks.length?`<div class="k" style="margin:14px 0 8px">결과를 읽고 이어가는 법</div>${sBlocks.map(x=>blockHtml(x,'계열 해설')).join('')}`:''}
-  <div class="card"><div class="k">컨설턴트 코칭</div><p style="font-size:13.5px;line-height:1.7">${flat?`${esc(st.name)} 학생은 계열 사이의 점수 차이가 거의 없습니다(${esc(flatNames)}). 한 계열이 두드러진 것이 아니라 관심이 넓게 열려 있는 상태이므로, 지금은 계열을 좁히기보다 각 계열을 실제로 경험해 볼 시기입니다. 위 처방을 한 달 해보고, 6개월 뒤 재진단에서 어느 쪽이 남는지 확인해 주세요.`:`${esc(st.name)} 학생은 <b>${best}계열</b> 성향이 가장 뚜렷하고, <b>${sec}계열</b>의 가능성도 함께 지니고 있습니다. 두 계열이 만나는 융합 영역에서 자신만의 강점이 만들어집니다. 위 처방을 한 달만 실천하면 학교생활기록부에 남길 '나만의 이야기'가 시작됩니다.`}</p></div>
-  ${resultActions(d,{solution:true,summary:flat?'여러 계열이 고르게 높게 나왔어요':best+'계열 성향이 가장 높게 나왔어요'})}`;
+  <div class="card"><div class="k">컨설턴트 코칭</div><p style="font-size:13.5px;line-height:1.7">${flat&&!fhigh?`${esc(st.name)} 학생은 계열 사이의 점수 차이가 거의 없고 전반적인 수준도 낮은 편입니다. 아직 각 계열을 충분히 경험해 보지 못했을 가능성이 큽니다. 1순위 계열을 진로 근거로 쓰지 말고, 먼저 경험의 폭을 넓힌 뒤 6개월 뒤 재진단과 비교해 주세요.`:flat?`${esc(st.name)} 학생은 계열 사이의 점수 차이가 거의 없습니다(${esc(flatNames)}). 한 계열이 두드러진 것이 아니라 관심이 넓게 열려 있는 상태이므로, 지금은 계열을 좁히기보다 각 계열을 실제로 경험해 볼 시기입니다. 위 처방을 한 달 해보고, 6개월 뒤 재진단에서 어느 쪽이 남는지 확인해 주세요.`:`${esc(st.name)} 학생은 <b>${best}계열</b> 성향이 가장 뚜렷하고, <b>${sec}계열</b>의 가능성도 함께 지니고 있습니다. 두 계열이 만나는 융합 영역에서 자신만의 강점이 만들어집니다. 위 처방을 한 달만 실천하면 학교생활기록부에 남길 '나만의 이야기'가 시작됩니다.`}</p></div>
+  ${resultActions(d,{solution:true,summary:flat?(fhigh?'여러 계열이 고르게 높게 나왔어요':'아직 계열 방향이 뚜렷하지 않아요'):best+'계열 성향이 가장 높게 나왔어요'})}`;
   safeChart($('#radar'),{type:'radar',data:{labels:LABELS,datasets:[{data:r.scores,fill:true,backgroundColor:'rgba(108,92,231,.16)',borderColor:'#6C5CE7',pointBackgroundColor:'#00CEC9',borderWidth:2}]},options:{plugins:{legend:{display:false}},scales:{r:{beginAtZero:true,ticks:{display:false},pointLabels:{font:{size:12,weight:'700',family:'Pretendard'}}}},animation:false}});
  }else if(r.kind==='grades'){
   const blocks=d.blocks||[];

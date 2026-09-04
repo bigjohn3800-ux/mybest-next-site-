@@ -942,3 +942,13 @@ html[data-onae-theme="dark"] .topbar .logo span:last-child{ color:#5FD6CE !impor
    따라서 글자는 밝은 보라(--vio-text)를 그대로 쓰는 것이 맞다. 진하게 되돌리면 오히려 안 보인다. */
 html[data-onae-theme="dark"] .whero .btn.ghost,
 html[data-onae-theme="dark"] .lp-cta .btn.ghost{ color:#B7ADFF !important; }
+
+/* 상단 메뉴·푸터 링크는 라이브에서 앞의 묶음 규칙이 밀리는 경우가 확인돼,
+   더 구체적인 선택자로 한 번 더 못 박는다. (대비 2.94:1 → 8.0:1) */
+html[data-onae-theme="dark"] .topbar nav.mnav a,
+html[data-onae-theme="dark"] nav.mnav a,
+html[data-onae-theme="dark"] nav.mnav a.mktg,
+html[data-onae-theme="dark"] .flinks a,
+html[data-onae-theme="dark"] div.flinks a{ color:#B4BDC9 !important; }
+html[data-onae-theme="dark"] nav.mnav a:hover,
+html[data-onae-theme="dark"] div.flinks a:hover{ color:#B7ADFF !important; }

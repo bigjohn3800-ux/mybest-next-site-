@@ -321,3 +321,606 @@ html[data-onae-theme="dark"] .btn{
 html[data-onae-theme="dark"] :focus-visible{
   outline:3px solid #7FC4FF !important; outline-offset:2px !important;
 }
+/* ==========================================================================
+   5. dark — 화면 전반 대비 보강  (2026-09-04)
+
+   문제: 앱 화면(index.html)이 배경·테두리·글자색을 hex 로 직접 박아 두어,
+   어두운 테마를 켜도 카드가 흰색으로 남고 글자는 밝은 테마용 회색 그대로였다.
+   상단 메뉴는 어두운 바탕에서 대비 2.76:1 로 기준(4.5:1)의 절반 수준이었다.
+
+   원칙
+   · 배경 — 밝은 바탕은 어두운 면(#22262B / #2A2F35)으로 낮춘다.
+     색조가 있는 배지 바탕은 색조를 남긴 어두운 톤으로 옮겨 의미를 지킨다.
+   · 글자 — 역할(본문·보조·브랜드·성공·경고·위험·링크)을 지키면서,
+     옮겨진 배경 위에서 WCAG AA(4.5:1)를 넘는 색으로만 바꾼다.
+   · 이미 진한 배경 위의 흰 글자는 건드리지 않는다.
+
+   대치 글자색 대비(#22262B 기준) — 본문 12.5:1 · 보조 8.0:1 · 브랜드 7.6:1
+     성공 9.1:1 · 경고 9.2:1 · 위험 7.5:1 · 링크 8.0:1   (모두 AA 통과)
+   ========================================================================== */
+
+html[data-onae-theme="dark"] body{ background:radial-gradient(circle at 12% -10%,rgba(0,206,201,.18),transparent 30%),radial-gradient(circle at 90% 8%,rgba(108,92,231,.16),transparent 34%),linear-gradient(180deg,#171E38 0%,#1B1738 42%,#173834 100%) !important; }
+
+html[data-onae-theme="dark"] .topbar .who,
+html[data-onae-theme="dark"] label,
+html[data-onae-theme="dark"] .tcard p,
+html[data-onae-theme="dark"] .muted,
+html[data-onae-theme="dark"] .stat .l,
+html[data-onae-theme="dark"] .cmp th.f,
+html[data-onae-theme="dark"] .cmp .lim,
+html[data-onae-theme="dark"] .gradeGate p,
+html[data-onae-theme="dark"] .ggBtn small,
+html[data-onae-theme="dark"] .ccard .csub,
+html[data-onae-theme="dark"] .cprog,
+html[data-onae-theme="dark"] .krow .kk,
+html[data-onae-theme="dark"] .krow .kv small,
+html[data-onae-theme="dark"] .srcard .srsub,
+html[data-onae-theme="dark"] .srval small,
+html[data-onae-theme="dark"] .srhint,
+html[data-onae-theme="dark"] .gaprow .gl,
+html[data-onae-theme="dark"] .ggp,
+html[data-onae-theme="dark"] .ggb small,
+html[data-onae-theme="dark"] .gptitle,
+html[data-onae-theme="dark"] .gpdone p,
+html[data-onae-theme="dark"] .gpc span,
+html[data-onae-theme="dark"] .cfbh,
+html[data-onae-theme="dark"] .rmb .rmt span,
+html[data-onae-theme="dark"] .wizentry span,
+html[data-onae-theme="dark"] .vbody p,
+html[data-onae-theme="dark"] .hstep p,
+html[data-onae-theme="dark"] .flinks a,
+html[data-onae-theme="dark"] .lp-dc.b2c p,
+html[data-onae-theme="dark"] input::placeholder,
+html[data-onae-theme="dark"] .foot,
+html[data-onae-theme="dark"] .apl,
+html[data-onae-theme="dark"] .inqm,
+html[data-onae-theme="dark"] .foot .flinks a,
+html[data-onae-theme="dark"] .tcard p,
+html[data-onae-theme="dark"] .stat .l,
+html[data-onae-theme="dark"] .mbn-search input::placeholder,
+html[data-onae-theme="dark"] .mbn-skey{ color:#B4BDC9 !important; }
+
+html[data-onae-theme="dark"] .backlink,
+html[data-onae-theme="dark"] .lp-dc.b2c{ background:#22262B !important; border:1.5px solid #392E6B !important; }
+
+html[data-onae-theme="dark"] .card,
+html[data-onae-theme="dark"] .deeptab,
+html[data-onae-theme="dark"] .legmeta,
+html[data-onae-theme="dark"] .legview img,
+html[data-onae-theme="dark"] .legdots i.on,
+html[data-onae-theme="dark"] table,
+html[data-onae-theme="dark"] .stat,
+html[data-onae-theme="dark"] .ogcard,
+html[data-onae-theme="dark"] .blob,
+html[data-onae-theme="dark"] .ggm,
+html[data-onae-theme="dark"] .subjcol,
+html[data-onae-theme="dark"] .vcard,
+html[data-onae-theme="dark"] .teacher-student-sheet,
+html[data-onae-theme="dark"] .hstep,
+html[data-onae-theme="dark"] body,
+html[data-onae-theme="dark"] .skel-card,
+html[data-onae-theme="dark"] .mybsw-list,
+html[data-onae-theme="dark"] .mbn-back,
+html[data-onae-theme="dark"] .mbn-search{ background:#22262B !important; }
+
+html[data-onae-theme="dark"] .btn.ghost,
+html[data-onae-theme="dark"] .karte,
+html[data-onae-theme="dark"] .srcard,
+html[data-onae-theme="dark"] .gapc,
+html[data-onae-theme="dark"] .gpdone{ background:#22262B !important; border:2px solid #392E6B !important; }
+
+html[data-onae-theme="dark"] input:not([type=checkbox]):not([type=radio]),
+html[data-onae-theme="dark"] select,
+html[data-onae-theme="dark"] .opt,
+html[data-onae-theme="dark"] .ogbtn,
+html[data-onae-theme="dark"] .yn{ background:#22262B !important; border:2px solid #352E6B !important; }
+
+html[data-onae-theme="dark"] .tcard .emo,
+html[data-onae-theme="dark"] .opt.sel,
+html[data-onae-theme="dark"] .tag,
+html[data-onae-theme="dark"] .qbadge.lock,
+html[data-onae-theme="dark"] .planpill,
+html[data-onae-theme="dark"] .cbar,
+html[data-onae-theme="dark"] .kmini,
+html[data-onae-theme="dark"] .gaptrack,
+html[data-onae-theme="dark"] .gpbar,
+html[data-onae-theme="dark"] .catb2,
+html[data-onae-theme="dark"] .vchip,
+html[data-onae-theme="dark"] .lk:hover{ background:#1D1738 !important; }
+
+html[data-onae-theme="dark"] .bar,
+html[data-onae-theme="dark"] .meter{ background:#1B1738 !important; }
+
+html[data-onae-theme="dark"] .rx li,
+html[data-onae-theme="dark"] .attrow,
+html[data-onae-theme="dark"] .skel-row{ border-bottom:1px dashed #352E6B !important; }
+
+html[data-onae-theme="dark"] .chk li{ border-bottom:1px dashed #414954 !important; }
+
+html[data-onae-theme="dark"] .chk .ok,
+html[data-onae-theme="dark"] .cmp .yes,
+html[data-onae-theme="dark"] .inqm .ok,
+html[data-onae-theme="dark"] .inqok{ color:#6FDCA9 !important; }
+
+html[data-onae-theme="dark"] .chk .no,
+html[data-onae-theme="dark"] .cmp .no,
+html[data-onae-theme="dark"] .mybsw-error,
+html[data-onae-theme="dark"] .inqerr,
+html[data-onae-theme="dark"] .mbn-out{ color:#FF9B8E !important; }
+
+html[data-onae-theme="dark"] .block{ background:#22262B !important; border:1px solid #5D553C !important; }
+
+html[data-onae-theme="dark"] .blockpic{ background:#192636 !important; }
+
+html[data-onae-theme="dark"] .deepsec,
+html[data-onae-theme="dark"] .card,
+html[data-onae-theme="dark"] .block,
+html[data-onae-theme="dark"] .hero,
+html[data-onae-theme="dark"] .stat{ border:1px solid #414954 !important; }
+
+html[data-onae-theme="dark"] .legthumb{ background:#192036 !important; }
+
+html[data-onae-theme="dark"] .tipbox{ background:#352E1A !important; }
+
+html[data-onae-theme="dark"] .tipbox b,
+html[data-onae-theme="dark"] .pstep.now .pstate{ color:#F0C26B !important; }
+
+html[data-onae-theme="dark"] td{ border-bottom:1px solid #414954 !important; }
+
+html[data-onae-theme="dark"] .err{ background:#381717 !important; color:#FF9B8E !important; }
+
+html[data-onae-theme="dark"] .proof,
+html[data-onae-theme="dark"] .quality,
+html[data-onae-theme="dark"] .lp-val,
+html[data-onae-theme="dark"] .convcard,
+html[data-onae-theme="dark"] .seolinks a{ background:#22262B !important; border:1px solid #383465 !important; }
+
+html[data-onae-theme="dark"] .proof span,
+html[data-onae-theme="dark"] .quality p,
+html[data-onae-theme="dark"] .saleshold p,
+html[data-onae-theme="dark"] .ogbtn span,
+html[data-onae-theme="dark"] .pstep .ptxt,
+html[data-onae-theme="dark"] .ccard .cdesc,
+html[data-onae-theme="dark"] .wizrec-desc,
+html[data-onae-theme="dark"] .mnav a,
+html[data-onae-theme="dark"] .tabbar a,
+html[data-onae-theme="dark"] .lp-val p,
+html[data-onae-theme="dark"] .lp-report-b p,
+html[data-onae-theme="dark"] .convcard span,
+html[data-onae-theme="dark"] .savebox p,
+html[data-onae-theme="dark"] .resultsave p,
+html[data-onae-theme="dark"] #ls-banner .ls-banner-desc,
+html[data-onae-theme="dark"] .actp .apsub,
+html[data-onae-theme="dark"] .actp .apnone,
+html[data-onae-theme="dark"] .inqp .inqs,
+html[data-onae-theme="dark"] .inqwarn{ color:#E6E9EE !important; }
+
+html[data-onae-theme="dark"] .qbadge.ready{ background:#173823 !important; color:#6FDCA9 !important; }
+
+html[data-onae-theme="dark"] .qbadge.build{ background:#382E17 !important; color:#F0C26B !important; }
+
+html[data-onae-theme="dark"] .methodnote{ background:#352E1A !important; border:1px solid #5D553C !important; color:#E6E9EE !important; }
+
+html[data-onae-theme="dark"] .saleshold{ background:#26351A !important; border:1px solid #416534 !important; }
+
+html[data-onae-theme="dark"] .cmp th,
+html[data-onae-theme="dark"] .cmp td{ border-bottom:1px solid #352E6B !important; }
+
+html[data-onae-theme="dark"] .cmp .pcol,
+html[data-onae-theme="dark"] .ggBtn:hover,
+html[data-onae-theme="dark"] .lvMore:hover,
+html[data-onae-theme="dark"] .callBtn:hover,
+html[data-onae-theme="dark"] .kacts button:hover,
+html[data-onae-theme="dark"] .rsact button:hover,
+html[data-onae-theme="dark"] .vchip:hover{ background:#1E1738 !important; }
+
+
+html[data-onae-theme="dark"] .gradeGate{ background:linear-gradient(135deg,#1E1738,#1C1738) !important; border:2px solid #352E6B !important; }
+
+html[data-onae-theme="dark"] .gradeGate h4,
+html[data-onae-theme="dark"] .pstep.now .ptxt,
+html[data-onae-theme="dark"] .ccard h4,
+html[data-onae-theme="dark"] .krow .kv,
+html[data-onae-theme="dark"] .rsin .rsh,
+html[data-onae-theme="dark"] .srcard h2,
+html[data-onae-theme="dark"] .ggh,
+html[data-onae-theme="dark"] .ggb b,
+html[data-onae-theme="dark"] .gpq,
+html[data-onae-theme="dark"] .gpdone h2,
+html[data-onae-theme="dark"] .gpc b,
+html[data-onae-theme="dark"] .cfbl,
+html[data-onae-theme="dark"] .rmb .rmt b,
+html[data-onae-theme="dark"] #mjTip b.nm,
+html[data-onae-theme="dark"] .apt,
+html[data-onae-theme="dark"] .inqt,
+html[data-onae-theme="dark"] .inqh,
+html[data-onae-theme="dark"] .inql,
+html[data-onae-theme="dark"] .inqsh,
+html[data-onae-theme="dark"] .inqsum p,
+html[data-onae-theme="dark"] .inqsum p b{ color:#B7ADFF !important; }
+
+html[data-onae-theme="dark"] .ggBtn{ background:#22262B !important; border:2px solid #372E6B !important; color:#8FBEFF !important; }
+
+html[data-onae-theme="dark"] .pstrip{ background:#1E1738 !important; border:1.5px solid #352E6B !important; }
+
+html[data-onae-theme="dark"] .pstep{ background:#22262B !important; border:1.5px solid #382E6B !important; }
+
+html[data-onae-theme="dark"] .pstep .pnum{ background:#1B1738 !important; color:#8FBEFF !important; }
+
+html[data-onae-theme="dark"] .pstep.done{ background:#173832 !important; border-color:#2E6B63 !important; }
+
+html[data-onae-theme="dark"] .pstep.done .ptxt{ color:#5FD6CE !important; }
+
+html[data-onae-theme="dark"] .pstep.now{ background:#382E17 !important; border-color:#6B562E !important; }
+
+html[data-onae-theme="dark"] .pstep.now .pnum{ background:#382D17 !important; color:#F0C26B !important; }
+
+html[data-onae-theme="dark"] .lvMore,
+html[data-onae-theme="dark"] .callBtn{ background:#22262B !important; border:2px dashed #372E6B !important; color:#8FBEFF !important; }
+
+html[data-onae-theme="dark"] .ccard{ background:#22262B !important; border:2px solid #382E6B !important; }
+
+html[data-onae-theme="dark"] .ccard:hover,
+html[data-onae-theme="dark"] .mbn-search:hover{ border-color:#382E6B !important; }
+
+html[data-onae-theme="dark"] .ccard.cdone{ background:linear-gradient(180deg,#173833,#22262B) !important; border-color:#2E6B63 !important; }
+
+html[data-onae-theme="dark"] .cprog b,
+html[data-onae-theme="dark"] .rsin .rst,
+html[data-onae-theme="dark"] .srval,
+html[data-onae-theme="dark"] .gptag,
+html[data-onae-theme="dark"] .cfbv,
+html[data-onae-theme="dark"] .ractmore summary,
+html[data-onae-theme="dark"] #ls-banner .ls-banner-desc a,
+html[data-onae-theme="dark"] .actp .apq,
+html[data-onae-theme="dark"] .inqp .inqn,
+html[data-onae-theme="dark"] .inqsh span,
+html[data-onae-theme="dark"] .inqsec,
+html[data-onae-theme="dark"] .foot{ color:#8FBEFF !important; }
+
+html[data-onae-theme="dark"] .cchip{ background:#1E1738 !important; border:1px solid #3B2E6B !important; color:#B4BDC9 !important; }
+
+html[data-onae-theme="dark"] .cchip.on{ background:#173834 !important; color:#5FD6CE !important; }
+
+html[data-onae-theme="dark"] .cgo.cfin{ background:#1D1738 !important; color:#8FBEFF !important; }
+
+html[data-onae-theme="dark"] .krow{ border-bottom:1px solid #3A2E6B !important; }
+
+html[data-onae-theme="dark"] .krow .kt,
+html[data-onae-theme="dark"] .srconf button.on{ background:#1E1738 !important; color:#8FBEFF !important; }
+
+html[data-onae-theme="dark"] .kup{ background:#173833 !important; color:#5FD6CE !important; }
+
+html[data-onae-theme="dark"] .kdn{ background:#381C17 !important; color:#FF9B8E !important; }
+
+html[data-onae-theme="dark"] .kacts button,
+html[data-onae-theme="dark"] .rsact button{ background:#1E1738 !important; border:1.5px solid #392E6B !important; color:#8FBEFF !important; }
+
+html[data-onae-theme="dark"] .rsticky{ border-bottom:1px solid #383465 !important; }
+
+html[data-onae-theme="dark"] input.srrange{ background:linear-gradient(90deg,#1C1738,#1C1738) !important; }
+
+html[data-onae-theme="dark"] input.srrange::-webkit-slider-thumb,
+html[data-onae-theme="dark"] input.srrange::-moz-range-thumb{ border:3px solid #414954 !important; }
+
+html[data-onae-theme="dark"] .srconf button{ background:#1E1738 !important; border:2px solid #382E6B !important; color:#B4BDC9 !important; }
+
+html[data-onae-theme="dark"] .gap-under{ background:#173833 !important; border:1px solid #2E6B63 !important; color:#5FD6CE !important; }
+
+html[data-onae-theme="dark"] .gap-match{ background:#1E1738 !important; border:1px solid #372E6B !important; color:#8FBEFF !important; }
+
+html[data-onae-theme="dark"] .gap-over{ background:#382E17 !important; border:1px solid #6B592E !important; color:#F0C26B !important; }
+
+html[data-onae-theme="dark"] .ggb{ background:#1E1738 !important; border:2px solid #382E6B !important; }
+
+html[data-onae-theme="dark"] .ggb:hover{ background:#1F1738 !important; border-color:#382E6B !important; }
+
+html[data-onae-theme="dark"] .ggb.prim{ background:linear-gradient(120deg,#1E1738,#173834) !important; }
+
+html[data-onae-theme="dark"] .gqo{ background:#22262B !important; border:2px solid #382E6B !important; color:#8FBEFF !important; }
+
+html[data-onae-theme="dark"] .gqo:hover{ background:#1F1738 !important; color:#8FBEFF !important; }
+
+html[data-onae-theme="dark"] .gpc{ background:#1E1738 !important; border:1px solid #382E6B !important; }
+
+html[data-onae-theme="dark"] .gpback{ background:#22262B !important; border:1.5px solid #392E6B !important; color:#8FBEFF !important; }
+
+html[data-onae-theme="dark"] .cfb{ background:#1E1738 !important; border:1.5px solid #392E6B !important; }
+
+html[data-onae-theme="dark"] .cfbt,
+html[data-onae-theme="dark"] .opt:hover,
+html[data-onae-theme="dark"] .lk:hover,
+html[data-onae-theme="dark"] .yn:hover,
+html[data-onae-theme="dark"] .lp-report .lp-shot i{ background:#1C1738 !important; }
+
+html[data-onae-theme="dark"] .ractmore{ background:#1E1738 !important; border:1.5px dashed #392E6B !important; }
+
+html[data-onae-theme="dark"] .rmb{ background:linear-gradient(120deg,#383017,#382E17) !important; border:2px solid #6B582E !important; }
+
+html[data-onae-theme="dark"] .rmb.due{ background:linear-gradient(120deg,#173834,#173833) !important; border-color:#2E6B65 !important; }
+
+html[data-onae-theme="dark"] .rmb .rmi{ background:#22262B !important; border:1.5px solid #6B592E !important; }
+
+html[data-onae-theme="dark"] .rmb.due .rmi{ border-color:#2E6B63 !important; }
+
+html[data-onae-theme="dark"] .rmb .rmgo{ background:linear-gradient(120deg,#E8A93C,#382D17) !important; }
+
+html[data-onae-theme="dark"] .chip,
+html[data-onae-theme="dark"] .lk{ background:#22262B !important; border:2px solid #352E6B !important; color:#B4BDC9 !important; }
+
+html[data-onae-theme="dark"] .mjchip,
+html[data-onae-theme="dark"] .wizchip{ background:#22262B !important; border:2px solid #352E6B !important; color:#E6E9EE !important; }
+
+html[data-onae-theme="dark"] .subjtag{ background:#1C1738 !important; color:#B7ADFF !important; }
+
+html[data-onae-theme="dark"] .subjtag.c{ background:#17382E !important; color:#5FD6CE !important; }
+
+html[data-onae-theme="dark"] .subjtag.f{ background:#382A17 !important; color:#F0C26B !important; }
+
+html[data-onae-theme="dark"] .wizentry{ background:linear-gradient(120deg,#1E1738,#17382E) !important; border:1.5px solid #392E6B !important; }
+
+html[data-onae-theme="dark"] .wizsummary{ background:#1D1738 !important; border:1px solid #392E6B !important; }
+
+html[data-onae-theme="dark"] .wizsummary span,
+html[data-onae-theme="dark"] .loginpill,
+html[data-onae-theme="dark"] .lp-report .lp-shot,
+html[data-onae-theme="dark"] .savechips span,
+html[data-onae-theme="dark"] .mbn-login{ background:#22262B !important; border:1px solid #392E6B !important; }
+
+html[data-onae-theme="dark"] .wizrec{ border:1.5px solid #352E6B !important; }
+
+html[data-onae-theme="dark"] .wizrec-why{ background:#173821 !important; color:#6FDCA9 !important; }
+
+html[data-onae-theme="dark"] .vchip.done{ background:#17381E !important; color:#6FDCA9 !important; }
+
+html[data-onae-theme="dark"] .mjp{ background:#22262B !important; border:1.5px solid #392E6B !important; color:#B7ADFF !important; }
+
+html[data-onae-theme="dark"] #mjTip{ background:#22262B !important; color:#E6E9EE !important; }
+
+html[data-onae-theme="dark"] #mjTip .s{ border-top:1px solid #382E6B !important; color:#B4BDC9 !important; }
+
+html[data-onae-theme="dark"] .yn.yes:hover{ background:#173820 !important; }
+
+html[data-onae-theme="dark"] .yn.no:hover{ background:#383017 !important; }
+
+html[data-onae-theme="dark"] .gcell{ background:#352E1A !important; border:1px solid #5D553C !important; }
+
+html[data-onae-theme="dark"] .tabbar{ background:#22262B !important; border-top:1px solid #383465 !important; }
+
+
+html[data-onae-theme="dark"] .lp-report{ background:linear-gradient(120deg,#1E1738,#17382E) !important; border:1px solid #392E6B !important; }
+
+html[data-onae-theme="dark"] .lp-report .lp-shot .lp-don{ background:radial-gradient(circle at 50% 40%,#1C1738,#22262B) !important; }
+
+html[data-onae-theme="dark"] .savebox{ background:linear-gradient(120deg,#173822,#1E1738) !important; border:1.5px solid #2E6B4A !important; }
+
+html[data-onae-theme="dark"] .resultsave{ background:linear-gradient(120deg,#173822,#1F1738) !important; border:1.5px solid #2E6B4A !important; }
+
+html[data-onae-theme="dark"] .skel{ background:linear-gradient(90deg,#1B1738 25%,#1C1738 37%,#1B1738 63%) !important; }
+
+html[data-onae-theme="dark"] .mybsw-togglebtn{ background:#172538 !important; border:1.5px solid #2E486B !important; color:#8FBEFF !important; }
+
+html[data-onae-theme="dark"] .mybsw-togglebtn:hover{ background:#172438 !important; }
+
+html[data-onae-theme="dark"] .mybsw-root{ background:#22262B !important; border:#344965 !important; }
+
+html[data-onae-theme="dark"] .mybsw-card{ background:#182837 !important; }
+
+html[data-onae-theme="dark"] #ls-banner .ls-banner-in,
+html[data-onae-theme="dark"] #ls-banner .ls-btn{ background:#22262B !important; border:1px solid #414954 !important; color:#E6E9EE !important; }
+
+html[data-onae-theme="dark"] #ls-banner .ls-btn:hover{ background:#1F2830 !important; }
+
+html[data-onae-theme="dark"] .nbadge.nv{ background:#172438 !important; border-color:#2E486B !important; color:#B7ADFF !important; }
+
+html[data-onae-theme="dark"] .nbadge.ns{ background:#173821 !important; border-color:#2E6B44 !important; color:#6FDCA9 !important; }
+
+html[data-onae-theme="dark"] .nbadge.nb,
+html[data-onae-theme="dark"] .apb.on.ap-d{ background:#382E17 !important; border-color:#6B5A2E !important; color:#F0C26B !important; }
+
+html[data-onae-theme="dark"] .apc,
+html[data-onae-theme="dark"] .inqi,
+html[data-onae-theme="dark"] .inqsum{ background:#22262B !important; border:1px solid #334366 !important; }
+
+html[data-onae-theme="dark"] .apc.fin{ background:#173820 !important; border-color:#2E6B42 !important; }
+
+html[data-onae-theme="dark"] .apb{ background:#172238 !important; border:1px solid #334566 !important; color:#E6E9EE !important; }
+
+html[data-onae-theme="dark"] .apb.on.ap-p{ background:#171D38 !important; border-color:#2E3A6B !important; color:#8FBEFF !important; }
+
+html[data-onae-theme="dark"] .apb.on.ap-o{ background:#173829 !important; border-color:#2E6B4D !important; color:#6FDCA9 !important; }
+
+html[data-onae-theme="dark"] .inqi:hover{ border-color:#2E3A6B !important; }
+
+html[data-onae-theme="dark"] .apb.ap-i{ background:#211738 !important; border-color:#3E2E6B !important; color:#B7ADFF !important; }
+
+html[data-onae-theme="dark"] .inqin,
+html[data-onae-theme="dark"] .inqta{ border:1.5px solid #334566 !important; }
+
+html[data-onae-theme="dark"] .inqline{ background:#173820 !important; border:1px solid #2E6B42 !important; color:#6FDCA9 !important; }
+
+/* 인라인 style="color:#..." 구제 — 배경을 함께 지정한 요소는 제외한다.
+   (밝은 배지 바탕 위 진한 글자 조합을 깨뜨리지 않기 위해) */
+
+/* 보조 → #B4BDC9 */
+html[data-onae-theme="dark"] [style*="color:#7a7e9a" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#8489a3" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#6b708a" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#7b8299" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#7d8399" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#64748b" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#686d84" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#6b7186" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#707593" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#6e7488" i]:not([style*="background" i]){ color:#B4BDC9 !important; }
+
+/* 성공 → #6FDCA9 */
+html[data-onae-theme="dark"] [style*="color:#2e7d32" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#1e8e4e" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#1f6b3a" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#1b4b2e" i]:not([style*="background" i]){ color:#6FDCA9 !important; }
+
+/* 위험 → #FF9B8E */
+html[data-onae-theme="dark"] [style*="color:#c62828" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#c0392b" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#cc0000" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#dc2626" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#b91c1c" i]:not([style*="background" i]){ color:#FF9B8E !important; }
+
+/* 경고 → #F0C26B */
+html[data-onae-theme="dark"] [style*="color:#836728" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#5c4405" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#b07b08" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#96660a" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#9a6400" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#7a4a12" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#a8760b" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#5b5320" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#8a6100" i]:not([style*="background" i]){ color:#F0C26B !important; }
+
+/* 본문 → #E6E9EE */
+html[data-onae-theme="dark"] [style*="color:#5c617c" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#5b6270" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#4c5c4c" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#5b6079" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#4c5263" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#4a4f66" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#555555" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#666677" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#222222" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#333333" i]:not([style*="background" i]){ color:#E6E9EE !important; }
+
+/* 브랜드 → #B7ADFF */
+html[data-onae-theme="dark"] [style*="color:#23284a" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#3b3f5c" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#3a4154" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#1b2a4a" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#1b4b8f" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#5b45c7" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#3b4257" i]:not([style*="background" i]){ color:#B7ADFF !important; }
+
+/* 링크 → #8FBEFF */
+html[data-onae-theme="dark"] [style*="color:#4b3fbb" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#6c5ce7" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#4c5170" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#3b4bb0" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#2b6cb0" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#2563eb" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#6f749c" i]:not([style*="background" i]){ color:#8FBEFF !important; }
+
+/* 민트 → #5FD6CE */
+html[data-onae-theme="dark"] [style*="color:#0a7c77" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#0a7a66" i]:not([style*="background" i]),
+html[data-onae-theme="dark"] [style*="color:#00997b" i]:not([style*="background" i]){ color:#5FD6CE !important; }
+
+/* 인라인 style="background:#..." 로 박아 둔 밝은 바탕도 함께 낮춘다.
+   바탕과 글자를 같이 옮겨야 배지·안내 상자의 대비가 유지된다. */
+html[data-onae-theme="dark"] [style*="background:#f2fbf5" i],
+html[data-onae-theme="dark"] [style*="background-color:#f2fbf5" i]{ background:#173822 !important; color:#6FDCA9 !important; }
+html[data-onae-theme="dark"] [style*="background:#e8f8ee" i],
+html[data-onae-theme="dark"] [style*="background-color:#e8f8ee" i]{ background:#173823 !important; color:#6FDCA9 !important; }
+html[data-onae-theme="dark"] [style*="background:#fff7e8" i],
+html[data-onae-theme="dark"] [style*="background-color:#fff7e8" i]{ background:#382D17 !important; color:#F0C26B !important; }
+html[data-onae-theme="dark"] [style*="background:#f4f8f1" i],
+html[data-onae-theme="dark"] [style*="background-color:#f4f8f1" i]{ background:#26351A !important; color:#6FDCA9 !important; }
+html[data-onae-theme="dark"] [style*="background:#fff0f0" i],
+html[data-onae-theme="dark"] [style*="background-color:#fff0f0" i]{ background:#381717 !important; color:#FF9B8E !important; }
+html[data-onae-theme="dark"] [style*="background:#fff8e6" i],
+html[data-onae-theme="dark"] [style*="background-color:#fff8e6" i]{ background:#382F17 !important; color:#F0C26B !important; }
+html[data-onae-theme="dark"] [style*="background:#fdcb6e" i],
+html[data-onae-theme="dark"] [style*="background-color:#fdcb6e" i]{ background:#382D17 !important; color:#F0C26B !important; }
+html[data-onae-theme="dark"] [style*="background:#fff3d6" i],
+html[data-onae-theme="dark"] [style*="background-color:#fff3d6" i]{ background:#382E17 !important; color:#F0C26B !important; }
+html[data-onae-theme="dark"] [style*="background:#eef1ff" i],
+html[data-onae-theme="dark"] [style*="background-color:#eef1ff" i]{ background:#171D38 !important; color:#8FBEFF !important; }
+html[data-onae-theme="dark"] [style*="background:#ffffff" i],
+html[data-onae-theme="dark"] [style*="background-color:#ffffff" i]{ background:#22262B !important; color:#E6E9EE !important; }
+html[data-onae-theme="dark"] [style*="background:#f4f1e8" i],
+html[data-onae-theme="dark"] [style*="background-color:#f4f1e8" i]{ background:#352E1A !important; color:#F0C26B !important; }
+html[data-onae-theme="dark"] [style*="background:#e9fbf3" i],
+html[data-onae-theme="dark"] [style*="background-color:#e9fbf3" i]{ background:#173829 !important; color:#6FDCA9 !important; }
+html[data-onae-theme="dark"] [style*="background:#fdeaea" i],
+html[data-onae-theme="dark"] [style*="background-color:#fdeaea" i]{ background:#381717 !important; color:#FF9B8E !important; }
+html[data-onae-theme="dark"] [style*="background:#f6f4ff" i],
+html[data-onae-theme="dark"] [style*="background-color:#f6f4ff" i]{ background:#1D1738 !important; color:#B7ADFF !important; }
+html[data-onae-theme="dark"] [style*="background:#fff3f3" i],
+html[data-onae-theme="dark"] [style*="background-color:#fff3f3" i]{ background:#381717 !important; color:#FF9B8E !important; }
+html[data-onae-theme="dark"] [style*="background:#fff4dc" i],
+html[data-onae-theme="dark"] [style*="background-color:#fff4dc" i]{ background:#382E17 !important; color:#F0C26B !important; }
+html[data-onae-theme="dark"] [style*="background:#fff8ec" i],
+html[data-onae-theme="dark"] [style*="background-color:#fff8ec" i]{ background:#382C17 !important; color:#F0C26B !important; }
+html[data-onae-theme="dark"] [style*="background:#e8fff8" i],
+html[data-onae-theme="dark"] [style*="background-color:#e8fff8" i]{ background:#17382E !important; color:#5FD6CE !important; }
+html[data-onae-theme="dark"] [style*="background:#fff6e0" i],
+html[data-onae-theme="dark"] [style*="background-color:#fff6e0" i]{ background:#382E17 !important; color:#F0C26B !important; }
+html[data-onae-theme="dark"] [style*="background:#fcfbff" i],
+html[data-onae-theme="dark"] [style*="background-color:#fcfbff" i]{ background:#1F1738 !important; color:#B7ADFF !important; }
+html[data-onae-theme="dark"] [style*="background:#fbfaff" i],
+html[data-onae-theme="dark"] [style*="background-color:#fbfaff" i]{ background:#1E1738 !important; color:#B7ADFF !important; }
+
+/* --------------------------------------------------------------------------
+   앱이 쓰는 자체 CSS 변수를 어두운 테마용으로 바꾼다.
+   앱의 :root 에는 이미 '텍스트 전용 별칭'(--text / --vio-text / --navy-text 등)이
+   "다크모드에서 안전하게 전환"할 목적으로 분리돼 있었는데, 정작 어두운 테마가
+   그 이름들을 덮어쓰지 않아 밝은 테마용 색이 그대로 남아 있었다. 여기서 연결한다.
+   배경으로도 함께 쓰이는 --ink / --vio / --navy 는 건드리지 않는다(장식이 깨진다).
+     --text 본문              #E6E9EE on #22262B = 12.50:1
+     --navy-text 제목         #E6E9EE on #22262B = 12.50:1
+     --vio-text 브랜드         #B7ADFF on #22262B = 7.56:1
+     --vio-text on vio-soft #B7ADFF on #2A2540 = 7.26:1
+     --mint-text            #5FD6CE on #22262B = 8.69:1
+     --gold-text            #F0C26B on #22262B = 9.15:1
+     --muted 보조             #B4BDC9 on #22262B = 8.02:1
+     --mybsw-text           #E6E9EE on #22262B = 12.50:1
+     --mybsw-muted          #B4BDC9 on #22262B = 8.02:1
+   -------------------------------------------------------------------------- */
+html[data-onae-theme="dark"]{
+  --text:#E6E9EE !important;
+  --navy-text:#E6E9EE !important;
+  --vio-text:#B7ADFF !important;
+  --mint-text:#5FD6CE !important;
+  --gold-text:#F0C26B !important;
+  --muted:#B4BDC9 !important;
+  --bg:#1A1D21 !important;
+  --paper:#22262B !important;
+  --vio-soft:#2A2540 !important;
+  --mybsw-text:#E6E9EE !important;
+  --mybsw-muted:#B4BDC9 !important;
+  --mybsw-border:#414954 !important;
+  --mybsw-blue-light:#1E2A3C !important;
+}
+
+/* --ink 는 글자(6곳)와 배지 배경(.stepb 1곳)에 함께 쓰인다.
+   글자 쪽이 압도적이라 어두운 테마에서는 밝은 잉크로 바꾸고,
+   유일한 배경 사용처인 .stepb 만 원래의 진한 색으로 되돌려 배지 모양을 지킨다. */
+html[data-onae-theme="dark"]{ --ink:#E6E9EE !important; }
+html[data-onae-theme="dark"] .stepb{ background:#3A4152 !important; color:#FDCB6E !important; }
+/* 흰 반투명 배지 위 글자는 어두운 잉크를 유지해야 읽힌다. */
+html[data-onae-theme="dark"] .catb{ background:rgba(255,255,255,.92) !important; color:#23284A !important; }
+
+/* PC 셸(왼쪽 메뉴·상단바)은 어두운 색을 이미 갖고 있었지만, 그 값이 운영체제 설정
+   (prefers-color-scheme)에만 걸려 있었다. 그래서 OS 는 밝은데 앱에서 '어두운'을
+   고르면 셸만 흰색으로 남았다. 테마 선택기로도 같은 값이 적용되도록 연결한다. */
+@media (min-width:1024px){
+  html[data-onae-theme="dark"]{
+    --mbn-line:#2E3444 !important;
+    --mbn-panel:#1C2029 !important;
+    --mbn-panel-tr:rgba(23,26,36,.86) !important;
+    --mbn-item:#AEB4CC !important;
+    --mbn-item-hv:#242A38 !important;
+    --mbn-gk:#A2A9C2 !important;
+  }
+  html[data-onae-theme="dark"] .mbn-back,
+  html[data-onae-theme="dark"] .mbn-search,
+  html[data-onae-theme="dark"] .mbn-login{ background:#1C2029 !important; border-color:#333A4C !important; color:var(--vio-text) !important; }
+  html[data-onae-theme="dark"] .mbn-search input{ color:var(--text) !important; }
+  html[data-onae-theme="dark"] .mbn-search input::placeholder{ color:#9AA2B4 !important; }
+  html[data-onae-theme="dark"] .mbn-back:hover,
+  html[data-onae-theme="dark"] .mbn-login:hover{ background:#242A38 !important; }
+  html[data-onae-theme="dark"] .mbn-skey{ color:#A2A9C2 !important; }
+  html[data-onae-theme="dark"] .mbn-sfoot b{ color:#B4BDC9 !important; }
+}
+
+/* .hgrad / .lp-grad 는 글자에 그러데이션을 입히는 장식(background-clip:text)이다.
+   배경을 다시 지정하면 shorthand 가 background-clip 을 초기화해 글자가 사라지고
+   색 막대만 남는다. 이미 어두운 히어로 위라 원래도 잘 읽히므로 건드리지 않는다. */

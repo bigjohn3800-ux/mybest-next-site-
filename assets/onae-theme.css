@@ -924,3 +924,21 @@ html[data-onae-theme="dark"] .catb{ background:rgba(255,255,255,.92) !important;
 /* .hgrad / .lp-grad 는 글자에 그러데이션을 입히는 장식(background-clip:text)이다.
    배경을 다시 지정하면 shorthand 가 background-clip 을 초기화해 글자가 사라지고
    색 막대만 남는다. 이미 어두운 히어로 위라 원래도 잘 읽히므로 건드리지 않는다. */
+
+/* --------------------------------------------------------------------------
+   rgba() 로 지정한 반투명 밝은 바탕 보정.
+   앞의 규칙들은 hex 색만 훑었기 때문에 rgba 로 적힌 바탕이 흰색으로 남아 있었다.
+   · 불투명도가 낮은(≤0.3) 것들은 어두운 히어로 위에 얹힌 장식이라 그대로 둔다.
+   · 사실상 불투명한(≥0.9) 상단바·고정바만 어두운 톤으로 바꾼다.
+   · 반대로 밝은 고스트 버튼은 바탕이 밝은 채로 남으므로 글자를 다시 진하게 되돌린다.
+   -------------------------------------------------------------------------- */
+html[data-onae-theme="dark"] .topbar{ background:rgba(20,22,32,.88) !important; }
+html[data-onae-theme="dark"] .rsticky{ background:rgba(26,29,33,.96) !important; border-bottom-color:#414954 !important; }
+html[data-onae-theme="dark"] .topbar .logo,
+html[data-onae-theme="dark"] .topbar .logo span{ color:#B7ADFF !important; }
+html[data-onae-theme="dark"] .topbar .logo span:last-child{ color:#5FD6CE !important; }
+
+/* 고스트 버튼은 위의 배경 규칙에서 이미 어두운 면으로 바뀐다(rgba 지정보다 우선).
+   따라서 글자는 밝은 보라(--vio-text)를 그대로 쓰는 것이 맞다. 진하게 되돌리면 오히려 안 보인다. */
+html[data-onae-theme="dark"] .whero .btn.ghost,
+html[data-onae-theme="dark"] .lp-cta .btn.ghost{ color:#B7ADFF !important; }

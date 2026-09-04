@@ -4,7 +4,7 @@
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-3CGHX7BVM9"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());/* [FIX 2026-09-02 · WAVE0-2] config 호출은 쿠키 동의(analytics) 확인 후로 미룸 — legal-widget 스크립트 하단 참조 */</script>
 <title>마이베스트 NEXT — 나의 가능성 진단</title>
-<meta name="description" content="초·중·고 학생을 위한 진로·진학·공부·미래역량 진단 26종 + 맞춤 성장 가이드와 A4·B4 상담 보고서. 구 마이베스트 누적 45,000명 운영 경험을 이어받은 후속 진단.">
+<meta name="description" content="초·중·고 학생을 위한 진로·진학·공부·미래역량 진단 26종 + 맞춤 성장 가이드와 A4·B4 상담 보고서. 구 마이베스트 누적 수만 명 운영 경험을 이어받은 후속 진단.">
 <!-- og:* (B7) 카카오톡·페이스북·스레드 링크 미리보기 -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="마이베스트 NEXT">
@@ -68,7 +68,9 @@ a.btn{text-decoration:none}
 .actionbar{display:flex;flex-direction:column;gap:9px;margin-top:18px}
 .actionbar .btn{margin:0}
 @media(min-width:560px){.actionbar{flex-direction:row;flex-wrap:wrap}.actionbar .btn{flex:1 1 calc(50% - 5px)}}
-input,select{width:100%;padding:13px 14px;border:2px solid #ECEAFB;border-radius:var(--r-md);font-family:inherit;font-size:15px;margin-bottom:10px;background:#fff}
+/* 2026-09-04 F02: 체크박스·라디오가 위 input 전역 규칙(width:100%)의 영향을 받아 가로 518px로 늘어나 쿠키 동의/법정대리인 동의 체크박스 레이아웃이 깨지던 문제 수정 — 텍스트형 input·select에만 폭 규칙을 적용하고 체크박스/라디오는 자연스러운 크기로 별도 지정 */
+input:not([type=checkbox]):not([type=radio]),select{width:100%;padding:13px 14px;border:2px solid #ECEAFB;border-radius:var(--r-md);font-family:inherit;font-size:15px;margin-bottom:10px;background:#fff}
+input[type=checkbox],input[type=radio]{width:18px;height:18px;min-width:18px;margin:0;flex:0 0 auto;accent-color:#6C5CE7}
 input:focus{outline:none;border-color:var(--vio)}
 label{font-size:12px;font-weight:700;color:#7A7E9A;display:block;margin:4px 0 4px 2px}
 .k{font-size:11px;font-weight:800;letter-spacing:.16em;color:var(--vio-text);margin-bottom:10px}
@@ -855,7 +857,7 @@ if(window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches&&window.
   "name": "마이베스트 NEXT",
   "url": "https://mybest-next-edu.netlify.app/",
   "logo": "https://mybest-next-edu.netlify.app/og-default.png",
-  "parentOrganization": { "@type": "Organization", "name": "㈜가르치는사람들" },
+  "parentOrganization": { "@type": "Organization", "name": "(주)가르치는사람들" },
   "description": "초·중·고 학생을 위한 진로·진학·공부·미래역량 진단 26종과 맞춤 성장 리포트를 제공하는 온라인 진로교육 플랫폼."
 }
 </script>
@@ -865,11 +867,11 @@ if(window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches&&window.
   "@type": "FAQPage",
   "mainEntity": [
     {"@type":"Question","name":"마이베스트 NEXT는 무엇인가요?","acceptedAnswer":{"@type":"Answer","text":"초·중·고 학생을 위한 진로·진학·공부·미래역량 진단 26종과 맞춤 성장 리포트를 제공하는 온라인 진로교육 플랫폼이다. 학교/학급 단위 도입뿐 아니라 개인 이용자도 이용할 수 있다."}},
-    {"@type":"Question","name":"진로심리검사는 꼭 필요한가요?","acceptedAnswer":{"@type":"Answer","text":"한국직업능력연구원의 2025년 초·중등 진로교육 현황조사에 따르면 중학교 98.3%, 고등학교 98.9%가 이미 진로심리검사를 실시하고 있어, 진로검사는 사실상 보편적인 진로교육 절차로 자리잡았다."}},
-    {"@type":"Question","name":"고등학생들은 대학 진학을 얼마나 희망하나요?","acceptedAnswer":{"@type":"Answer","text":"같은 조사에서 고등학생의 대학 진학 희망 비율은 2023년 77.3%에서 2025년 64.9%로 매년 감소하고 취업 희망 비율은 늘고 있어, 조기에 적성을 파악하는 진단의 중요성이 커지고 있다."}},
+    {"@type":"Question","name":"진로심리검사는 꼭 필요한가요?","acceptedAnswer":{"@type":"Answer","text":"한국직업능력연구원의 초·중등 진로교육 현황조사에 따르면 중학교와 고등학교 대부분이 이미 진로심리검사를 실시하고 있어, 진로검사는 사실상 보편적인 진로교육 절차로 자리잡았다."}},
+    {"@type":"Question","name":"고등학생들은 대학 진학을 얼마나 희망하나요?","acceptedAnswer":{"@type":"Answer","text":"같은 조사에서 고등학생의 대학 진학 희망 비율은 최근 들어 낮아지고 취업 희망 비율은 늘고 있어, 조기에 적성을 파악하는 진단의 중요성이 커지고 있다."}},
     {"@type":"Question","name":"학급코드 없이 개인적으로도 이용할 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"가능하다. 학급코드 없이 이름과 4자리 PIN만으로 개인 결과함을 만들어 무료 진단 8종(고등/중학 계열성향, 고교 과목추천, 학생부 로드맵, 공부습관, 면접 준비도, 고교 유형, 초등 진로탐험 등)을 바로 이용할 수 있다."}},
     {"@type":"Question","name":"진단 결과는 무엇을 알려주나요?","acceptedAnswer":{"@type":"Answer","text":"계열·적성 성향, 학습습관, 미래역량 등을 진단하고 A4 요약·B4 상세 보고서(선택 시 10쪽 종합 보고서)로 제공하며, 학급 단위 이용 시 또래·전국 규준과 비교한 결과도 함께 제공한다."}},
-    {"@type":"Question","name":"비용이 드나요?","acceptedAnswer":{"@type":"Answer","text":"26종 진단과 기본 결과·차트·요약은 가입 후 무료로 이용한다. 통계적으로 검증된 계열성향 검사(고1 α=0.951, 중학 α=0.930)도 무료 진단에 포함된다. 정식 A4·B4 상담 보고서와 통합 포트폴리오 PDF, 학부모용 리포트는 유료 플랜에서 제공한다."}}
+    {"@type":"Question","name":"비용이 드나요?","acceptedAnswer":{"@type":"Answer","text":"학급코드로 입장하면 26종 진단과 기본 결과·차트·요약을 모두 무료로 이용하고, 학급코드 없이 개인으로 가입하면 이 중 8종을 무료로 이용한다(나머지는 학교·기관 도입으로 이용할 수 있다). 통계적으로 검증된 계열성향 검사(고1 α=0.951, 중학 α=0.930)는 개인 무료 8종에도 포함된다. 정식 A4·B4 상담 보고서와 통합 포트폴리오 PDF, 학부모용 리포트는 유료 플랜에서 제공한다."}}
   ]
 }
 </script>
@@ -877,7 +879,7 @@ if(window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches&&window.
   data-site="mybest-next" data-key="pub_live_mybest-next_b5a2ddfa68ca7879"
   data-api="https://growth-engine-hub.netlify.app/api/engine"
   data-growth-definition="마이베스트 NEXT는 초·중·고 학생을 위한 진로·진학·공부·미래역량 진단과 맞춤 성장 리포트를 제공하는 온라인 진로교육 플랫폼이다."
-  data-growth-quickanswer="마이베스트 NEXT는 26종의 진로·진학·공부·미래역량 진단을 가입 후 무료로 제공하고, 정식 A4·B4 상담 보고서와 통합 포트폴리오는 유료 플랜에서 제공한다. 한국직업능력연구원의 2025년 조사에 따르면 중·고교 98% 이상이 이미 진로심리검사를 실시한다."
+  data-growth-quickanswer="마이베스트 NEXT는 학급코드로 입장하면 26종 진단을 전체 무료로 제공하고, 개인 가입은 이 중 8종을 무료로 제공하며 나머지는 학교·기관 도입으로 이용할 수 있다. 정식 A4·B4 상담 보고서와 통합 포트폴리오는 유료 플랜에서 제공한다. 한국직업능력연구원 조사에 따르면 중·고교 대부분이 이미 진로심리검사를 실시한다."
   defer></script>
 <link rel="stylesheet" href="/assets/onae-responsive.css">
 <link rel="stylesheet" href="/assets/onae-theme.css">
@@ -936,6 +938,15 @@ const SB_ANON='sb_publishable_z3KmGPFA4RKka5e_tDWD5A_-CUDC7t8';
 /* 무단 복사 감지 비콘 (탐지 전용 — 정상 도메인엔 영향 없음) */
 (function(){try{fetch('https://onqisdgxwuvlxehjvoto.supabase.co/functions/v1/myb-guard',{method:'POST',headers:{'Content-Type':'application/json','apikey':SB_ANON},body:JSON.stringify({host:location.hostname,ref:document.referrer,path:location.pathname})}).catch(function(){});}catch(e){}})();
 const $=s=>document.querySelector(s);
+/* [F08 · WAVE0-2] 퍼널 계측 헬퍼. 분석 동의(analytics)가 있을 때만 전송하며, 개인식별정보(이름·PIN·학급코드·
+   토큰·이메일·학교명·서술형 답변 등)는 절대 포함하지 않는다. 슬러그·화면명·학년·개수·불리언 정도만 담는다. */
+function track(name,params){
+ try{
+  if(!window.gtag) return;
+  if(!(window.LegalSafety&&typeof LegalSafety.allowed==='function'&&LegalSafety.allowed('analytics'))) return;
+  gtag('event',name,params||{});
+ }catch(e){}
+}
 function applyView(){var v=localStorage.getItem('myb_view'),m=document.getElementById('vp'),b=document.getElementById('viewtgl');if(v==='pc'){if(m)m.setAttribute('content','width=1100');if(b)b.textContent='📱 모바일 화면 보기';}else{if(m)m.setAttribute('content','width=device-width,initial-scale=1');if(b)b.textContent='🖥 PC 화면 보기';}}
 function toggleView(){localStorage.setItem('myb_view',localStorage.getItem('myb_view')==='pc'?'mobile':'pc');applyView();}
 try{applyView();}catch(e){}
@@ -1176,6 +1187,7 @@ function skeletonRows(n){n=n||3;let c='';for(let i=0;i<n;i++)c+='<div class="ske
    백엔드 변경 없음(/questions는 token 없이도 호출 가능). 답변은 이 기기에 임시 저장해 가입 후 이어서 쓸 수 있다. */
 const GP_KEY=s=>'myb_pre_'+s;
 function guestGateModal(slug){
+ try{track('gate_shown',{gate:'guest',slug:slug});}catch(e){}
  const t=(S.tests&&S.tests[slug])||{};
  const nm=String((typeof DISPLAY_TITLE!=='undefined'&&DISPLAY_TITLE[slug])||t.title||'').replace(/^(?:[가-힣]{1,3}\s*\d+[·․]?)+\.\s*/,'');
  const ov=document.createElement('div'); ov.className='ggov';
@@ -1241,7 +1253,7 @@ function renderGuestEnd(){
    <div class="gpemo">🎯</div>
    <h2>여기까지가 체험이에요</h2>
    <p>${esc(nm)}${inqJong(nm)?'은':'는'} ${total?esc(String(total))+'문항 전체를 ':''}풀어야 결과가 나와요.<br>
-      지금까지 고른 답은 이 기기에 저장해뒀어요. 입장하면 이어서 진행할 수 있어요.</p>
+      방금 푼 3문항은 문항 형식을 먼저 보여드린 맛보기였어요. 입장하면 전체 문항을 처음부터 풀고 결과를 받을 수 있어요.</p>
    <div class="gpcards">
     <div class="gpc"><b>📊 결과 보고서</b><span>또래·전국 비교와 영역별 해설</span></div>
     <div class="gpc"><b>🗂 성장 카르테</b><span>진단 결과가 하나로 이어져요</span></div>
@@ -1788,13 +1800,25 @@ function inqFromCard(key,gu,title){
   inqOpen(0,{act_key:key,act_gu:gu,title:String(title||'').slice(0,80)});
 }
 const api=async(p,body)=>{
- const r=await fetch(API+'/api'+p,body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:undefined);
- const j=await r.json();
- if(!r.ok){const e=new Error((j&&j.error)||'오류가 발생했습니다');e.data=j;throw e;}
+ let r;
+ try{
+  r=await fetch(API+'/api'+p,body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:undefined);
+ }catch(networkErr){
+  /* 2026-09-04 F04: 오프라인 등 fetch 자체 실패 시 브라우저의 영어 오류(Failed to fetch)가 아닌 한국어 안내로 대체 */
+  const e=new Error('인터넷 연결을 확인해 주세요. 잠시 후 다시 시도해 주세요.');
+  e.cause=networkErr;throw e;
+ }
+ /* 2026-09-04 F04: r.ok 확인 전 r.json()을 호출하면 서버 장애로 JSON이 아닌 응답(HTML 등)이 올 때
+    파싱 자체가 실패해 준비된 한국어 메시지 대신 원본 SyntaxError가 그대로 노출됨 — payApi와 동일하게
+    파싱 실패를 흡수하고, 그 경우 j는 빈 객체로 취급한다 */
+ const j=await r.json().catch(()=>({}));
+ if(!r.ok){const e=new Error((j&&j.error)||'일시적인 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');e.data=j;throw e;}
  if(j&&j.ok===false&&j.gate){const e=new Error(j.error||'이용할 수 없습니다');e.data=j;throw e;}
  return j;
 };
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+/* 2026-09-04 F05: 처리되지 않은 프라미스 거부를 최소한 콘솔에라도 남긴다(화면 전환 실패의 UI 처리는 go()의 캐치-올이 담당) */
+window.addEventListener('unhandledrejection',function(ev){try{console.error('[unhandledrejection]',ev&&ev.reason);}catch(e){}});
 // 2026-07-26: 개별(비회원) 진단 구매 — 백엔드(mybpay v10: /order-individual·/confirm·자동편입)는 이미 완성돼 있었고
 // 프런트에만 결제 버튼이 없어 죽어있던 기능을 연결. 로그인 여부와 무관하게 이름+이메일만 받아 결제 후
 // 학급코드+PIN을 자동 발급(이메일 발송)하는 방식이라 별도 회원가입/SNS로그인 없이 가장 가벼운 구조로 동작.
@@ -1864,6 +1888,7 @@ async function mybLogPayConsent(o){
   await mybLogPayConsent({email:email,consentText:mybConsentText('label[for="agrAdult"]'),service:'mybest-class-pay',studentRef:pc?(String(pc.value||'').trim().toUpperCase()||null):null});
   if(typeof _impl==='function')return _impl.apply(this,arguments);
   try{console.warn('[myb] 학급 결제 구현(buyPlan)이 아직 연결되지 않았습니다');}catch(_){}
+  _msg('결제 기능을 준비하고 있어요. 잠시 후 다시 시도하거나 문의처로 연락해 주세요.');
  }
  try{
   Object.defineProperty(window,'buyPlan',{configurable:true,get:function(){return gatedBuyPlan},set:function(v){_impl=v}});
@@ -2028,7 +2053,7 @@ function proofHtml(){return `<div class="proofgrid">
  <div class="proof"><b>학교용 경량 운영</b><span>학급코드·PIN·교사용 대시보드로 도입 부담 최소화</span></div>
  </div>`}
 function teacherVoiceHtml(){return `<div class="lp-sectk">선생님들의 이야기</div><div class="proofgrid">
- <div class="proof"><b>구 마이베스트(2019~2024) 누적 45,000명 운영 경험</b><span>기존 마이베스트를 학교 현장에서 운영해 온 경험을 그대로 이어받아 NEXT 흐름으로 재설계했습니다.</span></div>
+ <div class="proof"><b>구 마이베스트(2019~2024) 누적 수만 명 운영 경험</b><span>기존 마이베스트를 학교 현장에서 운영해 온 경험을 그대로 이어받아 NEXT 흐름으로 재설계했습니다.</span></div>
  <div class="proof"><span class="qbadge build" style="margin-bottom:6px">PILOT</span><b style="display:block">2026년 하반기 파일럿 학교 모집 중</b><span>실제 도입 학교의 선생님 후기·활용 데이터는 파일럿 종료 후 이 자리에 정직하게 채워 넣습니다.</span></div>
  <div class="proof"><b>도입 문의 환영</b><span>학교·기관 담당 선생님이라면 언제든 도입 문의를 남겨주세요. 파일럿 학교로 가장 먼저 초대해 드립니다.</span></div>
  </div>`}
@@ -2114,7 +2139,7 @@ const NORM_TIER = {
 };
 const NORM_META = {
   verified:{cls:'nv', em:'🟦', nm:'규준검증',
-    tip:'전국 표준화 규준과 내적일관도(Cronbach α)가 검증된 척도입니다.'},
+    tip:'전국 표준화 규준과 내적일관도(Cronbach α, 문항 응답이 얼마나 일관되게 나왔는지를 0~1로 나타낸 값)가 검증된 척도입니다.'},
   self:{cls:'ns', em:'🟩', nm:'자가점검',
     tip:'준거참조 자가점검 도구입니다. 또래 비교로 상대적 위치를 함께 보여줍니다.'},
   building:{cls:'nb', em:'🟨', nm:'개발중',
@@ -2132,7 +2157,7 @@ function normNoteHtml(slug){
 function methodNote(slug){
  const series=slug==='hs_series'||slug==='ms_series';
  const __nb=(typeof normNoteHtml==='function')?normNoteHtml(slug):'';
- if(series)return __nb+`<div class="methodnote"><b>신뢰도 기준</b> · 이 계열성향 결과는 전국 규준과 내적일관도 검증을 함께 표시합니다. 고등 α0.951(N=8,575), 중학 α0.930(N=4,069) 기준입니다.</div>`;
+ if(series)return __nb+`<div class="methodnote"><b>신뢰도 기준</b> · 이 계열성향 결과는 전국 규준과 내적일관도 검증을 함께 표시합니다. 고등 α0.951(N=8,575), 중학 α0.930(N=4,069) 기준입니다. 내적일관도(α)는 같은 것을 재는 문항들의 응답이 얼마나 일관되게 나왔는지를 0~1 사이 숫자로 나타낸 값으로, 1에 가까울수록 안정적입니다.</div>`;
  if(slug==='study'||slug==='subject_rec')return `<div class="methodnote"><b>활용 기준</b> · 이 화면은 심리검사가 아니라 입력값 기반 맞춤 자료입니다. 학교 교육과정과 상담을 함께 확인하세요.</div>`;
  return `<div class="methodnote"><b>활용 기준</b> · 이 결과는 준거참조 자가점검입니다. 점수보다 보완 영역과 이번 주 실천 항목을 중심으로 활용하세요.</div>`;
 }
@@ -2482,6 +2507,7 @@ function gateDenyModal(gate){
  document.getElementById(id+'c').onclick=function(){ov.remove()};
 }
 async function go(page,arg){
+ try{
  const v=$('#view');
  if(S.page!==page){
   if(!S.hist)S.hist=[];
@@ -2498,6 +2524,7 @@ async function go(page,arg){
  if(page==='home'){
   /* 로그인 토큰이 있으면 기존처럼 바로 대시보드로 (소개 랜딩은 비로그인 유입용) */
   if(S.token){try{S.me=await api('/me?token='+S.token);setWho();go('dash');return}catch(e){localStorage.removeItem('myb_token');S.token=null}}
+  try{track('view_home',{});}catch(e){}
   v.innerHTML=`<div class="lp-hero">
    <div class="hgrain"></div>
    <div class="lp-horb lp-o1"></div><div class="lp-horb lp-o2"></div><div class="lp-horb lp-o3"></div>
@@ -2611,6 +2638,7 @@ async function go(page,arg){
   }
   else if(page==='join'){
    const isInd=arg==='individual';
+   try{track('gate_shown',{gate:'signup',kind:isInd?'individual':'class_code',slug:(localStorage.getItem('myb_pending_quiz')||'')});}catch(e){}
    v.innerHTML=`<h1>${isInd?'10초 만에 개인 진단 시작하기':'10초 입장하고 결과를 저장해요'}</h1><div class="sub">${isInd?'학급코드 없이 이름·PIN만으로 개인 결과함이 만들어집니다.':'긴 회원가입 없이 학급코드·이름·PIN만으로 개인 결과함이 만들어집니다.'}</div>
    ${saveValueHtml()}
    <div class="saleshold"><p><b>${isInd?'개인으로 시작하면':'왜 입장이 필요할까요?'}</b><br>${isInd?'학급코드 없이 개인으로 입장하면 무료 진단 8종(계열성향·고교 과목추천·학생부 로드맵·공부습관·면접 준비도·고교 유형·초등 진로탐험 등)을 바로 이용할 수 있어요. 학급 도입은 학교/기관 전용입니다.':'진단 결과는 한 번 보고 끝나는 자료가 아니라 누적 성장 기록입니다. 입장하면 결과 다시보기, A4·B4 보고서, 재진단 비교, 선생님이 배정한 진단까지 이어집니다.'}</p></div>
@@ -2659,7 +2687,7 @@ async function go(page,arg){
   v.innerHTML=`
   <div class="solpage"><div class="hero" style="min-height:240px">${ART(d.attempt.test_slug)}<h2>${esc(st.name)}의 ${best}계열 심층 솔루션</h2><p>${esc(st.school||'')} ${esc(st.class_name||'')} · ${dt}<br>1순위 ${best} · 2순위 ${sec}${nm?` · 또래 중 상위 ${pctl(r.best)}% 성향 강도`:''}</p></div>
   <div class="card"><div class="k">나의 7계열 프로파일${nm?` — 전국 ${nm.n.toLocaleString()}명 규준 비교`:''}</div><div class="chartwrap" style="height:230px"><canvas id="solr"></canvas></div>
-  ${nm?`<div style="margin-top:8px">${r.labels.map((l,i)=>`<div style="display:flex;align-items:center;gap:8px;padding:3px 0"><span style="flex:0 0 56px;font-size:11.5px;font-weight:700">${l}</span><div class="meter" style="flex:1;margin:0"><i style="width:${100-pctl(i)}%"></i></div><span class="muted" style="width:64px;text-align:right">상위 ${pctl(i)}%</span></div>`).join('')}<p class="muted" style="margin-top:6px">※ 전국 규준(N=${nm.n.toLocaleString()}, 신뢰도 α=${nm.alpha}) 기반 백분위</p></div>`:''}</div></div>
+  ${nm?`<div style="margin-top:8px">${r.labels.map((l,i)=>`<div style="display:flex;align-items:center;gap:8px;padding:3px 0"><span style="flex:0 0 56px;font-size:11.5px;font-weight:700">${l}</span><div class="meter" style="flex:1;margin:0"><i style="width:${100-pctl(i)}%"></i></div><span class="muted" style="width:64px;text-align:right">상위 ${pctl(i)}%</span></div>`).join('')}<p class="muted" style="margin-top:6px">※ 전국 규준(N=${nm.n.toLocaleString()}, 신뢰도 α=${nm.alpha}) 기반 백분위 — α는 문항 응답이 얼마나 일관되게 나왔는지를 0~1로 나타낸 값으로, 1에 가까울수록 안정적이에요.</p></div>`:''}</div></div>
   ${d.deep.map(b=>`<div class="solpage">${blockHtml(b,best+'계열 심층 가이드')}</div>`).join('')}
   <div class="solpage"><div class="card"><div class="k">${best}계열 대표 학과 6</div>${d.majors.map(m=>`<div style="padding:9px 0;border-bottom:1px dashed #ECEAFB"><b style="font-size:14px;color:var(--navy-text)">${esc(m.name)}</b><p style="font-size:11.8px;color:#5B6270;line-height:1.55;margin-top:3px">${esc((m.talent||'').slice(0,110))}…</p></div>`).join('')}<p class="muted" style="margin-top:8px">→ 학과 탐색관에서 전체 정보(권장과목·진로) 확인</p></div></div>
   ${d.subj.length?`<div class="solpage">${blockHtml(d.subj[0],'고교학점제 과목 전략')}</div>`:''}
@@ -2810,7 +2838,7 @@ async function go(page,arg){
    const b2b=`<div class="card"><span class="planpill">B2B · 학교/기관</span><div class="k" style="margin-top:8px">학교·교육청·기관 도입</div>
     <ul class="rx"><li><span class="n">✓</span>학년·학교 단위 라이선스, 다학급 운영, 세금계산서</li><li><span class="n">✓</span>교사 연수·운영 가이드, 기관별 맞춤 콘텐츠</li><li><span class="n">✓</span>학교장·기관관리자 / 담임·학급관리자 권한 분리</li><li><span class="n">✓</span>정식 보고서(A4·B4·10쪽)·학급 리포트 일괄 활용</li></ul>
     <a class="btn navy" style="margin-top:10px" href="mailto:teachertshare2024@naver.com?subject=마이베스트%20NEXT%20기관%20도입%20문의&body=학교/기관명,%20학급%20수,%20도입%20시기를%20알려주시면%20견적을%20보내드립니다.">🏫 도입 문의하기 (견적)</a></div>`;
-   v.innerHTML=`<h1>요금·도입 안내 💎</h1><div class="sub">모든 진단과 기본 결과는 <b>계속 무료</b>예요. 학교는 B2B 도입, 개인·학부모는 프리미엄을 선택할 수 있습니다.</div>
+   v.innerHTML=`<h1>요금·도입 안내 💎</h1><div class="sub">학급코드로 도입하면 26종 진단과 기본 결과가 <b>모두 무료</b>예요. 개인·학부모는 이 중 8종을 무료로 이용할 수 있어요.</div>
    ${b2b}
    <div class="lp-sectk">B2C · 개인/학부모</div>
    ${payPremiumHtml().replace(/^<h1>[\s\S]*?<\/div>\s*/,'')}
@@ -2828,25 +2856,7 @@ async function go(page,arg){
    </div>
    <div class="linkrow"><a onclick="go('home')">← 처음으로</a></div>`;
    window.scrollTo(0,0);return;
-   v.innerHTML=`<h1>선생님 공간 🏫</h1><div class="sub">학급을 만들어 코드를 나눠주고, 우리 반 결과를 한눈에 보세요.</div>
-   <div class="saleshold"><p><b>교사용 권한</b><br>학급관리자는 우리 반 진행 현황과 학생별 핵심 결과를 확인하고, 학교장·기관관리자는 여러 학급을 함께 관리하는 구조로 확장됩니다.</p></div>
-   <div class="card"><div class="k">학급 현황 보기</div><div class="err" id="err"></div>
-  <label>학급코드</label><input id="tc" style="text-transform:uppercase" placeholder="예: ABC123">
-  <label>교사 PIN</label><input id="tp" type="password" placeholder="학급 생성 시 정한 PIN">
-  <button class="btn navy" onclick="teacherView()">학급 대시보드 열기</button></div>
-  <div class="card"><div class="k">새 학급 만들기</div>
-  <label>학교명</label><input id="ns" placeholder="예: 마이베스트고등학교">
-  <label>학급명</label><input id="nn" placeholder="예: 3학년 1반">
-  <label>교사 PIN 설정</label><input id="np" type="password" placeholder="4자리 이상">
-  <div class="grid2"><div><label>정원(명)</label><input id="nm" type="number" value="40" min="5" max="200"></div>
-  <div><label>이용 기간(개월)</label><input id="nmo" type="number" value="12" min="1" max="24"></div></div>
-  <div class="grid2"><div><label>1인당 이용 횟수 <span style="color:#8489A3">(비우면 무제한)</span></label><input id="nu" type="number" placeholder="예: 5" min="1" max="50"></div>
-  <div><label>이용 시작일 <span style="color:#8489A3">(비우면 즉시)</span></label><input id="nd" type="date"></div></div>
-  <button class="btn" onclick="makeClass()">학급 코드 발급받기</button><div id="newcode" style="margin-top:10px"></div></div>
-   <div class="card" style="text-align:center"><div class="k">학교 도입 문의</div>
-   <p style="font-size:13px;color:#7A7E9A;line-height:1.6;margin-bottom:10px">다학급 운영, 연수, 기관별 맞춤 콘텐츠는 별도 문의로 준비합니다.</p>
-   <a class="btn ghost" style="width:auto;display:inline-block;padding:12px 24px" href="mailto:teachertshare2024@naver.com">문의 메일 보내기</a></div>
-  <div class="linkrow"><a onclick="go('home')">← 처음으로</a></div>`;
+   /* 2026-09-04 플랫폼 감사: 학급 발급과 학생 등록은 /admin.html에서만 진행하므로 다음 영역은 도달불가 — 교사 관련 함수 및 UI 제거 */
  }
  else if(page==='tdash'){/* 2026-09-02 플랫폼 감사: renderTeacherDash 함수가 구현된 적이 없는 데드코드였음(ReferenceError 발생) — 교사 진입 화면으로 대체 */go('teacher')}
  else if(page==='howto'){
@@ -3058,6 +3068,19 @@ async function go(page,arg){
   <div class="linkrow noprint">${step>1&&step<=totalSteps?'<a onclick="wizBack()">← 이전</a> · ':''}<a onclick="go('${S.token?'dash':'home'}')">진단 목록으로</a></div>`;
   window.scrollTo(0,0);
  }
+ }catch(goErr){
+  console.error('[go] 화면 전환 실패:',goErr);
+  try{
+   const v2=$('#view');
+   if(v2){
+    v2.innerHTML=`<div class="card"><div class="err" style="display:block">일시적인 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.</div>
+    <div class="actionbar"><button class="btn" id="goRetryBtn">다시 시도</button><a class="btn ghost" onclick="go('home')">홈으로</a></div>
+    </div>`;
+    const rb=document.getElementById('goRetryBtn');
+    if(rb)rb.onclick=()=>go(page,arg);
+   }
+  }catch(e2){}
+ }
 }
 async function join(){
  if(!$('#jg').value){showErr('학년을 선택하세요');return}
@@ -3066,6 +3089,7 @@ async function join(){
   const j=await api('/student/join',{class_code:$('#jc').value.trim(),name:$('#jn').value.trim(),pin:$('#jp').value.trim(),grade:pickedGrade});
   if(j.grade&&pickedGrade&&j.grade!==pickedGrade){setTimeout(()=>alert('이미 등록된 학년('+j.grade+')으로 입장했어요. 학년을 바꾸려면 선생님/관리자에게 요청하세요.'),200);}
   S.token=j.token;localStorage.setItem('myb_token',j.token);S.me=null;
+  try{track('signup_complete',{kind:'class_code'});}catch(e){}
   const pend=consumePendingQuiz();if(pend){startQuizFx(pend);}else{go('dash');}
  }catch(e){showErr(e.message)}
 }
@@ -3093,6 +3117,7 @@ async function joinIndividual(){
    const pickedGrade=$('#jg').value;
    const j=await api('/student/join_individual',{name:$('#jn').value.trim(),pin:$('#jp').value.trim(),grade:pickedGrade});
    S.token=j.token;localStorage.setItem('myb_token',j.token);S.me=null;
+   try{track('signup_complete',{kind:'individual'});}catch(e){}
    if(j.grade&&pickedGrade&&j.grade!==pickedGrade){setTimeout(()=>alert('이미 등록된 학년('+j.grade+')으로 입장했어요. 학년을 바꾸려면 선생님/관리자에게 요청하세요.'),200);}
    const pend=consumePendingQuiz();if(pend){startQuizFx(pend);}else{go('dash');}
   }catch(e){showErr(e.message)}
@@ -3150,12 +3175,13 @@ function planGateModal(msg,slug){
  ov.style.cssText='position:fixed;inset:0;background:rgba(20,20,35,.45);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px';
  ov.onclick=e=>{if(e.target===ov)ov.remove()};
  ov.innerHTML=`<div class="card" style="max-width:380px;margin:0"><div class="k">🔒 개인 무료 범위 밖 진단이에요</div><p style="font-size:13.5px;line-height:1.7;color:#4C5C4C;margin:6px 0 14px">${esc(msg)}</p>
- ${slug?`<button class="btn navy" style="width:100%;margin-bottom:8px" onclick="document.getElementById('${id}').remove();openBuyIndividual('${esc(slug)}')">💳 이 진단만 8,000원에 구매하기</button>`:''}
+ ${slug?(PAID_LIVE?`<button class="btn navy" style="width:100%;margin-bottom:8px" onclick="document.getElementById('${id}').remove();openBuyIndividual('${esc(slug)}')">💳 이 진단만 8,000원에 구매하기</button>`:`<button class="btn navy" style="width:100%;margin-bottom:8px" onclick="document.getElementById('${id}').remove();payNotifyIndividual('${esc(slug)}')">🔔 이 진단 개별 구매, 준비되면 알림 받기</button>`):''}
  <div style="display:flex;gap:8px"><button class="btn ghost" id="${id}c" style="flex:1">무료 진단 8종 보기</button><button class="btn ghost" style="flex:1" onclick="document.getElementById('${id}').remove();go('pay')">학교 도입 안내</button></div></div>`;
  document.body.appendChild(ov);
  document.getElementById(id+'c').onclick=()=>{ov.remove();go('dash');};
 }
 function startQuizFx(slug){
+ try{track('diagnostic_start_click',{slug:slug});}catch(e){}
  // 2026-07-23: 개인(비학급) 무료 이용자가 무료 8종 밖 진단을 골랐을 때, 문항을 다 푼 뒤가 아니라
  // 시작하는 그 순간 바로 안내하도록 변경(이전엔 제출 시점에만 막혀 끝까지 풀고도 결과를 못 받는 문제가 있었음).
  const plan=S.me&&S.me.plan;
@@ -3262,10 +3288,13 @@ function renderQuiz(){
  <div class="linkrow noprint">${z.i>0?'<a onclick="quizPrev()">← 이전 문항</a> · ':''}<a onclick="go('dash')">중단하고 돌아가기 (진행 자동저장)</a></div>`;
 }
 async function answer(val){
- const z=S.quiz;z.answers[z.i]=val;z.i++;
+ const z=S.quiz;
+ if(z&&z.i===0){try{track('quiz_first_answer',{slug:z.slug});}catch(e){}}
+ z.answers[z.i]=val;z.i++;
  try{localStorage.setItem('myb_q_'+z.slug,JSON.stringify({i:z.i,answers:z.answers}))}catch(e){}
  if(z.i<z.questions.length){renderQuiz();return}
  try{localStorage.removeItem('myb_q_'+z.slug)}catch(e){}
+ try{track('quiz_submit',{slug:z.slug});}catch(e){}
  $('#view').innerHTML='<div class="card" style="text-align:center;padding:50px">분석 중… 🔮</div>';
  try{
   const r=await api('/submit',{token:S.token,slug:z.slug,answers:z.answers});
@@ -3434,7 +3463,7 @@ function relatedTestsHtml(slug){
 /* ===== 유료화 동선(B5) — 무료 vs 프리미엄 비교. PAID_LIVE=false면 결제·금액 미노출 ===== */
 function payPremiumHtml(){
  const rows=[
-  ['전체 진단 프로그램(26종)','가입 후 전체 이용','가입 후 전체 이용',true,true],
+  ['전체 진단 프로그램(26종)','개인 8종 무료','학급·기관 도입 시 전체 이용',false,true],
   ['기본 결과·차트·요약','포함','포함',true,true],
   ['정식 A4 / B4 상담 보고서','미리보기','정식 다면 보고서',false,true],
   ['통합 포트폴리오(PDF)','요약','정식 발급',false,true],
@@ -3453,7 +3482,7 @@ function payPremiumHtml(){
    <span class="planpill">무료 vs 프리미엄</span>
    <table class="cmp"><thead><tr><th>기능</th><th class="f">무료</th><th class="p pcol">프리미엄</th></tr></thead>
    <tbody>${rows.map(r=>`<tr><td>${esc(r[0])}</td><td>${cell(r[1],r[3])}</td><td class="pcol">${cell(r[2],r[4])}</td></tr>`).join('')}</tbody></table>
-   <p class="muted" style="font-size:11.5px;margin-top:4px">※ 26종 진단과 기본 결과·차트·요약은 가입만 하면 이용할 수 있습니다. 유료 플랜은 정식 상담 보고서·통합 포트폴리오·성장 추적 등 부가 산출물과 지원에 적용됩니다. 제공 범위와 요금은 변경될 수 있으며, 변경 시 사전에 공지합니다.</p>
+   <p class="muted" style="font-size:11.5px;margin-top:4px">※ 학급코드로 입장하면 26종 진단과 기본 결과·차트·요약을 모두 이용할 수 있고, 개인 가입은 이 중 8종을 무료로 이용합니다. 유료 플랜은 정식 상담 보고서·통합 포트폴리오·성장 추적 등 부가 산출물과 지원에 적용됩니다. 제공 범위와 요금은 변경될 수 있으며, 변경 시 사전에 공지합니다.</p>
   </div>
   <div class="actionbar noprint">${cta}<button class="btn ghost" onclick="go(S.token?'dash':'home')">← 돌아가기</button></div>`;
 }
@@ -3462,6 +3491,13 @@ function payNotify(){
  alert('학교·기관 도입은 운영자 문의로 안내드리고 있습니다. 학급/학년 단위 운영이 필요하면 도입 문의 메일을 보내주세요.');
  window.open('mailto:teachertshare2024@naver.com?subject='+encodeURIComponent('프리미엄 출시 알림 신청'));
  // TODO(PAID_LIVE): 사전 알림 신청 수집 엔드포인트 배선 위치.
+}
+/* [F07 · 2026-09] 개별 진단 구매도 결제 오픈 전에는 확정가·구매 버튼 대신
+   알림 신청만 받는다. payNotify()와 같은 방식(알럿+메일함 열기), 대상만 개별 진단. */
+function payNotifyIndividual(slug){
+ alert('이 진단의 개별 구매는 아직 준비 중입니다. 이용 가능해지면 안내드릴게요.');
+ window.open('mailto:teachertshare2024@naver.com?subject='+encodeURIComponent('개별 진단 구매 알림 신청')+'&body='+encodeURIComponent('관심 진단: '+slug));
+ // TODO(PAID_LIVE): 개별 진단 사전 알림 신청 수집 엔드포인트 배선 위치.
 }
 /* [NEW 2026-08-25 · 개선 2026-08-26 · 고등 콘텐츠 보강] 심화 자료
    구버전 마이베스트 결과지의 학과·계열별 상세 자료를 내용만 가져와
@@ -4117,6 +4153,7 @@ function personaBannerHtml(d){
  return `<div class="card" style="padding:9px 14px;margin-bottom:10px;background:var(--vio-soft);border-color:#E0DAFB"><span class="tag" style="background:#fff">${parts.map(p=>esc(p)).join(' · ')} 맞춤 결과</span></div>`;
 }
 function renderResult(d){ try{S.lastResultSlug=d.attempt.test_slug}catch(e){}
+ try{track('result_view',{slug:d.attempt.test_slug});}catch(e){}
  window._shareCardD=d;
  /* [FIX 2026-08-30 2차] 숨김 진단 7종은 /tests 에 없어 S.tests[slug] 가 undefined 다.
     문항 화면만 막아 두었더니 문항을 다 풀고 결과 화면에서 흰 화면이 되어 손실이 더 커졌다. */
@@ -4226,44 +4263,18 @@ function renderResult(d){ try{S.lastResultSlug=d.attempt.test_slug}catch(e){}
  window.scrollTo(0,0);
  countUp();confetti();
 }
-async function makeClass(){
- try{
-  const j=await api('/teacher/class',{school:$('#ns').value.trim(),name:$('#nn').value.trim(),teacher_pin:$('#np').value.trim(),max_students:+$('#nm').value,months:+$('#nmo').value,max_uses:$('#nu').value?+$('#nu').value:null,starts_at:$('#nd').value||null});
-  $('#newcode').innerHTML=`<div class="hero" style="padding:18px"><p>학급코드가 발급되었습니다</p><h2 style="letter-spacing:.2em">${j.code}</h2><div style="margin:10px 0">${qrImg(j.code)}</div><p>정원 ${j.max_students}명 · ${j.expires_at}까지${j.max_uses?(' · 1인 '+j.max_uses+'회'):''}${j.starts_at?(' · '+j.starts_at+' 시작'):''}<br>QR을 칠판에 띄우면 학생들이 바로 입장해요</p></div>`;
- }catch(e){showErr(e.message)}
-}
-async function teacherView(){
- try{
-  const code=$('#tc').value.trim().toUpperCase(),pin=$('#tp').value.trim();
-  const d=await api('/teacher/overview',{code,teacher_pin:pin});
-  window._tauth={code,pin};
-  try{ if(!S.tests) S.tests=(await api('/tests')).tests; }catch(e){}
-  go('tdash',d);
-  }catch(e){showErr(e.message)}
-}
-async function tUpdate(patch){
- try{const a=window._tauth||{};if(!a.code){showErr('학급 인증 정보가 없습니다. 다시 조회해 주세요');return;}
-  if(patch&&patch.active===false&&!confirm('이 학급을 정지하면 학생이 새 진단을 시작할 수 없습니다. (기존 결과 열람은 계속 가능)\n정지할까요?'))return;
-  await api('/teacher/update',Object.assign({code:a.code,teacher_pin:a.pin},patch));
-  const d=await api('/teacher/overview',{code:a.code,teacher_pin:a.pin});go('tdash',d);
- }catch(e){showErr(e.message)}
-}
-async function tAssign(){
- try{const a=window._tauth||{};if(!a.code){showErr('학급 인증 정보가 없습니다');return;}
-  const slug=$('#asgSlug')&&$('#asgSlug').value, due=$('#asgDue')&&$('#asgDue').value;
-  if(!slug){showErr('배정할 진단을 선택하세요');return;}
-  await api('/teacher/assign',{code:a.code,teacher_pin:a.pin,test_slug:slug,due_date:due||null});
-  tLoadAssignments();
- }catch(e){showErr(e.message)}
-}
-async function tAssignDelete(id){
- try{const a=window._tauth||{};if(!a.code)return;await api('/teacher/assign_delete',{code:a.code,teacher_pin:a.pin,id});tLoadAssignments();}catch(e){showErr(e.message)}
-}
-async function tLoadAssignments(){
- try{const a=window._tauth||{};if(!a.code)return;const j=await api('/teacher/assignments',{code:a.code,teacher_pin:a.pin});const el=$('#asgList');if(!el)return;
-  el.innerHTML=(j.assignments&&j.assignments.length)?j.assignments.map(x=>`<div style="border-top:1px solid #eee;padding:7px 0;font-size:13px"><div style="display:flex;align-items:center;gap:8px"><span style="flex:1"><b>${esc(x.test_title)}</b>${x.due_date?` · ~${esc(x.due_date)}`:''}${x.title?` <i>${esc(x.title)}</i>`:''}</span><button onclick="tAssignDelete('${esc(String(x.id))}')" style="background:#fee;color:#c00;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;font-size:12px">해제</button></div><div style="color:#666;margin-top:2px">완료 ${x.done}/${x.total}명${x.not_done&&x.not_done.length?` · 미완료: ${x.not_done.map(n=>esc(n)).join(', ')}`:'' }</div></div>`).join(''):'<p style="color:#aaa;font-size:13px">배정된 진단이 없습니다</p>';
- }catch(e){showErr(e.message)}
-}
+/* 2026-09-04: makeClass 함수 제거 — 도달불가 코드 (학급 발급은 /admin.html) */
+
+/* 2026-09-04: teacherView 함수 제거 — 도달불가 코드 (학급 관리는 /admin.html) */
+
+/* 2026-09-04: tUpdate 함수 제거 — 도달불가 코드 (학급 관리는 /admin.html) */
+
+/* 2026-09-04: tAssign 함수 제거 — 도달불가 코드 (진단 배정은 /admin.html) */
+
+/* 2026-09-04: tAssignDelete 함수 제거 — 도달불가 코드 (진단 배정 관리는 /admin.html) */
+
+/* 2026-09-04: tLoadAssignments 함수 제거 — 도달불가 코드 (진단 조회는 /admin.html) */
+
 function boot(){
  try{renderTabs()}catch(e){}
  const p=new URLSearchParams(location.search);
@@ -4349,8 +4360,8 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 #ls-footer .ls-biz{margin-top:6px;opacity:.85}
 #ls-footer .ls-copy{margin-top:2px;opacity:.7}
 
-#ls-banner{position:fixed;left:0;right:0;bottom:0;z-index:99999;padding:12px;pointer-events:none}
-#ls-banner .ls-banner-in{pointer-events:auto;max-width:560px;margin:0 auto;background:#fff;color:#222;border:1px solid #e3e6ea;border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.18);padding:18px 20px;font-size:14px;line-height:1.6}
+#ls-banner{position:fixed;left:0;right:0;bottom:0;z-index:99999;padding:12px;pointer-events:none;display:flex;justify-content:center}
+#ls-banner .ls-banner-in{pointer-events:auto;max-width:560px;width:100%;margin:0 auto;max-height:46vh;overflow:auto;-webkit-overflow-scrolling:touch;background:#fff;color:#222;border:1px solid #e3e6ea;border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.18);padding:16px 18px;font-size:14px;line-height:1.6}
 #ls-banner .ls-banner-title{font-weight:700;font-size:15px;margin-bottom:6px}
 #ls-banner .ls-banner-desc{margin:0 0 10px;font-size:13px;color:#555}
 #ls-banner .ls-banner-desc a{color:#2563eb}
@@ -4784,7 +4795,7 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 window.LEGAL_CONFIG = {
   consentVersion: "v1.mybest.2026",
   serviceName: "마이베스트 NEXT",
-  corpName: "㈜가르치는사람들",
+  corpName: "(주)가르치는사람들",
   ceo: "이성훈",
   bizRegNo: "115-87-03727",
   ecomRegNo: "제 2026-서울강남-03605 호",

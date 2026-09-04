@@ -618,6 +618,18 @@ input.srrange::-moz-range-thumb{width:26px;height:26px;border-radius:50%;backgro
 .lk span{font-size:24px}
 .lk:hover{border-color:var(--vio);background:#F1EEFF;transform:translateY(-2px)}
 .ynrow{display:flex;gap:10px}
+/* [2026-09-03] 고교학점제 학과 선택 — 카드는 이름만, 과목 설명은 커서를 올렸을 때 넓게 펼친다 */
+.mjpick{display:grid;grid-template-columns:repeat(auto-fill,minmax(126px,1fr));gap:8px}
+.mjp{background:#fff;border:1.5px solid #E4E0F7;border-radius:12px;padding:13px 8px;font-family:inherit;font-weight:800;font-size:13.5px;color:#23284A;line-height:1.35;text-align:center;cursor:pointer;transition:border-color .12s,box-shadow .12s,transform .12s}
+.mjp .mjp-i{display:block;font-size:17px;margin-bottom:4px}
+.mjp:hover,.mjp:focus-visible{border-color:var(--vio);box-shadow:0 8px 20px rgba(108,92,231,.16);transform:translateY(-1px)}
+#mjTip{position:fixed;z-index:120;display:none;width:min(430px,calc(100vw - 24px));background:#fff;border:1.5px solid var(--vio);border-radius:14px;padding:12px 14px;box-shadow:0 16px 40px rgba(20,18,50,.2);font-size:12.5px;line-height:1.66;color:#4A4F66;pointer-events:none}
+#mjTip.on{display:block}
+#mjTip b.nm{display:block;font-size:14.5px;color:#23284A;margin-bottom:8px}
+#mjTip .r{margin-bottom:5px}
+#mjTip .r i{display:inline-block;font-style:normal;font-weight:800;font-size:10.5px;letter-spacing:.05em;color:var(--vio-text);background:var(--vio-soft);border-radius:5px;padding:1px 7px;margin-right:6px}
+#mjTip .s{margin-top:9px;padding-top:8px;border-top:1px solid #EEECF8;font-size:11.5px;color:#8489A3}
+@media(hover:none){#mjTip{display:none!important}}
 .yn{flex:1;border:2px solid #ECEAFB;border-radius:var(--r-lg);background:#fff;padding:20px 8px;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;transition:.15s;display:flex;flex-direction:column;align-items:center;gap:8px}
 .yn span{font-size:30px}
 .yn.yes:hover{border-color:#2E7D32;background:#F0FFF4;transform:translateY(-2px)}
@@ -2782,12 +2794,12 @@ async function go(page,arg){
    </div>
    <div class="lp-sectk">사용 3스텝</div>
    <div class="cstep">
-    <div class="hstep"><b>1</b><h4>학급 만들기</h4><p>학교명·학급명·정원 입력 → 코드+QR 발급</p></div>
+    <div class="hstep"><b>1</b><h4>학생 일괄 등록</h4><p>기관관리자가 발급한 학급에 우리 반 명단을 등록</p></div>
     <div class="hstep"><b>2</b><h4>코드 공유</h4><p>학생들에게 코드·QR 공유 → 자율 진단</p></div>
     <div class="hstep"><b>3</b><h4>결과 활용</h4><p>학급 대시보드로 수업·상담 자료 만들기</p></div>
    </div>
    ${window._tauth?`<div class="card" style="background:#F2FBF5;border-color:#CDEBD7"><div class="k" style="margin-top:0">✅ 교사 로그인됨</div><div class="actionbar noprint" style="margin-top:6px"><a class="btn navy" href="/admin.html">📋 관리자 대시보드</a></div></div>`
-    :`<div class="card" style="text-align:center"><div class="k">교사 전용 기능</div><p style="font-size:13px;color:#7A7E9A;line-height:1.6;margin-bottom:12px">학급 만들기·코드 발급·학급 관리·진단 배정은 <b>관리자 대시보드 로그인 후</b> 이용할 수 있어요.</p><a class="btn navy" style="width:auto;display:inline-block;padding:13px 26px" href="/admin.html">관리자 로그인 / 학급 관리 🔑</a></div>`}
+    :`<div class="card" style="text-align:center"><div class="k">교사 전용 기능</div><p style="font-size:13px;color:#7A7E9A;line-height:1.6;margin-bottom:12px">담임 선생님은 <b>학생 일괄 등록·학급 대시보드·진단 설정</b>을 관리자 대시보드에서 이용합니다. 학급 발급과 정원·기간 설정, 담임 계정 생성은 기관관리자가 진행합니다.</p><a class="btn navy" style="width:auto;display:inline-block;padding:13px 26px" href="/admin.html">관리자 로그인 / 학급 관리 🔑</a></div>`}
    <div class="card" style="text-align:center"><div class="k">학교·기관 도입 문의</div>
    <p style="font-size:13px;color:#7A7E9A;line-height:1.6;margin-bottom:10px">다학급 운영, 연수, 기관별 맞춤 콘텐츠는 별도로 준비합니다.</p>
    <a class="btn ghost" style="width:auto;display:inline-block;padding:12px 24px" href="mailto:teachertshare2024@naver.com?subject=마이베스트%20NEXT%20학교%20도입%20문의">학교 도입 문의하기</a></div>
@@ -2844,15 +2856,17 @@ async function go(page,arg){
   <li><span class="n">2</span>카테고리(진로·진학·공부·역량)에서 진단 선택 — 솔직하게 답할수록 정확해요</li>
   <li><span class="n">3</span>결과에서 <b>맞춤 성장 가이드</b> 확인 → 인쇄 버튼으로 A4 한장 보고서 저장</li>
   <li><span class="n">4</span>한 달 뒤 재진단하면 <b>성장 그래프</b>가 열려요</li></ul></div>
-  <div class="card"><div class="k">🏫 선생님</div><ul class="rx">
-  <li><span class="n">1</span>선생님 공간 → 학급 만들기 (정원·기간 설정, 코드+QR 발급)</li>
-  <li><span class="n">2</span>학생들에게 코드 공유 → 자율 진단 진행</li>
+  <div class="card"><div class="k">🏫 담임 선생님</div><ul class="rx">
+  <li><span class="n">1</span>선생님 공간 → <b>학생 일괄 등록</b></li>
+  <li><span class="n">2</span>학생들에게 학급코드·PIN 안내 → 자율 진단 진행</li>
    <li><span class="n">3</span>학급 대시보드에서 계열 분포·면접/AI/로드맵 평균 확인 → <b>학급 한장 보고서</b> 인쇄</li>
-   <li><span class="n">4</span>진로 수업·상담 자료로 활용 (학생별 결과는 본인+담임만 열람)</li></ul></div>
-   <div class="card"><div class="k">🏢 학교·기관</div><ul class="rx">
-   <li><span class="n">1</span>학교장·기관관리자와 담임·학급관리자 권한을 나누어 운영할 수 있도록 구성합니다</li>
-   <li><span class="n">2</span>학년·학교 단위 도입, 다학급, 맞춤 콘텐츠는 별도 문의로 준비합니다</li>
-   <li><span class="n">3</span>문의: teachertshare2024@naver.com</li></ul></div>
+   <li><span class="n">4</span>진로 수업·상담 자료로 활용 — 학생별 결과는 본인과 담임만 열람합니다</li>
+   <li><span class="n">5</span>담임 아이디와 초기 비밀번호는 기관관리자가 만들어 전달합니다 — 첫 로그인 후 비밀번호를 바꿔 주세요</li></ul></div>
+   <div class="card"><div class="k">🏢 기관관리자 · 학교</div><ul class="rx">
+   <li><span class="n">1</span>학급 발급 — 정원과 이용 기간을 설정하고 학급코드·QR을 발급합니다</li>
+   <li><span class="n">2</span>담임 선생님 계정 생성 — 아이디와 초기 비밀번호를 만들어 담임에게 전달합니다</li>
+   <li><span class="n">3</span>학교장·기관관리자와 담임·학급관리자 권한을 나누어 운영할 수 있도록 구성합니다</li>
+   <li><span class="n">4</span>학년·학교 단위 도입, 다학급, 맞춤 콘텐츠는 별도 문의로 준비합니다 — teachertshare2024@naver.com</li></ul></div>
   <div class="card"><div class="k">🎒 학급코드 없이 개인으로</div><p style="font-size:13px;line-height:1.7;color:#4C5C4C">학급코드가 없어도 이름·PIN만으로 개인 진단을 바로 시작할 수 있어요. 개인 이용자는 무료 진단 8종(계열성향·고교 과목추천·학생부 로드맵·공부습관·면접 준비도·고교 유형·초등 진로탐험 등)을 이용할 수 있습니다. 학급/학교 도입은 학교·기관 전용입니다.</p></div>
   <button class="btn" onclick="go(S.token?'dash':'join')">바로 시작하기 ✨</button>
   <div class="linkrow"><a onclick="go('home')">← 처음으로</a> · <a onclick="go('join','individual')">개인으로 시작하기</a></div>`;
@@ -3175,10 +3189,40 @@ function subjectRecOpts(z){
  if(z.i===1){
   const series=+z.answers[0]||1;
   const majors=(z.majors||[]).filter(m=>+m.series===series);
-  return `<div class="ynrow" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr))">${majors.map(m=>`<button class="yn yes" style="text-align:left;align-items:flex-start" onclick="answer(${+m.id})"><span>🏛️</span><b>${esc(m.name)}</b><small style="display:block;font-size:11px;color:#566;line-height:1.45;margin-top:5px">일반 ${esc((m.subj_normal||'-').slice(0,42))}<br>진로 ${esc((m.subj_career||'-').slice(0,42))}</small></button>`).join('')}</div>`;
+  /* [FIX 2026-09-03] 선택 화면에는 학과 이름만 둔다. 과목 목록을 카드 안에 잘라 넣던 기존 방식은
+     세로로 길게 흘러 글자가 한두 자씩 끊겨 읽기 어려웠다. 과목 설명은 커서를 올렸을 때만
+     가로로 넉넉한 패널로 펼쳐 보여 주고, 고른 학과의 설명은 결과 보고서의 '선택 학과 집중 분석'에 담긴다. */
+  return `<div class="mjpick">${majors.map(m=>`<button class="mjp" onclick="answer(${+m.id})" data-n="${esc(m.name)}" data-a="${esc(m.subj_normal||'-')}" data-b="${esc(m.subj_career||'-')}" data-c="${esc(m.subj_fusion||'')}"><span class="mjp-i">🏛️</span>${esc(m.name)}</button>`).join('')}</div>`;
  }
  return `<div class="ynrow"><button class="yn yes" onclick="answer(1)"><span>✅</span>확인 완료</button><button class="yn yes" onclick="answer(2)"><span>📝</span>일부 확인</button><button class="yn no" onclick="answer(3)"><span>🔎</span>아직 확인 전</button></div>`;
 }
+/* [2026-09-03] 학과 카드 과목 미리보기. 화면을 다시 그려도 살아 있도록 문서에 한 번만 위임한다.
+   값은 DB에서 온 텍스트라 innerHTML 로 넣지 않고 텍스트 노드로 붙인다. */
+(function(){
+ let tip=null;
+ function ensure(){ if(!tip){tip=document.createElement('div');tip.id='mjTip';document.body.appendChild(tip);} return tip; }
+ function row(label,val){const d=document.createElement('div');d.className='r';const i=document.createElement('i');i.textContent=label;d.appendChild(i);d.appendChild(document.createTextNode(val));return d;}
+ function show(btn){
+  const t=ensure(); t.textContent='';
+  const nm=document.createElement('b'); nm.className='nm'; nm.textContent=btn.dataset.n||''; t.appendChild(nm);
+  t.appendChild(row('일반선택',btn.dataset.a||'-'));
+  t.appendChild(row('진로선택',btn.dataset.b||'-'));
+  if(btn.dataset.c) t.appendChild(row('융합선택',btn.dataset.c));
+  const s=document.createElement('div'); s.className='s'; s.textContent='고르면 결과 보고서에 이 학과의 과목 설명이 그대로 담깁니다'; t.appendChild(s);
+  t.classList.add('on');
+  const r=btn.getBoundingClientRect(), w=t.offsetWidth, h=t.offsetHeight;
+  let x=r.left+r.width/2-w/2; x=Math.max(12,Math.min(x,window.innerWidth-w-12));
+  let y=r.bottom+8; if(y+h>window.innerHeight-12) y=Math.max(12,r.top-h-8);
+  t.style.left=x+'px'; t.style.top=y+'px';
+ }
+ function hide(){ if(tip)tip.classList.remove('on'); }
+ function pick(e){ return e.target&&e.target.closest?e.target.closest('.mjp'):null; }
+ document.addEventListener('mouseover',e=>{const b=pick(e);if(b)show(b);});
+ document.addEventListener('mouseout',e=>{if(pick(e))hide();});
+ document.addEventListener('focusin',e=>{const b=pick(e);if(b)show(b);else hide();});
+ document.addEventListener('scroll',hide,true);
+ window.addEventListener('resize',hide);
+})();
 function renderQuiz(){
  const z=S.quiz;
  if(z&&z.intro){renderQuizIntro();return;}
@@ -4243,6 +4287,12 @@ function boot(){
    try{localStorage.setItem('myb_pending_quiz',slug)}catch(e){}
    go('join','individual');return;
   }
+ }
+ /* [FIX 2026-09-03] 결과 보고서 화면의 '홈' 버튼이 랜딩이 아니라 로그인된 첫 화면으로 오도록,
+    ?view=dash 진입을 지원한다. 세션을 먼저 복구한 뒤 대시보드를 연다. */
+ if(view==='dash'){
+  if(S.token){(async()=>{try{S.me=await api('/me?token='+S.token);setWho();go('dash');}catch(e){try{localStorage.removeItem('myb_token')}catch(_){}S.token=null;go('home');}})();return;}
+  go('login');return;
  }
  if(['join','consult','pricing','coaching','quality','login'].includes(view)){go(view);return}
  if(p.get('code')){go('join');return}
